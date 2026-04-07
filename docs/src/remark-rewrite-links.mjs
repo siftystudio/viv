@@ -13,7 +13,7 @@ export function remarkRewriteLinks() {
         visit(tree, "link", (node) => {
             const url = node.url;
             // Skip external links, absolute paths, and anchor-only links
-            if (url.startsWith("http") || url.startsWith("/") || url.startsWith("#")) return;
+            if (url.startsWith("/") || url.startsWith("#")) return;
             if (url.includes(".md")) {
                 // 10-actions.md → ../10-actions/
                 // 10-actions.md#section → ../10-actions/#section
