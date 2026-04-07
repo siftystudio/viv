@@ -149,6 +149,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs: ci
     permissions:
+      contents: read
       pages: write
       id-token: write
     runs-on: ubuntu-latest

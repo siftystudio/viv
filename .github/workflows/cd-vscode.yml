@@ -8,6 +8,7 @@ on:
 permissions:
   contents: write
   actions: read
+  checks: read
 
 jobs:
   publish:
@@ -16,10 +17,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
 
       - name: Extract version from tag
         id: version
@@ -41,13 +38,25 @@ jobs:
           repo-token: ${{ github.token }}
           wait-interval: 15
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
       - name: Verify version matches package.json
         run: |
           pkg_version=$(node -e "console.log(require('./plugins/vscode/package.json').version)")
           if [ "$pkg_version" != "${{ steps.version.outputs.version }}" ]; then
-            echo "::error::Tag version ${{ steps.version.outputs.version }} does not match package.json version $pkg_version"
+            echo "::error::Tag version (${{ steps.version.outputs.version }}) does not match package.json ($pkg_version)"
             exit 1
           fi
+
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          body=$(scripts/extract-changelog.sh "${{ steps.version.outputs.version }}" plugins/vscode/CHANGELOG.md)
+          echo "body<<CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
+          echo "$body" >> "$GITHUB_OUTPUT"
+          echo "CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
 
       - name: Install vsce
         run: npm install -g @vscode/vsce
@@ -59,17 +68,18 @@ jobs:
         run: |
           cd plugins/vscode
           npm run vscode:prepublish
-          vsce package
+          vsce package -o viv.vsix
 
       - name: Publish to VS Code Marketplace
         run: |
           cd plugins/vscode
-          vsce publish --packagePath *.vsix
+          vsce publish --packagePath viv.vsix
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
-      - name: Attach .vsix to GitHub release
+      - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          files: plugins/vscode/*.vsix
-          generate_release_notes: true
+          name: Viv VS Code Extension v${{ steps.version.outputs.version }}
+          body: ${{ steps.changelog.outputs.body }}
+          files: plugins/vscode/viv.vsix

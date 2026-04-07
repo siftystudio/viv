@@ -6,8 +6,9 @@ on:
       - "runtime-v*"
 
 permissions:
-  contents: read
+  contents: write
   actions: read
+  checks: read
   pages: write
   id-token: write
 
@@ -58,8 +59,22 @@ jobs:
       - name: Build runtime
         run: npm --workspace runtimes/js run build
 
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          body=$(scripts/extract-changelog.sh "${{ steps.version.outputs.version }}" runtimes/js/CHANGELOG.md)
+          echo "body<<CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
+          echo "$body" >> "$GITHUB_OUTPUT"
+          echo "CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
+
       - name: Publish to npm
         run: npm --workspace runtimes/js publish --ignore-scripts
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Viv JavaScript Runtime v${{ steps.version.outputs.version }}
+          body: ${{ steps.changelog.outputs.body }}
 
       - name: Generate API docs
         run: npm --workspace runtimes/js run docs
@@ -75,8 +90,10 @@ jobs:
 
       - name: Assemble site
         run: |
-          mkdir -p docs/dist/reference/runtimes/js
-          cp -r docs/reference/runtimes/js/* docs/dist/reference/runtimes/js/
+          if [ -d docs/reference/runtimes/js ]; then
+            mkdir -p docs/dist/reference/runtimes/js
+            cp -r docs/reference/runtimes/js/* docs/dist/reference/runtimes/js/
+          fi
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3

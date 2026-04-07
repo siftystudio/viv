@@ -1,9 +1,9 @@
-name: CD — Viv Sublime Text Package
+name: CD — Viv Claude Code Plugin
 
 on:
   push:
     tags:
-      - "sublime-v*"
+      - "claude-v*"
 
 permissions:
   contents: write
@@ -20,7 +20,7 @@ jobs:
 
       - name: Extract version from tag
         id: version
-        run: echo "version=${GITHUB_REF_NAME#sublime-v}" >> "$GITHUB_OUTPUT"
+        run: echo "version=${GITHUB_REF_NAME#claude-v}" >> "$GITHUB_OUTPUT"
 
       - name: Verify tag is on main
         run: |
@@ -38,40 +38,24 @@ jobs:
           repo-token: ${{ github.token }}
           wait-interval: 15
 
-      - name: Verify version matches repository.json
+      - name: Verify version matches plugin.json
         run: |
-          pkg_version=$(python3 -c "import json; print(json.load(open('plugins/sublime/repository.json'))['packages'][0]['releases'][0]['version'])")
+          pkg_version=$(python3 -c "import json; print(json.load(open('plugins/claude/.claude-plugin/plugin.json'))['version'])")
           if [ "$pkg_version" != "${{ steps.version.outputs.version }}" ]; then
-            echo "::error::Tag version (${{ steps.version.outputs.version }}) does not match repository.json ($pkg_version)"
+            echo "::error::Tag version (${{ steps.version.outputs.version }}) does not match plugin.json ($pkg_version)"
             exit 1
           fi
 
       - name: Extract changelog for this version
         id: changelog
         run: |
-          body=$(scripts/extract-changelog.sh "${{ steps.version.outputs.version }}" plugins/sublime/CHANGELOG.md)
+          body=$(scripts/extract-changelog.sh "${{ steps.version.outputs.version }}" plugins/claude/CHANGELOG.md)
           echo "body<<CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
           echo "$body" >> "$GITHUB_OUTPUT"
           echo "CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
 
-      - name: Build .sublime-package
-        run: |
-          cd plugins/sublime
-          zip -r ../../Viv.sublime-package \
-            Viv.sublime-build \
-            Viv.sublime-syntax \
-            Viv.sublime-completions \
-            "Indentation Rules.tmPreferences" \
-            compiler_bridge.py \
-            repository.json \
-            themes/ \
-            LICENSE.txt \
-            README.md \
-            CHANGELOG.md
-
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          name: Viv Sublime Text Package v${{ steps.version.outputs.version }}
+          name: Viv Claude Code Plugin v${{ steps.version.outputs.version }}
           body: ${{ steps.changelog.outputs.body }}
-          files: Viv.sublime-package
