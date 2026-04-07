@@ -24,7 +24,7 @@ Read the request file to understand the author's question. Research the answer. 
 
 All paths below are relative to the monorepo root provided in your prompt.
 
-- **Language reference:** `docs/language-reference/` — a directory of markdown files, each a chapter with a descriptive filename. Read whichever chapters are relevant to the question.
+- **Language reference:** `docs/reference/language/` — a directory of markdown files, each a chapter with a descriptive filename. Read whichever chapters are relevant to the question.
 - **Grammar:** `compiler/src/viv_compiler/grammar/viv.peg`
 - **Adapter types:** `runtimes/js/src/adapter/types.ts`
 - **Example projects:** `examples/hello-viv-ts/`, `examples/hello-viv-js/`

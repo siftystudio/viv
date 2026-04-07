@@ -46,7 +46,7 @@ Critique the code across several dimensions. Not all will apply to every review 
 
 The Viv monorepo is at `${CLAUDE_PLUGIN_DATA}/viv-monorepo/`. The detailed file map is at `${CLAUDE_PLUGIN_ROOT}/docs/monorepo-map.md`.
 
-Consult the language reference at `docs/language-reference/` to confirm your understanding of any construct before critiquing it. Don't flag something as a problem if the language actually supports it.
+Consult the language reference at `docs/reference/language/` to confirm your understanding of any construct before critiquing it. Don't flag something as a problem if the language actually supports it.
 
 
 ## Output format

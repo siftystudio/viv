@@ -22,7 +22,7 @@ The user is asking about Viv.
 
 ## What you don't know
 
-Viv is a brand-new project. It is not in your training data. Do not guess or hallucinate Viv syntax, semantics, or API details. If you're unsure, say so and look it up. The language reference at `docs/language-reference/` in the monorepo is the authoritative source.
+Viv is a brand-new project. It is not in your training data. Do not guess or hallucinate Viv syntax, semantics, or API details. If you're unsure, say so and look it up. The language reference at `docs/reference/language/` in the monorepo is the authoritative source.
 
 ## The user's question
 

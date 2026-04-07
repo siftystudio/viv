@@ -5,15 +5,15 @@ hero:
   title: Viv
   tagline: "An engine for emergent narrative. By <a href='https://sifty.studio' target='_blank'>Sifty</a>."
   image:
-    dark: ../src/assets/viv-icon-dark.svg
-    light: ../src/assets/viv-icon-light.svg
+    dark: ./src/assets/viv-icon-dark.svg
+    light: ./src/assets/viv-icon-light.svg
   actions:
     - text: Get Started
-      link: /docs/quickstart/
+      link: /quickstart/
       icon: right-arrow
       variant: primary
     - text: Read the Introduction
-      link: /docs/introduction/
+      link: /introduction/
       icon: right-arrow
       variant: secondary
     - text: View on GitHub
@@ -25,7 +25,7 @@ hero:
 ---
 
 import { CardGrid } from '@astrojs/starlight/components';
-import Card from '../src/components/IconLinkCard.astro';
+import Card from './src/components/IconLinkCard.astro';
 
 > *The goals we set for the system are heroic, and demand heroic test cases.*
 >
@@ -99,15 +99,17 @@ Should the queued `plot-revenge` plan be carried out, the instance of `contempla
 
 As these events unfold, Viv will work behind the scenes to automatically track all the causal through lines, via its mechanism for *causal bookkeeping*. Later on, the emergent storylines embedded in this graph can easily be detected via Viv's facilities for story sifting. All the while, the Viv author has not been tasked with explicitly marking these links—they simply wrote down what kinds of past actions might lead someone to perform `contemplate-mistreatment`, and what kinds of follow-on actions might happen as a result of its performance.
 
-For a more extensive example of Viv code, see the working example [here](/docs/introduction/#example-a-revenge-story).
+For a more extensive example of Viv code, see the working example [here](/introduction/example/).
 
-## Read the Docs
+## Learn More
 
 <CardGrid>
-  <Card title="Introduction" description="Features, design philosophy, and an extensive working example." icon="open-book" href="/docs/introduction/" />
-  <Card title="A Brief History" description="A brief account of the Viv project and its origins." icon="open-book" href="/docs/background/history-of-viv/" />
-  <Card title="Language Reference" description="A complete specification of the Viv language." icon="open-book" href="/docs/language-reference/00-preamble/" />
-  <Card title="JavaScript Runtime API" description="Reference for the Viv JavaScript runtime system." icon="open-book" href="/docs/api/runtimes/js/" />
+  <Card title="Quickstart" description="Get up and running in no time." icon="open-book" href="/introduction/" />
+  <Card title="Introduction" description="Features, design philosophy, and an extensive working example." icon="open-book" href="/introduction/" />
+  <Card title="Example: A Revenge Story" description="A whirlwind tour of the Viv language, from gossip notes to arson to knowledge-propagating monuments." icon="open-book" href="/introduction/example/" />
+  <Card title="A Brief History" description="A brief account of the Viv project and its origins." icon="open-book" href="/background/history-of-viv/" />
+  <Card title="Language Reference" description="A complete specification of the Viv language." icon="open-book" href="/reference/language/00-preamble/" />
+  <Card title="JavaScript Runtime API" description="Reference for the Viv JavaScript runtime system." icon="open-book" href="/reference/runtimes/js/" />
 </CardGrid>
 
 ## Install the Components
@@ -117,8 +119,8 @@ For a more extensive example of Viv code, see the working example [here](/docs/i
   <Card title="JavaScript Runtime" description="The Viv JavaScript runtime, published on npm." icon="npm" href="https://www.npmjs.com/package/@siftystudio/viv-runtime" />
   <Card title="JetBrains Plugin" description="Full-featured IDE support for Viv code." icon="jetbrains" href="https://plugins.jetbrains.com/plugin/31012-viv" />
   <Card title="VS Code Extension" description="Lightweight editor support for Viv code." icon="vscode" href="https://marketplace.visualstudio.com/items?itemName=siftystudio.viv" />
-  <Card title="Sublime Text Package" description="Lightweight editor support for Viv code." icon="sublimetext" href="https://github.com/siftystudio/docs/tree/main/plugins/sublime" />
-  <Card title="Claude Code Plugin" description="LLM-powered Viv expertise in your terminal." icon="claude" href="https://github.com/siftystudio/docs/tree/main/plugins/claude" />
+  <Card title="Sublime Text Package" description="Lightweight editor support for Viv code." icon="sublimetext" href="https://github.com/siftystudio/viv/tree/main/plugins/sublime" />
+  <Card title="Claude Code Plugin" description="LLM-powered Viv expertise in your terminal." icon="claude" href="https://github.com/siftystudio/viv/tree/main/plugins/claude" />
 </CardGrid>
 
 ## View the Codebase

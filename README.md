@@ -68,7 +68,7 @@ Below, you'll find a barebones overview of the project, mostly taking the form o
   npm start
   ```
 
-* Check out the full [Quickstart guide](https://viv.sifty.studio/docs/quickstart/) for information on editor plugins and LLM-augmented authoring, and consult the [language reference](https://viv.sifty.studio/docs/language-reference/) for details on the Viv syntax.
+* Check out the full [Quickstart guide](https://viv.sifty.studio/quickstart/) for information on editor plugins and LLM-augmented authoring, and consult the [language reference](https://viv.sifty.studio/reference/language/) for details on the Viv syntax.
 
 
 
@@ -88,12 +88,12 @@ Below, you'll find a barebones overview of the project, mostly taking the form o
 
 | Resource                                                     | Description                                                  |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [Quickstart](https://viv.sifty.studio/docs/quickstart/)      | Installation, editor plugins, and LLM-augmented authoring for those that want it. |
-| [Introduction](https://viv.sifty.studio/docs/introduction/)  | A complete introduction to Viv: features, design philosophy, and an extensive working example. |
-| [Language Reference](https://viv.sifty.studio/docs/language-reference/) | A complete specification of the Viv language.                |
-| [Runtime API Docs](https://viv.sifty.studio/docs/api/runtimes/js/) | Reference for the JavaScript runtime API.                    |
-| [Viv: A Brief History](https://viv.sifty.studio/docs/background/history-of-viv/) | A short overview of the intellectual and technical backdrop for the Viv project. |
-| [*Curating Simulated Storyworlds*](https://viv.sifty.studio/docs/background/curating_simulated_storyworlds.pdf) | My PhD thesis, which serves as the intellectual basis for Viv. |
+| [Quickstart](https://viv.sifty.studio/quickstart/)      | Installation, editor plugins, and LLM-augmented authoring for those that want it. |
+| [Introduction](https://viv.sifty.studio/introduction/)  | A complete introduction to Viv: features, design philosophy, and an extensive working example. |
+| [Language Reference](https://viv.sifty.studio/reference/language/) | A complete specification of the Viv language.                |
+| [Runtime API Docs](https://viv.sifty.studio/reference/runtimes/js/) | Reference for the JavaScript runtime API.                    |
+| [Viv: A Brief History](https://viv.sifty.studio/background/history-of-viv/) | A short overview of the intellectual and technical backdrop for the Viv project. |
+| [*Curating Simulated Storyworlds*](https://viv.sifty.studio/background/curating_simulated_storyworlds.pdf) | My PhD thesis, which serves as the intellectual basis for Viv. |
 
 
 ## Example Projects

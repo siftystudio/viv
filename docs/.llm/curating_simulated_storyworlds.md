@@ -4,7 +4,7 @@
 
 > **This Markdown file was automatically converted from the original LaTeX source
 > and is intended for consumption by LLM agents working in this repository.**
-> Humans should read the [PDF](../background/curating_simulated_storyworlds.pdf) instead
+> Humans should read the [PDF](https://viv.sifty.studio/background/curating_simulated_storyworlds.pdf) instead
 >
 > **How to navigate this document:**
 > - The thesis is organized into 14 chapters using `#` headings, with `##`/`###`/`####` for sections and subsections. Grep for `^# ` to jump between chapters.

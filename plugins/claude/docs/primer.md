@@ -107,8 +107,8 @@ A local copy of the Viv monorepo should be available at `${CLAUDE_PLUGIN_DATA}/v
 
 Key starting points:
 
-- **Language reference** — `docs/language-reference/` (23 chapters, one per topic). This is the authoritative source for how any construct works. When you need to understand actions, read chapter 10. Sifting patterns, chapter 16. Plans, chapter 17. Etc.
-- **Glossary** — `docs/language-reference/22-glossary.md` — alphabetized definitions of all Viv terminology, with links to where each term is introduced.
+- **Language reference** — `docs/reference/language/` (23 chapters, one per topic). This is the authoritative source for how any construct works. When you need to understand actions, read chapter 10. Sifting patterns, chapter 16. Plans, chapter 17. Etc.
+- **Glossary** — `docs/reference/language/22-glossary.md` — alphabetized definitions of all Viv terminology, with links to where each term is introduced.
 - **Monorepo README** — `README.md` — a complete revenge-story walkthrough of the language
 - **Compiler README** — `compiler/README.md` — CLI usage and installation
 - **Runtime README** — `runtimes/js/README.md` — integration guide and adapter setup

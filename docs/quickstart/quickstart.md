@@ -21,13 +21,13 @@ Alright, let's get started. First, make sure you're up to date with the [require
 
 Great, your Viv experience will be entirely LLM-free. It's a symbolic AI system, after all.
 
-* Install the <a href="https://pypi.org/project/viv-compiler" target="_blank">Viv compiler</a>:
+* Install the [Viv compiler](https://pypi.org/project/viv-compiler):
 
    ```sh
    pip install viv-compiler
    ```
 
-* Install the <a href="https://www.npmjs.com/package/@siftystudio/viv-runtime" target="_blank">Viv JavaScript runtime</a>:
+* Install the [Viv JavaScript runtime](https://www.npmjs.com/package/@siftystudio/viv-runtime):
 
    ```sh
    npm install @siftystudio/viv-runtime
@@ -35,8 +35,8 @@ Great, your Viv experience will be entirely LLM-free. It's a symbolic AI system,
 
 * Install the editor plugin of your choice:
 
-   - The <a href="https://plugins.jetbrains.com/plugin/31012-viv" target="_blank">Viv JetBrains plugin</a> is the default tool for authoring Viv code. Assuming your larger codebase is primarily JavaScript or TypeScript, you can use the <a href="https://www.jetbrains.com/webstorm" target="_blank">WebStorm</a> IDE, with our plugin exposing rich features for `.viv` files.
-   - For more lightweight alternatives, there is also the <a href="https://marketplace.visualstudio.com/items?itemName=siftystudio.viv" target="_blank">Viv VS Code extension</a> and the <a href="https://github.com/siftystudio/viv/blob/main/plugins/sublime/README.md" target="_blank">Viv Sublime Text package</a>.
+   - The [Viv JetBrains plugin](https://plugins.jetbrains.com/plugin/31012-viv) is the default tool for authoring Viv code. Assuming your larger codebase is primarily JavaScript or TypeScript, you can use the [WebStorm](https://www.jetbrains.com/webstorm) IDE, with our plugin exposing rich features for `.viv` files.
+   - For more lightweight alternatives, there is also the [Viv VS Code extension](https://marketplace.visualstudio.com/items?itemName=siftystudio.viv) and the [Viv Sublime Text package](https://github.com/siftystudio/viv/blob/main/plugins/sublime/README.md).
 
 * Clone and run an example project:
 
@@ -55,7 +55,7 @@ Great, your Viv experience will be entirely LLM-free. It's a symbolic AI system,
   npm start
   ```
 
-* Consult the [language reference](/docs/language-reference/00-preamble/) for details on the Viv syntax, and start cooking up some constructs of your own!
+* Consult the [language reference](/reference/language/00-preamble/) for details on the Viv syntax, and start cooking up some constructs of your own!
 
    * If you're using the Viv JetBrains plugin, you can get an interactive tutorial by pasting any Viv code (from the docs or another source) into your IDE and hovering over the keywords and other code.
 
@@ -63,11 +63,11 @@ Great, your Viv experience will be entirely LLM-free. It's a symbolic AI system,
 
 ## I do use LLMs
 
-Unless you have ethical qualms surrounding LLM usage—and certainly such qualms have merit—the recommended interface between you and all things Viv is the <a href="https://github.com/siftystudio/viv/tree/main/plugins/claude" target="_blank">Viv Claude Code plugin</a>.
+Unless you have ethical qualms surrounding LLM usage—and certainly such qualms have merit—the recommended interface between you and all things Viv is the [Viv Claude Code plugin](https://github.com/siftystudio/viv/tree/main/plugins/claude).
 
 The plugin's custom skills turn Claude into a Viv expert (with a copy of this monorepo) that can facilitate installation, building, debugging, and most pertinently, authoring. Even if you don't want an LLM touching your content or code, this plugin can be an immense help for learning the system. It's like having me in your terminal.
 
-* Install <a href="https://code.claude.com/docs/en/quickstart" target="_blank">Claude Code</a>.
+* Install [Claude Code](https://code.claude.com/docs/en/quickstart).
 
 * In your terminal, boot up Claude Code: `claude`.
 
@@ -83,4 +83,4 @@ The plugin's custom skills turn Claude into a Viv expert (with a copy of this mo
    - Run the special setup skill: `/viv:setup`.
    - Claude Code will handle all installation and setup for you, and it will give you a tour of the Viv plugin (and the larger Viv project).
 
-* Now Claude Code will have deep Viv expertise any time you invoke it from your project directory, and there will also be a suite of Viv-specific Claude Code skills available there. See the <a href="https://github.com/siftystudio/viv/blob/main/plugins/claude/README.md" target="_blank">plugin documentation</a> for more information (or just ask Claude).
+* Now Claude Code will have deep Viv expertise any time you invoke it from your project directory, and there will also be a suite of Viv-specific Claude Code skills available there. See the [plugin documentation](https://github.com/siftystudio/viv/blob/main/plugins/claude/README.md) for more information (or just ask Claude).

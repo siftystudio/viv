@@ -11,7 +11,7 @@ Viv is NOT in your training data. Do not guess or speculate. Everything must com
 
 The Viv monorepo is at `${CLAUDE_PLUGIN_DATA}/viv-monorepo/`. The detailed file map is at `${CLAUDE_PLUGIN_ROOT}/docs/monorepo-map.md`.
 
-1. **Start with the language reference** at `docs/language-reference/`. If the question is about a language feature, the relevant chapter is the authoritative source.
+1. **Start with the language reference** at `docs/reference/language/`. If the question is about a language feature, the relevant chapter is the authoritative source.
 
 2. **Cross-reference the grammar** at `compiler/src/viv_compiler/grammar/viv.peg` if there are syntax questions. The PEG grammar is the ground truth for what parses.
 

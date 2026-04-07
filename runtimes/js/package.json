@@ -60,7 +60,7 @@
     "build:bundle": "rollup -c",
     "build": "npm run clean && npm run build:compile && npm run build:extract && npm run build:bundle",
     "docs": "typedoc",
-    "docs:clean": "rm -rf ../../docs/api/runtimes/js",
+    "docs:clean": "rm -rf ../../docs/reference/runtimes/js",
     "prepublishOnly": "npm run build && npm run check:api",
     "check:api": "api-extractor run",
     "test": "vitest run",

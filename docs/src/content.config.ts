@@ -7,18 +7,19 @@ export const collections = {
         loader: glob({
             base: ".",
             pattern: [
-                "landing/index.mdx",
+                "index.mdx",
                 "quickstart/quickstart.md",
-                "introduction/introduction.md",
-                "language-reference/*.md",
+                "introduction/overview.md",
+                "introduction/example.md",
+                "reference/language/*.md",
                 "background/history-of-viv.md",
             ],
             generateId: ({ entry }) => {
                 const id = entry.replace(/\.mdx?$/, "");
                 const slugMap: Record<string, string> = {
-                    "landing/index": "index",
                     "quickstart/quickstart": "quickstart",
-                    "introduction/introduction": "introduction",
+                    "introduction/overview": "introduction",
+                    "introduction/example": "introduction/example",
                 };
                 return slugMap[id] ?? id;
             },

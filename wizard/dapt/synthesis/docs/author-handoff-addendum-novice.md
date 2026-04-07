@@ -8,7 +8,7 @@ This is the core dynamic at your expertise level: you write code from the exampl
 
 The following files exist in the monorepo but are **OFF LIMITS** at your expertise level. Accessing any of them — or any file in the listed directories — will cause your session to be **DISCARDED**:
 
-- `{MONOREPO}/docs/language-reference/` (all files in this directory)
+- `{MONOREPO}/docs/reference/language/` (all files in this directory)
 - `{MONOREPO}/compiler/src/viv_compiler/grammar/viv.peg`
 - `{MONOREPO}/runtimes/js/src/adapter/types.ts`
 

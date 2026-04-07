@@ -28,7 +28,7 @@ If the compiler is not found, check `${CLAUDE_PLUGIN_DATA}/toolchain.md` for the
 
 1. Read any existing `.viv` files you were pointed to, to understand the world — entity types, property names, enum constants, naming conventions, action families, existing tropes and queries.
 2. If the brief is ambiguous, make reasonable choices — you are a sub-agent and cannot ask the user directly.
-3. If you need to understand a specific language feature, consult the monorepo at `${CLAUDE_PLUGIN_DATA}/viv-monorepo/`. The detailed file map is at `${CLAUDE_PLUGIN_ROOT}/docs/monorepo-map.md`. The language reference at `docs/language-reference/` is the authoritative source for syntax and semantics.
+3. If you need to understand a specific language feature, consult the monorepo at `${CLAUDE_PLUGIN_DATA}/viv-monorepo/`. The detailed file map is at `${CLAUDE_PLUGIN_ROOT}/docs/monorepo-map.md`. The language reference at `docs/reference/language/` is the authoritative source for syntax and semantics.
 4. Study real examples before writing. The syntax examples at `syntax/examples/` and the valid test fixtures at `compiler/tests/fixtures/valid/` show idiomatic Viv patterns.
 
 

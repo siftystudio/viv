@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import { ExpressiveCodeTheme } from "astro-expressive-code";
 import { remarkRewriteLinks } from "./src/remark-rewrite-links.mjs";
+import { rehypeExternalLinks } from "./src/rehype-external-links.mjs";
 import fs from "node:fs";
 
 const vivGrammar = {
@@ -14,9 +15,10 @@ const loadVivTheme = (filename) =>
 
 export default defineConfig({
     site: "https://viv.sifty.studio",
-    base: "/docs",
+    base: "/",
     markdown: {
         remarkPlugins: [remarkRewriteLinks],
+        rehypePlugins: [rehypeExternalLinks],
     },
     integrations: [
         starlight({
@@ -24,11 +26,11 @@ export default defineConfig({
                 themes: [loadVivTheme("viv-dark-warm.json"), loadVivTheme("viv-light-warm.json")],
                 minSyntaxHighlightingColorContrast: 0,
                 shiki: {
-                    langs: [vivGrammar],
+                    langs: [vivGrammar, { name: "ebnf", scopeName: "source.ebnf", patterns: [] }],
                 },
             },
             markdown: {
-                processedDirs: ["./language-reference", "./background", "./introduction", "./quickstart"],
+                processedDirs: ["./reference/language", "./background", "./introduction", "./quickstart"],
             },
             head: [
                 {
@@ -65,7 +67,13 @@ export default defineConfig({
             customCss: ["./src/assets/overrides.css"],
             sidebar: [
                 { label: "Quickstart", slug: "quickstart" },
-                { label: "Introduction", slug: "introduction" },
+                {
+                    label: "Introduction",
+                    items: [
+                        { label: "Overview", slug: "introduction" },
+                        { label: "Example: A Revenge Story", slug: "introduction/example" },
+                    ],
+                },
                 {
                     label: "Background",
                     items: [
@@ -76,32 +84,32 @@ export default defineConfig({
                 {
                     label: "Language Reference",
                     items: [
-                        { label: "Preamble", slug: "language-reference/00-preamble" },
-                        { label: "Introduction", slug: "language-reference/01-introduction" },
-                        { label: "Lexical elements", slug: "language-reference/02-lexical-elements" },
-                        { label: "File structure", slug: "language-reference/03-file-structure" },
-                        { label: "Includes", slug: "language-reference/04-includes" },
-                        { label: "Entities and symbols", slug: "language-reference/05-entities-and-symbols" },
-                        { label: "Names and sigils", slug: "language-reference/06-names" },
-                        { label: "Expressions", slug: "language-reference/07-expressions" },
-                        { label: "Statements and control flow", slug: "language-reference/08-statements-and-control-flow" },
-                        { label: "Roles", slug: "language-reference/09-roles" },
-                        { label: "Actions", slug: "language-reference/10-actions" },
-                        { label: "Reactions", slug: "language-reference/11-reactions" },
-                        { label: "Temporal constraints", slug: "language-reference/12-temporal-constraints" },
-                        { label: "Bindings", slug: "language-reference/13-bindings" },
-                        { label: "Tropes", slug: "language-reference/14-tropes" },
-                        { label: "Queries", slug: "language-reference/15-queries" },
-                        { label: "Sifting patterns", slug: "language-reference/16-sifting-patterns" },
-                        { label: "Plans", slug: "language-reference/17-plans" },
-                        { label: "Selectors", slug: "language-reference/18-selectors" },
-                        { label: "Compiler output", slug: "language-reference/19-compiler-output" },
-                        { label: "Runtime model", slug: "language-reference/20-runtime-model" },
-                        { label: "Appendix A: Implementation notes", slug: "language-reference/21-appendix-a-implementation-notes" },
-                        { label: "Glossary", slug: "language-reference/22-glossary" },
+                        { label: "Preamble", slug: "reference/language/00-preamble" },
+                        { label: "Introduction", slug: "reference/language/01-introduction" },
+                        { label: "Lexical elements", slug: "reference/language/02-lexical-elements" },
+                        { label: "File structure", slug: "reference/language/03-file-structure" },
+                        { label: "Includes", slug: "reference/language/04-includes" },
+                        { label: "Entities and symbols", slug: "reference/language/05-entities-and-symbols" },
+                        { label: "Names and sigils", slug: "reference/language/06-names" },
+                        { label: "Expressions", slug: "reference/language/07-expressions" },
+                        { label: "Statements and control flow", slug: "reference/language/08-statements-and-control-flow" },
+                        { label: "Roles", slug: "reference/language/09-roles" },
+                        { label: "Actions", slug: "reference/language/10-actions" },
+                        { label: "Reactions", slug: "reference/language/11-reactions" },
+                        { label: "Temporal constraints", slug: "reference/language/12-temporal-constraints" },
+                        { label: "Bindings", slug: "reference/language/13-bindings" },
+                        { label: "Tropes", slug: "reference/language/14-tropes" },
+                        { label: "Queries", slug: "reference/language/15-queries" },
+                        { label: "Sifting patterns", slug: "reference/language/16-sifting-patterns" },
+                        { label: "Plans", slug: "reference/language/17-plans" },
+                        { label: "Selectors", slug: "reference/language/18-selectors" },
+                        { label: "Compiler output", slug: "reference/language/19-compiler-output" },
+                        { label: "Runtime model", slug: "reference/language/20-runtime-model" },
+                        { label: "Appendix A: Implementation notes", slug: "reference/language/21-appendix-a-implementation-notes" },
+                        { label: "Glossary", slug: "reference/language/22-glossary" },
                     ],
                 },
-                { label: "JavaScript Runtime API", link: "/api/runtimes/js/", attrs: { target: "_blank" } },
+                { label: "JavaScript Runtime API", link: "/reference/runtimes/js/", attrs: { target: "_blank" } },
                 {
                     label: "Components",
                     items: [

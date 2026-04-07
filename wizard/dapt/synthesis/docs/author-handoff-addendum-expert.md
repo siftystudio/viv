@@ -2,7 +2,7 @@
 
 You have full documentation access and a **consultant agent**:
 
-- **Language reference:** `{MONOREPO}/docs/language-reference/` — a directory of markdown chapter files, each with a descriptive filename. Read individual chapters as needed.
+- **Language reference:** `{MONOREPO}/docs/reference/language/` — a directory of markdown chapter files, each with a descriptive filename. Read individual chapters as needed.
 - **PEG grammar:** `{MONOREPO}/compiler/src/viv_compiler/grammar/viv.peg`
 - **Adapter types:** `{MONOREPO}/runtimes/js/src/adapter/types.ts`
 - **Consultant:** A separate agent with access to all the same documentation. Available as a convenience — a way to delegate a focused lookup without breaking your authoring flow.

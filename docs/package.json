@@ -2,7 +2,7 @@
   "name": "viv-docs",
   "private": true,
   "scripts": {
-    "prebuild": "mkdir -p public/background public/language-reference && cp background/*.pdf public/background/ && cp ../assets/viv-icon-light-256.png public/viv-icon.png && cp ../assets/viv-icon-dark.svg src/assets/viv-icon-dark.svg && cp ../assets/viv-icon-light.svg src/assets/viv-icon-light.svg && echo '<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0;url=/docs/language-reference/00-preamble/\"></head><body></body></html>' > public/language-reference/index.html && echo '<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0;url=/docs/\"></head><body></body></html>' > public/index.html",
+    "prebuild": "mkdir -p public/background public/reference/language && cp background/*.pdf public/background/ && cp ../assets/viv-icon-light-256.png public/viv-icon.png && cp ../assets/viv-icon-dark.svg src/assets/viv-icon-dark.svg && cp ../assets/viv-icon-light.svg src/assets/viv-icon-light.svg && echo '<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0;url=/reference/language/00-preamble/\"></head><body></body></html>' > public/reference/language/index.html ",
     "dev": "npm run prebuild && astro dev",
     "build": "npm run prebuild && astro build",
     "preview": "astro preview"

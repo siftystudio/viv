@@ -2,7 +2,7 @@
 
 You have access to the **Viv language reference** and a **consultant agent**. The language reference is your primary resource; the consultant provides what you cannot access directly — grammar-level precision and runtime type definitions.
 
-- **Language reference:** `{MONOREPO}/docs/language-reference/` — a directory of markdown chapter files, each with a descriptive filename. Read individual chapters as needed — do not read the entire directory at once.
+- **Language reference:** `{MONOREPO}/docs/reference/language/` — a directory of markdown chapter files, each with a descriptive filename. Read individual chapters as needed — do not read the entire directory at once.
 - **Consultant:** A separate agent with full access to the language reference, PEG grammar, and adapter types. Request a consultation when you need information beyond what the language reference provides.
 
 ### Forbidden Paths

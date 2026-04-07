@@ -25,7 +25,7 @@ Common error categories:
 - **Inheritance cycles** — action A inherits from B which inherits from A.
 - **Invalid expressions** — type mismatches, wrong operators, bad references.
 
-The language reference at `docs/language-reference/` in the monorepo is the authoritative source for what's valid.
+The language reference at `docs/reference/language/` in the monorepo is the authoritative source for what's valid.
 
 
 ## Diagnosing runtime errors

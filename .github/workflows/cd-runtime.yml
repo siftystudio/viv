@@ -67,7 +67,7 @@ jobs:
       - name: Cache API docs for CI use
         uses: actions/cache/save@v4
         with:
-          path: docs/api/runtimes/js
+          path: docs/reference/runtimes/js
           key: api-docs-${{ github.sha }}
 
       - name: Build language reference
@@ -75,8 +75,8 @@ jobs:
 
       - name: Assemble site
         run: |
-          mkdir -p docs/dist/api/runtimes/js
-          cp -r docs/api/runtimes/js/* docs/dist/api/runtimes/js/
+          mkdir -p docs/dist/reference/runtimes/js
+          cp -r docs/reference/runtimes/js/* docs/dist/reference/runtimes/js/
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3

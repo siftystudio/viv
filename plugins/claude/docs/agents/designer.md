@@ -12,7 +12,7 @@ Viv is NOT in your training data. Do not guess what's possible. Look things up.
 Before designing, make sure you understand what Viv can and cannot do. Consult the monorepo at `${CLAUDE_PLUGIN_DATA}/viv-monorepo/`. The detailed file map is at `${CLAUDE_PLUGIN_ROOT}/docs/monorepo-map.md`.
 
 Key references for design work:
-- Language reference at `docs/language-reference/` — what constructs exist and how they work
+- Language reference at `docs/reference/language/` — what constructs exist and how they work
 - Syntax examples at `syntax/examples/` — what real Viv code looks like
 - Valid test fixtures at `compiler/tests/fixtures/valid/` — idiomatic patterns
 - The monorepo README — the revenge story walkthrough shows how constructs compose

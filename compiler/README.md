@@ -388,7 +388,7 @@ In the case of a semantic error, you can pass the `--traceback` flag to get the 
 
 ## Language Reference
 
-For a full specification of the Viv DSL—its syntax, semantics, and compiler output format—consult the [Viv Language Reference](https://viv.sifty.studio/docs/language-reference/).
+For a full specification of the Viv DSL—its syntax, semantics, and compiler output format—consult the [Viv Language Reference](https://viv.sifty.studio/reference/language/).
 
 ## Running from Source
 

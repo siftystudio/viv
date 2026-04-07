@@ -2,7 +2,7 @@
 
 This package contains the **JavaScript runtime** for [Viv](https://viv.sifty.studio), an engine for emergent narrative in games and simulations. The runtime is written in TypeScript, but it's published [on the npm registry](https://www.npmjs.com/package/@siftystudio/viv-runtime) for use in both JavaScript and TypeScript applications.
 
-At a high level, the runtime combines an **interpreter** for the [Viv DSL](https://viv.sifty.studio/docs/language-reference/) with an **action manager**, **knowledge manager**, **planner**, and **story sifter**, as well as a **debugger**. It can be plugged into any host application by creating a **Viv adapter** and invoking the **runtime API**, as explained below.
+At a high level, the runtime combines an **interpreter** for the [Viv DSL](https://viv.sifty.studio/reference/language/) with an **action manager**, **knowledge manager**, **planner**, and **story sifter**, as well as a **debugger**. It can be plugged into any host application by creating a **Viv adapter** and invoking the **runtime API**, as explained below.
 
 ## Table of Contents
 
@@ -48,7 +48,7 @@ To use Viv in your project, you will carry out the following activities:
 
 The [**Viv JetBrains plugin**](https://plugins.jetbrains.com/plugin/31012-viv) is the default tool for writing Viv code, offering a massive suite of language-support features. A few lightweight alternatives are also available: the [Viv VS Code extension](https://marketplace.visualstudio.com/items?itemName=siftystudio.viv) and the [Viv Sublime Text package](https://github.com/siftystudio/viv/blob/main/plugins/sublime/README.md).
 
-Consult the [language reference](https://viv.sifty.studio/docs/language-reference/) for detailed information on the DSL.
+Consult the [language reference](https://viv.sifty.studio/reference/language/) for detailed information on the DSL.
 
 ### Compiling a Content Bundle
 
@@ -56,7 +56,7 @@ Run your Viv code through the [**Viv compiler**](https://pypi.org/project/viv-co
 
 #### Compatibility
 
-To use this version of the JavaScript runtime, you must supply a **compatible** content bundle. When Viv source files are compiled, the resulting content bundle is stamped with the **schema version** associated with the compiler that produced it. (The schema describes the shape of the compiler target, i.e., a content bundle.) During its [initialization](https://viv.sifty.studio/docs/api/runtimes/js/functions/initializeVivRuntime.html), the runtime compares your registered content bundle's schema version against its own supported version, enforcing the following rules:
+To use this version of the JavaScript runtime, you must supply a **compatible** content bundle. When Viv source files are compiled, the resulting content bundle is stamped with the **schema version** associated with the compiler that produced it. (The schema describes the shape of the compiler target, i.e., a content bundle.) During its [initialization](https://viv.sifty.studio/reference/runtimes/js/functions/initializeVivRuntime.html), the runtime compares your registered content bundle's schema version against its own supported version, enforcing the following rules:
 
 * **Major versions must match.** A content bundle compiled against a different major schema version is always rejected.
 
@@ -66,23 +66,23 @@ To use this version of the JavaScript runtime, you must supply a **compatible** 
 
 If the content bundle is incompatible, the runtime will throw an error during initialization, with a message explaining the mismatch.
 
-The schema version supported by this version of the runtime can be retrieved via the API, as documented [here](https://viv.sifty.studio/docs/api/runtimes/js/functions/getSchemaVersion.html). To get the schema version associated with your compiler, follow the relevant instructions in the [compiler docs](https://pypi.org/project/viv-compiler). Note that the respective latest versions of the Viv compiler and runtime will always be associated with the same schema version.
+The schema version supported by this version of the runtime can be retrieved via the API, as documented [here](https://viv.sifty.studio/reference/runtimes/js/functions/getSchemaVersion.html). To get the schema version associated with your compiler, follow the relevant instructions in the [compiler docs](https://pypi.org/project/viv-compiler). Note that the respective latest versions of the Viv compiler and runtime will always be associated with the same schema version.
 
 ### Creating a Viv Adapter
 
 To use the Viv runtime in your project, you must create a **Viv adapter**, which is a component that allows the runtime to interact with your host application. Most pertinently, the adapter allows the runtime to do things like query the state of a storyworld (e.g., to evaluate action preconditions) and make changes to that state (e.g., to execute effects).
 
-See the [`HostApplicationAdapter`](https://viv.sifty.studio/docs/api/runtimes/js/interfaces/HostApplicationAdapter.html) interface for full details, or the [example projects](#example-projects) for working implementations.
+See the [`HostApplicationAdapter`](https://viv.sifty.studio/reference/runtimes/js/interfaces/HostApplicationAdapter.html) interface for full details, or the [example projects](#example-projects) for working implementations.
 
 ### Invoking the Runtime API
 
-Once you have a compiled content bundle and a Viv adapter, pass them to [`initializeVivRuntime`](https://viv.sifty.studio/docs/api/runtimes/js/functions/initializeVivRuntime.html) and then use the **[runtime API](https://viv.sifty.studio/docs/api/runtimes/js/)** to drive your simulation.
+Once you have a compiled content bundle and a Viv adapter, pass them to [`initializeVivRuntime`](https://viv.sifty.studio/reference/runtimes/js/functions/initializeVivRuntime.html) and then use the **[runtime API](https://viv.sifty.studio/reference/runtimes/js/)** to drive your simulation.
 
 See the [example projects](#example-projects) for working demonstrations.
 
 ## API
 
-The Viv JavaScript **runtime API** is documented [here](https://viv.sifty.studio/docs/api/runtimes/js/). It exposes a number of functions associated with concerns like action selection, planning, story sifting, and debugging, as well as types and custom error classes.
+The Viv JavaScript **runtime API** is documented [here](https://viv.sifty.studio/reference/runtimes/js/). It exposes a number of functions associated with concerns like action selection, planning, story sifting, and debugging, as well as types and custom error classes.
 
 ## Example Projects
 

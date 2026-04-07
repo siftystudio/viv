@@ -2,7 +2,7 @@
 title: "Viv: A Brief History"
 next:
   label: "Language Reference: Preamble"
-  link: /docs/language-reference/00-preamble/
+  link: /reference/language/00-preamble/
 ---
 
 > *The construction of the system is inevitable.*
@@ -27,7 +27,7 @@ So I decided to develop my own action formalism, which became the centerpiece of
 
 ## *Hennepin*
 
-My third simulation engine, *Hennepin* (2017–2018), centers on a novel action formalism—and, in turn, an associated action manager and knowledge manager. This formalism and these modules, which became the basis for the Viv project, are described at length in my PhD thesis, [*Curating Simulated Storyworlds*](../curating_simulated_storyworlds.pdf) (2018, pp. 588–630).
+My third simulation engine, *Hennepin* (2017–2018), centers on a novel action formalism—and, in turn, an associated action manager and knowledge manager. This formalism and these modules, which became the basis for the Viv project, are described at length in my PhD thesis, [*Curating Simulated Storyworlds*](https://viv.sifty.studio/background/curating_simulated_storyworlds.pdf) (2018, pp. 588–630).
 
 In *Hennepin*, I defined character actions directly in Python dictionaries, to the horror of my PhD committee member Ian Horswill. Ian encouraged me to create a DSL for writing actions, and when I finally set out to do this a few years later, Viv was born.
 
@@ -61,9 +61,9 @@ More broadly, I overhauled the DSL and compiler, and created additional tooling 
 
 ## Public release
 
-The compiler is now published as a PyPI package, the JavaScript runtime as an npm package, and various tooling is available on the applicable marketplaces. The larger codebase (a monorepo) is now <a href="https://github.com/siftystudio/viv" target="_blank">public on GitHub</a>, and the original private repository is archived.
+The compiler is now published as a PyPI package, the JavaScript runtime as an npm package, and various tooling is available on the applicable marketplaces. The larger codebase (a monorepo) is now [public on GitHub](https://github.com/siftystudio/viv), and the original private repository is archived.
 
-Viv is freely available for non-commercial use, while commercial use requires a license from <a href="https://sifty.studio" target="_blank">Sifty</a>, a boutique software studio that I set up for this very purpose (though additional projects are in the works too).
+Viv is freely available for non-commercial use, while commercial use requires a license from [Sifty](https://sifty.studio), a boutique software studio that I set up for this very purpose (though additional projects are in the works too).
 
 My hope is that Viv will find use in videogame projects and any other applications where teams seek to produce interesting emergent narrative.
 
@@ -87,7 +87,7 @@ McCoy, Joshua, et al. "Social story worlds with Comme il Faut." *IEEE Transactio
 
 Morse, Harrison R. Preliminary Operating Notes for SAGA II. MIT Technical Memorandum 8436-M-29. 1960.
 
-Ryan, James. [*Curating Simulated Storyworlds*](../curating_simulated_storyworlds.pdf). PhD thesis, UC Santa Cruz. 2018.
+Ryan, James. [*Curating Simulated Storyworlds*](https://viv.sifty.studio/background/curating_simulated_storyworlds.pdf). PhD thesis, UC Santa Cruz. 2018.
 
 Ryan, James Owen, Michael Mateas, and Noah Wardrip-Fruin. "Open Design Challenges for Interactive Emergent Narrative." *Proceedings of the International Conference on Interactive Digital Storytelling*: 14–26. 2015a.
 

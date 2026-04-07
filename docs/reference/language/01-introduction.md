@@ -32,7 +32,7 @@ This reference specifies the Viv DSL: its lexical structure, syntax, and semanti
 
 ## Normative language
 
-When the keywords MUST, MUST NOT, SHALL, SHOULD, and MAY appear in this document, they are to be interpreted as carrying the special meanings described in <a href="https://www.rfc-editor.org/bcp/bcp14.txt" target="_blank">BCP 14</a>. These terms, when they are written in ALL CAPS, constrain implementations of the Viv language (compilers, runtimes), not authors of Viv code. When words like 'must' or 'may' are stylized normally, they carry their everyday meanings.
+When the keywords MUST, MUST NOT, SHALL, SHOULD, and MAY appear in this document, they are to be interpreted as carrying the special meanings described in [BCP 14](https://www.rfc-editor.org/bcp/bcp14.txt). These terms, when they are written in ALL CAPS, constrain implementations of the Viv language (compilers, runtimes), not authors of Viv code. When words like 'must' or 'may' are stylized normally, they carry their everyday meanings.
 
 ## Notation
 
