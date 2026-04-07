@@ -100,8 +100,8 @@ Below, you'll find a barebones overview of the project, mostly taking the form o
 
 | Project | Description |
 |---------|-------------|
-| [hello-viv-ts](examples/hello-viv-ts/) | Minimal working example of using Viv in a TypeScript project. |
-| [hello-viv-js](examples/hello-viv-js/) | Minimal working example of using Viv in a JavaScript project. |
+| [hello-viv-ts](examples/hello-viv-ts) | Minimal working example of using Viv in a TypeScript project. |
+| [hello-viv-js](examples/hello-viv-js) | Minimal working example of using Viv in a JavaScript project. |
 
 
 ## Monorepo Layout
