@@ -1,0 +1,2 @@
+# Compiled test fixtures (generated on demand by vitest globalSetup)
+fixtures/*/bundle.json

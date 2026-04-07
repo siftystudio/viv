@@ -7,4 +7,4 @@ src/assets/viv-icon-dark.svg
 src/assets/viv-icon-light.svg
 
 # TypeDoc output
-api/
+reference/runtimes/

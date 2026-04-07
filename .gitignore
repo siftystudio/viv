@@ -48,12 +48,6 @@ tmp/
 temp/
 *.tmp
 
-# Generated docs
-docs/api/
-
-# Compiled test fixtures (generated on demand by vitest globalSetup)
-runtimes/js/tests/fixtures/*/bundle.json
-
 # Project
 scratch/
 todo/
