@@ -12,6 +12,7 @@ authors:
 repository-code: 'https://github.com/siftystudio/viv'
 url: 'https://viv.sifty.studio'
 license: LicenseRef-Viv
+date-released: '2026-04-07'
 abstract: >-
   Viv is an engine for emergent narrative in games and
   simulations. It centers on a custom programming language
