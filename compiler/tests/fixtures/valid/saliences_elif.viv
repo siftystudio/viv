@@ -1,0 +1,19 @@
+// Saliences `for` block with elif branches
+
+action assess-risk:
+    roles:
+        @assessor:
+            as: initiator
+        @subject:
+            as: character
+    saliences:
+        default: #BORING
+        for _@c:
+            if _@c.trust > 70:
+                #CRITICAL
+            elif _@c.trust > 30:
+                #INTERESTING
+            else:
+                #BORING
+            end
+        end

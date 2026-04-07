@@ -1,0 +1,24 @@
+// Two actions with different importance and a query filtering by importance
+
+action minor-event:
+    roles:
+        @actor:
+            as: initiator
+        @witness:
+            as: partner
+    importance: 2
+
+action major-event:
+    roles:
+        @actor:
+            as: initiator
+        @witness:
+            as: partner
+    importance: 8
+
+query important-memories:
+    roles:
+        @viewer:
+            as: character
+    importance:
+        >=: 5

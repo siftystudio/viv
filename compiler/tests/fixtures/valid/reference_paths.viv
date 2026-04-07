@@ -1,0 +1,25 @@
+// Exercises reference path component types: property, lookup, and fail-safe markers
+
+action examine:
+    roles:
+        @examiner:
+            as: initiator
+        @subject:
+            as: character
+    conditions:
+        // Chained property access
+        @subject.stats.strength > 10
+        // Pointer after dot property
+        @subject.relations->leader.trust > 0
+        // Lookup with string key
+        @subject.inventory["sword"] != null
+        // Lookup with numeric index
+        @subject.records[0] != null
+        // Fail-safe on property
+        @subject.optional_field?.value > 0
+        // Fail-safe on pointer (after dot)
+        @subject.relations->ally?.trust > 0
+        // Fail-safe on anchor
+        @subject?.name != null
+        // Fail-safe on lookup
+        @subject.list[0]? != null

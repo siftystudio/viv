@@ -1,0 +1,57 @@
+// Viv Theme Preview
+
+// Open this file and press Cmd+K Cmd+T to browse the Viv themes.
+
+action make-accusation from parlor-interaction:
+    gloss: "One guest accuses another at the dinner table"
+    report: '{@accuser.name} points a finger at {@accused.name}'
+    importance: #MODERATE
+    tags: accusation, dramatic
+    roles:
+        @accuser:
+            as: initiator
+        @accused:
+            as: recipient
+    // Here's a comment
+    conditions:
+        @accuser.location == @accused.location
+        @accuser.composure != #HYSTERICAL
+        !(@accuser.discredited)
+        50%
+    effects:
+        @accuser.suspicion[@accused] += 2
+        @accused.suspicion[@accuser] += 1
+        @accused.accused = true
+    reactions:
+        queue action deny-accusation:
+            with partial:
+                @initiator: @accused
+            time:
+                after: 2 hours from action
+    embargoes:
+        embargo:
+            location: here
+            time: 1 day
+            roles: @accuser, @accused
+
+action-selector pick-dinner-action:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        @actor.boldness > 0
+    target randomly:
+        make-accusation;
+        raise-glass;
+        exchange-glance;
+
+template action parlor-interaction:
+    roles:
+        @initiator:
+            as: initiator
+        @recipient:
+            as: recipient
+
+action raise-glass from parlor-interaction;
+action exchange-glance from parlor-interaction;
+action deny-accusation from parlor-interaction;

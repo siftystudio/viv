@@ -1,0 +1,9 @@
+{
+    "cmd": ["python3", "$packages/Viv/compiler_bridge.py", "$file"],
+    "file_regex": "^(.+?):(\\d+):(\\d+): error: (.+)$",
+    "selector": "source.viv",
+    "working_dir": "$file_path",
+    "windows": {
+        "cmd": ["python", "$packages/Viv/compiler_bridge.py", "$file"]
+    }
+}

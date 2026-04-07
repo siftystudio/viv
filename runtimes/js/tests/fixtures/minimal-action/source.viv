@@ -1,0 +1,6 @@
+// Minimal action with a single initiator role, no conditions, no effects
+
+action greet:
+    roles:
+        @greeter:
+            as: initiator

@@ -1,0 +1,13 @@
+// Symbol role usage with references in conditions
+
+action mark-territory:
+    roles:
+        @marker:
+            as: initiator
+        &flag:
+            as: symbol
+            from: @marker.flags
+    conditions:
+        &flag.active == true
+    effects:
+        @marker.last_flag = &flag

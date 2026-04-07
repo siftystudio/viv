@@ -1,0 +1,12 @@
+// Invalid: pool directive anchored in optional role
+
+action risky-pool:
+    roles:
+        @actor:
+            as: initiator
+        @maybe*:
+            as: partner
+            n: 0-1
+        @tool:
+            as: item
+            from: @maybe.tools

@@ -1,0 +1,10 @@
+action greet:
+    roles:
+        @greeter:
+            as: initiator
+        @target:
+            as: recipient
+    conditions:
+        @this.count > 5
+    effects:
+        @target.greeted = true

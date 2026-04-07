@@ -1,0 +1,10 @@
+// Fixture with Unicode content in strings
+
+action greet:
+    roles:
+        @greeter:
+            as: initiator
+        @target:
+            as: recipient
+    gloss: "@greeter は @target に挨拶する"
+    tags: greeting

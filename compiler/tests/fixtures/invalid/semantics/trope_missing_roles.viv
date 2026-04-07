@@ -1,0 +1,5 @@
+// Trope with no roles — should be rejected
+
+trope lonely:
+    conditions:
+        true

@@ -1,0 +1,11 @@
+action do-thing:
+    roles:
+        @actor:
+            as: recipient
+
+action-selector pick-thing:
+    roles:
+        @actor:
+            as: initiator
+    target in order:
+        do-thing;

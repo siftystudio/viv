@@ -1,0 +1,37 @@
+// Plan with two phases advancing to completion, plus a plan that fails
+
+reserved action prepare:
+    roles:
+        @planner:
+            as: initiator
+
+reserved action execute:
+    roles:
+        @planner:
+            as: initiator
+
+plan operation:
+    roles:
+        @agent:
+            as: character
+    phases:
+        >setup:
+            queue action prepare:
+                with:
+                    @planner: @agent
+            advance;
+        >finish:
+            queue action execute:
+                with:
+                    @planner: @agent
+            succeed;
+plan doomed:
+    roles:
+        @agent:
+            as: character
+    phases:
+        >attempt:
+            queue action prepare:
+                with:
+                    @planner: @agent
+            fail;

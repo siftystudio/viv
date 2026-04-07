@@ -1,0 +1,128 @@
+---
+title: Home
+template: splash
+hero:
+  title: Viv
+  tagline: "An engine for emergent narrative. By <a href='https://sifty.studio' target='_blank'>Sifty</a>."
+  image:
+    dark: ../src/assets/viv-icon-dark.svg
+    light: ../src/assets/viv-icon-light.svg
+  actions:
+    - text: Get Started
+      link: /docs/quickstart/
+      icon: right-arrow
+      variant: primary
+    - text: Read the Introduction
+      link: /docs/introduction/
+      icon: right-arrow
+      variant: secondary
+    - text: View on GitHub
+      link: https://github.com/siftystudio/viv
+      icon: github
+      variant: secondary
+      attrs:
+        target: _blank
+---
+
+import { CardGrid } from '@astrojs/starlight/components';
+import Card from '../src/components/IconLinkCard.astro';
+
+> *The goals we set for the system are heroic, and demand heroic test cases.*
+>
+> — Sheldon Klein (1976)
+
+## Overview
+
+<CardGrid>
+  <Card title="Emergent Narrative" icon="compass" description="You put characters in your game, and Viv makes the magic happen. Stories emerge according to your authored Viv code." />
+  <Card title="Story Sifting" icon="compass" description="Viv detects emergent storylines as they develop, allowing your game to understand—and surface—the narrative that happens to happen in a given playthrough." />
+  <Card title="Source-Available" icon="compass" description="Anyone can view the full codebase on GitHub. Non-commercial use is freely permitted, while commercial use requires a license from Sifty, the studio behind Viv." />
+  <Card title="Labor of Love" icon="compass" description="Viv is designed, built, and maintained by me, James Ryan. It's based on my PhD work at UC Santa Cruz—and thousands of hours of follow-on work in industry contexts." />
+</CardGrid>
+
+## Features
+
+<CardGrid>
+  <Card title="Actions & Reactions" icon="color-palette" description="Characters perform actions, and actions trigger reactions, growing emergent storylines through causal connections." />
+  <Card title="Plans" icon="color-palette" description="Write tiny programs that queue reactions over diegetic spans ranging from a single timestep to an entire century or more." />
+  <Card title="Story Sifting" icon="color-palette" description="Author queries and sifting patterns that match actions and full-fledged emergent storylines. Then run them over all historical actions—or a character's memories." />
+  <Card title="Knowledge Propagation" icon="color-palette" description="Characters remember actions. This knowledge can then be spread via subsequent actions and item inscriptions—and characters react to what they learn." />
+  <Card title="Causal Bookkeeping" icon="color-palette" description="The system records causal links between actions as they occur, making the full causal graph a given for story sifting." />
+  <Card title="Authorial Control" icon="color-palette" description="Viv is a symbolic AI system, with no LLMs in the loop at runtime. Behavior is fully specified by your authored Viv code, making the system highly controllable." />
+</CardGrid>
+
+## Usage
+
+<CardGrid>
+  <Card title="Write Viv Code" icon="brush" description="Write code in the Viv language, using the plugin for your preferred IDE or lightweight code editor." />
+  <Card title="Compile Viv Code" icon="brush" description="Compile your code into a content bundle by invoking the Viv compiler—without leaving your IDE." />
+  <Card title="Plug Into Your Project" icon="brush" description="Create a Viv adapter that connects the Viv runtime to your host application, enabling Viv to read and write your sim data." />
+  <Card title="Run Viv Code" icon="brush" description="Invoke the Viv runtime to act on your content bundle for action selection, plan execution, story sifting, and more." />
+</CardGrid>
+
+## Simple Example
+
+Here's a simple, yet potent, Viv action that shows off a bit of the syntax.
+
+This action is performed by a character who searches over their own memories to find evidence of another character repeatedly mistreating them. If there exists such a character, given the memories of the one at hand, then the initiator of this action will lower their affinity toward that person and may even plot revenge as a result.
+
+```viv
+// A character processes their repeated mistreatment by another character
+action contemplate-mistreatment:
+    roles:
+        @thinker:
+            as: initiator
+        @subject:
+            as: character, anywhere  // Not physically present
+        @history*:  // 3-5 past actions fitting the bill
+            as: action
+            n: 3-5
+            from:
+                search query harm:  // Defined elsewhere: a query for finding harmful actions
+                    over: @thinker  // Search over @thinker's memories
+                    with:
+                        @perpetrator: @subject
+                        @victim: @thinker
+    effects:
+        // Affinity isn't modeled in Viv, but you can read and write arbitrary sim data
+        @thinker.affinity[@subject] -= #BIG
+    reactions:
+        if @thinker.personality.vengeful:  // More arbitrary sim data (from Viv's view)
+            queue plan plot-revenge:  // Defined elsewhere: a plan for orchestrating the actions of a revenge scheme
+                with:
+                    @plotter: @thinker
+                    @target: @subject
+        end
+```
+
+Should the queued `plot-revenge` plan be carried out, the instance of `contemplate-mistreatment` that triggered it will be marked as a cause of its component actions. Moreover, the `@history*` actions matched by the `harm` query will each be recorded as direct causes of the `contemplate-mistreatment` instance. Further, those actions will likely have their *own* causal ancestries, and the eventual `plot-revenge` actions will no doubt cause further actions in turn.
+
+As these events unfold, Viv will work behind the scenes to automatically track all the causal through lines, via its mechanism for *causal bookkeeping*. Later on, the emergent storylines embedded in this graph can easily be detected via Viv's facilities for story sifting. All the while, the Viv author has not been tasked with explicitly marking these links—they simply wrote down what kinds of past actions might lead someone to perform `contemplate-mistreatment`, and what kinds of follow-on actions might happen as a result of its performance.
+
+For a more extensive example of Viv code, see the working example [here](/docs/introduction/#example-a-revenge-story).
+
+## Read the Docs
+
+<CardGrid>
+  <Card title="Introduction" description="Features, design philosophy, and an extensive working example." icon="open-book" href="/docs/introduction/" />
+  <Card title="A Brief History" description="A brief account of the Viv project and its origins." icon="open-book" href="/docs/background/history-of-viv/" />
+  <Card title="Language Reference" description="A complete specification of the Viv language." icon="open-book" href="/docs/language-reference/00-preamble/" />
+  <Card title="JavaScript Runtime API" description="Reference for the Viv JavaScript runtime system." icon="open-book" href="/docs/api/runtimes/js/" />
+</CardGrid>
+
+## Install the Components
+
+<CardGrid>
+  <Card title="Compiler" description="The Viv compiler, published on PyPI." icon="python" href="https://pypi.org/project/viv-compiler/" />
+  <Card title="JavaScript Runtime" description="The Viv JavaScript runtime, published on npm." icon="npm" href="https://www.npmjs.com/package/@siftystudio/viv-runtime" />
+  <Card title="JetBrains Plugin" description="Full-featured IDE support for Viv code." icon="jetbrains" href="https://plugins.jetbrains.com/plugin/31012-viv" />
+  <Card title="VS Code Extension" description="Lightweight editor support for Viv code." icon="vscode" href="https://marketplace.visualstudio.com/items?itemName=siftystudio.viv" />
+  <Card title="Sublime Text Package" description="Lightweight editor support for Viv code." icon="sublimetext" href="https://github.com/siftystudio/docs/tree/main/plugins/sublime" />
+  <Card title="Claude Code Plugin" description="LLM-powered Viv expertise in your terminal." icon="claude" href="https://github.com/siftystudio/docs/tree/main/plugins/claude" />
+</CardGrid>
+
+## View the Codebase
+
+<CardGrid>
+  <Card title="Viv Monorepo" description="The entire Viv codebase is available for viewing on GitHub." icon="github" href="https://github.com/siftystudio/viv" />
+</CardGrid>

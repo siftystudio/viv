@@ -1,0 +1,12 @@
+// Action with an embargo (location and time constraints)
+
+action chat:
+    roles:
+        @speaker:
+            as: initiator
+        @listener:
+            as: recipient
+    embargoes:
+        embargo:
+            location: here
+            time: forever

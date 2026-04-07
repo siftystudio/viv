@@ -1,0 +1,9 @@
+// Role with slots mean
+
+action rally:
+    roles:
+        @leader:
+            as: initiator
+        @crowd*:
+            as: bystander
+            n: 2-10 [~5]

@@ -1,0 +1,24 @@
+// Action with associations (default, per-role, custom)
+
+action negotiate:
+    roles:
+        @buyer:
+            as: initiator
+        @seller:
+            as: partner
+        @advisors*:
+            as: bystander
+            n: 0-3
+    associations:
+        default: commerce, routine
+        roles:
+            @buyer: investment
+            @seller: revenue
+            @advisors*: counsel
+        for _@c:
+            if _@c.wealth > 100:
+                luxury
+            else:
+                budget
+            end
+        end

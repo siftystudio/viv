@@ -1,0 +1,12 @@
+// Duplicate role entry in saliences
+
+action bad-salience-dup:
+    roles:
+        @actor:
+            as: initiator
+        @target:
+            as: recipient
+    saliences:
+        roles:
+            @target: #HIGH
+            @target: #LOW

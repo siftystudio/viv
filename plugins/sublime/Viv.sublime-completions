@@ -1,0 +1,253 @@
+{
+  "scope": "source.viv",
+  "completions": [
+
+    // ---- Top-level definitions ----
+
+    {
+      "trigger": "action\tdefinition",
+      "contents": "action ${1:name}:\n\troles:\n\t\t@${2:initiator}:\n\t\t\tas: character, initiator\n\t\t@${3:recipient}:\n\t\t\tas: character, recipient\n\tconditions:\n\t\t$4\n\teffects:\n\t\t$0"
+    },
+    {
+      "trigger": "action from\tchild definiton",
+      "contents": "action ${1:name} from ${2:parent}:\n\t$0"
+    },
+    {
+      "trigger": "action variant\tvariant definiton",
+      "contents": "action ${1:name} from ${2:parent};"
+    },
+    {
+      "trigger": "template action\ttemplate definiton",
+      "contents": "template action ${1:name}:\n\troles:\n\t\t@${2:initiator}:\n\t\t\tas: character, initiator\n\t\t@${3:recipient}:\n\t\t\tas: character, recipient\n\t$0"
+    },
+    {
+      "trigger": "reserved action\treserved definiton",
+      "contents": "reserved action ${1:name}:\n\troles:\n\t\t@${2:initiator}:\n\t\t\tas: character, initiator\n\t$0"
+    },
+    {
+      "trigger": "action-selector\tdefinition",
+      "contents": "action-selector ${1:name}:\n\troles:\n\t\t@${2:actor}:\n\t\t\tas: character, initiator\n\ttarget ${3:randomly}:\n\t\t${4:candidate};\n\t$0"
+    },
+    {
+      "trigger": "plan-selector\tdefinition",
+      "contents": "plan-selector ${1:name}:\n\troles:\n\t\t@${2:actor}:\n\t\t\tas: character\n\ttarget ${3:randomly}:\n\t\t${4:candidate};\n\t$0"
+    },
+    {
+      "trigger": "plan\tdefinition",
+      "contents": "plan ${1:name}:\n\troles:\n\t\t@${2:actor}:\n\t\t\tas: character\n\tphases:\n\t\t>${3:first}:\n\t\t\tqueue action ${4:step}:\n\t\t\t\twith partial:\n\t\t\t\t\t@initiator: @${2:actor}\n\t\t>${5:last}:\n\t\t\t$0"
+    },
+    {
+      "trigger": "query\tdefinition",
+      "contents": "query ${1:name}:\n\troles:\n\t\t@${2:person}:\n\t\t\tas: character\n\tassociations:\n\t\t${3:any}: ${4:tag}\n\t$0"
+    },
+    {
+      "trigger": "pattern\tdefinition",
+      "contents": "pattern ${1:name}:\n\troles:\n\t\t@${2:a}:\n\t\t\tas: character\n\t\t@${3:b}:\n\t\t\tas: character\n\tactions:\n\t\t@${4:x}: from: @${2:a}.recent_actions\n\t\t@${5:y}: from: @${3:b}.recent_actions\n\tconditions:\n\t\t$0"
+    },
+    {
+      "trigger": "trope\tdefinition",
+      "contents": "trope ${1:name}:\n\troles:\n\t\t@${2:a}:\n\t\t\tas: character\n\t\t@${3:b}:\n\t\t\tas: character\n\tconditions:\n\t\t$0"
+    },
+
+    // ---- Action body sections ----
+
+    {
+      "trigger": "roles\tsection",
+      "contents": "roles:\n\t@${1:initiator}:\n\t\tas: character, initiator\n\t@${2:recipient}:\n\t\tas: character, recipient\n$0"
+    },
+    {
+      "trigger": "conditions\tsection",
+      "contents": "conditions:\n\t$0"
+    },
+    {
+      "trigger": "effects\tsection",
+      "contents": "effects:\n\t$0"
+    },
+    {
+      "trigger": "scratch\tsection",
+      "contents": "scratch:\n\t\\$@${1:var} = ${2:0}\n$0"
+    },
+    {
+      "trigger": "gloss\tfield",
+      "contents": "gloss: \"${1:description}\""
+    },
+    {
+      "trigger": "report\tfield",
+      "contents": "report: '${1:template}'"
+    },
+    {
+      "trigger": "importance\tfield",
+      "contents": "importance: ${1:#MODERATE}"
+    },
+    {
+      "trigger": "tags\tfield",
+      "contents": "tags: ${1:tag1}, ${2:tag2}"
+    },
+
+    // ---- Reactions ----
+
+    {
+      "trigger": "reactions\tsection",
+      "contents": "reactions:\n\tqueue action ${1:name}:\n\t\twith:\n\t\t\t@initiator: @${2:ref}\n\t\t\t@recipient: @${3:ref}\n$0"
+    },
+    {
+      "trigger": "queue action\treaction",
+      "contents": "queue action ${1:name}:\n\twith${2: partial}:\n\t\t@${3:initiator}: @${4:ref}\n$0"
+    },
+    {
+      "trigger": "queue plan\treaction",
+      "contents": "queue plan ${1:name}:\n\twith${2: partial}:\n\t\t@${3:role}: @${4:ref}\n$0"
+    },
+    {
+      "trigger": "queue action-selector\treaction",
+      "contents": "queue action-selector ${1:name}:\n\twith${2: partial}:\n\t\t@${3:role}: @${4:ref}\n$0"
+    },
+    {
+      "trigger": "queue plan-selector\treaction",
+      "contents": "queue plan-selector ${1:name}:\n\twith${2: partial}:\n\t\t@${3:role}: @${4:ref}\n$0"
+    },
+    {
+      "trigger": "repeat\treaction field",
+      "contents": "repeat:\n\tif:\n\t\t${1:condition}\n\tmax: ${2:3}"
+    },
+
+    // ---- Embargoes ----
+
+    {
+      "trigger": "embargoes\tsection",
+      "contents": "embargoes:\n\tembargo:\n\t\tlocation: ${1:anywhere}\n\t\ttime: ${2:forever}\n$0"
+    },
+    {
+      "trigger": "embargo\tentry",
+      "contents": "embargo:\n\tlocation: ${1:anywhere}\n\ttime: ${2:forever}\n\troles: @${3:role}\n$0"
+    },
+
+    // ---- Saliences and associations ----
+
+    {
+      "trigger": "saliences\tsection",
+      "contents": "saliences:\n\tdefault: ${1:#NEUTRAL}\n$0"
+    },
+    {
+      "trigger": "saliences for\tcustom field",
+      "contents": "saliences:\n\tdefault: ${1:#NEUTRAL}\n\tfor _@${2:c}:\n\t\tif ${3:_@$2.trust > 5}:\n\t\t\t${4:#INTERESTING}\n\t\telse:\n\t\t\t$1\n\t\tend\n\tend\n$0"
+    },
+    {
+      "trigger": "associations\tsection",
+      "contents": "associations:\n\tdefault: ${1:tag}\n$0"
+    },
+    {
+      "trigger": "associations for\tcustom field",
+      "contents": "associations:\n\tdefault: ${1:tag}\n\tfor _@${2:c}:\n\t\tif ${3:_@$2.trust > 5}:\n\t\t\t${4:positive-tag}\n\t\telse:\n\t\t\t${5:neutral-tag}\n\t\tend\n\tend\n$0"
+    },
+
+    // ---- Selectors: target policies ----
+
+    {
+      "trigger": "target randomly\tcandidates",
+      "contents": "target randomly:\n\t${1:candidate};\n\t${2:candidate};\n$0"
+    },
+    {
+      "trigger": "target with weights\tcandidates",
+      "contents": "target with weights:\n\t(${1:3}) ${2:candidate}:\n\t\twith${3: partial}:\n\t\t\t@${4:role}: @${5:ref}\n\t(${6:1}) ${7:candidate}:\n\t\twith${8: partial}:\n\t\t\t@${9:role}: @${10:ref}\n$0"
+    },
+    {
+      "trigger": "target in order\tcandidates",
+      "contents": "target in order:\n\t${1:candidate}:\n\t\twith${2: partial}:\n\t\t\t@${3:role}: @${4:ref}\n\t${5:fallback}:\n\t\twith${6: partial}:\n\t\t\t@${7:role}: @${8:ref}\n$0"
+    },
+
+    // ---- Plan sections ----
+
+    {
+      "trigger": "phases\tsection",
+      "contents": "phases:\n\t>${1:name}:\n\t\t$0"
+    },
+
+    // ---- Plan instructions ----
+
+    {
+      "trigger": "wait\twait instruction",
+      "contents": "wait:\n\ttimeout: ${1:1} ${2:days}\n\tuntil:\n\t\t${3:condition}\n$0"
+    },
+    {
+      "trigger": "all\treaction window",
+      "contents": "all:\n\tqueue action ${1:name}:\n\t\twith partial:\n\t\t\t@initiator: @${2:ref}\n\tqueue action ${3:name}:\n\t\twith partial:\n\t\t\t@initiator: @${4:ref}\nclose\n$0"
+    },
+    {
+      "trigger": "any\treaction window",
+      "contents": "any:\n\tqueue action ${1:name}:\n\t\twith partial:\n\t\t\t@initiator: @${2:ref}\n\tqueue action ${3:name}:\n\t\twith partial:\n\t\t\t@initiator: @${4:ref}\nclose\n$0"
+    },
+    {
+      "trigger": "untracked\treaction window",
+      "contents": "untracked:\n\tqueue action ${1:name}:\n\t\twith partial:\n\t\t\t@initiator: @${2:ref}\nclose\n$0"
+    },
+
+    // ---- Temporal constraints ----
+
+    {
+      "trigger": "time\ttemporal constraint",
+      "contents": "time:\n\tafter: ${1:1} ${2:hours} from ${3:action}\n$0"
+    },
+    {
+      "trigger": "after\ttemporal constraint",
+      "contents": "after: ${1:1} ${2:hours} from ${3:action}"
+    },
+    {
+      "trigger": "before\ttemporal constraint",
+      "contents": "before: ${1:1} ${2:hours} from ${3:action}"
+    },
+    {
+      "trigger": "between\ttemporal constraint",
+      "contents": "between: ${1:1} ${2:hours} and ${3:3} ${4:hours} from ${5:action}"
+    },
+
+    // ---- Control flow ----
+
+    {
+      "trigger": "if\tconditional",
+      "contents": "if ${1:condition}:\n\t$0\nend"
+    },
+    {
+      "trigger": "if else\tconditional",
+      "contents": "if ${1:condition}:\n\t${2}\nelse:\n\t$0\nend"
+    },
+    {
+      "trigger": "loop\tloop",
+      "contents": "loop @${1:group}* as _@${2:x}:\n\t$0\nend"
+    },
+
+    // ---- Expressions ----
+
+    {
+      "trigger": "search query\tquery search",
+      "contents": "search query ${1:name}:\n\tover: ${2:chronicle}\n\twith:\n\t\t@${3:role}: @${4:ref}\n$0"
+    },
+    {
+      "trigger": "search\tbare query search",
+      "contents": "search:\n\tover: ${1:chronicle}\n$0"
+    },
+    {
+      "trigger": "sift\tsifting",
+      "contents": "sift pattern ${1:name}:\n\tover: ${2:chronicle}\n\twith partial:\n\t\t@${3:role}: @${4:ref}\n$0"
+    },
+    {
+      "trigger": "fit trope\ttrope fit",
+      "contents": "fit trope ${1:name}:\n\twith:\n\t\t@${2:role}: @${3:ref}\n$0"
+    },
+    {
+      "trigger": "fits\ttrope fit",
+      "contents": "<@${1:a}: @${2:b}> fits trope ${3:name}"
+    },
+    {
+      "trigger": "~\tfunction call",
+      "contents": "~${1:function}(${2:@entity})"
+    },
+
+    // ---- Other ----
+
+    {
+      "trigger": "include\tinclude statement",
+      "contents": "include \"${1:path}\""
+    }
+  ]
+}

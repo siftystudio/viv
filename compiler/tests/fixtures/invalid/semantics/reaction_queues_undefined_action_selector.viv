@@ -1,0 +1,9 @@
+// Invalid: reaction queues undefined action selector
+
+action trigger:
+    roles:
+        @actor:
+            as: initiator
+    reactions:
+        queue action-selector nonexistent:
+            with none:

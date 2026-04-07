@@ -1,0 +1,8 @@
+// Invalid: scratch variable referenced but never assigned
+
+action bad-scratch-ref:
+    roles:
+        @actor:
+            as: initiator
+    effects:
+        @actor.mood = $@mystery

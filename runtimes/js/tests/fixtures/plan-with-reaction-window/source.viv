@@ -1,0 +1,29 @@
+// Plan with a reaction window that blocks until queued actions resolve
+
+reserved action task-a:
+    roles:
+        @worker:
+            as: initiator
+
+
+reserved action task-b:
+    roles:
+        @worker:
+            as: initiator
+
+
+plan parallel-tasks:
+    roles:
+        @operator:
+            as: character
+    phases:
+        >dispatch:
+            all:
+                queue action task-a:
+                    with:
+                        @worker: @operator
+                queue action task-b:
+                    with:
+                        @worker: @operator
+            close
+            succeed;

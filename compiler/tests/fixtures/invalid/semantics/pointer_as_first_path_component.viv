@@ -1,0 +1,8 @@
+// Pointer as first reference path component
+
+action bad-pointer:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        @actor->mood > 0

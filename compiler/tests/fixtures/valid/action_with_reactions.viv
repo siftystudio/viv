@@ -1,0 +1,63 @@
+// Action with reactions that queue an action, an action-selector, and a plan
+
+action provoke:
+    roles:
+        @provoker:
+            as: initiator
+        @target:
+            as: recipient
+    reactions:
+        queue action retaliate:
+            with:
+                @aggressor: @target
+                @victim: @provoker
+        queue action-selector crowd-response:
+            with partial:
+                @reactor: @provoker
+        queue plan investigate:
+            with partial:
+                @investigator: @target
+
+
+reserved action retaliate:
+    roles:
+        @aggressor:
+            as: initiator
+        @victim:
+            as: recipient
+
+
+action-selector crowd-response:
+    roles:
+        @reactor:
+            as: initiator
+    target randomly:
+        cheer;
+        jeer;
+
+action cheer:
+    roles:
+        @reactor:
+            as: initiator
+
+
+action jeer:
+    roles:
+        @reactor:
+            as: initiator
+
+
+plan investigate:
+    roles:
+        @investigator:
+            as: character
+    phases:
+        >gather-evidence:
+            queue action search:
+                with partial:
+                    @searcher: @investigator
+            advance;
+action search:
+    roles:
+        @searcher:
+            as: initiator

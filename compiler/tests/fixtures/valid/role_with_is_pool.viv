@@ -1,0 +1,9 @@
+// Role using 'is' casting pool directive
+
+action inspect-weapon:
+    roles:
+        @inspector:
+            as: initiator
+        @weapon:
+            as: item
+            is: @inspector.equipped_weapon

@@ -1,0 +1,3895 @@
+{
+  "version": "0.10.1",
+  "$ref": "#/definitions/ContentBundle",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "ActionDefinition": {
+      "additionalProperties": false,
+      "description": "A definition for a Viv action.",
+      "properties": {
+        "associations": {
+          "$ref": "#/definitions/Associations",
+          "description": "Specifications for yielding subjective associations for the action.\n\nLike saliences, associations are meant to serve as metadata on a character's knowledge of the action. In this case, it is a set of tags representing the character's subjective view of the action."
+        },
+        "conditions": {
+          "$ref": "#/definitions/ConstructConditions",
+          "description": "Conditions for the action, grouped by role name (with the special global-conditions key).\n\nA condition is an expression that must hold (i.e., evaluate to a truthy value) in order for the action to be performed."
+        },
+        "effects": {
+          "description": "An ordered set of expressions that, when executed, cause updates to the host application state.",
+          "items": {
+            "$ref": "#/definitions/WrappedExpression"
+          },
+          "type": "array"
+        },
+        "embargoes": {
+          "description": "Embargo directives, which are authorial levers for controlling the frequency with which an action will be performed in the host application.",
+          "items": {
+            "$ref": "#/definitions/EmbargoDeclaration"
+          },
+          "type": "array"
+        },
+        "gloss": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/StringField"
+            },
+            {
+              "$ref": "#/definitions/TemplateStringField"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Definition for a simple templated string describing this action in a sentence or so."
+        },
+        "importance": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/IntField"
+            },
+            {
+              "$ref": "#/definitions/FloatField"
+            },
+            {
+              "$ref": "#/definitions/Enum"
+            }
+          ],
+          "description": "An expression yielding a numeric importance score the action."
+        },
+        "initiator": {
+          "$ref": "#/definitions/RoleName",
+          "description": "The name of the initiator role, isolated here for optimization purposes."
+        },
+        "name": {
+          "$ref": "#/definitions/ActionName",
+          "description": "The (unique) name of the action."
+        },
+        "reactions": {
+          "description": "A set of expressions that each produce a reaction when evaluated.\n\nA reaction specifies an action that may be queued up for some time in the future, should an instance of the one at hand be performed.",
+          "items": {
+            "$ref": "#/definitions/WrappedExpression"
+          },
+          "type": "array"
+        },
+        "report": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/StringField"
+            },
+            {
+              "$ref": "#/definitions/TemplateStringField"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Definition for a more detailed templated string describing this action in a paragraph or so."
+        },
+        "reserved": {
+          "description": "Whether this action is reserved, in which case it may only be targeted via selector targeting or queueing.",
+          "type": "boolean"
+        },
+        "roleForestRoots": {
+          "description": "The names of the roles constituting the roots of the trees composing role-dependency forest for this action definition.\n\nThe roots are given in the order by which role casting will proceed.",
+          "items": {
+            "$ref": "#/definitions/RoleName"
+          },
+          "type": "array"
+        },
+        "roles": {
+          "additionalProperties": {
+            "$ref": "#/definitions/RoleDefinition"
+          },
+          "description": "Mapping from the names of the roles associated with this action to their respective role definitions.\n\nThe roles appear in the order in which the author defined them.",
+          "propertyNames": {
+            "description": "A name for a role (unique only within its definition)."
+          },
+          "type": "object"
+        },
+        "saliences": {
+          "$ref": "#/definitions/Saliences",
+          "description": "Specifications for yielding numeric salience values for the action.\n\nThe salience of an action is meant to serve as metadata on a character's knowledge of the action -- it captures how noteworthy the action is to that character, and it can e.g. fade over time to represent forgetting."
+        },
+        "scratch": {
+          "description": "An ordered set of expressions that prepare a set of temporary variables that may be referenced downstream in the action definition.\n\nThese temporary variables can be referenced by an author using the `$` sigil, but this is syntactic sugar for `@this.scratch` -- e.g., `$&foo` is equivalent to `@this.scratch.foo`, with the second sigil indicating the type of the scratch variable.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        },
+        "tags": {
+          "$ref": "#/definitions/ListField",
+          "description": "Tags on the action.\n\nThese are meant to facilitate search over actions, for story sifting, and their function may be extended in the host application."
+        },
+        "type": {
+          "const": "action",
+          "description": "Discriminator for the action construct type.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "reserved",
+        "roles",
+        "initiator",
+        "roleForestRoots",
+        "importance",
+        "tags",
+        "gloss",
+        "report",
+        "conditions",
+        "scratch",
+        "effects",
+        "reactions",
+        "saliences",
+        "associations",
+        "embargoes"
+      ],
+      "type": "object"
+    },
+    "ActionName": {
+      "description": "A unique name for an action.",
+      "type": "string"
+    },
+    "ActionRelation": {
+      "additionalProperties": false,
+      "description": "A Viv action relation, which evaluates to `true` if a specified relation holds between two actions.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "actionRelation",
+          "description": "Discriminator for a Viv action relation.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ActionRelationValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ActionRelationOperator": {
+      "description": "Enum containing the action-relation operators supported by Viv.",
+      "enum": [
+        "caused",
+        "preceded",
+        "triggered"
+      ],
+      "type": "string"
+    },
+    "ActionRelationValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv action relation.",
+      "properties": {
+        "left": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the left operand in relation test."
+        },
+        "operator": {
+          "$ref": "#/definitions/ActionRelationOperator",
+          "description": "The relation operator."
+        },
+        "right": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the right operand in relation test."
+        }
+      },
+      "required": [
+        "left",
+        "operator",
+        "right"
+      ],
+      "type": "object"
+    },
+    "ActionSearch": {
+      "additionalProperties": false,
+      "description": "A Viv action search.\n\nThis kind of expression specifies the execution of a query to drive a search over either a character's memories or the chronicle (all historical actions), to return a collection of actions matching the query.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "actionSearch",
+          "description": "Discriminator for a Viv action search.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ActionSearchValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ActionSearchValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv action search.",
+      "properties": {
+        "bindings": {
+          "$ref": "#/definitions/PrecastBindings",
+          "description": "Precast bindings for the target query, as asserted in the search declaration."
+        },
+        "queryName": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/QueryName"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The name of the query that will be used for the search, if any, else `null`.\n\nIf none is provided, the search will simply retrieve all actions in the domain."
+        },
+        "searchDomain": {
+          "$ref": "#/definitions/SearchDomainDeclaration",
+          "description": "A declaration for how to construct a search domain for this action search."
+        }
+      },
+      "required": [
+        "queryName",
+        "bindings",
+        "searchDomain"
+      ],
+      "type": "object"
+    },
+    "ActionSelectorDefinition": {
+      "additionalProperties": false,
+      "description": "The definition for an action selector, which groups candidate actions (and potentially other action selectors) under a targeting policy and succeeds upon successful targeting of one of the candidates.",
+      "properties": {
+        "candidates": {
+          "description": "The candidates (actions and/or other action selectors) that may be targeted via this selector.",
+          "items": {
+            "$ref": "#/definitions/SelectorCandidate"
+          },
+          "type": "array"
+        },
+        "conditions": {
+          "$ref": "#/definitions/ConstructConditions",
+          "description": "Conditions for the selector, grouped by role name (with the special global-conditions key).\n\nA condition is an expression that must hold (i.e., evaluate to a truthy value) in order for the selector to be targeted."
+        },
+        "initiator": {
+          "$ref": "#/definitions/RoleName",
+          "description": "The name of the initiator role, isolated here for optimization purposes."
+        },
+        "name": {
+          "$ref": "#/definitions/SelectorName",
+          "description": "The (unique) name of the selector."
+        },
+        "policy": {
+          "$ref": "#/definitions/SelectorPolicy",
+          "description": "The sort policy that will be used to determine the order in which candidates will be targeted."
+        },
+        "reserved": {
+          "description": "Whether this selector is reserved, in which case it may only be targeted via selector targeting or queueing.",
+          "type": "boolean"
+        },
+        "roleForestRoots": {
+          "description": "The names of the roles constituting the roots of the trees composing role-dependency forest for this selector definition.\n\nThe roots are given in the order by which role casting will proceed.",
+          "items": {
+            "$ref": "#/definitions/RoleName"
+          },
+          "type": "array"
+        },
+        "roles": {
+          "additionalProperties": {
+            "$ref": "#/definitions/RoleDefinition"
+          },
+          "description": "Mapping from the names of the roles associated with this selector to their respective role definitions.\n\nNote that the roles appear in the order in which the author defined them.",
+          "propertyNames": {
+            "description": "A name for a role (unique only within its definition)."
+          },
+          "type": "object"
+        },
+        "type": {
+          "const": "actionSelector",
+          "description": "Discriminator for the action-selector construct type.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "candidates",
+        "conditions",
+        "initiator",
+        "name",
+        "policy",
+        "reserved",
+        "roleForestRoots",
+        "roles",
+        "type"
+      ],
+      "type": "object"
+    },
+    "ArithmeticExpression": {
+      "additionalProperties": false,
+      "description": "A Viv arithmetic expression, which accepts two numeric operands and evaluates to a number.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "arithmeticExpression",
+          "description": "Discriminator for a Viv arithmetic expression.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ArithmeticExpressionValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ArithmeticExpressionValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv arithmetic expression.",
+      "properties": {
+        "left": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the left operand in the arithmetic expression."
+        },
+        "operator": {
+          "$ref": "#/definitions/ArithmeticOperator",
+          "description": "The arithmetic operator."
+        },
+        "right": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the right operand in the arithmetic expression."
+        }
+      },
+      "required": [
+        "left",
+        "operator",
+        "right"
+      ],
+      "type": "object"
+    },
+    "ArithmeticOperator": {
+      "description": "Enum containing the arithmetic operators supported by Viv.",
+      "enum": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
+      "type": "string"
+    },
+    "Assignment": {
+      "additionalProperties": false,
+      "description": "A Viv assignment (or update).",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "assignment",
+          "description": "Discriminator for a Viv assignment.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/AssignmentValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "AssignmentOperator": {
+      "description": "Enum containing the Viv assignment (and update) operators.",
+      "enum": [
+        "=",
+        "+=",
+        "-=",
+        "*=",
+        "/=",
+        "append",
+        "remove"
+      ],
+      "type": "string"
+    },
+    "AssignmentValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv assignment.",
+      "properties": {
+        "left": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/EntityReference"
+            },
+            {
+              "$ref": "#/definitions/SymbolReference"
+            }
+          ],
+          "description": "A reference specifying the target of the assignment/update."
+        },
+        "operator": {
+          "$ref": "#/definitions/AssignmentOperator",
+          "description": "The assignment/update operator."
+        },
+        "right": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the right operand in the assignment/update.\n\nNote that for assignments that update persistent entity data, the value will always be proactively dehydrated, such that all entity data included in the value will be converted into the associated entity ID. We do this to prevent several potential issues, and the data can be rehydrated later on."
+        }
+      },
+      "required": [
+        "left",
+        "operator",
+        "right"
+      ],
+      "type": "object"
+    },
+    "Associations": {
+      "additionalProperties": false,
+      "description": "Specifications for determining the subjective associations for the action that will be held by a given character who experiences, observes, or otherwise learns about the action.",
+      "properties": {
+        "custom": {
+          "description": "For characters for whom no `roles` entry applies, a series of zero or more custom associations-yielding expressions will be evaluated, with the character bound to the local variable specified in the `variable` property.\n\nThese will be evaluated in turn, with the first evaluated string array being assigned as the character's salience. If no custom expression evaluates to a numeric value, the default value will be used.\n\nThis field is only used if there is no applicable per-role field for the character at hand.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        },
+        "default": {
+          "$ref": "#/definitions/ListField",
+          "description": "A specification for a default value to be used as a fallback for any character for which there is no applicable `roles` entry and for which no `custom` expression yielded a value.\n\nThis will always be structured as a Viv list whose elements will be simple Viv string expressions."
+        },
+        "roles": {
+          "additionalProperties": {
+            "$ref": "#/definitions/ListField"
+          },
+          "description": "A mapping from role names to Viv lists whose elements will be simple Viv string expressions.\n\nFor a character who is bound in the given role, the corresponding expression will determine their associations.",
+          "propertyNames": {
+            "description": "A name for a role (unique only within its definition)."
+          },
+          "type": "object"
+        },
+        "variable": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/LocalVariable"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If there is a non-empty `custom` field, the local variable to which a character will be bound when computing associations for them.\n\nThis allows for evaluation of the body expressions, which may refer to this variable in order to do things like conditionalize associations based on the character at hand."
+        }
+      },
+      "required": [
+        "default",
+        "roles",
+        "custom",
+        "variable"
+      ],
+      "type": "object"
+    },
+    "BoolField": {
+      "additionalProperties": false,
+      "description": "A Viv boolean.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "bool",
+          "description": "Discriminator for a Viv boolean.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The boolean literal to which this expression will evaluate.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "CastingPool": {
+      "additionalProperties": false,
+      "description": "A directive specifying the pool of entities who may be cast into a role at a given point in time, given an initiator and possibly other prospective role bindings.",
+      "properties": {
+        "body": {
+          "$ref": "#/definitions/Expression",
+          "description": "The Viv expression that should evaluate to a casting pool."
+        },
+        "uncachable": {
+          "description": "Whether the casting pool is cachable.\n\nA casting pool is cachable so long as the associated pool declaration *does not* reference a non-initiator role, in which case the role pool would have to be re-computed if the parent role(s) are re-cast (which never happens with an initiator role). When a casting pool is cached, it is not recomputed even as other non-initiator roles are re-cast.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "body",
+        "uncachable"
+      ],
+      "type": "object"
+    },
+    "ChanceExpression": {
+      "additionalProperties": false,
+      "description": "A Viv chance expression, which is a kind of condition that evaluates to true if the specified probability value (a number between 0.0 and 1.0) exceeds a pseudorandom number generated by the interpreter.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "chanceExpression",
+          "description": "Discriminator for a Viv chance expression.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The specified probability, which the compiler guarantees to be a number in the range `[0, 1]`.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "Comparator": {
+      "description": "Enum containing the Viv comparison operators.",
+      "enum": [
+        "==",
+        ">",
+        ">=",
+        "<",
+        "<=",
+        "!="
+      ],
+      "type": "string"
+    },
+    "Comparison": {
+      "additionalProperties": false,
+      "description": "A Viv comparison, whereby two values are compared using a comparator.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "comparison",
+          "description": "Discriminator for a Viv comparison.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ComparisonValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ComparisonValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv comparison.",
+      "properties": {
+        "left": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will serve as the left operand in the comparison."
+        },
+        "operator": {
+          "$ref": "#/definitions/Comparator",
+          "description": "The comparison operator."
+        },
+        "right": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will serve as the right operand in the comparison."
+        }
+      },
+      "required": [
+        "left",
+        "operator",
+        "right"
+      ],
+      "type": "object"
+    },
+    "Conditional": {
+      "additionalProperties": false,
+      "description": "A Viv conditional expression, allowing for branching based on the value of a test.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "conditional",
+          "description": "Discriminator for a Viv conditional.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ConditionalValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ConditionalBranch": {
+      "additionalProperties": false,
+      "description": "A Viv conditional branch, representing an `if` or `elif` clause.",
+      "properties": {
+        "condition": {
+          "$ref": "#/definitions/Expression",
+          "description": "The condition that will be tested, which holds if its evaluation is truthy."
+        },
+        "consequent": {
+          "description": "An array of expressions that will be evaluated/executed should the condition hold.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "condition",
+        "consequent"
+      ],
+      "type": "object"
+    },
+    "ConditionalValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv conditional.",
+      "properties": {
+        "alternative": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/Expression"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If an author has provided an alternative body (via an `else` clause), an array of expressions that will be evaluated/executed should the condition *not* hold."
+        },
+        "branches": {
+          "description": "Branches representing the `if` and `elif` clauses in this conditional expression.",
+          "items": {
+            "$ref": "#/definitions/ConditionalBranch"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "branches",
+        "alternative"
+      ],
+      "type": "object"
+    },
+    "Conjunction": {
+      "additionalProperties": false,
+      "description": "A Viv conjunction, which takes multiple expressions and evaluates to `true` if and only if all the respective expressions evaluate to JavaScript-truthy values.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "conjunction",
+          "description": "Discriminator for a Viv conjunction.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ConjunctionValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ConjunctionValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv conjunction.",
+      "properties": {
+        "operands": {
+          "description": "An array of expressions that will be evaluated in turn to determine the result of the conjunction.\n\nNote that the interpreter stops evaluating as soon as a falsy (in JavaScript) evaluation is encountered.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "operands"
+      ],
+      "type": "object"
+    },
+    "ConstructConditions": {
+      "additionalProperties": false,
+      "description": "Conditions that must hold in order to target a given construct.",
+      "properties": {
+        "globalConditions": {
+          "description": "Global construct conditions, meaning ones that do not reference any roles and can thus be tested immediately upon targeting a construct.",
+          "items": {
+            "$ref": "#/definitions/WrappedExpression"
+          },
+          "type": "array"
+        },
+        "roleConditions": {
+          "additionalProperties": {
+            "items": {
+              "$ref": "#/definitions/WrappedExpression"
+            },
+            "type": "array"
+          },
+          "description": "Standard conditions, keyed by the role during whose casting they will be tested.",
+          "propertyNames": {
+            "description": "A name for a role (unique only within its definition)."
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "globalConditions",
+        "roleConditions"
+      ],
+      "type": "object"
+    },
+    "ConstructDiscriminator": {
+      "description": "Enum specifying the discriminators for all Viv construct types.",
+      "enum": [
+        "action",
+        "actionSelector",
+        "plan",
+        "planSelector",
+        "query",
+        "siftingPattern",
+        "trope"
+      ],
+      "type": "string"
+    },
+    "ContentBundle": {
+      "additionalProperties": false,
+      "description": "A content bundle in the format produced by the Viv compiler.",
+      "properties": {
+        "actionSelectors": {
+          "additionalProperties": {
+            "$ref": "#/definitions/ActionSelectorDefinition"
+          },
+          "description": "Action-selector definitions, keyed by name.",
+          "propertyNames": {
+            "description": "A unique name for a selector."
+          },
+          "type": "object"
+        },
+        "actions": {
+          "additionalProperties": {
+            "$ref": "#/definitions/ActionDefinition"
+          },
+          "description": "Action definitions, keyed by name.",
+          "propertyNames": {
+            "description": "A unique name for an action."
+          },
+          "type": "object"
+        },
+        "metadata": {
+          "$ref": "#/definitions/ContentBundleMetadata",
+          "description": "Metadata for the content bundle, which is currently used for validation purposes."
+        },
+        "planSelectors": {
+          "additionalProperties": {
+            "$ref": "#/definitions/PlanSelectorDefinition"
+          },
+          "description": "Plan-selector definitions, keyed by name.",
+          "propertyNames": {
+            "description": "A unique name for a selector."
+          },
+          "type": "object"
+        },
+        "plans": {
+          "additionalProperties": {
+            "$ref": "#/definitions/PlanDefinition"
+          },
+          "description": "Plan definitions, keyed by name.",
+          "propertyNames": {
+            "description": "A (unique) name for a plan."
+          },
+          "type": "object"
+        },
+        "queries": {
+          "additionalProperties": {
+            "$ref": "#/definitions/QueryDefinition"
+          },
+          "description": "Query definitions, keyed by name.",
+          "propertyNames": {
+            "description": "A unique name for a query."
+          },
+          "type": "object"
+        },
+        "siftingPatterns": {
+          "additionalProperties": {
+            "$ref": "#/definitions/SiftingPatternDefinition"
+          },
+          "description": "Sifting-pattern definitions, keyed by name.",
+          "propertyNames": {
+            "description": "A unique name for a sifting pattern."
+          },
+          "type": "object"
+        },
+        "tropes": {
+          "additionalProperties": {
+            "$ref": "#/definitions/TropeDefinition"
+          },
+          "description": "Trope definitions, keyed by name.",
+          "propertyNames": {
+            "description": "A unique name for a trope."
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "metadata",
+        "actions",
+        "actionSelectors",
+        "plans",
+        "planSelectors",
+        "queries",
+        "siftingPatterns",
+        "tropes"
+      ],
+      "type": "object"
+    },
+    "ContentBundleMetadata": {
+      "additionalProperties": false,
+      "description": "Metadata on a compiled content bundle.\n\nThis is intended to support validation during the initialization of a host application's Viv adapter by, e.g., confirming that any referenced enums and custom functions actually exist.",
+      "properties": {
+        "compilerVersion": {
+          "description": "The Viv compiler version at the time of compiling this content bundle, stored here to give provenance as a potential aid to debugging.",
+          "type": "string"
+        },
+        "grammarVersion": {
+          "description": "The Viv DSL grammar version at the time of compiling this content bundle, stored here to give provenance as a potential aid to debugging.",
+          "type": "string"
+        },
+        "hasEntityDataAssignments": {
+          "description": "A flag indicating whether the content bundle has at least one assignment that modifies entity data.\n\nWe include this here because such assignments are not allowed in all adapter configurations.",
+          "type": "boolean"
+        },
+        "referencedEnums": {
+          "description": "An array containing the names of all enums referenced in the content bundle.\n\nThis is used for validation during the initialization of a host application's Viv adapter.",
+          "items": {
+            "$ref": "#/definitions/EnumName"
+          },
+          "type": "array"
+        },
+        "referencedFunctionNames": {
+          "description": "An array containing the names of all custom functions referenced in the content bundle.\n\nThis is used for validation during the initialization of a host application's Viv adapter.",
+          "items": {
+            "$ref": "#/definitions/CustomFunctionName"
+          },
+          "type": "array"
+        },
+        "schemaVersion": {
+          "description": "The version number for the Viv content-bundle schema at the time of compiling this content bundle.\n\nThe validator for the host application's Viv adapter enforce that this version is supported by the present version of the runtime.",
+          "type": "string"
+        },
+        "timeOfDayParameterizedQueries": {
+          "description": "An array specifying all queries that are parameterized by the time of day.\n\nThis is used for validation during the initialization of a host application's Viv adapter.",
+          "items": {
+            "$ref": "#/definitions/QueryName"
+          },
+          "type": "array"
+        },
+        "timeOfDayParameterizedReactions": {
+          "description": "An array specifying all reactions that are constrained by the time of day.\n\nThis is used for validation during the initialization of a host application's Viv adapter.",
+          "items": {
+            "$ref": "#/definitions/TimeOfDayParameterizedReaction"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "compilerVersion",
+        "grammarVersion",
+        "referencedEnums",
+        "referencedFunctionNames",
+        "timeOfDayParameterizedReactions",
+        "timeOfDayParameterizedQueries",
+        "hasEntityDataAssignments"
+      ],
+      "type": "object"
+    },
+    "CustomFunctionCall": {
+      "additionalProperties": false,
+      "description": "A Viv custom-function call, which parameterizes a call to a custom function that is registered in the host application's Viv adapter.\n\nFor instance, a Viv author might specify a function call in an action such as `~transport(@person.id,",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "customFunctionCall",
+          "description": "Discriminator for a Viv custom-function call.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/CustomFunctionCallValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "CustomFunctionCallValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv custom-function call.",
+      "properties": {
+        "args": {
+          "description": "An ordered array of Viv expressions whose evaluations will be passed as arguments to the function, in that same order.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        },
+        "failSafe": {
+          "description": "Whether the expression component should fail safely by converting a nullish evaluation into the falsy 'eval fail-safe signal'.\n\nThis allows for references whose (intermediate) references may be undefined, as in `@foo.bar?.baz`.",
+          "type": "boolean"
+        },
+        "name": {
+          "$ref": "#/definitions/CustomFunctionName",
+          "description": "The name of the custom function.\n\nThere must be a function stored in the host application's Viv adapter, via a key by this same name."
+        }
+      },
+      "required": [
+        "args",
+        "failSafe",
+        "name"
+      ],
+      "type": "object"
+    },
+    "CustomFunctionName": {
+      "description": "The name for a custom function exposed by the host application in its Viv adapter.",
+      "type": "string"
+    },
+    "Disjunction": {
+      "additionalProperties": false,
+      "description": "A Viv disjunction, which takes multiple expressions and evaluates to `true` if and only if at least one of the respective expressions evaluate to a JavaScript-truthy value.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "disjunction",
+          "description": "Discriminator for a Viv disjunction.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/DisjunctionValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "DisjunctionValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv disjunction.",
+      "properties": {
+        "operands": {
+          "description": "An array of expressions that will be evaluated in turn to determine the result of the disjunction.\n\nNote that the interpreter stops evaluating as soon as a truthy (in JavaScript) evaluation is encountered.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "operands"
+      ],
+      "type": "object"
+    },
+    "EmbargoDeclaration": {
+      "additionalProperties": false,
+      "description": "An embargo declaration constraining the subsequent performance of an associated action.",
+      "properties": {
+        "here": {
+          "description": "Whether the embargo holds only over a certain location, that being the location at which an instance of the associated action has just been performed.",
+          "type": "boolean"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TimeDelta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "For an embargo that is not permanent, a specification of the time period over which the embargo will hold.\n\nIf `period` is present, `permanent` will always be false, and exactly one of the fields is guaranteed to be truthy."
+        },
+        "permanent": {
+          "description": "Whether the embargo is permanent.\n\nIf so, `period` will always be `null`, and exactly one of the fields is guaranteed to be truthy.",
+          "type": "boolean"
+        },
+        "roles": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/RoleName"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If applicable, names for all the roles constituting the bindings over which this embargo holds.\n\nFor instance, if two roles R1 and R2 were specified here, and if an action A was performed with bindings R1=[E1] and R2=[E2, E3], then this embargo would hold over all cases of A with any prospective bindings that cast E1 in R1 and *either* E2 and/or E3 in R2. Stated differently, the embargo holds if for all roles specified here, some subset overlaps between the embargo role bindings and the prospective role bindings. Often, an embargo will only specify an initiator."
+        }
+      },
+      "required": [
+        "roles",
+        "permanent",
+        "period",
+        "here"
+      ],
+      "type": "object"
+    },
+    "EntityReference": {
+      "additionalProperties": false,
+      "description": "A Viv entity reference, structured as an anchor role and a (possibly empty) path to a specific property value.\n\nUsually, the property is on the entity cast into the anchor role, but this is not the case if the reference contains a pointer. For instance, `@person.boss->boss->traits.cruel` would return the value stored at the path `traits.cruel` on the boss of the boss of the entity cast in the anchor role `@person`. Note that the compiler currently prevents an author from anchoring an entity reference in a symbol role, which allows the interpreter to assume that the anchor role binds an entity. Also note that references anchored in scratch variables, e.g. `$@foo.bar.baz`, are compiled to entity references -- this is because `$` is really just syntactic sugar for `@this.scratch.`, with the next sigil indicating the type of the scratch variable.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "entityReference",
+          "description": "Discriminator for a Viv entity reference.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ReferenceValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "Enum": {
+      "additionalProperties": false,
+      "description": "A Viv enum. Enums are resolved at runtime using the host application's Viv adapter.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "enum",
+          "description": "Discriminator for a Viv enum.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/EnumValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "EnumName": {
+      "description": "A unique label for an enum value.",
+      "type": "string"
+    },
+    "EnumValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv enum.",
+      "properties": {
+        "minus": {
+          "description": "Whether to flip the sign of a numeric value associated with the enum.",
+          "type": "boolean"
+        },
+        "name": {
+          "$ref": "#/definitions/EnumName",
+          "description": "The name of the enum.\n\nThis must be resolvable by the host application at runtime."
+        }
+      },
+      "required": [
+        "name",
+        "minus"
+      ],
+      "type": "object"
+    },
+    "Expression": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ActionRelation"
+        },
+        {
+          "$ref": "#/definitions/ActionSearch"
+        },
+        {
+          "$ref": "#/definitions/CustomFunctionCall"
+        },
+        {
+          "$ref": "#/definitions/ArithmeticExpression"
+        },
+        {
+          "$ref": "#/definitions/Assignment"
+        },
+        {
+          "$ref": "#/definitions/BoolField"
+        },
+        {
+          "$ref": "#/definitions/ChanceExpression"
+        },
+        {
+          "$ref": "#/definitions/Comparison"
+        },
+        {
+          "$ref": "#/definitions/Conditional"
+        },
+        {
+          "$ref": "#/definitions/Conjunction"
+        },
+        {
+          "$ref": "#/definitions/Disjunction"
+        },
+        {
+          "$ref": "#/definitions/EntityReference"
+        },
+        {
+          "$ref": "#/definitions/Enum"
+        },
+        {
+          "$ref": "#/definitions/FloatField"
+        },
+        {
+          "$ref": "#/definitions/Inspection"
+        },
+        {
+          "$ref": "#/definitions/Inscription"
+        },
+        {
+          "$ref": "#/definitions/IntField"
+        },
+        {
+          "$ref": "#/definitions/ListField"
+        },
+        {
+          "$ref": "#/definitions/Loop"
+        },
+        {
+          "$ref": "#/definitions/MembershipTest"
+        },
+        {
+          "$ref": "#/definitions/MemoryCheck"
+        },
+        {
+          "$ref": "#/definitions/NullField"
+        },
+        {
+          "$ref": "#/definitions/ObjectField"
+        },
+        {
+          "$ref": "#/definitions/Reaction"
+        },
+        {
+          "$ref": "#/definitions/Sifting"
+        },
+        {
+          "$ref": "#/definitions/StringField"
+        },
+        {
+          "$ref": "#/definitions/SymbolReference"
+        },
+        {
+          "$ref": "#/definitions/TemplateStringField"
+        },
+        {
+          "$ref": "#/definitions/TropeFit"
+        }
+      ],
+      "description": "A Viv expression."
+    },
+    "FloatField": {
+      "additionalProperties": false,
+      "description": "A Viv floating-point number.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "float",
+          "description": "Discriminator for a Viv floating-point number.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The float literal to which this expression will evaluate.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "Inscription": {
+      "additionalProperties": false,
+      "description": "A Viv inscription.\n\nThis kind of expression causes an item to be inscribed with knowledge about a given action. If a character later inspects the item, they will learn about the action.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "inscription",
+          "description": "Discriminator for a Viv inscription.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/InscriptionValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "InscriptionValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv inscription.",
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the action operand in the inscription."
+        },
+        "item": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the item operand in the inscription."
+        }
+      },
+      "required": [
+        "item",
+        "action"
+      ],
+      "type": "object"
+    },
+    "Inspection": {
+      "additionalProperties": false,
+      "description": "A Viv inspection, which causes a character to *inspect* an item, which in turn may lead them to learn about actions inscribed in the item.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "inspection",
+          "description": "Discriminator for a Viv inspection.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/InspectionValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "InspectionValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv inspection.",
+      "properties": {
+        "character": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the character operand in the inspection."
+        },
+        "item": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the item operand in the inspection."
+        }
+      },
+      "required": [
+        "character",
+        "item"
+      ],
+      "type": "object"
+    },
+    "IntField": {
+      "additionalProperties": false,
+      "description": "A Viv integer.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "int",
+          "description": "Discriminator for a Viv integer.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The integer literal to which this expression will evaluate.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ListField": {
+      "additionalProperties": false,
+      "description": "A Viv list, defined as an ordered array of Viv expressions.\n\nOnce evaluated, the result will contain the respective evaluations of the expressions, in that same order.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "list",
+          "description": "Discriminator for a Viv list.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The actual expression value.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "LocalVariable": {
+      "additionalProperties": false,
+      "description": "A Viv local variable.",
+      "properties": {
+        "isEntityVariable": {
+          "description": "Whether the variable is marked as binding an entity (as opposed to a symbol).",
+          "type": "boolean"
+        },
+        "name": {
+          "$ref": "#/definitions/VariableName",
+          "description": "The name of the local variable."
+        }
+      },
+      "required": [
+        "name",
+        "isEntityVariable"
+      ],
+      "type": "object"
+    },
+    "Loop": {
+      "additionalProperties": false,
+      "description": "A Viv loop, allowing for iteration over some iterable value.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "loop",
+          "description": "Discriminator for a Viv loop.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/LoopValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "LoopValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv loop.",
+      "properties": {
+        "body": {
+          "description": "The body of the loop, structured as an array of expressions that will each be interpreted, in order, on each iteration.\n\nThese body expressions can reference the loop variable, allowing for Viv code that acts on each member of an iterable.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        },
+        "iterable": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression that should evaluate to a value that is iterable in JavaScript."
+        },
+        "variable": {
+          "$ref": "#/definitions/LocalVariable",
+          "description": "The local variable to which each member of the iterable is assigned on its respective iteration of the loop."
+        }
+      },
+      "required": [
+        "iterable",
+        "variable",
+        "body"
+      ],
+      "type": "object"
+    },
+    "MembershipTest": {
+      "additionalProperties": false,
+      "description": "A Viv membership test, which takes two expressions and evaluates to true if the evaluation of the first expression is a member of the evaluation of the second expression.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "membershipTest",
+          "description": "Discriminator for a Viv membership test.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/MembershipTestValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "MembershipTestValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv membership test.",
+      "properties": {
+        "collection": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the collection operand in the membership test."
+        },
+        "item": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the item operand in the membership test."
+        }
+      },
+      "required": [
+        "item",
+        "collection"
+      ],
+      "type": "object"
+    },
+    "MemoryCheck": {
+      "additionalProperties": false,
+      "description": "A Viv memory check.\n\nThis kind of expression takes two expressions as operands and evaluates to `True` if the evaluation of the first expression is a character, the second expression is an action, and the character has a memory of the action.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "memoryCheck",
+          "description": "Discriminator for a Viv memory check.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/MemoryCheckValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "MemoryCheckValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv memory check.",
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the action operand in the memory check."
+        },
+        "character": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the character operand in the memory check."
+        }
+      },
+      "required": [
+        "character",
+        "action"
+      ],
+      "type": "object"
+    },
+    "NullField": {
+      "additionalProperties": false,
+      "description": "A Viv null value.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "nullType",
+          "description": "Discriminator for a Viv null value.",
+          "type": "string"
+        },
+        "value": {
+          "description": "JavaScript's `null`, to which the expression always evaluates.",
+          "type": "null"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ObjectField": {
+      "additionalProperties": false,
+      "description": "A Viv object literal, which maps keys (string literals) to Viv expressions.\n\nOnce evaluated, the result will map those same keys to the respective evaluations of the Viv expressions.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "object",
+          "description": "Discriminator for a Viv object literal.",
+          "type": "string"
+        },
+        "value": {
+          "additionalProperties": {
+            "$ref": "#/definitions/Expression"
+          },
+          "description": "The actual expression value.",
+          "type": "object"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "PlanDefinition": {
+      "additionalProperties": false,
+      "description": "The definition for a plan, which an author defines to orchestrate complex action sequences that may play out over extended periods of story time.\n\nA plan is composed primarily by an ordered set of  {@link  PlanPhase } , each of which centers on a *tape* of  {@link  PlanInstruction } . The plan executor executes a phase by stepping a program counter ( {@link  PlanInstructionAddress  } ) through the phase tape, which specifies control flow along with instructions for queueing the material that makes up the plan.",
+      "properties": {
+        "conditions": {
+          "$ref": "#/definitions/ConstructConditions",
+          "description": "Conditions for the plan, grouped by role name (with the special global-conditions key).\n\nA condition is an expression that must hold (i.e., evaluate to a truthy value) in order for the plan to be launched."
+        },
+        "initialPhase": {
+          "$ref": "#/definitions/PlanPhaseName",
+          "description": "The name of the initial phase in the plan.\n\nPlan execution will always begin in this phase."
+        },
+        "name": {
+          "$ref": "#/definitions/PlanName",
+          "description": "The (unique) name of the plan."
+        },
+        "phases": {
+          "additionalProperties": {
+            "$ref": "#/definitions/PlanPhase"
+          },
+          "description": "A mapping from phase name to phase definition, for all phases structuring the plan.\n\nNote that the individual phases each point to the next phase, so we don't need to maintain order here.",
+          "propertyNames": {
+            "description": "A name for a plan phase, guaranteed to be unique only within the enclosing plan."
+          },
+          "type": "object"
+        },
+        "roleForestRoots": {
+          "description": "The names of the roles constituting the roots of the trees composing role-dependency forest for this plan definition.\n\nThe roots are given in the order by which role casting will proceed.",
+          "items": {
+            "$ref": "#/definitions/RoleName"
+          },
+          "type": "array"
+        },
+        "roles": {
+          "additionalProperties": {
+            "$ref": "#/definitions/RoleDefinition"
+          },
+          "description": "Mapping from the names of the roles associated with this plan to their respective role definitions.\n\nNote that the roles appear in the order in which the author defined them.",
+          "propertyNames": {
+            "description": "A name for a role (unique only within its definition)."
+          },
+          "type": "object"
+        },
+        "type": {
+          "const": "plan",
+          "description": "Discriminator for the plan construct type.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "roles",
+        "roleForestRoots",
+        "conditions",
+        "phases",
+        "initialPhase"
+      ],
+      "type": "object"
+    },
+    "PlanInstruction": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/PlanInstructionAdvance"
+        },
+        {
+          "$ref": "#/definitions/PlanInstructionFail"
+        },
+        {
+          "$ref": "#/definitions/PlanInstructionJump"
+        },
+        {
+          "$ref": "#/definitions/PlanInstructionJumpIfFalse"
+        },
+        {
+          "$ref": "#/definitions/PlanInstructionLoopInit"
+        },
+        {
+          "$ref": "#/definitions/PlanInstructionLoopNext"
+        },
+        {
+          "$ref": "#/definitions/PlanInstructionReactionQueue"
+        },
+        {
+          "$ref": "#/definitions/PlanInstructionReactionWindowClose"
+        },
+        {
+          "$ref": "#/definitions/PlanInstructionReactionWindowOpen"
+        },
+        {
+          "$ref": "#/definitions/PlanInstructionSucceed"
+        },
+        {
+          "$ref": "#/definitions/PlanInstructionWaitEnd"
+        },
+        {
+          "$ref": "#/definitions/PlanInstructionWaitStart"
+        }
+      ],
+      "description": "A compiled instruction in a plan tape."
+    },
+    "PlanInstructionAddress": {
+      "description": "An address for an  {@link  PlanInstruction }  in a  {@link  PlanPhase  } , which is really just as an index into the phase's `tape` array property.\n\nAs plan execution proceeds, the executor maintains the address for the current instruction as a program counter.",
+      "type": "number"
+    },
+    "PlanInstructionAdvance": {
+      "additionalProperties": false,
+      "description": "A plan instruction that advances to the next plan phase, skipping any remaining instructions in the current phase.",
+      "properties": {
+        "type": {
+          "const": "advance",
+          "description": "Discriminator for an advance plan instruction.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "PlanInstructionFail": {
+      "additionalProperties": false,
+      "description": "A plan instruction that resolves the plan with a final failure status.",
+      "properties": {
+        "type": {
+          "const": "fail",
+          "description": "Discriminator for a fail plan instruction.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "PlanInstructionJump": {
+      "additionalProperties": false,
+      "description": "A plan instruction that causes an unconditional jump to a different position in the phase's instruction tape.",
+      "properties": {
+        "target": {
+          "$ref": "#/definitions/PlanInstructionAddress",
+          "description": "The instruction address to which execution will jump unconditionally.\n\nJumps can only occur within the tape for a given phase, which is why an address alone is sufficient here."
+        },
+        "type": {
+          "const": "jump",
+          "description": "Discriminator for a jump plan instruction.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "target"
+      ],
+      "type": "object"
+    },
+    "PlanInstructionJumpIfFalse": {
+      "additionalProperties": false,
+      "description": "A plan instruction that specifies a conditional jump to a different position in the phase's instruction tape.\n\nIf the condition does not hold, the plan executor will proceed to the next instruction (i.e., increment program counter by one). This enables conditionals in plan bodies.",
+      "properties": {
+        "condition": {
+          "$ref": "#/definitions/Expression",
+          "description": "The condition to evaluate.\n\nIf it does *not* hold, execution will proceed to the instruction address specified in the `target` field, else it will proceed to the next instruction (by incrementing the counter by one)."
+        },
+        "target": {
+          "$ref": "#/definitions/PlanInstructionAddress",
+          "description": "The instruction address to which execution will jump if the instruction `condition` does *not* hold."
+        },
+        "type": {
+          "const": "jumpIfFalse",
+          "description": "Discriminator for a jump-if-false plan instruction.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "condition",
+        "target"
+      ],
+      "type": "object"
+    },
+    "PlanInstructionLoopInit": {
+      "additionalProperties": false,
+      "description": "A plan instruction that initializes a loop frame and pushes it onto the loop stack.",
+      "properties": {
+        "iterable": {
+          "$ref": "#/definitions/Expression",
+          "description": "The expression yielding the iterable to loop over.\n\nThis will be evaluated once, at the time the loop is initialized. For example, a loop over `@foo.friends` with a loop-body instruction causing a one-year wait after each iteration would still be operating over the friends that `@foo` had at the time the loop was entered (years ago, in diegetic terms)."
+        },
+        "type": {
+          "const": "loopInit",
+          "description": "Discriminator for a loop-init plan instruction.",
+          "type": "string"
+        },
+        "variable": {
+          "$ref": "#/definitions/LocalVariable",
+          "description": "The local variable to bind on each iteration, which the plan executor stores in the loop frame that will be created when executing this instruction."
+        }
+      },
+      "required": [
+        "type",
+        "iterable",
+        "variable"
+      ],
+      "type": "object"
+    },
+    "PlanInstructionLoopNext": {
+      "additionalProperties": false,
+      "description": "A plan instruction that advances the active loop frame by one iteration, or else exits the loop if the iterable has been exhausted.\n\nIf there is a next element in the iterable, the plan executor will bind it to the loop variable and fall through to the next instruction (i.e., increment by the program counter by one). If the iterable has been exhausted, the executor will jump to the instruction address specified by `exitTarget`.",
+      "properties": {
+        "exitTarget": {
+          "$ref": "#/definitions/PlanInstructionAddress",
+          "description": "The instruction address to jump to when the loop iterable is exhausted.\n\nIf the iterable is empty from the start, the loop will immediately exit by virtue of this instruction."
+        },
+        "type": {
+          "const": "loopNext",
+          "description": "Discriminator for a loop-next plan instruction.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "exitTarget"
+      ],
+      "type": "object"
+    },
+    "PlanInstructionReactionQueue": {
+      "additionalProperties": false,
+      "description": "A plan instruction that causes queueing of an action, plan, or selector according to a specified  {@link  Reaction } .",
+      "properties": {
+        "reaction": {
+          "$ref": "#/definitions/Reaction",
+          "description": "The reaction declaration."
+        },
+        "type": {
+          "const": "reactionQueue",
+          "description": "Discriminator for a reaction-queue plan instruction.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "reaction"
+      ],
+      "type": "object"
+    },
+    "PlanInstructionReactionWindowClose": {
+      "additionalProperties": false,
+      "description": "A plan instruction that closes the active reaction window, pending resolution that is governed by a specified  {@link  PlanPhaseReactionWindowOperator } .",
+      "properties": {
+        "operator": {
+          "$ref": "#/definitions/PlanPhaseReactionWindowOperator",
+          "description": "The logical operator that will govern resolution of the reaction window."
+        },
+        "type": {
+          "const": "reactionWindowClose",
+          "description": "Discriminator for a plan instruction that closes the active reaction window.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "operator"
+      ],
+      "type": "object"
+    },
+    "PlanInstructionReactionWindowOpen": {
+      "additionalProperties": false,
+      "description": "A plan instruction that opens a new reaction window whose resolution will be governed by a  {@link  PlanPhaseReactionWindowOperator }  specified in the corresponding  {@link  PlanInstructionReactionWindowClose }  instruction.",
+      "properties": {
+        "type": {
+          "const": "reactionWindowOpen",
+          "description": "Discriminator for a plan instruction that opens a reaction window.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "PlanInstructionSucceed": {
+      "additionalProperties": false,
+      "description": "A plan instruction that resolves the plan with a final success status.",
+      "properties": {
+        "type": {
+          "const": "succeed",
+          "description": "Discriminator for a succeed plan instruction.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "PlanInstructionWaitEnd": {
+      "additionalProperties": false,
+      "description": "A plan instruction that resumes plan execution following a pause imposed by a  {@link  PlanInstructionWaitStart }  instruction.",
+      "properties": {
+        "resumeConditions": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/Expression"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a set of expressions that must hold to resume plan execution prior to the timeout elapsing."
+        },
+        "type": {
+          "const": "waitEnd",
+          "description": "Discriminator for a wait-end plan instruction.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "resumeConditions"
+      ],
+      "type": "object"
+    },
+    "PlanInstructionWaitStart": {
+      "additionalProperties": false,
+      "description": "A plan instruction that commences a pause on plan execution that will persist until a timeout elapses or a set of conditions hold.",
+      "properties": {
+        "timeout": {
+          "$ref": "#/definitions/TimeDelta",
+          "description": "A timeout, expressed as the maximum period of story time to wait counting from the time at which this instruction was executed."
+        },
+        "type": {
+          "const": "waitStart",
+          "description": "Discriminator for a wait-start plan instruction.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "timeout"
+      ],
+      "type": "object"
+    },
+    "PlanName": {
+      "description": "A (unique) name for a plan.",
+      "type": "string"
+    },
+    "PlanPhase": {
+      "additionalProperties": false,
+      "description": "A phase in a plan, which is structured as a tape of instructions for which execution can be arbitrary paused according to the author-defined control flow.\n\nFor instance, an author can specify that the plan will not resume until some period of story time has elapsed, or until one of the reactions in a group has been performed, and so forth.",
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/PlanPhaseName",
+          "description": "The name for the phase, guaranteed to be unique (only) within the enclosing plan."
+        },
+        "next": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/PlanPhaseName"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The name of the next phase in the plan, if any, else `null` if it's the last phase in the plan.\n\nCompletion of a final phase causes the plan to resolve with a final success status."
+        },
+        "tape": {
+          "description": "An array containing the compiled instruction tape for this phase, such that each array index serves as an  {@link  PlanInstructionAddress  } .\n\nIf execution reaches the end of the tape, execution proceeds to the next phase in the plan, if there is one; otherwise, the plan succeeds.",
+          "items": {
+            "$ref": "#/definitions/PlanInstruction"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "next",
+        "tape"
+      ],
+      "type": "object"
+    },
+    "PlanPhaseName": {
+      "description": "A name for a plan phase, guaranteed to be unique only within the enclosing plan.",
+      "type": "string"
+    },
+    "PlanPhaseReactionWindowOperator": {
+      "description": "Enum containing the valid operators for reaction windows.\n\nWhen a reaction window is active during execution of a plan phase, all reactions that are queued during the window are tracked. Once the end of the window is reached, execution focuses on resolving the window according to its operator. Depending on the operator and the reaction outcomes, this may require all the queued reactions to be resolved.\n\nNote: The DSL allows for authors to specify an `untracked` operator, but this is equivalent to declaring a sequence of bare reactions, and in fact this is how an `untracked` window is compiled. As such, the operator never makes it into the compiled content bundle, hence it not appearing here.",
+      "enum": [
+        "all",
+        "any"
+      ],
+      "type": "string"
+    },
+    "PlanSelectorDefinition": {
+      "additionalProperties": false,
+      "description": "The definition for a plan selector, which groups plans actions (and potentially other plan selectors) under a targeting policy and succeeds upon successful targeting of one of the candidates.",
+      "properties": {
+        "candidates": {
+          "description": "The candidates (actions and/or other action selectors) that may be targeted via this selector.",
+          "items": {
+            "$ref": "#/definitions/SelectorCandidate"
+          },
+          "type": "array"
+        },
+        "conditions": {
+          "$ref": "#/definitions/ConstructConditions",
+          "description": "Conditions for the selector, grouped by role name (with the special global-conditions key).\n\nA condition is an expression that must hold (i.e., evaluate to a truthy value) in order for the selector to be targeted."
+        },
+        "name": {
+          "$ref": "#/definitions/SelectorName",
+          "description": "The (unique) name of the selector."
+        },
+        "policy": {
+          "$ref": "#/definitions/SelectorPolicy",
+          "description": "The sort policy that will be used to determine the order in which candidates will be targeted."
+        },
+        "roleForestRoots": {
+          "description": "The names of the roles constituting the roots of the trees composing role-dependency forest for this selector definition.\n\nThe roots are given in the order by which role casting will proceed.",
+          "items": {
+            "$ref": "#/definitions/RoleName"
+          },
+          "type": "array"
+        },
+        "roles": {
+          "additionalProperties": {
+            "$ref": "#/definitions/RoleDefinition"
+          },
+          "description": "Mapping from the names of the roles associated with this selector to their respective role definitions.\n\nNote that the roles appear in the order in which the author defined them.",
+          "propertyNames": {
+            "description": "A name for a role (unique only within its definition)."
+          },
+          "type": "object"
+        },
+        "type": {
+          "const": "planSelector",
+          "description": "Discriminator for the plan-selector construct type.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "candidates",
+        "conditions",
+        "name",
+        "policy",
+        "roleForestRoots",
+        "roles",
+        "type"
+      ],
+      "type": "object"
+    },
+    "PrecastBindings": {
+      "additionalProperties": false,
+      "description": "Precast bindings for the targeting of some construct, as in a reaction or a sifting expression.",
+      "properties": {
+        "partial": {
+          "description": "Whether the precast bindings are marked partial, meaning additional required role slots will need to be cast.\n\nThe compiler will verify that all required slots appear to be precast, but we will also confirm this at runtime.",
+          "type": "boolean"
+        },
+        "roles": {
+          "additionalProperties": {
+            "$ref": "#/definitions/Expression"
+          },
+          "description": "A mapping from role name to an expression that will evaluate to precast bindings for that role.",
+          "propertyNames": {
+            "description": "A name for a role (unique only within its definition)."
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "partial",
+        "roles"
+      ],
+      "type": "object"
+    },
+    "QueryDefinition": {
+      "additionalProperties": false,
+      "description": "A query used to search for actions in a character's memories or in the chronicle.",
+      "properties": {
+        "actionName": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/SetPredicate"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a component specifying permissible action names for matches to the query."
+        },
+        "active": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/SetPredicate"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a component specifying permissible active-role bindings for matches to the query."
+        },
+        "ancestors": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/SetPredicate"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a component specifying permissible causal ancestors for matches to the query."
+        },
+        "associations": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/SetPredicate"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a component specifying permissible associations for matches to the query.\n\nIf this query is targeted with the chronicle as a search domain, an error will be thrown, since the query applies to character memories."
+        },
+        "bystanders": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/SetPredicate"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a component specifying permissible bystander-role bindings for matches to the query."
+        },
+        "conditions": {
+          "$ref": "#/definitions/ConstructConditions",
+          "description": "Conditions for the query, grouped by role name (with the special global-conditions key).\n\nA condition is an expression that must hold (i.e., evaluate to a truthy value) in order for a query to match."
+        },
+        "descendants": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/SetPredicate"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a component specifying permissible causal descendants for matches to the query."
+        },
+        "importance": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/QueryNumericRange"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a component specifying a permissible importance range for matches to the query."
+        },
+        "initiator": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/SetPredicate"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a component specifying permissible initiator-role bindings for matches to the query."
+        },
+        "location": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/SetPredicate"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a component specifying permissible locations for matches to the query."
+        },
+        "name": {
+          "$ref": "#/definitions/QueryName",
+          "description": "The (unique) name of the query."
+        },
+        "partners": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/SetPredicate"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a component specifying permissible partner-role bindings for matches to the query."
+        },
+        "present": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/SetPredicate"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a component specifying permissible present-role bindings for matches to the query."
+        },
+        "recipients": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/SetPredicate"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a component specifying permissible recipient-role bindings for matches to the query."
+        },
+        "roleForestRoots": {
+          "description": "The names of the roles constituting the roots of the trees composing role-dependency forest for this query definition.\n\nThe roots are given in the order by which role casting will proceed.",
+          "items": {
+            "$ref": "#/definitions/RoleName"
+          },
+          "type": "array"
+        },
+        "roles": {
+          "additionalProperties": {
+            "$ref": "#/definitions/RoleDefinition"
+          },
+          "description": "Mapping from the names of the roles associated with this action to their respective role definitions.\n\nNote that a query may have zero roles, in which case this is empty. Also, the roles appear in the order in which the author defined them.",
+          "propertyNames": {
+            "description": "A name for a role (unique only within its definition)."
+          },
+          "type": "object"
+        },
+        "salience": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/QueryNumericRange"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a component specifying a permissible salience range for matches to the query.\n\nIf this query is targeted with the chronicle as a search domain, an error will be thrown, since the query applies to character memories."
+        },
+        "tags": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/SetPredicate"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a component specifying permissible tags for matches to the query."
+        },
+        "time": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/TemporalConstraint"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a component specifying permissible performance times for matches to the query."
+        },
+        "type": {
+          "const": "query",
+          "description": "Discriminator for the query construct type.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "roles",
+        "roleForestRoots",
+        "conditions",
+        "actionName",
+        "ancestors",
+        "descendants",
+        "importance",
+        "tags",
+        "salience",
+        "associations",
+        "location",
+        "time",
+        "initiator",
+        "partners",
+        "recipients",
+        "bystanders",
+        "active",
+        "present"
+      ],
+      "type": "object"
+    },
+    "QueryName": {
+      "description": "A unique name for a query.",
+      "type": "string"
+    },
+    "QueryNumericRange": {
+      "additionalProperties": false,
+      "description": "A permissible numeric range used in a query.",
+      "properties": {
+        "lower": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/QueryNumericRangeBound"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The lower bound of the range, if there is one, else `null`."
+        },
+        "upper": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/QueryNumericRangeBound"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The upper bound of the range, if there is one, else `null`."
+        }
+      },
+      "required": [
+        "lower",
+        "upper"
+      ],
+      "type": "object"
+    },
+    "QueryNumericRangeBound": {
+      "additionalProperties": false,
+      "description": "A bound on a permissible numeric range used in a query.",
+      "properties": {
+        "inclusive": {
+          "description": "Whether this bound is inclusive.",
+          "type": "boolean"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/IntField"
+            },
+            {
+              "$ref": "#/definitions/FloatField"
+            },
+            {
+              "$ref": "#/definitions/Enum"
+            }
+          ],
+          "description": "The number at this bound of a range."
+        }
+      },
+      "required": [
+        "value",
+        "inclusive"
+      ],
+      "type": "object"
+    },
+    "Reaction": {
+      "additionalProperties": false,
+      "description": "A Viv reaction.\n\nA reaction specifies a construct (action, plan, or selector) that will be queued upon evaluation of the reaction expression.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "reaction",
+          "description": "Discriminator for Viv reaction expressions.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ReactionValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ReactionRepeatLogic": {
+      "additionalProperties": false,
+      "description": "An object specifying logic around repeating the reaction after it *succeeds*.\n\nThis logic is only considered when the construct queued by the reaction is successfully performed/executed.\n\nAs a motivating example, consider the case of one character, Alice, trying to track down another character, Bob, to arrest him. The arrest action is queued by a plan, with high priority, but it requires the two characters to be in the same location. To make this happen, the plan queues a subplan that causes Alice to search for Bob, going to his home, workplace, and favorite haunts. This subplan will succeed if Alice travels to those places. But what if she doesn't find Bob in any of these spots? She should probably try again tomorrow, going to the likely spots once again.\n\nUsing repeat logic, an author can easily specify this by declaring that, if the search subplan succeeds but Alice has not found Bob, it should be queued again. In this case, `conditions` would specify that Alice and Bob are not co-located, and `maxRepeats` would capture how many times Alice should attempt the search.\n\nNote: Viv already has automatic retry logic for reactions that can't be targeted currently.",
+      "properties": {
+        "conditions": {
+          "description": "A set of expressions such that, if all of them hold (i.e., evaluate to a truthy value), a copy of the reaction will be queued again for its initiator.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        },
+        "maxRepeats": {
+          "description": "The maximum number of times this reaction may be repeated.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "conditions",
+        "maxRepeats"
+      ],
+      "type": "object"
+    },
+    "ReactionTargetConstructDiscriminator": {
+      "anyOf": [
+        {
+          "const": "action",
+          "description": "Discriminator for action definitions.",
+          "type": "string"
+        },
+        {
+          "const": "actionSelector",
+          "description": "Discriminator for action-selector definitions.",
+          "type": "string"
+        },
+        {
+          "const": "plan",
+          "description": "Discriminator for plan definitions.",
+          "type": "string"
+        },
+        {
+          "const": "planSelector",
+          "description": "Discriminator for plan-selector definitions.",
+          "type": "string"
+        }
+      ],
+      "description": "Union containing discriminators for the construct types that a reaction may queue."
+    },
+    "ReactionValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv reaction.",
+      "properties": {
+        "abandonmentConditions": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/Expression"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "A set of expressions such that, if all of them hold (i.e., evaluate to a truthy value), the queued construct will be dequeued.\n\nThis will always be either `null` or a non-empty array."
+        },
+        "bindings": {
+          "$ref": "#/definitions/PrecastBindings",
+          "description": "Precast bindings for the target construct, as asserted in the reaction declaration."
+        },
+        "location": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/SetPredicate"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An expression that should evaluate to a location, that being the specific location at which an eventual action must be performed.\n\nThe compiler will flag the use of this option in a reaction queueing a plan or plan selector."
+        },
+        "priority": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Expression"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An expression that should evaluate to a numeric value specifying the priority of the queued construct.\n\nWithin a given queue group (urgent or non-urgent), queued actions (and queued action selectors) are targeted in descending order of priority.\n\nBecause the global plan queue is unordered, the compiler will flag the use of this option in a reaction queueing a plan or plan selector."
+        },
+        "repeatLogic": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ReactionRepeatLogic"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An object specifying logic around repeating the reaction should it succeed.\n\nNote: Viv already has automatic retry logic for reactions that can't be targeted currently."
+        },
+        "targetName": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ActionName"
+            },
+            {
+              "$ref": "#/definitions/PlanName"
+            },
+            {
+              "$ref": "#/definitions/SelectorName"
+            }
+          ],
+          "description": "The name of the target construct, i.e., the one queued up by this reaction."
+        },
+        "targetType": {
+          "$ref": "#/definitions/ReactionTargetConstructDiscriminator",
+          "description": "The type of construct that the reaction will queue."
+        },
+        "time": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/TemporalConstraint"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "A set of 0-3 temporal constraints constraining the time at which an eventual action may be performed.\n\nThe compiler will flag the use of this option in a reaction queueing a plan or plan selector."
+        },
+        "urgent": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Expression"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An expression that should evaluate to a boolean value indicating whether the reaction will queue its target construct urgently.\n\nThe evaluated value will be cast to a boolean, so authors should be careful when using this parameter. Urgent actions and action selectors receive the highest priority in action queues, while an urgent plan or plan selector will be targeted (and potentially launched) upon being queued.\n\nIf no expression is supplied, the reaction will not be marked urgent."
+        }
+      },
+      "required": [
+        "targetName",
+        "targetType",
+        "bindings",
+        "urgent",
+        "priority",
+        "location",
+        "time",
+        "abandonmentConditions",
+        "repeatLogic"
+      ],
+      "type": "object"
+    },
+    "ReferencePathComponent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ReferencePathComponentPropertyName"
+        },
+        {
+          "$ref": "#/definitions/ReferencePathComponentPointer"
+        },
+        {
+          "$ref": "#/definitions/ReferencePathComponentLookup"
+        }
+      ],
+      "description": "A component in a Viv reference path."
+    },
+    "ReferencePathComponentLookup": {
+      "additionalProperties": false,
+      "description": "A component of a Viv reference path specifying a property lookup or an array access, where the key/index can be specified by an arbitrary Viv expression.",
+      "properties": {
+        "failSafe": {
+          "description": "Whether the expression component should fail safely by converting a nullish evaluation into the falsy 'eval fail-safe signal'.\n\nThis allows for references whose (intermediate) references may be undefined, as in `@foo.bar?.baz`.",
+          "type": "boolean"
+        },
+        "key": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression that should evaluate to a valid JavaScript property key.\n\nThis mainly comprises strings and integers. Note that in JavaScript, array indices are actually just property keys."
+        },
+        "type": {
+          "const": "referencePathComponentLookup",
+          "description": "Discriminator for a lookup reference path component.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "failSafe",
+        "key",
+        "type"
+      ],
+      "type": "object"
+    },
+    "ReferencePathComponentPointer": {
+      "additionalProperties": false,
+      "description": "A component of a Viv reference path specifying a pointer to dereference.",
+      "properties": {
+        "failSafe": {
+          "description": "Whether the expression component should fail safely by converting a nullish evaluation into the falsy 'eval fail-safe signal'.\n\nThis allows for references whose (intermediate) references may be undefined, as in `@foo.bar?.baz`.",
+          "type": "boolean"
+        },
+        "propertyName": {
+          "description": "The name of the property to access in the entity data of the entity targeted by the pointer.",
+          "type": "string"
+        },
+        "type": {
+          "const": "referencePathComponentPointer",
+          "description": "Discriminator for a pointer reference path component.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "failSafe",
+        "propertyName",
+        "type"
+      ],
+      "type": "object"
+    },
+    "ReferencePathComponentPropertyName": {
+      "additionalProperties": false,
+      "description": "A component of a Viv reference path specifying a property to access.",
+      "properties": {
+        "failSafe": {
+          "description": "Whether the expression component should fail safely by converting a nullish evaluation into the falsy 'eval fail-safe signal'.\n\nThis allows for references whose (intermediate) references may be undefined, as in `@foo.bar?.baz`.",
+          "type": "boolean"
+        },
+        "name": {
+          "description": "The name of the property to access.",
+          "type": "string"
+        },
+        "type": {
+          "const": "referencePathComponentPropertyName",
+          "description": "Discriminator for a property-name reference path component.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "failSafe",
+        "name",
+        "type"
+      ],
+      "type": "object"
+    },
+    "ReferenceValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv entity reference or symbol reference.",
+      "properties": {
+        "anchor": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/RoleName"
+            },
+            {
+              "$ref": "#/definitions/VariableName"
+            }
+          ],
+          "description": "The name anchoring this reference."
+        },
+        "failSafe": {
+          "description": "Whether the expression component should fail safely by converting a nullish evaluation into the falsy 'eval fail-safe signal'.\n\nThis allows for references whose (intermediate) references may be undefined, as in `@foo.bar?.baz`.",
+          "type": "boolean"
+        },
+        "group": {
+          "description": "Whether the anchor is marked as a group role, in which case it will evaluate to an array containing the bindings for the role.",
+          "type": "boolean"
+        },
+        "local": {
+          "description": "Whether the anchor is a local variable.\n\nThis is a common pattern when an author loops over a group role.",
+          "type": "boolean"
+        },
+        "path": {
+          "description": "If applicable, the path to a specified property value.\n\nIf the reference is just to the entity or symbol itself, this will be an empty list. Otherwise, it will specify a path to a specific property value, either on that entity or symbol or another entity (via a pointer).",
+          "items": {
+            "$ref": "#/definitions/ReferencePathComponent"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "anchor",
+        "failSafe",
+        "group",
+        "local",
+        "path"
+      ],
+      "type": "object"
+    },
+    "RoleDefinition": {
+      "additionalProperties": false,
+      "description": "A definition for a role in a construct.",
+      "properties": {
+        "anywhere": {
+          "description": "Whether an entity cast in this role does not need to be physically present for the action.\n\nNote that the entity *can* still be physically present, so authors should take care to write conditions specifying whether an entity is present, as needed.\n\nCurrently, this only applies to characters and items, though roles casting all other entity types will have `true` here.",
+          "type": "boolean"
+        },
+        "chance": {
+          "description": "If specified, the chance that a qualifying entity will be cast into the role.\n\nThis field was first implemented to support a pattern of specifying how likely it is that a given nearby character will witness an action, which can be accomplished by defining a `bystander` role with a high `max` and a specified `chance` value.\n\nThe compiler restricts chance values to `[0.0, 1.0]`.",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "children": {
+          "description": "The names of this role's children, if any, in the dependency tree that is used during casting.\n\nThis dependency tree is used to optimize this process.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "entityType": {
+          "$ref": "#/definitions/RoleEntityType",
+          "description": "The type of entity (or symbol) that must be cast in this role."
+        },
+        "max": {
+          "description": "The maximum number of slots to cast for this role.",
+          "type": "number"
+        },
+        "mean": {
+          "description": "If specified, a mean on which to anchor a distribution from which will be sampled the number of entities to cast into the role.\n\nThe compiler guarantees that `mean` and `sd` are either both present or both elided.",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "min": {
+          "description": "The minimum number of slots to cast for this role.",
+          "type": "number"
+        },
+        "name": {
+          "$ref": "#/definitions/RoleName",
+          "description": "A name for this role, unique only within the associated construct definition."
+        },
+        "parent": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/RoleName"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The name of this role's parent, if any, in the dependency tree that is used during role casting.\n\nThis dependency tree is used to optimize this process."
+        },
+        "participationMode": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/RoleParticipationMode"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If applicable, the mode of participation for a character cast in this role.\n\nThis field is only non-null for action roles that cast characters who are physically present for the action (i.e., ones for which `anywhere` is `false`)."
+        },
+        "pool": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/CastingPool"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If specified, a directive specifying the pool of entities who may be cast into this role at a given point in time, given an initiator and possibly other prospective role bindings.\n\nIf this is an action role, and if there is an active  {@link  EvaluationContext.__searchDomain__  } , the pool will automatically be filtered to actions in the search domain. This occurs in  {@link  getCustomPool  } ."
+        },
+        "precast": {
+          "description": "Whether this role must be precast and never cast through typical role casting.\n\nFor an action, a role can be \"precast\" via a reaction declaration that targets the action. For other constructs, a role can be precast in the expression targeting the construct -- e.g., an action search can precast a role for a query.\n\nIf an action has a precast role, it must be marked `reserved`, because there is no way to cast a precast role via general action targeting.",
+          "type": "boolean"
+        },
+        "renames": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/RoleName"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If this role is an alias for a role in a parent definition, this will store the name of the original role."
+        },
+        "sd": {
+          "description": "If specified, a standard deviation for a distribution from which will be sampled the number of entities to cast into the role.\n\nThe compiler guarantees that `mean` and `sd` are either both present or both elided.",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "spawn": {
+          "description": "Whether the entity cast in this role is to be constructed as a result of the associated action.\n\nSpawn roles only appear in actions, and the compiler ensures that `spawn` and `spawnFunction` are either both truthy or both falsy.",
+          "type": "boolean"
+        },
+        "spawnFunction": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/CustomFunctionCall"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "For `spawn` roles only, a custom-function call that will cause the new entity (to be cast in this role) to be constructed before returning its entity ID.\n\nSpawn roles only appear in actions, and the compiler ensures that `spawn` and `spawnFunction` are either both truthy or both falsy."
+        }
+      },
+      "required": [
+        "name",
+        "entityType",
+        "min",
+        "max",
+        "parent",
+        "children",
+        "pool",
+        "chance",
+        "mean",
+        "sd",
+        "participationMode",
+        "anywhere",
+        "precast",
+        "spawn",
+        "spawnFunction",
+        "renames"
+      ],
+      "type": "object"
+    },
+    "RoleEntityType": {
+      "description": "Enum specifying the entity types that may be associated with a role definition.",
+      "enum": [
+        "action",
+        "character",
+        "item",
+        "location",
+        "symbol"
+      ],
+      "type": "string"
+    },
+    "RoleName": {
+      "description": "A name for a role (unique only within its definition).",
+      "type": "string"
+    },
+    "RoleParticipationMode": {
+      "description": "Enum specifying the participation modes for action roles that cast characters.\n\nTo be clear, these are *only* applicable to action roles that cast characters.",
+      "enum": [
+        "bystander",
+        "initiator",
+        "partner",
+        "recipient"
+      ],
+      "type": "string"
+    },
+    "SalienceScoreExpression": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/Enum"
+        },
+        {
+          "$ref": "#/definitions/IntField"
+        },
+        {
+          "$ref": "#/definitions/FloatField"
+        }
+      ],
+      "description": "An expression that evaluates to a numeric salience score."
+    },
+    "Saliences": {
+      "additionalProperties": false,
+      "description": "Specifications for determining a numeric salience score for the action that will be held by a given character who experiences, observes, or otherwise learns about the action.",
+      "properties": {
+        "custom": {
+          "description": "For characters for whom no `roles` entry applies, a series of zero or more custom salience-yielding expressions will be evaluated, with the character bound to the local variable specified in the `variable` property.\n\nThese will be evaluated in turn, with the first numeric evaluated value being assigned as the character's salience. If no custom expression evaluates to a numeric value, the default value will be used.\n\nThis field is only used if there is no applicable per-role field for the character at hand.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        },
+        "default": {
+          "$ref": "#/definitions/SalienceScoreExpression",
+          "description": "A specification for a default value to be used as a fallback for any character for which there is no applicable `roles` entry and for which no `custom` expression yielded a value.\n\nThis will always be structured as a Viv enum, int, or float, where even the enum should resolve to a numeric value."
+        },
+        "roles": {
+          "additionalProperties": {
+            "$ref": "#/definitions/SalienceScoreExpression"
+          },
+          "description": "A mapping from role names to expressions yielding salience values.\n\nFor a character who is bound in the given role, the corresponding expression will determine the salience value.",
+          "propertyNames": {
+            "description": "A name for a role (unique only within its definition)."
+          },
+          "type": "object"
+        },
+        "variable": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/LocalVariable"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If there is a non-empty `custom` field, the local variable to which a character will be bound when computing a salience for them.\n\nThis allows for evaluation of the body expressions, which may refer to this variable in order to do things like conditionalize salience based on the character at hand."
+        }
+      },
+      "required": [
+        "default",
+        "roles",
+        "custom",
+        "variable"
+      ],
+      "type": "object"
+    },
+    "SearchDomainDeclaration": {
+      "additionalProperties": false,
+      "description": "A declaration for how to prepare a search domain for a  {@link  ActionSearch }  or a  {@link  Sifting } .",
+      "properties": {
+        "expression": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Expression"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If the search is to run over a character's memories, this is an expression that should evaluate to a reference to that character.\n\nIf `null` is here, the query will be run over the chronicle (all historical actions), though an error will be thrown if a query is specified and it uses memory criteria (the `salience` and/or `associations` fields).\n\nA few notes:  - The compiler will ensure that a value is only present here if `policy` is     {@link  SearchDomainPreparationPolicy.Expression } .  - If there is already a search domain enclosing this one, the resulting domain will    be narrowed to the intersection of the two domains (the existing one and the memories    of the character specified by this expression).  - If a character has  {@link  CharacterMemory.forgotten  }  an action, it will    not be included in the constructed search domain."
+        },
+        "policy": {
+          "$ref": "#/definitions/SearchDomainPreparationPolicy",
+          "description": "The policy to use when preparing the search domain."
+        }
+      },
+      "required": [
+        "policy",
+        "expression"
+      ],
+      "type": "object"
+    },
+    "SearchDomainPreparationPolicy": {
+      "description": "Enum containing the valid policies for preparing search domains for story sifting.",
+      "enum": [
+        "chronicle",
+        "expression",
+        "inherit"
+      ],
+      "type": "string"
+    },
+    "SelectorCandidate": {
+      "additionalProperties": false,
+      "description": "A candidate that may be targeted via a selector.",
+      "properties": {
+        "bindings": {
+          "$ref": "#/definitions/PrecastBindings",
+          "description": "Precast bindings for the candidate, as asserted in the selector definition."
+        },
+        "isSelector": {
+          "description": "Whether the candidate is a selector. The compiler ensures that action selectors can only target other action selectors, and that plan selectors can only target other plan selectors.",
+          "type": "boolean"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ActionName"
+            },
+            {
+              "$ref": "#/definitions/PlanName"
+            },
+            {
+              "$ref": "#/definitions/SelectorName"
+            }
+          ],
+          "description": "The name of the candidate, i.e., the name of the construct to target."
+        },
+        "weight": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Expression"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If applicable, an expression that will evaluate to the weight for this candidate, which will be used as part of a weighted random sort procedure (see  {@link  SelectorPolicy  } )."
+        }
+      },
+      "required": [
+        "name",
+        "isSelector",
+        "bindings",
+        "weight"
+      ],
+      "type": "object"
+    },
+    "SelectorName": {
+      "description": "A unique name for a selector.",
+      "type": "string"
+    },
+    "SelectorPolicy": {
+      "description": "Enum containing the valid selector policies.",
+      "enum": [
+        "ordered",
+        "randomized",
+        "weighted"
+      ],
+      "type": "string"
+    },
+    "SetPredicate": {
+      "additionalProperties": false,
+      "description": "A set predicate that allows for certain values to appear in a set against which the operand will be tested.",
+      "properties": {
+        "operand": {
+          "description": "The operand to use when testing this predicate.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        },
+        "operator": {
+          "$ref": "#/definitions/SetPredicateOperator",
+          "description": "The operator associated with this predicate."
+        }
+      },
+      "required": [
+        "operator",
+        "operand"
+      ],
+      "type": "object"
+    },
+    "SetPredicateOperator": {
+      "description": "Enum containing the valid operators for set predicates.",
+      "enum": [
+        "none",
+        "any",
+        "all",
+        "exactly"
+      ],
+      "type": "string"
+    },
+    "Sifting": {
+      "additionalProperties": false,
+      "description": "A Viv sifting expression, which tests a sifting pattern against either the chronicle, meaning all historical actions, or a character's memories.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "sifting",
+          "description": "Discriminator for a Viv sifting.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/SiftingValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "SiftingPatternDefinition": {
+      "additionalProperties": false,
+      "description": "The definition for a sifting pattern, which is used to retrieve a sequence of actions that together may be construed as constituting the events in a story.",
+      "properties": {
+        "actions": {
+          "description": "An array containing the roles names for all the actions to expose in a match for this pattern.\n\nThese will correspond to a subset of the roles defined in the `roles` property.",
+          "items": {
+            "$ref": "#/definitions/RoleName"
+          },
+          "type": "array"
+        },
+        "conditions": {
+          "$ref": "#/definitions/ConstructConditions",
+          "description": "Conditions for the sifting pattern, grouped by role name (with the special global-conditions key).\n\nA condition is an expression that must hold (i.e., evaluate to a truthy value) in order for the sifting pattern to match."
+        },
+        "name": {
+          "$ref": "#/definitions/SiftingPatternName",
+          "description": "The (unique) name of the sifting pattern."
+        },
+        "roleForestRoots": {
+          "description": "The names of the roles constituting the roots of the trees composing role-dependency forest for this sifting-pattern definition.\n\nThe roots are given in the order by which role casting will proceed.",
+          "items": {
+            "$ref": "#/definitions/RoleName"
+          },
+          "type": "array"
+        },
+        "roles": {
+          "additionalProperties": {
+            "$ref": "#/definitions/RoleDefinition"
+          },
+          "description": "Mapping from the names of the roles associated with this sifting pattern to their respective role definitions.\n\nThis will include the role definitions defined in the 'actions' section of a sifting-pattern definition, whose role names will also be stored in the `actions` property here.\n\nNote that the roles appear in the order in which the author defined them.",
+          "propertyNames": {
+            "description": "A name for a role (unique only within its definition)."
+          },
+          "type": "object"
+        },
+        "type": {
+          "const": "siftingPattern",
+          "description": "Discriminator for the sifting-pattern construct type.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "roles",
+        "roleForestRoots",
+        "conditions",
+        "actions"
+      ],
+      "type": "object"
+    },
+    "SiftingPatternName": {
+      "description": "A unique name for a sifting pattern.",
+      "type": "string"
+    },
+    "SiftingValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv sifting.",
+      "properties": {
+        "bindings": {
+          "$ref": "#/definitions/PrecastBindings",
+          "description": "Precast bindings for the target pattern, as asserted in the sifting expression."
+        },
+        "patternName": {
+          "$ref": "#/definitions/SiftingPatternName",
+          "description": "The name of the sifting pattern to run."
+        },
+        "searchDomain": {
+          "$ref": "#/definitions/SearchDomainDeclaration",
+          "description": "A declaration for how to construct a search domain for this sifting."
+        }
+      },
+      "required": [
+        "patternName",
+        "bindings",
+        "searchDomain"
+      ],
+      "type": "object"
+    },
+    "SourceAnnotations": {
+      "additionalProperties": false,
+      "description": "An object containing annotations on the expression, specifying its original source code and position in a source file.",
+      "properties": {
+        "code": {
+          "description": "The source code for the expression.",
+          "type": "string"
+        },
+        "column": {
+          "description": "Column number (1-based) at the start of the expression.",
+          "type": "number"
+        },
+        "endColumn": {
+          "description": "Column number (1-based) at the end of the expression.",
+          "type": "number"
+        },
+        "endLine": {
+          "description": "Line number (1-based) at the end of the expression.",
+          "type": "number"
+        },
+        "filePath": {
+          "description": "Path to the source file including the expression, relative to the entry file's parent directory.",
+          "type": "string"
+        },
+        "line": {
+          "description": "Line number (1-based) at the start of the expression.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "filePath",
+        "line",
+        "column",
+        "endLine",
+        "endColumn",
+        "code"
+      ],
+      "type": "object"
+    },
+    "StringField": {
+      "additionalProperties": false,
+      "description": "A Viv string literal.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "string",
+          "description": "Discriminator for a Viv string literal.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The string literal to which this expression will evaluate.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "SymbolReference": {
+      "additionalProperties": false,
+      "description": "A Viv symbol reference, structured as an anchor name and a (possibly empty) path to a specific property value.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "symbolReference",
+          "description": "Discriminator for a Viv symbol reference.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ReferenceValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "TemplateStringField": {
+      "additionalProperties": false,
+      "description": "A Viv templated string, structured as an ordered array of string literals and string-producing expressions, the evaluations of which are concatenated to form the rendered string.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "templateString",
+          "description": "Discriminator for a Viv templated string.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The actual expression value.",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/definitions/Expression"
+              }
+            ]
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "TemporalConstraint": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/TimeFrameStatement"
+        },
+        {
+          "$ref": "#/definitions/TimeOfDayStatement"
+        }
+      ],
+      "description": "A temporal constraint specifying a range between either points in time or times of day."
+    },
+    "TimeDelta": {
+      "additionalProperties": false,
+      "description": "A time period (e.g., \"2 weeks\") that can be used as a delta to resolve a point in time relative to some anchor time (e.g., the current simulation time).",
+      "properties": {
+        "amount": {
+          "description": "The number of time units -- e.g., `2` in `2 weeks`.",
+          "type": "number"
+        },
+        "unit": {
+          "$ref": "#/definitions/TimeFrameTimeUnit",
+          "description": "The unit of time -- e.g., `weeks` in `2 weeks`."
+        }
+      },
+      "required": [
+        "amount",
+        "unit"
+      ],
+      "type": "object"
+    },
+    "TimeFrameStatement": {
+      "additionalProperties": false,
+      "description": "A temporal constraint specifying a range between two points in time.",
+      "properties": {
+        "close": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TimeDelta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The point in time at which the range closes.\n\nThis is specified as a time delta (e.g., `5 days`) that the host application can resolve at runtime into a point in time (by anchoring it relative to a given simulation timestamp). If no delta is specified here, the range is open on this end."
+        },
+        "open": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TimeDelta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The point in time at which the range opens.\n\nThis is specified as a time delta (e.g., `5 days`) that the host application can resolve at runtime into a point in time (by anchoring it relative to a given simulation timestamp). If no relative delta is specified here, the range is open on this end."
+        },
+        "type": {
+          "const": "timeFrame",
+          "description": "Discriminator for a time-frame temporal constraint.",
+          "type": "string"
+        },
+        "useActionTimestamp": {
+          "description": "Whether to anchor the time-frame constraint in the timestamp of the action that directly triggered a reaction -- meaning the action whose definition included the reaction declaration -- as opposed to the current simulation timestamp.\n\nThis distinction only matters for cases where a reaction is triggered because a character has learned about an action after the fact. In such cases, we need to know whether a time-frame constraint like \"between 1 year and 3 years\" holds relative to the timestamp of the original  action or relative to the time at which the character learned about the original action.\n\nNote: The compiler ensures that this field can only be `true` for temporal constraints on reactions.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type",
+        "open",
+        "close",
+        "useActionTimestamp"
+      ],
+      "type": "object"
+    },
+    "TimeFrameTimeUnit": {
+      "description": "Enum containing the valid time units for time-frame statements.",
+      "enum": [
+        "minutes",
+        "hours",
+        "days",
+        "weeks",
+        "months",
+        "years"
+      ],
+      "type": "string"
+    },
+    "TimeOfDayDeclaration": {
+      "additionalProperties": false,
+      "description": "A time of day specified by a Viv author.",
+      "properties": {
+        "hour": {
+          "description": "The hour of day.\n\nThe compiler ensures that all values fall in the range `[0, 23]`.",
+          "type": "number"
+        },
+        "minute": {
+          "description": "The minute of the hour of day.\n\nThe compiler ensures that all values fall in the range `[0, 59]`.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "hour",
+        "minute"
+      ],
+      "type": "object"
+    },
+    "TimeOfDayParameterizedReaction": {
+      "additionalProperties": false,
+      "description": "A simple record of a case of reaction that is constrained by the time of day, used for validation purposes.",
+      "properties": {
+        "constructName": {
+          "$ref": "#/definitions/ActionName",
+          "description": "The name of the construct definition containing a reaction that is constrained by the time of day."
+        },
+        "constructType": {
+          "$ref": "#/definitions/ConstructDiscriminator",
+          "description": "The type of the construct definition containing a reaction that is constrained by the time of day."
+        },
+        "reaction": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ActionName"
+            },
+            {
+              "$ref": "#/definitions/SelectorName"
+            },
+            {
+              "$ref": "#/definitions/PlanName"
+            }
+          ],
+          "description": "The name of the target construct of the reaction that is constrained by the time of day."
+        }
+      },
+      "required": [
+        "constructType",
+        "constructName",
+        "reaction"
+      ],
+      "type": "object"
+    },
+    "TimeOfDayStatement": {
+      "additionalProperties": false,
+      "description": "A temporal constraint specifying a range between two times of day.",
+      "properties": {
+        "close": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TimeOfDayDeclaration"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The time of day that closes the range.\n\nIf no time of day is specified here, the range is open on this end.\n\nNote that the host application is tasked with determining whether a given time of day has passed."
+        },
+        "open": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TimeOfDayDeclaration"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The time of day that opens the range.\n\nIf no time of day is specified here, the range is open on this end.\n\nNote that the host application is tasked with determining whether a given time of day has passed."
+        },
+        "type": {
+          "const": "timeOfDay",
+          "description": "Discriminator for a time-of-day temporal constraint.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "open",
+        "close"
+      ],
+      "type": "object"
+    },
+    "TropeDefinition": {
+      "additionalProperties": false,
+      "description": "A definition for a Viv trope (reusable bundle of conditions).",
+      "properties": {
+        "conditions": {
+          "$ref": "#/definitions/ConstructConditions",
+          "description": "Conditions for the trope, grouped by role name (with the special global-conditions key).\n\nA condition is an expression that must hold (i.e., evaluate to a truthy value) in order for the trope to fit a given cast."
+        },
+        "name": {
+          "$ref": "#/definitions/TropeName",
+          "description": "The (unique) name of the trope."
+        },
+        "roleForestRoots": {
+          "description": "The names of the roles constituting the roots of the trees composing role-dependency forest for this trope definition.\n\nThe roots are given in the order by which role casting will proceed.",
+          "items": {
+            "$ref": "#/definitions/RoleName"
+          },
+          "type": "array"
+        },
+        "roles": {
+          "additionalProperties": {
+            "$ref": "#/definitions/RoleDefinition"
+          },
+          "description": "Mapping from the names of the roles associated with this trope to their respective role definitions.\n\nThe roles appear in the order in which the author defined them.",
+          "propertyNames": {
+            "description": "A name for a role (unique only within its definition)."
+          },
+          "type": "object"
+        },
+        "type": {
+          "const": "trope",
+          "description": "Discriminator for the trope construct type.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "roles",
+        "roleForestRoots",
+        "conditions"
+      ],
+      "type": "object"
+    },
+    "TropeFit": {
+      "additionalProperties": false,
+      "description": "A Viv trope fit, which evaluates to true if the trope holds with the given arguments.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "tropeFit",
+          "description": "Discriminator for a Viv trope fit.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/TropeFitValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "TropeFitValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv trope fit.",
+      "properties": {
+        "bindings": {
+          "$ref": "#/definitions/PrecastBindings",
+          "description": "Precast bindings for the target trope, as asserted in the trope-fit expression."
+        },
+        "tropeName": {
+          "$ref": "#/definitions/TropeName",
+          "description": "The name of the trope that will be used for the test."
+        }
+      },
+      "required": [
+        "tropeName",
+        "bindings"
+      ],
+      "type": "object"
+    },
+    "TropeName": {
+      "description": "A unique name for a trope.",
+      "type": "string"
+    },
+    "VariableName": {
+      "description": "The name for a variable used in an assignment or a loop.",
+      "type": "string"
+    },
+    "WrappedExpression": {
+      "additionalProperties": false,
+      "description": "A Viv expression wrapped with an array containing the names of all roles that it references.\n\nThese reference lists are used for various optimizations.",
+      "properties": {
+        "body": {
+          "$ref": "#/definitions/Expression",
+          "description": "The actual expression that is being wrapped."
+        },
+        "references": {
+          "description": "Names of the roles referenced in the AST chunk constituting the expression.\n\nThis field is used to support various optimizations.",
+          "items": {
+            "$ref": "#/definitions/RoleName"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "body",
+        "references"
+      ],
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+// Action using a custom function call in effects
+
+action transform:
+    roles:
+        @actor:
+            as: initiator
+    effects:
+        ~applyEffect(@actor)

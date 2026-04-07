@@ -1,0 +1,13 @@
+// Action with loop in effects
+
+action distribute:
+    roles:
+        @distributor:
+            as: initiator
+        @recipients*:
+            as: recipient
+            n: 2-5
+    effects:
+        loop @recipients* as _@r:
+            _@r.items += 1
+        end

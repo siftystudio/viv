@@ -1,0 +1,10 @@
+// Object literal assigned to a scratch variable
+
+action catalog:
+    roles:
+        @archivist:
+            as: initiator
+        @artifact:
+            as: item
+    effects:
+        $&record = {label: @artifact.name, condition: @artifact.quality}

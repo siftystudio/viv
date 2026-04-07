@@ -1,0 +1,15 @@
+// Action using enum references in importance, conditions, effects, and saliences
+
+action evaluate:
+    roles:
+        @judge:
+            as: initiator
+        @subject:
+            as: partner
+    importance: #IMPORTANCE_HIGH
+    conditions:
+        @subject.score > #THRESHOLD
+    effects:
+        @subject.rating = #RATING_GOOD
+    saliences:
+        default: #SALIENCE_MEDIUM

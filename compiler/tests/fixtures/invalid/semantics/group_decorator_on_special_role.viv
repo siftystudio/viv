@@ -1,0 +1,12 @@
+// Invalid: group-role decorator on special role
+
+action chat:
+    roles:
+        @speaker:
+            as: initiator
+        @listener:
+            as: recipient
+    effects:
+        loop @hearer* as _@h:
+            _@h.informed = true
+        end

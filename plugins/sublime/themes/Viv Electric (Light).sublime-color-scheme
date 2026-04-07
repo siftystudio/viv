@@ -1,0 +1,136 @@
+{
+  "name": "Viv Electric (Light)",
+  "author": "Sifty",
+  "variables": {},
+  "globals": {
+    "background": "#FFFFFF",
+    "foreground": "#3B4048",
+    "caret": "#D63384",
+    "line_highlight": "#F5F5F5",
+    "selection": "#E8E8E8",
+    "gutter": "#FFFFFF",
+    "gutter_foreground": "#B0B8C4"
+  },
+  "rules": [
+    {
+      "scope": "keyword.operator.viv, keyword.operator.word.viv",
+      "foreground": "#D63384"
+    },
+    {
+      "scope": "keyword.other.viv",
+      "foreground": "#7C3AED"
+    },
+    {
+      "scope": "keyword.other.parameter.viv",
+      "foreground": "#7C3AED",
+      "font_style": "italic"
+    },
+    {
+      "scope": "entity.name.function.viv, entity.name.function.action.viv, entity.name.function.selector.viv, entity.name.function.plan.viv, entity.name.function.query.viv, entity.name.function.pattern.viv, entity.name.function.trope.viv, entity.name.label.viv",
+      "foreground": "#0891B2"
+    },
+    {
+      "scope": "support.constant.viv",
+      "foreground": "#DC2626"
+    },
+    {
+      "scope": "support.variable.reserved.viv",
+      "foreground": "#DC2626"
+    },
+    {
+      "scope": "constant.language.viv",
+      "foreground": "#EA580C"
+    },
+    {
+      "scope": "string.quoted.double.viv, string.quoted.single.viv",
+      "foreground": "#CA8A04"
+    },
+    {
+      "scope": "entity.name.variable.viv, entity.name.variable.global.viv, entity.name.variable.local.viv",
+      "foreground": "#16A34A"
+    },
+    {
+      "scope": "punctuation.accessor.viv, punctuation.separator.key-value.viv, punctuation.separator.sequence.viv, punctuation.separator.viv, punctuation.terminator.statement.viv",
+      "foreground": "#9CA3AF"
+    },
+    {
+      "scope": "comment.line.double-slash.viv, punctuation.definition.comment.viv",
+      "foreground": "#B0B8C4"
+    },
+    {
+      "scope": "meta.external-name.viv",
+      "foreground": "#3B4048"
+    },
+    {
+      "scope": "invalid.illegal.viv",
+      "foreground": "#DC2626",
+      "font_style": "underline"
+    },
+
+    {
+      "scope": "keyword, keyword.control, keyword.operator, keyword.operator.expression, keyword.operator.logical, keyword.operator.assignment, keyword.operator.comparison",
+      "foreground": "#D63384"
+    },
+    {
+      "scope": "keyword.other, storage.type, storage.modifier",
+      "foreground": "#7C3AED"
+    },
+    {
+      "scope": "entity.name.function, meta.function-call, support.function",
+      "foreground": "#0891B2"
+    },
+    {
+      "scope": "entity.name.type, entity.name.class, support.type, support.class",
+      "foreground": "#3B4048"
+    },
+    {
+      "scope": "support.constant, constant.language, constant.numeric, constant.character, constant.other",
+      "foreground": "#EA580C"
+    },
+    {
+      "scope": "variable, variable.other, variable.parameter, variable.language",
+      "foreground": "#16A34A"
+    },
+    {
+      "scope": "string, string.quoted, string.quoted.double, string.quoted.single, string.template, string.interpolated",
+      "foreground": "#CA8A04"
+    },
+    {
+      "scope": "comment, comment.line, comment.block, punctuation.definition.comment",
+      "foreground": "#B0B8C4"
+    },
+    {
+      "scope": "punctuation, punctuation.definition.tag, punctuation.separator, punctuation.terminator, punctuation.accessor, meta.brace, punctuation.section",
+      "foreground": "#9CA3AF"
+    },
+    {
+      "scope": "entity.name.tag",
+      "foreground": "#D63384"
+    },
+    {
+      "scope": "entity.other.attribute-name",
+      "foreground": "#16A34A"
+    },
+    {
+      "scope": "support.type.property-name.css, support.type.property-name",
+      "foreground": "#DC2626"
+    },
+    {
+      "scope": "support.constant.property-value, constant.numeric.css, keyword.other.unit",
+      "foreground": "#EA580C"
+    },
+    {
+      "scope": "string.regexp",
+      "foreground": "#0891B2"
+    },
+    {
+      "scope": "constant.character.escape",
+      "foreground": "#DC2626"
+    },
+    {
+      "scope": "invalid, invalid.illegal",
+      "foreground": "#DC2626",
+      "font_style": "underline"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+// Role with optional slots (min < max) and casting probability
+
+action party:
+    roles:
+        @host:
+            as: initiator
+        @guests*:
+            as: partner
+            n: 1-5 [75%]

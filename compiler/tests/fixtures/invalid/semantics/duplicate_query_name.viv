@@ -1,0 +1,20 @@
+// Invalid: duplicate query name
+
+action fight:
+    roles:
+        @fighter:
+            as: initiator
+
+query recent-fights:
+    roles:
+        @witness:
+            as: character
+    action:
+        any: fight
+
+query recent-fights:
+    roles:
+        @witness:
+            as: character
+    action:
+        any: fight

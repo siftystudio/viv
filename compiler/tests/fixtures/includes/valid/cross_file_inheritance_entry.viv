@@ -1,0 +1,7 @@
+// Child action inheriting from a template defined in an included file
+
+include "parent_template.viv"
+
+
+action derived-action from imported-base:
+    gloss: "a derived action"

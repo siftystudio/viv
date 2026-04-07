@@ -1,0 +1,24 @@
+// Invalid: selector candidate full cast missing required role
+
+reserved action respond:
+    roles:
+        @responder:
+            as: initiator
+        @witness:
+            as: recipient
+
+action wave:
+    roles:
+        @waver:
+            as: initiator
+
+action-selector pick:
+    roles:
+        @actor:
+            as: initiator
+    target randomly:
+        respond:
+            with:
+                @responder: @actor
+        ;
+        wave;

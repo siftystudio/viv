@@ -1,0 +1,15 @@
+// Invalid: assignment in non-action construct
+
+action fight:
+    roles:
+        @fighter:
+            as: initiator
+
+query bad-assign:
+    roles:
+        @witness:
+            as: character
+    conditions:
+        @witness.alerted = true
+    action:
+        any: fight

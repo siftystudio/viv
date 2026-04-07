@@ -1,0 +1,9 @@
+// Invalid: undefined role in associations
+
+action bad-assoc:
+    roles:
+        @actor:
+            as: initiator
+    associations:
+        roles:
+            @ghost: friendship

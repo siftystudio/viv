@@ -1,0 +1,16 @@
+// Group action role with n: but missing * decorator
+
+action foo:
+    roles:
+        @doer:
+            as: initiator
+
+
+pattern bad:
+    roles:
+        @p:
+            as: character
+    actions:
+        @acts:
+            from: @p.memories
+            n: 1-5

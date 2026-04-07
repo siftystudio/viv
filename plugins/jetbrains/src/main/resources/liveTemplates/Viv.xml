@@ -1,0 +1,435 @@
+<templateSet group="Viv">
+
+  <!-- Construct definitions -->
+
+  <template name="action" value="action $NAME$:&#10;&#9;roles:&#10;&#9;&#9;@$INITIATOR$:&#10;&#9;&#9;&#9;as: character, initiator&#10;&#9;&#9;@$RECIPIENT$:&#10;&#9;&#9;&#9;as: character, recipient&#10;&#9;conditions:&#10;&#9;&#9;$COND$&#10;&#9;effects:&#10;&#9;&#9;$END$" description="Action definition" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="INITIATOR" expression="" defaultValue="&quot;initiator&quot;" alwaysStopAt="true"/>
+    <variable name="RECIPIENT" expression="" defaultValue="&quot;recipient&quot;" alwaysStopAt="true"/>
+    <variable name="COND" expression="" defaultValue="" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="action from" value="action $NAME$ from $PARENT$:&#10;&#9;$END$" description="Child action" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="PARENT" expression="" defaultValue="&quot;parent&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="action variant" value="action $NAME$ from $PARENT$;" description="Action variant" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="PARENT" expression="" defaultValue="&quot;parent&quot;" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="template action" value="template action $NAME$:&#10;&#9;roles:&#10;&#9;&#9;@$INITIATOR$:&#10;&#9;&#9;&#9;as: character, initiator&#10;&#9;&#9;@$RECIPIENT$:&#10;&#9;&#9;&#9;as: character, recipient&#10;&#9;$END$" description="Template action" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="INITIATOR" expression="" defaultValue="&quot;initiator&quot;" alwaysStopAt="true"/>
+    <variable name="RECIPIENT" expression="" defaultValue="&quot;recipient&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="reserved action" value="reserved action $NAME$:&#10;&#9;roles:&#10;&#9;&#9;@$INITIATOR$:&#10;&#9;&#9;&#9;as: character, initiator&#10;&#9;$END$" description="Reserved action" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="INITIATOR" expression="" defaultValue="&quot;initiator&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="action-selector" value="action-selector $NAME$:&#10;&#9;roles:&#10;&#9;&#9;@$ACTOR$:&#10;&#9;&#9;&#9;as: character, initiator&#10;&#9;target $POLICY$:&#10;&#9;&#9;$CANDIDATE$;&#10;&#9;$END$" description="Action-selector definition" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="ACTOR" expression="" defaultValue="&quot;actor&quot;" alwaysStopAt="true"/>
+    <variable name="POLICY" expression="" defaultValue="&quot;randomly&quot;" alwaysStopAt="true"/>
+    <variable name="CANDIDATE" expression="" defaultValue="&quot;candidate&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="plan-selector" value="plan-selector $NAME$:&#10;&#9;roles:&#10;&#9;&#9;@$ACTOR$:&#10;&#9;&#9;&#9;as: character&#10;&#9;target $POLICY$:&#10;&#9;&#9;$CANDIDATE$;&#10;&#9;$END$" description="Plan-selector definition" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="ACTOR" expression="" defaultValue="&quot;actor&quot;" alwaysStopAt="true"/>
+    <variable name="POLICY" expression="" defaultValue="&quot;randomly&quot;" alwaysStopAt="true"/>
+    <variable name="CANDIDATE" expression="" defaultValue="&quot;candidate&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="plan" value="plan $NAME$:&#10;&#9;roles:&#10;&#9;&#9;@$ACTOR$:&#10;&#9;&#9;&#9;as: character&#10;&#9;phases:&#10;&#9;&#9;>$FIRST$:&#10;&#9;&#9;&#9;queue action $STEP$:&#10;&#9;&#9;&#9;&#9;with partial:&#10;&#9;&#9;&#9;&#9;&#9;@initiator: @$ACTOR$&#10;&#9;&#9;>$LAST$:&#10;&#9;&#9;&#9;$END$" description="Plan definition" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="ACTOR" expression="" defaultValue="&quot;actor&quot;" alwaysStopAt="true"/>
+    <variable name="FIRST" expression="" defaultValue="&quot;first&quot;" alwaysStopAt="true"/>
+    <variable name="STEP" expression="" defaultValue="&quot;step&quot;" alwaysStopAt="true"/>
+    <variable name="LAST" expression="" defaultValue="&quot;last&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="query" value="query $NAME$:&#10;&#9;roles:&#10;&#9;&#9;@$PERSON$:&#10;&#9;&#9;&#9;as: character&#10;&#9;associations:&#10;&#9;&#9;$SCOPE$: $TAG$&#10;&#9;$END$" description="Query definition" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="PERSON" expression="" defaultValue="&quot;person&quot;" alwaysStopAt="true"/>
+    <variable name="SCOPE" expression="" defaultValue="&quot;any&quot;" alwaysStopAt="true"/>
+    <variable name="TAG" expression="" defaultValue="&quot;tag&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="pattern" value="pattern $NAME$:&#10;&#9;roles:&#10;&#9;&#9;@$A$:&#10;&#9;&#9;&#9;as: character&#10;&#9;&#9;@$B$:&#10;&#9;&#9;&#9;as: character&#10;&#9;actions:&#10;&#9;&#9;@$X$: from: @$A$.recent_actions&#10;&#9;&#9;@$Y$: from: @$B$.recent_actions&#10;&#9;conditions:&#10;&#9;&#9;$END$" description="Sifting-pattern definition" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="A" expression="" defaultValue="&quot;a&quot;" alwaysStopAt="true"/>
+    <variable name="B" expression="" defaultValue="&quot;b&quot;" alwaysStopAt="true"/>
+    <variable name="X" expression="" defaultValue="&quot;x&quot;" alwaysStopAt="true"/>
+    <variable name="Y" expression="" defaultValue="&quot;y&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="trope" value="trope $NAME$:&#10;&#9;roles:&#10;&#9;&#9;@$A$:&#10;&#9;&#9;&#9;as: character&#10;&#9;&#9;@$B$:&#10;&#9;&#9;&#9;as: character&#10;&#9;conditions:&#10;&#9;&#9;$END$" description="Trope definition" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="A" expression="" defaultValue="&quot;a&quot;" alwaysStopAt="true"/>
+    <variable name="B" expression="" defaultValue="&quot;b&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <!-- Sections and fields -->
+
+  <template name="roles" value="roles:&#10;&#9;@$INITIATOR$:&#10;&#9;&#9;as: character, initiator&#10;&#9;@$RECIPIENT$:&#10;&#9;&#9;as: character, recipient&#10;$END$" description="Roles section" toReformat="false" toShortenFQNames="false">
+    <variable name="INITIATOR" expression="" defaultValue="&quot;initiator&quot;" alwaysStopAt="true"/>
+    <variable name="RECIPIENT" expression="" defaultValue="&quot;recipient&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="conditions" value="conditions:&#10;&#9;$END$" description="Conditions section" toReformat="false" toShortenFQNames="false">
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="effects" value="effects:&#10;&#9;$END$" description="Effects section" toReformat="false" toShortenFQNames="false">
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="scratch" value="scratch:&#10;&#9;$$@$VAR$ = $VAL$&#10;$END$" description="Scratch section" toReformat="false" toShortenFQNames="false">
+    <variable name="VAR" expression="" defaultValue="&quot;var&quot;" alwaysStopAt="true"/>
+    <variable name="VAL" expression="" defaultValue="&quot;0&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="gloss" value="gloss: &quot;$DESC$&quot;" description="Gloss field" toReformat="false" toShortenFQNames="false">
+    <variable name="DESC" expression="" defaultValue="&quot;description&quot;" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="report" value="report: '$TEMPLATE$'" description="Report field" toReformat="false" toShortenFQNames="false">
+    <variable name="TEMPLATE" expression="" defaultValue="&quot;template&quot;" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="importance" value="importance: $VAL$" description="Importance field" toReformat="false" toShortenFQNames="false">
+    <variable name="VAL" expression="" defaultValue="&quot;#MODERATE&quot;" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="tags" value="tags: $TAG1$, $TAG2$" description="Tags field" toReformat="false" toShortenFQNames="false">
+    <variable name="TAG1" expression="" defaultValue="&quot;tag1&quot;" alwaysStopAt="true"/>
+    <variable name="TAG2" expression="" defaultValue="&quot;tag2&quot;" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <!-- Reactions -->
+
+  <template name="reactions" value="reactions:&#10;&#9;queue action $NAME$:&#10;&#9;&#9;with:&#10;&#9;&#9;&#9;@initiator: @$REF1$&#10;&#9;&#9;&#9;@recipient: @$REF2$&#10;$END$" description="Reactions section" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="REF1" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="REF2" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="queue action" value="queue action $NAME$:&#10;&#9;with$PARTIAL$:&#10;&#9;&#9;@$ROLE$: @$REF$&#10;$END$" description="Queue action reaction" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="PARTIAL" expression="" defaultValue="&quot; partial&quot;" alwaysStopAt="true"/>
+    <variable name="ROLE" expression="" defaultValue="&quot;initiator&quot;" alwaysStopAt="true"/>
+    <variable name="REF" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="queue plan" value="queue plan $NAME$:&#10;&#9;with$PARTIAL$:&#10;&#9;&#9;@$ROLE$: @$REF$&#10;$END$" description="Queue plan reaction" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="PARTIAL" expression="" defaultValue="&quot; partial&quot;" alwaysStopAt="true"/>
+    <variable name="ROLE" expression="" defaultValue="&quot;role&quot;" alwaysStopAt="true"/>
+    <variable name="REF" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="queue action-selector" value="queue action-selector $NAME$:&#10;&#9;with$PARTIAL$:&#10;&#9;&#9;@$ROLE$: @$REF$&#10;$END$" description="Queue action-selector reaction" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="PARTIAL" expression="" defaultValue="&quot; partial&quot;" alwaysStopAt="true"/>
+    <variable name="ROLE" expression="" defaultValue="&quot;role&quot;" alwaysStopAt="true"/>
+    <variable name="REF" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="queue plan-selector" value="queue plan-selector $NAME$:&#10;&#9;with$PARTIAL$:&#10;&#9;&#9;@$ROLE$: @$REF$&#10;$END$" description="Queue plan-selector reaction" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="PARTIAL" expression="" defaultValue="&quot; partial&quot;" alwaysStopAt="true"/>
+    <variable name="ROLE" expression="" defaultValue="&quot;role&quot;" alwaysStopAt="true"/>
+    <variable name="REF" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="repeat" value="repeat:&#10;&#9;if:&#10;&#9;&#9;$COND$&#10;&#9;max: $MAX$" description="Repeat field" toReformat="false" toShortenFQNames="false">
+    <variable name="COND" expression="" defaultValue="&quot;condition&quot;" alwaysStopAt="true"/>
+    <variable name="MAX" expression="" defaultValue="&quot;3&quot;" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <!-- Embargoes -->
+
+  <template name="embargoes" value="embargoes:&#10;&#9;embargo:&#10;&#9;&#9;location: $LOC$&#10;&#9;&#9;time: $TIME$&#10;$END$" description="Embargoes section" toReformat="false" toShortenFQNames="false">
+    <variable name="LOC" expression="" defaultValue="&quot;anywhere&quot;" alwaysStopAt="true"/>
+    <variable name="TIME" expression="" defaultValue="&quot;forever&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="embargo" value="embargo:&#10;&#9;location: $LOC$&#10;&#9;time: $TIME$&#10;&#9;roles: @$ROLE$&#10;$END$" description="Embargo entry" toReformat="false" toShortenFQNames="false">
+    <variable name="LOC" expression="" defaultValue="&quot;anywhere&quot;" alwaysStopAt="true"/>
+    <variable name="TIME" expression="" defaultValue="&quot;forever&quot;" alwaysStopAt="true"/>
+    <variable name="ROLE" expression="" defaultValue="&quot;role&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <!-- Saliences and associations -->
+
+  <template name="saliences" value="saliences:&#10;&#9;default: $VAL$&#10;$END$" description="Saliences section" toReformat="false" toShortenFQNames="false">
+    <variable name="VAL" expression="" defaultValue="&quot;#NEUTRAL&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="saliences for" value="saliences:&#10;&#9;default: $DEFAULT$&#10;&#9;for _@$C$:&#10;&#9;&#9;if $COND$:&#10;&#9;&#9;&#9;$HIGH$&#10;&#9;&#9;else:&#10;&#9;&#9;&#9;$DEFAULT$&#10;&#9;&#9;end&#10;&#9;end&#10;$END$" description="Saliences with custom field" toReformat="false" toShortenFQNames="false">
+    <variable name="DEFAULT" expression="" defaultValue="&quot;#NEUTRAL&quot;" alwaysStopAt="true"/>
+    <variable name="C" expression="" defaultValue="&quot;c&quot;" alwaysStopAt="true"/>
+    <variable name="COND" expression="" defaultValue="&quot;_@c.trust > 5&quot;" alwaysStopAt="true"/>
+    <variable name="HIGH" expression="" defaultValue="&quot;#INTERESTING&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="associations" value="associations:&#10;&#9;default: $TAG$&#10;$END$" description="Associations section" toReformat="false" toShortenFQNames="false">
+    <variable name="TAG" expression="" defaultValue="&quot;tag&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="associations for" value="associations:&#10;&#9;default: $DEFAULT$&#10;&#9;for _@$C$:&#10;&#9;&#9;if $COND$:&#10;&#9;&#9;&#9;$POS$&#10;&#9;&#9;else:&#10;&#9;&#9;&#9;$NEU$&#10;&#9;&#9;end&#10;&#9;end&#10;$END$" description="Associations with custom field" toReformat="false" toShortenFQNames="false">
+    <variable name="DEFAULT" expression="" defaultValue="&quot;tag&quot;" alwaysStopAt="true"/>
+    <variable name="C" expression="" defaultValue="&quot;c&quot;" alwaysStopAt="true"/>
+    <variable name="COND" expression="" defaultValue="&quot;_@c.trust > 5&quot;" alwaysStopAt="true"/>
+    <variable name="POS" expression="" defaultValue="&quot;positive-tag&quot;" alwaysStopAt="true"/>
+    <variable name="NEU" expression="" defaultValue="&quot;neutral-tag&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <!-- Selector policies -->
+
+  <template name="target randomly" value="target randomly:&#10;&#9;$C1$;&#10;&#9;$C2$;&#10;$END$" description="Target randomly policy" toReformat="false" toShortenFQNames="false">
+    <variable name="C1" expression="" defaultValue="&quot;candidate&quot;" alwaysStopAt="true"/>
+    <variable name="C2" expression="" defaultValue="&quot;candidate&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="target with weights" value="target with weights:&#10;&#9;($W1$) $C1$:&#10;&#9;&#9;with$P1$:&#10;&#9;&#9;&#9;@$R1$: @$REF1$&#10;&#9;($W2$) $C2$:&#10;&#9;&#9;with$P2$:&#10;&#9;&#9;&#9;@$R2$: @$REF2$&#10;$END$" description="Target with weights policy" toReformat="false" toShortenFQNames="false">
+    <variable name="W1" expression="" defaultValue="&quot;3&quot;" alwaysStopAt="true"/>
+    <variable name="C1" expression="" defaultValue="&quot;candidate&quot;" alwaysStopAt="true"/>
+    <variable name="P1" expression="" defaultValue="&quot; partial&quot;" alwaysStopAt="true"/>
+    <variable name="R1" expression="" defaultValue="&quot;role&quot;" alwaysStopAt="true"/>
+    <variable name="REF1" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="W2" expression="" defaultValue="&quot;1&quot;" alwaysStopAt="true"/>
+    <variable name="C2" expression="" defaultValue="&quot;candidate&quot;" alwaysStopAt="true"/>
+    <variable name="P2" expression="" defaultValue="&quot; partial&quot;" alwaysStopAt="true"/>
+    <variable name="R2" expression="" defaultValue="&quot;role&quot;" alwaysStopAt="true"/>
+    <variable name="REF2" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="target in order" value="target in order:&#10;&#9;$C1$:&#10;&#9;&#9;with$P1$:&#10;&#9;&#9;&#9;@$R1$: @$REF1$&#10;&#9;$C2$:&#10;&#9;&#9;with$P2$:&#10;&#9;&#9;&#9;@$R2$: @$REF2$&#10;$END$" description="Target in order policy" toReformat="false" toShortenFQNames="false">
+    <variable name="C1" expression="" defaultValue="&quot;candidate&quot;" alwaysStopAt="true"/>
+    <variable name="P1" expression="" defaultValue="&quot; partial&quot;" alwaysStopAt="true"/>
+    <variable name="R1" expression="" defaultValue="&quot;role&quot;" alwaysStopAt="true"/>
+    <variable name="REF1" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="C2" expression="" defaultValue="&quot;fallback&quot;" alwaysStopAt="true"/>
+    <variable name="P2" expression="" defaultValue="&quot; partial&quot;" alwaysStopAt="true"/>
+    <variable name="R2" expression="" defaultValue="&quot;role&quot;" alwaysStopAt="true"/>
+    <variable name="REF2" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <!-- Plan-specific -->
+
+  <template name="phases" value="phases:&#10;&#9;>$NAME$:&#10;&#9;&#9;$END$" description="Phases section" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="wait" value="wait:&#10;&#9;timeout: $N$ $UNIT$&#10;&#9;until:&#10;&#9;&#9;$COND$&#10;$END$" description="Wait plan instruction" toReformat="false" toShortenFQNames="false">
+    <variable name="N" expression="" defaultValue="&quot;1&quot;" alwaysStopAt="true"/>
+    <variable name="UNIT" expression="" defaultValue="&quot;days&quot;" alwaysStopAt="true"/>
+    <variable name="COND" expression="" defaultValue="&quot;condition&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <!-- Reaction windows -->
+
+  <template name="all" value="all:&#10;&#9;queue action $N1$:&#10;&#9;&#9;with partial:&#10;&#9;&#9;&#9;@initiator: @$R1$&#10;&#9;queue action $N2$:&#10;&#9;&#9;with partial:&#10;&#9;&#9;&#9;@initiator: @$R2$&#10;close&#10;$END$" description="All reaction window" toReformat="false" toShortenFQNames="false">
+    <variable name="N1" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="R1" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="N2" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="R2" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="any" value="any:&#10;&#9;queue action $N1$:&#10;&#9;&#9;with partial:&#10;&#9;&#9;&#9;@initiator: @$R1$&#10;&#9;queue action $N2$:&#10;&#9;&#9;with partial:&#10;&#9;&#9;&#9;@initiator: @$R2$&#10;close&#10;$END$" description="Any reaction window" toReformat="false" toShortenFQNames="false">
+    <variable name="N1" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="R1" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="N2" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="R2" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="untracked" value="untracked:&#10;&#9;queue action $NAME$:&#10;&#9;&#9;with partial:&#10;&#9;&#9;&#9;@initiator: @$REF$&#10;close&#10;$END$" description="Untracked reaction window" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="REF" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <!-- Temporal constraints -->
+
+  <template name="time" value="time:&#10;&#9;after: $N$ $UNIT$ from $ACT$&#10;$END$" description="Time constraint section" toReformat="false" toShortenFQNames="false">
+    <variable name="N" expression="" defaultValue="&quot;1&quot;" alwaysStopAt="true"/>
+    <variable name="UNIT" expression="" defaultValue="&quot;hours&quot;" alwaysStopAt="true"/>
+    <variable name="ACT" expression="" defaultValue="&quot;action&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="after" value="after: $N$ $UNIT$ from $ACT$" description="After time constraint" toReformat="false" toShortenFQNames="false">
+    <variable name="N" expression="" defaultValue="&quot;1&quot;" alwaysStopAt="true"/>
+    <variable name="UNIT" expression="" defaultValue="&quot;hours&quot;" alwaysStopAt="true"/>
+    <variable name="ACT" expression="" defaultValue="&quot;action&quot;" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="before" value="before: $N$ $UNIT$ from $ACT$" description="Before time constraint" toReformat="false" toShortenFQNames="false">
+    <variable name="N" expression="" defaultValue="&quot;1&quot;" alwaysStopAt="true"/>
+    <variable name="UNIT" expression="" defaultValue="&quot;hours&quot;" alwaysStopAt="true"/>
+    <variable name="ACT" expression="" defaultValue="&quot;action&quot;" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="between" value="between: $N1$ $U1$ and $N2$ $U2$ from $ACT$" description="Between time constraint" toReformat="false" toShortenFQNames="false">
+    <variable name="N1" expression="" defaultValue="&quot;1&quot;" alwaysStopAt="true"/>
+    <variable name="U1" expression="" defaultValue="&quot;hours&quot;" alwaysStopAt="true"/>
+    <variable name="N2" expression="" defaultValue="&quot;3&quot;" alwaysStopAt="true"/>
+    <variable name="U2" expression="" defaultValue="&quot;hours&quot;" alwaysStopAt="true"/>
+    <variable name="ACT" expression="" defaultValue="&quot;action&quot;" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <!-- Control flow -->
+
+  <template name="if" value="if $COND$:&#10;&#9;$END$&#10;end" description="If conditional" toReformat="false" toShortenFQNames="false">
+    <variable name="COND" expression="" defaultValue="&quot;condition&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="if else" value="if $COND$:&#10;&#9;$THEN$&#10;else:&#10;&#9;$END$&#10;end" description="If-else conditional" toReformat="false" toShortenFQNames="false">
+    <variable name="COND" expression="" defaultValue="&quot;condition&quot;" alwaysStopAt="true"/>
+    <variable name="THEN" expression="" defaultValue="" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="loop" value="loop @$GROUP$* as _@$VAR$:&#10;&#9;$END$&#10;end" description="Loop statement" toReformat="false" toShortenFQNames="false">
+    <variable name="GROUP" expression="" defaultValue="&quot;group&quot;" alwaysStopAt="true"/>
+    <variable name="VAR" expression="" defaultValue="&quot;x&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <!-- Expressions -->
+
+  <template name="search query" value="search query $NAME$:&#10;&#9;over: $SCOPE$&#10;&#9;with:&#10;&#9;&#9;@$ROLE$: @$REF$&#10;$END$" description="Search query expression" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="SCOPE" expression="" defaultValue="&quot;chronicle&quot;" alwaysStopAt="true"/>
+    <variable name="ROLE" expression="" defaultValue="&quot;role&quot;" alwaysStopAt="true"/>
+    <variable name="REF" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="search" value="search:&#10;&#9;over: $SCOPE$&#10;$END$" description="Bare search" toReformat="false" toShortenFQNames="false">
+    <variable name="SCOPE" expression="" defaultValue="&quot;chronicle&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="sift" value="sift pattern $NAME$:&#10;&#9;over: $SCOPE$&#10;&#9;with partial:&#10;&#9;&#9;@$ROLE$: @$REF$&#10;$END$" description="Sift pattern" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="SCOPE" expression="" defaultValue="&quot;chronicle&quot;" alwaysStopAt="true"/>
+    <variable name="ROLE" expression="" defaultValue="&quot;role&quot;" alwaysStopAt="true"/>
+    <variable name="REF" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="fit trope" value="fit trope $NAME$:&#10;&#9;with:&#10;&#9;&#9;@$ROLE$: @$REF$&#10;$END$" description="Fit trope" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <variable name="ROLE" expression="" defaultValue="&quot;role&quot;" alwaysStopAt="true"/>
+    <variable name="REF" expression="" defaultValue="&quot;ref&quot;" alwaysStopAt="true"/>
+    <variable name="END" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="fits" value="&lt;@$A$: @$B$&gt; fits trope $NAME$" description="Fits trope (sugared)" toReformat="false" toShortenFQNames="false">
+    <variable name="A" expression="" defaultValue="&quot;a&quot;" alwaysStopAt="true"/>
+    <variable name="B" expression="" defaultValue="&quot;b&quot;" alwaysStopAt="true"/>
+    <variable name="NAME" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <template name="~" value="~$FUNC$($ENTITY$)" description="Custom function call" toReformat="false" toShortenFQNames="false">
+    <variable name="FUNC" expression="" defaultValue="&quot;function&quot;" alwaysStopAt="true"/>
+    <variable name="ENTITY" expression="" defaultValue="&quot;@entity&quot;" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+  <!-- Other -->
+
+  <template name="include" value="include &quot;$PATH$&quot;" description="Include statement" toReformat="false" toShortenFQNames="false">
+    <variable name="PATH" expression="" defaultValue="&quot;path&quot;" alwaysStopAt="true"/>
+    <context><option name="VIV" value="true"/></context>
+  </template>
+
+</templateSet>

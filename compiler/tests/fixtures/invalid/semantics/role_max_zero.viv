@@ -1,0 +1,9 @@
+// Invalid: role with max of zero
+
+action bad-max:
+    roles:
+        @actor:
+            as: initiator
+        @nobody*:
+            as: bystander
+            n: 0-0

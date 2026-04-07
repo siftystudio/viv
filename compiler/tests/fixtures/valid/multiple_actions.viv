@@ -1,0 +1,20 @@
+// Multiple actions in a single file
+
+action wave:
+    roles:
+        @waver:
+            as: initiator
+        @target:
+            as: recipient
+
+action nod:
+    roles:
+        @nodder:
+            as: initiator
+        @target:
+            as: recipient
+
+action shrug:
+    roles:
+        @shrugger:
+            as: initiator

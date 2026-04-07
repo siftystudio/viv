@@ -1,0 +1,11 @@
+// Action with effects that write to entity data
+
+action insult:
+    roles:
+        @bully:
+            as: initiator
+        @victim:
+            as: recipient
+    effects:
+        @victim.mood -= 10
+        @bully.mood += 1

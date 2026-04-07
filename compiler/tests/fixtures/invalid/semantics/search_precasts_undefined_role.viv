@@ -1,0 +1,24 @@
+// Invalid: search precasts role not in query
+
+action fight:
+    roles:
+        @combatant:
+            as: initiator
+
+query recent-fights:
+    roles:
+        @witness:
+            as: character
+    action:
+        any: fight
+
+action searcher:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        search query recent-fights:
+            with:
+                @witness: @actor
+                @phantom: @actor
+            over: @actor

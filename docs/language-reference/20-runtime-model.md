@@ -1,0 +1,109 @@
+---
+title: 20. Runtime model
+---
+
+This chapter describes key runtime behaviors that are relevant to understanding how Viv constructs execute. It is not a complete specification of the runtime; rather, it covers the aspects that are most pertinent to authors.
+
+## Rendering template strings
+
+When a [template string](02-lexical-elements.md#template-strings) is evaluated at runtime, its template gaps are rendered as follows:
+
+1. Each gap expression is evaluated and dehydrated (entity data is converted to entity IDs).
+2. If the result is an array (as with a [group role](09-roles.md#group-roles)), each element is rendered individually, and the results are joined with a comma and space.
+3. If the result is an entity ID, the runtime requests an *entity label* from the host application's adapter. This is typically the entity's name or a short description.
+4. If the result is neither an array nor an entity ID, it is converted to a string directly.
+
+For example, given a template string `"@person greets @friend"`, the runtime evaluates `@person` and `@friend`, obtains entity labels for each (e.g., `"Alice"` and `"Bob"`), and produces `"Alice greets Bob"`.
+
+## Action targeting
+
+*Action targeting* is the process by which the runtime determines whether an action can be performed for a given initiator. The process proceeds as follows:
+
+1. **Initiator selection.** The host application supplies the character for whom action selection is being run. This character is bound to the `initiator` role.
+
+2. **Candidate actions.** The runtime considers all non-[reserved](10-actions.md#reserved-marker) actions (and any queued reserved actions) as candidates.
+
+3. **Role casting.** For each candidate action, the runtime attempts to [cast](#casting-pool-shuffling) all roles. Roles are cast in dependency order—if a role's [casting pool](09-roles.md#casting-pool) depends on another role, the depended-upon role is cast first.
+
+4. **Condition evaluation.** As roles are cast, [conditions](10-actions.md#conditions) referencing those roles are evaluated. If any condition fails, the runtime backtracks and tries alternative candidates for the most recently cast role.
+
+5. **Success or failure.** If all roles are successfully cast and all conditions are satisfied, targeting succeeds and the action is performed. Otherwise, targeting fails and the action is skipped.
+
+## Casting-pool shuffling
+
+When assembling the [casting pool](09-roles.md#casting-pool) for a role, the runtime always shuffles the pool before iterating over candidates. This ensures that action outcomes are nondeterministic—even if the same characters are available, different ones may be cast on different ticks.
+
+The shuffling applies both to default pools (nearby entities of the proper type) and custom pools (those specified by `from` directives).
+
+## Slot filling
+
+For roles with a [slots](09-roles.md#slots) maximum greater than one, the runtime fills slots as follows:
+
+1. If a [mean](09-roles.md#slots-mean) is specified, the runtime samples from a normal distribution parameterized by the mean and a derived standard deviation to determine the target number of slots.
+2. If an [optional-slot casting probability](09-roles.md#optional-slot-casting-probability) is specified, each optional slot is independently filled with the given probability, provided a qualifying candidate exists.
+3. Otherwise, the runtime attempts to fill as many slots as possible, up to the maximum.
+
+In all cases, the minimum number of slots must be filled for targeting to succeed.
+
+## Evaluation context
+
+Expressions are evaluated within an *evaluation context* that provides access to:
+
+* **Role bindings.** The entities and symbols currently cast in the enclosing construct's roles.
+* **Scratch variables.** Values computed in the [scratch field](10-actions.md#scratch) of the current action.
+* **Local variables.** Variables bound by [loops](08-statements-and-control-flow.md#loops).
+* **The `@this` reference.** A special reference to the action instance currently being executed. This reference is available in [scratch](10-actions.md#scratch), [effects](10-actions.md#effects), [reactions](10-actions.md#reactions), [gloss, report, tags](10-actions.md), [saliences](10-actions.md#saliences), and [associations](10-actions.md#associations), but not during [role casting](09-roles.md) or [condition](10-actions.md#conditions) evaluation.
+* **The `@hearer` reference.** A special reference to the character who is hearing about an action after the fact, via knowledge relaying. This reference is only bound during post-hoc evaluation—that is, when a character learns about an action after the fact rather than experiencing it firsthand. It can be referenced in effects, reactions, saliences, and associations, but only the expressions that actually reference `@hearer` will be evaluated during knowledge relaying.
+* **Search domain.** If applicable, the set of action instances being searched over (inherited by nested expressions).
+
+## Host application
+
+The *host application* is the project that integrates a Viv runtime. It is responsible for managing the simulated storyworld—including all [entities](05-entities-and-symbols.md#entities) and the passage of story time—and for driving the simulation by calling into the runtime's API (e.g., to select actions, tick the planner, or run queries). The host application exposes its data and capabilities to the runtime via its [adapter](#adapter).
+
+## Adapter
+
+The *adapter* is the interface through which the [host application](#host-application) exposes read–write capabilities to the Viv runtime. It provides functions for retrieving entity data, saving action records, managing character memories, resolving [enums](02-lexical-elements.md#enums), and invoking [custom functions](07-expressions.md#custom-function-calls). Optional adapter functions enable entity-data [assignments](07-expressions.md#assignments) and time-of-day resolution for [temporal constraints](12-temporal-constraints.md#time-of-day-constraints).
+
+During initialization, the runtime validates the adapter against the [content bundle](19-compiler-output.md) to ensure that all referenced enums, custom functions, and time-of-day-parameterized constructs are properly supported.
+
+## Interpreter
+
+*This section is forthcoming.*
+
+## Knowledge Manager
+
+The *knowledge manager* governs how [characters](05-entities-and-symbols.md#entity-types) learn about and remember actions. When an action is performed, all characters who are physically present (participants and bystanders) form *memories* of it. Each memory records a [salience](10-actions.md#saliences) value and a set of [associations](10-actions.md#associations), both of which are computed per-character according to the action definition.
+
+Characters may also learn about past actions after the fact, via *knowledge relaying*. This occurs when a newly performed action casts a past action in one of its roles—the characters present for the new action then learn about the past action, forming memories with post-hoc salience and association values (see [`@hearer`](#evaluation-context)). Knowledge can also be relayed through [inscriptions and inspections](07-expressions.md#inscriptions).
+
+Over time, character memories may *fade*: their salience values decay, and once salience drops below a configurable threshold, the memory is marked as forgotten and excluded from [query](15-queries.md) results.
+
+## Assumptions
+
+The Viv runtime makes the following assumptions about the [host application's](#host-application) storyworld:
+
+* Each [character](05-entities-and-symbols.md#entity-types) is in exactly one discrete [location](05-entities-and-symbols.md#entity-types) at any given point.
+* Each [item](05-entities-and-symbols.md#entity-types) is in exactly one discrete location at any given point.
+* A character or item is considered to be at a location if its `location` property stores the entity ID for that location.
+
+## Causal bookkeeping
+
+The Viv runtime automatically records *causal links* between actions as they occur—a process called *causal bookkeeping*. These links enable [story sifting](16-sifting-patterns.md) and the [action-relation operators](07-expressions.md#relational-operators) (`caused`, `triggered`, `preceded`).
+
+A causal link between actions A and B (where A causes B) is recorded in the following circumstances:
+
+1. **Action roles.** If B casts a past action A in one of its roles, A is recorded as a cause of B.
+2. **Reactions.** If A triggers a [reaction](11-reactions.md) that ultimately leads to B being performed, A is recorded as a cause of B.
+3. **Knowledge relaying.** If A relays knowledge about a past action P, and a character's processing of P via A triggers a reaction that leads to B, both P and A are recorded as causes of B.
+4. **Inscription.** If A leads a character to [inspect](07-expressions.md#inspections) an item inscribed with knowledge about a past action P, and this triggers a reaction that leads to B, both P and A are recorded as causes of B.
+5. **Forced causes.** The host application may assert arbitrary causal links when forcibly targeting an action.
+
+Each action records both its direct causes and its transitive ancestors, enabling queries over causal chains of arbitrary depth.
+
+## Expression values
+
+*This section is forthcoming.*
+
+## Dehydration
+
+When entity data (the full data object for a character, item, location, or action) flows through an expression, the runtime *dehydrates* it—converts it to its entity ID—before passing it to adapter functions, storing it in casting pools, or using it in assignments. This ensures that the host application's canonical data store remains the source of truth.

@@ -1,0 +1,9 @@
+// Action with a report field (template string)
+
+action discover:
+    roles:
+        @explorer:
+            as: initiator
+        @place:
+            as: location
+    report: "@explorer discovered @place"

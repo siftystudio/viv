@@ -1,0 +1,8 @@
+// Invalid: negation on non-negatable expression (literal)
+
+action bad-negate:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        !5

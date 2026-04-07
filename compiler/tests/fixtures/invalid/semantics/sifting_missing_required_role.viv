@@ -1,0 +1,30 @@
+// Invalid: sifting fails to cast required role
+
+action betray:
+    roles:
+        @betrayer:
+            as: initiator
+        @victim:
+            as: recipient
+
+pattern treachery:
+    roles:
+        @perpetrator:
+            as: character
+        @injured:
+            as: character
+    actions:
+        @act1:
+            from: @perpetrator.memories
+    conditions:
+        @perpetrator != @injured
+
+action detect-treachery:
+    roles:
+        @detective:
+            as: initiator
+    conditions:
+        sift pattern treachery:
+            with:
+                @perpetrator: @detective
+            over: @detective

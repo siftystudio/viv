@@ -1,0 +1,9 @@
+// Invalid: sifting references undefined pattern
+
+action searcher:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        sift pattern nonexistent:
+            over: @actor

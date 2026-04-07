@@ -1,0 +1,31 @@
+// Sifting pattern with roles, actions, and conditions
+
+action betray:
+    roles:
+        @betrayer:
+            as: initiator
+        @victim:
+            as: recipient
+
+
+action steal:
+    roles:
+        @thief:
+            as: initiator
+        @target:
+            as: recipient
+
+
+pattern betrayal-pattern:
+    roles:
+        @perpetrator:
+            as: character
+        @injured-party:
+            as: character
+    actions:
+        @act1:
+            from: @perpetrator.memories
+        @act2:
+            from: @injured-party.memories
+    conditions:
+        @perpetrator != @injured-party

@@ -1,0 +1,11 @@
+// Child action that joins (merges) tags with a parent action
+
+template action base-social:
+    roles:
+        @actor:
+            as: initiator
+    tags: social, interaction
+
+
+action friendly-greeting from base-social:
+    join tags: greeting, friendly

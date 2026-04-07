@@ -1,0 +1,520 @@
+%YAML 1.2
+---
+name: Viv
+scope: source.viv
+file_extensions:
+  - viv
+
+variables:
+  ident: '[A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*'
+  kwpre: '(?<![A-Za-z0-9_-])'
+  kwb: '(?![A-Za-z0-9_-])'
+  time_unit: '(?:minutes?|hours?|days?|weeks?|months?|years?)'
+
+contexts:
+  main:
+
+    # ---- Comments ----
+
+    - match: '//'
+      scope: punctuation.definition.comment.viv
+      push: line_comment
+
+    # ---- Strings ----
+
+    - match: '"'
+      scope: string.quoted.double.viv
+      push: double_quoted_string
+    - match: "'"
+      scope: string.quoted.single.viv
+      push: single_quoted_string
+
+    # ---- Top-level construct headers ----
+
+    - match: '^\s*(include){{kwb}}'
+      captures:
+        1: keyword.operator.viv
+      push: include_path
+
+    # [reserved|template] action <name> [from <parent>] [:|;]
+    - match: '^\s*(?:(reserved|template)\s+)?(action)\s+({{ident}})(?:\s+(from)\s+({{ident}}))?'
+      captures:
+        1: keyword.operator.viv
+        2: keyword.operator.viv
+        3: entity.name.function.action.viv
+        4: keyword.operator.viv
+        5: entity.name.function.action.viv
+      push: header_terminator
+
+    # [reserved] (action-selector|plan-selector) <name> [:|;]
+    - match: '^\s*(?:(reserved)\s+)?(action-selector|plan-selector)\s+({{ident}})'
+      captures:
+        1: keyword.operator.viv
+        2: keyword.operator.viv
+        3: entity.name.function.selector.viv
+      push: header_terminator
+
+    - match: '^\s*(plan)\s+({{ident}})'
+      captures:
+        1: keyword.operator.viv
+        2: entity.name.function.plan.viv
+      push: header_terminator
+
+    - match: '^\s*(query)\s+({{ident}})'
+      captures:
+        1: keyword.operator.viv
+        2: entity.name.function.query.viv
+      push: header_terminator
+
+    - match: '^\s*(pattern)\s+({{ident}})'
+      captures:
+        1: keyword.operator.viv
+        2: entity.name.function.pattern.viv
+      push: header_terminator
+
+    - match: '^\s*(trope)\s+({{ident}})'
+      captures:
+        1: keyword.operator.viv
+        2: entity.name.function.trope.viv
+      push: header_terminator
+
+    # ---- Plan phases ----
+
+    # >name:
+    - match: '^\s*(>)\s*({{ident}})\s*(:)'
+      captures:
+        1: keyword.operator.viv
+        2: entity.name.label.viv
+        3: punctuation.separator.key-value.viv
+
+    # ---- Reactions ----
+
+    # queue (action-selector|plan-selector|action|plan) <name>
+    - match: '{{kwpre}}(queue)\s+(action-selector|plan-selector|action|plan)\s+({{ident}}){{kwb}}'
+      captures:
+        1: keyword.operator.viv
+        2: keyword.operator.viv
+        3: entity.name.function.viv
+
+    # ---- Selector targets ----
+
+    # target (randomly|with weights|in order): -> push candidate context
+    - match: '{{kwpre}}(target)\s+(randomly|with\s+weights|in\s+order)\s*(:)'
+      captures:
+        1: keyword.other.viv
+        2: keyword.other.parameter.viv
+        3: punctuation.separator.key-value.viv
+      push: selector_candidates
+
+    # ---- Custom function calls ----
+
+    # ~name( -> push argument context
+    - match: '(~)({{ident}})(\()'
+      captures:
+        1: keyword.operator.viv
+        2: meta.external-name.viv
+        3: keyword.operator.viv
+      push: function_args
+
+    # ---- Precast bindings ----
+
+    # with partial: -> push binding context
+    - match: '{{kwpre}}(with)\s+(partial){{kwb}}\s*(:)'
+      captures:
+        1: keyword.other.viv
+        2: keyword.other.parameter.viv
+        3: punctuation.separator.key-value.viv
+      push: binding_body
+
+    # with none;
+    - match: '{{kwpre}}(with)\s+(none){{kwb}}(?=\s*;)'
+      captures:
+        1: keyword.other.viv
+        2: keyword.other.parameter.viv
+
+    # with: -> push binding context
+    - match: '{{kwpre}}(with){{kwb}}\s*(:)'
+      captures:
+        1: keyword.other.viv
+        2: punctuation.separator.key-value.viv
+      push: binding_body
+
+    # ---- Sugared bindings ----
+
+    # <none>
+    - match: '(<)(none)(>)'
+      captures:
+        1: punctuation.section.binding.begin.viv
+        2: keyword.other.parameter.viv
+        3: punctuation.section.binding.end.viv
+
+    # <partial @role: expr, ...> or <partial expr, ...>
+    - match: '(<)(partial){{kwb}}'
+      captures:
+        1: punctuation.section.binding.begin.viv
+        2: keyword.other.parameter.viv
+      push: sugared_binding_body
+
+    # <@role: expr, ...> or <&role: expr, ...> (complete sugared binding)
+    - match: '<(?=[$_]?[@&])'
+      scope: punctuation.section.binding.begin.viv
+      push: sugared_binding_body
+
+    # ---- Role slot range (must precede section keywords to capture n) ----
+
+    # n: min-max
+    - match: '(n)\s*(:)\s*([0-9]+)(-)([0-9]+)'
+      captures:
+        1: keyword.other.viv
+        2: punctuation.separator.key-value.viv
+        3: constant.language.viv
+        4: punctuation.accessor.viv
+        5: constant.language.viv
+
+    # ---- Field keys ----
+
+    # Query comparator keys: ==: <=: >=: <: >:
+    - match: '(==|<=|>=|<|>)(?=\s*:)'
+      scope: keyword.other.viv
+
+    # Section / field keys (word-form, before colon)
+    - match: '{{kwpre}}(abandon|action|actions|active|after|all|ancestors|any|as|associations|before|between|bystanders|conditions|default|descendants|effects|embargo|embargoes|exactly|from|gloss|if|importance|initiator|is|location|max|n|none|over|partners|phases|present|priority|reactions|recipients|renames|repeat|report|roles|salience|saliences|scratch|spawn|tags|time|timeout|untracked|until|urgent|wait){{kwb}}(?=\s*:)'
+      scope: keyword.other.viv
+
+    # Colon separator
+    - match: ':'
+      scope: punctuation.separator.key-value.viv
+
+    # ---- Control flow ----
+
+    - match: '{{kwpre}}(if|elif|else|end|loop|as|from|for|before|after|between|and){{kwb}}'
+      scope: keyword.operator.viv
+
+    # ---- Domain verbs ----
+
+    # Verbs with construct name references (must precede bare verb rules)
+    - match: '{{kwpre}}(trope)\s+({{ident}}){{kwb}}'
+      captures:
+        1: keyword.operator.viv
+        2: entity.name.function.viv
+    - match: '{{kwpre}}(query|pattern)\s+({{ident}})(?=\s*:)'
+      captures:
+        1: keyword.operator.viv
+        2: entity.name.function.viv
+
+    # Bare domain verbs
+    - match: '{{kwpre}}(search|sift|fit|fits|query|pattern|trope|queue){{kwb}}'
+      scope: keyword.operator.viv
+
+    # ---- Modifiers ----
+
+    # Storage modifiers: reserved, template, join
+    - match: '{{kwpre}}(reserved|template|join){{kwb}}'
+      scope: keyword.operator.viv
+
+    # Keyword parameters: partial, none (italic via bundled themes targeting keyword.other.parameter.viv)
+    - match: '{{kwpre}}(partial|none){{kwb}}'
+      scope: keyword.other.parameter.viv
+
+    # ---- Type system ----
+
+    # Role labels
+    - match: '{{kwpre}}(character|item|action|location|symbol|initiator|partner|recipient|bystander|anywhere|precast|spawn){{kwb}}'
+      scope: support.constant.viv
+
+    # Reserved internal identifiers (__name)
+    - match: '{{kwpre}}__\w+{{kwb}}'
+      scope: support.variable.reserved.viv
+
+    # ---- Plan instructions ----
+
+    - match: '{{kwpre}}(advance|succeed|fail|close){{kwb}}'
+      scope: keyword.other.viv
+
+    # ---- Constants and literals ----
+
+    # Language constants
+    - match: '{{kwpre}}(hearing|now|ago|here|forever|inherit|chronicle){{kwb}}'
+      scope: support.constant.viv
+
+    # Booleans and null
+    - match: '{{kwpre}}(true|false|null){{kwb}}'
+      scope: constant.language.viv
+
+    # Role slot modifiers: [~n] and [n%]
+    - match: '(\[)(~)([0-9]+(?:\.[0-9]+)?)(\])'
+      captures:
+        1: punctuation.accessor.viv
+        2: keyword.operator.viv
+        3: constant.language.viv
+        4: punctuation.accessor.viv
+    - match: '(\[)([0-9]+(?:\.[0-9]+)?)(%)(\])'
+      captures:
+        1: punctuation.accessor.viv
+        2: constant.language.viv
+        3: keyword.operator.viv
+        4: punctuation.accessor.viv
+
+    # Percentages (must precede plain numbers)
+    - match: '(?<!\w)([+-]?(?:[0-9]+(?:\.[0-9]+)?|\.[0-9]+))(%)'
+      captures:
+        1: constant.language.viv
+        2: keyword.operator.viv
+
+    # Numbers
+    - match: '(?<!\w)[+-]?(?:[0-9]+(?:\.[0-9]+)?|\.[0-9]+)(?!\w)'
+      scope: constant.language.viv
+
+    # Time units
+    - match: '{{kwpre}}{{time_unit}}{{kwb}}'
+      scope: support.constant.viv
+    - match: '{{kwpre}}(am|pm){{kwb}}'
+      scope: support.constant.viv
+
+    # Enum tokens: [+|-]#name
+    - match: '([+-]?)(#)({{ident}})'
+      captures:
+        1: keyword.operator.viv
+        2: keyword.operator.viv
+        3: meta.external-name.viv
+
+    # ---- Operators ----
+
+    # Word operators
+    - match: '{{kwpre}}(in|knows|caused|triggered|preceded|append|remove|inscribe|inspect){{kwb}}'
+      scope: keyword.operator.viv
+
+    # Property access: .name (name unstyled to prevent keyword coloring)
+    - match: '(\.)([A-Za-z0-9_]+)'
+      captures:
+        1: punctuation.accessor.viv
+        2: meta.external-name.viv
+
+    # Pointer access: ->name (must precede symbol operators)
+    - match: '(->)([A-Za-z0-9_]+)'
+      captures:
+        1: keyword.operator.viv
+        2: meta.external-name.viv
+
+    # Symbol operators (multi-char first to prevent partial matches)
+    - match: '==|!=|<=|>=|\+=|-=|\*=|/=|\|\||&&|<|>|=|\+|-|\*|/|\?|!'
+      scope: keyword.operator.viv
+
+    # ---- References ----
+
+    # Scratch variables: $@name, $&name
+    - match: '(\$)([@&]{{ident}})(\*)?'
+      captures:
+        1: keyword.operator.viv
+        2: entity.name.variable.global.viv
+        3: keyword.operator.viv
+
+    # Local variables: _@name, _&name
+    - match: '(_)([@&]{{ident}})(\*)?'
+      captures:
+        1: keyword.operator.viv
+        2: entity.name.variable.local.viv
+        3: keyword.operator.viv
+
+    # Plain references: @name, &name
+    - match: '([@&]{{ident}})(\*)?'
+      captures:
+        1: entity.name.variable.viv
+        2: keyword.operator.viv
+
+    # ---- Punctuation ----
+
+    # Brackets
+    - match: '[{}\[\]]'
+      scope: keyword.operator.viv
+
+    # Parentheses
+    - match: '[()]'
+      scope: punctuation.accessor.viv
+
+    # Separators and terminators
+    - match: ','
+      scope: punctuation.separator.sequence.viv
+    - match: ';'
+      scope: punctuation.terminator.statement.viv
+
+
+  # ===========================================================================
+  # Pushed contexts
+  # ===========================================================================
+
+  # Selector candidates (after "target <policy>:")
+  selector_candidates:
+    - match: '(?=^\s*(?:(?:reserved|template)\s+)*(?:action-selector|plan-selector|action|plan|query|pattern|trope|include)\s)'
+      pop: true
+
+    # Weighted candidate: (n) name[:;]
+    - match: '(\()(\d+)(\))\s+({{ident}})(?=\s*[:;])'
+      captures:
+        1: punctuation.accessor.viv
+        2: constant.language.viv
+        3: punctuation.accessor.viv
+        4: entity.name.function.viv
+
+    # Selector-prefixed candidate: selector name[:;]
+    - match: '{{kwpre}}(selector)\s+({{ident}})(?=\s*[:;])'
+      captures:
+        1: keyword.operator.word.viv
+        2: entity.name.function.viv
+
+    - include: main
+
+    # Bare candidate name (fallback for non-keyword identifiers before : or ;)
+    - match: '{{ident}}(?=\s*[:;])'
+      scope: entity.name.function.viv
+
+  # Binding body (after "with:" or "with partial:")
+  binding_body:
+    # Pop at construct boundaries
+    - match: '(?=^\s*(?:(?:reserved|template)\s+)*(?:action-selector|plan-selector|action|plan|query|pattern|trope|include)\s)'
+      pop: true
+    # Pop at section keywords
+    - match: '(?={{kwpre}}(?:urgent|priority|location|time|abandon|repeat|roles|conditions|effects|reactions|embargoes|scratch|phases|target|gloss|report|importance|saliences|associations|tags|with|queue){{kwb}}(?=\s*:))'
+      pop: true
+    # Pop at weighted candidate
+    - match: '(?=^\s*\([0-9])'
+      pop: true
+    # Pop at bare identifier before : or ;
+    - match: '(?=^\s*{{ident}}\s*[:;])'
+      pop: true
+    # Pop at role definition (starts with @ or &, colon followed by end-of-line -- not a binding LHS which has an expression after the colon)
+    - match: '(?=^\s*[@&]{{ident}}\*?\s*:\s*$)'
+      pop: true
+
+    # Binding LHS: @name: or &name:
+    - match: '([@&]{{ident}})(\*)?(?=\s*:)'
+      captures:
+        1: keyword.other.viv
+        2: keyword.operator.viv
+
+    - include: main
+
+  # Custom function arguments (between parens)
+  function_args:
+    - match: '\)'
+      scope: keyword.operator.viv
+      pop: true
+    - include: main
+
+  # Declaration header terminator (expects : or ; after construct name)
+  header_terminator:
+    - meta_scope: meta.declaration.header.viv
+    - match: '[:;]'
+      scope: punctuation.separator.viv
+      pop: true
+    - match: '$'
+      pop: true
+    - match: '\S+'
+      scope: invalid.illegal.viv
+
+  # Include path (expects quoted string)
+  include_path:
+    - meta_scope: meta.include.viv
+    - match: '"'
+      scope: string.quoted.double.viv
+      set: include_path_dq
+    - match: "'"
+      scope: string.quoted.single.viv
+      set: include_path_sq
+    - match: '$'
+      pop: true
+    - match: '\S+'
+      scope: invalid.illegal.viv
+      pop: true
+
+  include_path_dq:
+    - meta_scope: string.quoted.double.viv
+    - match: '"'
+      scope: string.quoted.double.viv
+      pop: true
+    - match: '$'
+      pop: true
+    - match: '[^"\n]+'
+
+  include_path_sq:
+    - meta_scope: string.quoted.single.viv
+    - match: "'"
+      scope: string.quoted.single.viv
+      pop: true
+    - match: '$'
+      pop: true
+    - match: "[^'\n]+"
+
+  # Strings with template interpolation
+  double_quoted_string:
+    - meta_scope: string.quoted.double.viv
+    - match: '"'
+      scope: string.quoted.double.viv
+      pop: true
+    - match: '$'
+      pop: true
+    - include: string_interpolation
+    - match: '[^"\n{}@*&$_]+'
+
+  single_quoted_string:
+    - meta_scope: string.quoted.single.viv
+    - match: "'"
+      scope: string.quoted.single.viv
+      pop: true
+    - match: '$'
+      pop: true
+    - include: string_interpolation
+    - match: "[^'\n{}@*&$_]+"
+
+  string_interpolation:
+    - match: '\{'
+      scope: keyword.operator.viv
+      push: interpolation
+    - match: '(\$)([@&]{{ident}})(\*)?'
+      captures:
+        1: keyword.operator.viv
+        2: entity.name.variable.global.viv
+        3: keyword.operator.viv
+    - match: '(_)([@&]{{ident}})(\*)?'
+      captures:
+        1: keyword.operator.viv
+        2: entity.name.variable.local.viv
+        3: keyword.operator.viv
+    - match: '([@&]{{ident}})(\*)?'
+      captures:
+        1: entity.name.variable.viv
+        2: keyword.operator.viv
+
+  interpolation:
+    - clear_scopes: 1
+    - meta_scope: meta.interpolation.viv
+    - match: '\}'
+      scope: keyword.operator.viv
+      pop: true
+    - match: '\{'
+      scope: keyword.operator.viv
+      push: nested_braces
+    - include: main
+
+  # Nested braces inside interpolation (prevents inner } from closing the interpolation)
+  nested_braces:
+    - match: '\}'
+      scope: keyword.operator.viv
+      pop: true
+    - match: '\{'
+      scope: keyword.operator.viv
+      push: nested_braces
+    - include: main
+
+  # Sugared binding body (between < and >)
+  sugared_binding_body:
+    - match: '>'
+      scope: punctuation.section.binding.end.viv
+      pop: true
+    - include: main
+
+  # Line comment
+  line_comment:
+    - meta_scope: comment.line.double-slash.viv
+    - match: '$'
+      pop: true

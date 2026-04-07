@@ -1,0 +1,9 @@
+// Circular include: B includes A
+
+include "circular_a.viv"
+
+
+action wave:
+    roles:
+        @waver:
+            as: initiator

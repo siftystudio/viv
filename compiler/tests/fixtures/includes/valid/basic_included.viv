@@ -1,0 +1,8 @@
+// Included file with a trope
+
+trope friends:
+    roles:
+        @a:
+            as: character
+        @b:
+            as: character

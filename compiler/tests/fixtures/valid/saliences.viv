@@ -1,0 +1,26 @@
+// Action with default and per-role salience values
+
+action gossip:
+    roles:
+        @gossiper:
+            as: initiator
+        @listener:
+            as: recipient
+        @subject:
+            as: character
+        @eavesdroppers*:
+            as: bystander
+            n: 0-5
+    saliences:
+        default: #BORING
+        roles:
+            @gossiper: #INTERESTING
+            @subject: #INTERESTING
+            @eavesdroppers*: #MODERATE
+        for _@c:
+            if _@c.trust > 5:
+                #CRITICAL
+            else:
+                #BORING
+            end
+        end

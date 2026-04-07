@@ -1,0 +1,8 @@
+// Invalid: assignment in wrong action field (conditions)
+
+action bad-assign-field:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        @actor.ready = true

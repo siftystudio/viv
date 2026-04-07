@@ -1,0 +1,33 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/index.ts"],
+  "out": "../../docs/api/runtimes/js",
+  "tsconfig": "tsconfig.json",
+  "excludeInternal": false,
+  "excludePrivate": true,
+  "excludeExternals": true,
+  "sort": ["required-first", "alphabetical"],
+  "categoryOrder": ["Actions", "Planning", "Story Sifting", "Knowledge", "Initialization", "Integration", "Debugging", "Analysis", "Errors", "Other"],
+  "categorizeByGroup": false,
+  "name": "Viv JavaScript Runtime",
+  "readme": "none",
+  "includeVersion": true,
+  "hideGenerator": true,
+  "githubPages": false,
+  "intentionallyNotExported": [
+    "ConstructDefinition",
+    "ConstructDiscriminator",
+    "EvaluationContext",
+    "Expression",
+    "PlanLoopFrame",
+    "QueuedActionTemporalConstraints",
+    "QueuedConstructAbandonmentConditions",
+    "QueuedConstructRepeatLogic",
+    "SetPredicate"
+  ],
+  "customCss": "assets/typedoc-overrides.css",
+  "navigation": {
+    "includeCategories": true,
+    "includeGroups": true
+  }
+}

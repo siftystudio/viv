@@ -1,0 +1,61 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+.eggs/
+*.egg
+.build/
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.venv/
+venv/
+
+# Node / TypeScript
+node_modules/
+*.tsbuildinfo
+*.tgz
+*.log
+.eslintcache
+.nyc_output/
+coverage/
+
+# Build
+dist/
+build/
+!plugins/claude/skills/build/
+
+# Environment
+.env*
+!.env.example
+!.env.*.example
+
+# Temporary
+tmp/
+temp/
+*.tmp
+
+# Generated docs
+docs/api/
+
+# Compiled test fixtures (generated on demand by vitest globalSetup)
+runtimes/js/tests/fixtures/*/bundle.json
+
+# Project
+scratch/
+todo/
+.claude/
+.npmrc

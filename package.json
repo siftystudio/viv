@@ -1,0 +1,13 @@
+{
+  "name": "viv-monorepo",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "workspaces": [
+    "runtimes/js",
+    "examples/*",
+    "docs",
+    "syntax"
+  ]
+}

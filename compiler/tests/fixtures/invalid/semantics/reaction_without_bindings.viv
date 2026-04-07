@@ -1,0 +1,9 @@
+// Reaction without a bindings clause
+
+action trigger:
+    roles:
+        @actor:
+            as: initiator
+    reactions:
+        queue action trigger:
+            urgent: true

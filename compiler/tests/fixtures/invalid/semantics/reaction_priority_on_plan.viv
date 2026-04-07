@@ -1,0 +1,27 @@
+// Invalid: reaction priority on plan target
+
+action step:
+    roles:
+        @doer:
+            as: initiator
+
+plan my-plan:
+    roles:
+        @planner:
+            as: character
+    phases:
+        >do-it:
+            queue action step:
+                with partial:
+                    @doer: @planner
+            succeed;
+
+action trigger:
+    roles:
+        @actor:
+            as: initiator
+    reactions:
+        queue plan my-plan:
+            with partial:
+                @planner: @actor
+            priority: 5

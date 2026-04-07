@@ -1,0 +1,9 @@
+// Entry point that includes a file which itself includes another
+
+include "chain_middle.viv"
+
+
+action greet:
+    roles:
+        @greeter:
+            as: initiator

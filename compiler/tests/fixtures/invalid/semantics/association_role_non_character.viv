@@ -1,0 +1,12 @@
+// Action with per-role association referencing a non-character role
+
+action bad-association:
+    roles:
+        @actor:
+            as: initiator
+        @tool:
+            as: item
+            from: @actor.inventory
+    associations:
+        roles:
+            @tool: evidence

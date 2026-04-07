@@ -1,0 +1,94 @@
+---
+// Custom card component for the landing page, replacing Starlight's Card and LinkCard.
+//
+// Without href: static info card (no hover, no link overlay).
+// With href: entire card is clickable via an anchor overlay. External hrefs
+//            automatically get target="_blank" and rel="noopener".
+// Icon (optional): rendered in the top-right corner.
+
+import { ICONS } from '../assets/icons';
+
+interface Props {
+	href?: string;
+	title: string;
+	description?: string;
+	icon?: string;
+}
+
+const { href, title, description, icon } = Astro.props;
+const isExternal = href?.startsWith('http');
+const linkAttrs = isExternal ? { target: '_blank', rel: 'noopener' } : {};
+---
+
+{/* Icon badge in top-right corner */}
+<div class:list={["icon-link-card", { linkable: !!href }]}>
+	{icon && ICONS[icon] && (
+		<svg aria-hidden="true" class="card-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" set:html={ICONS[icon]} />
+	)}
+	{/* Anchor overlay: makes the entire card clickable when href is provided */}
+	{href ? (
+		<a href={href} {...linkAttrs}>
+			<span class="title" set:html={title} />
+		</a>
+	) : (
+		<span class="title" set:html={title} />
+	)}
+	{description && <span class="description" set:html={description} />}
+	<slot />
+</div>
+
+<style>
+	/* Card panel: warm palette, matching Starlight's Card appearance */
+	.icon-link-card {
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.5rem;
+		padding: 1rem 1.25rem;
+		background-color: var(--sl-color-black);
+		position: relative;
+		transition: background-color 0.2s, border-color 0.2s;
+	}
+
+	/* Hover only on linkable cards (those with an href) */
+	.icon-link-card.linkable:hover {
+		background-color: var(--sl-color-gray-6);
+		border-color: var(--sl-color-gray-4);
+	}
+
+	/* Anchor overlay: stretches over the entire card via ::before, making
+	   the whole panel clickable without wrapping everything in an <a> */
+	a {
+		text-decoration: none;
+		line-height: var(--sl-line-height-headings);
+	}
+	a::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
+
+	.title {
+		color: var(--sl-color-white);
+		font-weight: 600;
+		font-size: var(--sl-text-h4);
+		line-height: var(--sl-line-height-headings);
+	}
+
+	.description {
+		display: block;
+		margin-top: 0.375rem;
+		color: var(--sl-color-gray-3);
+		font-size: clamp(var(--sl-text-sm), calc(0.5rem + 1vw), var(--sl-text-body));
+		line-height: 1.5;
+	}
+
+	/* Positioned in the top-right corner as a subtle badge */
+	.card-icon {
+		position: absolute;
+		top: 1rem;
+		right: 1.25rem;
+		color: var(--sl-color-gray-4);
+		font-size: 1.25em;
+		width: 1em;
+		height: 1em;
+	}
+</style>

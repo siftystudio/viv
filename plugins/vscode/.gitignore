@@ -1,0 +1,12 @@
+# Copied from viv/assets and viv/syntax by vscode:prepublish for packaging
+icon.png
+viv.tmLanguage.json
+
+# Compiled TypeScript output
+out/
+
+# Packaged extension
+*.vsix
+
+# Dependencies
+node_modules/

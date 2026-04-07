@@ -1,0 +1,12 @@
+// Invalid: saliences variable shadows role name
+
+action shadow-sal:
+    roles:
+        @actor:
+            as: initiator
+        @target:
+            as: recipient
+    saliences:
+        for _@actor:
+            #HIGH
+        end

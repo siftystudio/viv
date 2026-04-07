@@ -1,0 +1,16 @@
+// Conditional effects with elif branches
+
+action assess-threat:
+    roles:
+        @assessor:
+            as: initiator
+        @subject:
+            as: character
+    effects:
+        if @subject.trust > 70:
+            @assessor.trust += 5
+        elif @subject.trust > 30:
+            @assessor.trust += 1
+        else:
+            @assessor.trust -= 5
+        end

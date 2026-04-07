@@ -1,0 +1,18 @@
+// Fixture for testing that memory formation records specific salience and
+// association values. The values here are chosen to be distinctive so that
+// tests can assert exact values rather than merely checking toBeDefined().
+
+action ceremony:
+    roles:
+        @officiant:
+            as: initiator
+        @assistant:
+            as: partner
+        @honoree:
+            as: recipient
+        @witness:
+            as: bystander
+    saliences:
+        default: 7.0
+    associations:
+        default: memorable

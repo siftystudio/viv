@@ -1,0 +1,16 @@
+// Child action that renames a parent role
+
+template action base-exchange:
+    roles:
+        @giver:
+            as: initiator
+        @receiver:
+            as: recipient
+    conditions:
+        @giver.trust > 0
+
+
+action gift from base-exchange:
+    join roles:
+        @donor:
+            renames: @giver

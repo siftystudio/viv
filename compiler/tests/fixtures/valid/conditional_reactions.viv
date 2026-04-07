@@ -1,0 +1,32 @@
+// Reactions guarded by conditionals and loops
+
+action provoke-crowd:
+    roles:
+        @agitator:
+            as: initiator
+        @crowd*:
+            as: bystander
+            n: 2-5
+    reactions:
+        if @agitator.charisma > 50:
+            queue action rally:
+                with partial:
+                    @leader: @agitator
+        end
+        loop @crowd* as _@person:
+            queue action react:
+                with partial:
+                    @reactor: _@person
+        end
+
+
+action rally:
+    roles:
+        @leader:
+            as: initiator
+
+
+action react:
+    roles:
+        @reactor:
+            as: initiator

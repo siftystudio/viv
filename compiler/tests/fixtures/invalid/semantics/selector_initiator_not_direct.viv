@@ -1,0 +1,22 @@
+// Invalid: selector initiator binding is not a direct reference
+
+reserved action respond:
+    roles:
+        @responder:
+            as: initiator
+
+action wave:
+    roles:
+        @waver:
+            as: initiator
+
+action-selector pick:
+    roles:
+        @actor:
+            as: initiator
+    target randomly:
+        respond:
+            with partial:
+                @responder: @actor.friend
+        ;
+        wave;

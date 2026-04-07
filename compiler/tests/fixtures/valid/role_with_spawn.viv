@@ -1,0 +1,9 @@
+// Role with spawn directive
+
+action create-artifact:
+    roles:
+        @creator:
+            as: initiator
+        @artifact:
+            as: item, spawn
+            spawn: ~createItem("artifact")

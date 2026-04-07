@@ -1,0 +1,22 @@
+// Fixture for testing knowledge relay via action roles.
+//
+// The scenario: someone acts a fool in public, and a witness later gossips
+// about it to a third party. That third party should gain a memory of the
+// original embarrassing action through relay.
+
+action act-a-fool:
+    roles:
+        @fool:
+            as: initiator
+        @witness:
+            as: bystander
+
+
+reserved action gossip:
+    roles:
+        @gossiper:
+            as: initiator
+        @listener:
+            as: partner
+        @incident:
+            as: action, precast

@@ -1,0 +1,28 @@
+// Invalid: duplicate sifting pattern name
+
+action betray:
+    roles:
+        @betrayer:
+            as: initiator
+        @victim:
+            as: recipient
+
+pattern treachery:
+    roles:
+        @a:
+            as: character
+    actions:
+        @act1:
+            from: @a.memories
+    conditions:
+        true
+
+pattern treachery:
+    roles:
+        @b:
+            as: character
+    actions:
+        @act1:
+            from: @b.memories
+    conditions:
+        true

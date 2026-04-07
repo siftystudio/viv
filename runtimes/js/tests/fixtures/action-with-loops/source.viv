@@ -1,0 +1,10 @@
+// Action with loop iteration in effects
+
+action tally:
+    roles:
+        @counter:
+            as: initiator
+    effects:
+        loop @counter.values as _&val:
+            @counter.total += _&val
+        end

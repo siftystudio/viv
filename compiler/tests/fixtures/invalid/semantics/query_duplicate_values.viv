@@ -1,0 +1,15 @@
+// Invalid: query has duplicate values in set predicate
+
+action fight:
+    roles:
+        @fighter:
+            as: initiator
+
+query bad-dup:
+    roles:
+        @witness:
+            as: character
+    action:
+        any: fight
+    bystanders:
+        any: @witness, @witness

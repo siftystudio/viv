@@ -1,0 +1,6 @@
+// Included file with an action name that collides with the entry point
+
+action greet:
+    roles:
+        @stranger:
+            as: initiator

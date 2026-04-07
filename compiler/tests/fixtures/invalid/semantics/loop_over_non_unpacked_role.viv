@@ -1,0 +1,12 @@
+// Invalid: loop over non-unpacked role
+
+action solo-loop:
+    roles:
+        @actor:
+            as: initiator
+        @target:
+            as: recipient
+    effects:
+        loop @target as _@t:
+            _@t.visited = true
+        end

@@ -1,0 +1,10 @@
+// Loop over entity property array with entity variable assignment
+
+action inspire:
+    roles:
+        @leader:
+            as: initiator
+    effects:
+        loop @leader.followers as _@follower:
+            _@follower.morale += 1
+        end

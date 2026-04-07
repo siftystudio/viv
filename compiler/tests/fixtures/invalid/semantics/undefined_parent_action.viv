@@ -1,0 +1,4 @@
+// Child action referencing an undefined parent
+
+action orphan from nonexistent-parent:
+    gloss: "nothing to inherit"

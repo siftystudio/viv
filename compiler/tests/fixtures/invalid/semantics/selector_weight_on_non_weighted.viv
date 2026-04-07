@@ -1,0 +1,19 @@
+// Invalid: weight assigned to non-weighted selector candidate
+
+action chat:
+    roles:
+        @talker:
+            as: initiator
+
+action argue:
+    roles:
+        @debater:
+            as: initiator
+
+action-selector social-pick:
+    roles:
+        @actor:
+            as: initiator
+    target randomly:
+        (3) chat;
+        argue;

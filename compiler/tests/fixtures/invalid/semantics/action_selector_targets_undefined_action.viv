@@ -1,0 +1,8 @@
+// Invalid: action selector targets undefined action
+
+action-selector pick:
+    roles:
+        @actor:
+            as: initiator
+    target randomly:
+        nonexistent;

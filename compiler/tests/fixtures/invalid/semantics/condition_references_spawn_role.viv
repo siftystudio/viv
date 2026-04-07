@@ -1,0 +1,11 @@
+// Invalid: condition references spawn role
+
+action bad-spawn-cond:
+    roles:
+        @creator:
+            as: initiator
+        @artifact:
+            as: item, spawn
+            spawn: ~createItem("thing")
+    conditions:
+        @artifact.quality > 5

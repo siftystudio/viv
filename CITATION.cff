@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+title: Viv
+message: >-
+  There is currently no Viv publication. If you wish to refer
+  to Viv in your own work, please cite it as follows.
+type: software
+authors:
+  - given-names: James
+    family-names: Ryan
+    email: james@sifty.studio
+    affiliation: Sifty
+repository-code: 'https://github.com/siftystudio/viv'
+url: 'https://viv.sifty.studio'
+license: LicenseRef-Viv
+abstract: >-
+  Viv is an engine for emergent narrative in games and
+  simulations. It centers on a custom programming language
+  that authors use to define the actions that characters
+  take in simulated storyworlds, along with constructs that
+  enable story sifting over collections of those actions.

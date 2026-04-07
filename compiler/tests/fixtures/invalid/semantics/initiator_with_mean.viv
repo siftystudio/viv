@@ -1,0 +1,7 @@
+// Invalid: initiator role with mean
+
+action bad-init-mean:
+    roles:
+        @actor:
+            as: initiator
+            n: 1-1 [~1]

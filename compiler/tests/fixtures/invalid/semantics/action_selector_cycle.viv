@@ -1,0 +1,20 @@
+// Invalid: cycle among action selectors
+
+action wave:
+    roles:
+        @waver:
+            as: initiator
+
+action-selector alpha:
+    roles:
+        @actor:
+            as: initiator
+    target randomly:
+        selector beta;
+
+action-selector beta:
+    roles:
+        @actor:
+            as: initiator
+    target randomly:
+        selector alpha;

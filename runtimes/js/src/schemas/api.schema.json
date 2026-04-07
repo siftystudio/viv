@@ -1,0 +1,4327 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "ActionName": {
+      "description": "A unique name for an action.",
+      "type": "string"
+    },
+    "ActionQueue": {
+      "description": "An array storing queued actions (and queued action selectors) for a character, in priority order.\n\nUrgent queued actions appear contiguously at the front of the array, followed by all non-urgent queued actions. Within each bucket, entries are sorted by decreasing priority.",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/definitions/QueuedAction"
+          },
+          {
+            "$ref": "#/definitions/QueuedActionSelector"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "ActionRelation": {
+      "additionalProperties": false,
+      "description": "A Viv action relation, which evaluates to `true` if a specified relation holds between two actions.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "actionRelation",
+          "description": "Discriminator for a Viv action relation.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ActionRelationValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ActionRelationOperator": {
+      "description": "Enum containing the action-relation operators supported by Viv.",
+      "enum": [
+        "caused",
+        "preceded",
+        "triggered"
+      ],
+      "type": "string"
+    },
+    "ActionRelationValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv action relation.",
+      "properties": {
+        "left": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the left operand in relation test."
+        },
+        "operator": {
+          "$ref": "#/definitions/ActionRelationOperator",
+          "description": "The relation operator."
+        },
+        "right": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the right operand in relation test."
+        }
+      },
+      "required": [
+        "left",
+        "operator",
+        "right"
+      ],
+      "type": "object"
+    },
+    "ActionSearch": {
+      "additionalProperties": false,
+      "description": "A Viv action search.\n\nThis kind of expression specifies the execution of a query to drive a search over either a character's memories or the chronicle (all historical actions), to return a collection of actions matching the query.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "actionSearch",
+          "description": "Discriminator for a Viv action search.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ActionSearchValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ActionSearchValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv action search.",
+      "properties": {
+        "bindings": {
+          "$ref": "#/definitions/PrecastBindings",
+          "description": "Precast bindings for the target query, as asserted in the search declaration."
+        },
+        "queryName": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/QueryName"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The name of the query that will be used for the search, if any, else `null`.\n\nIf none is provided, the search will simply retrieve all actions in the domain."
+        },
+        "searchDomain": {
+          "$ref": "#/definitions/SearchDomainDeclaration",
+          "description": "A declaration for how to construct a search domain for this action search."
+        }
+      },
+      "required": [
+        "queryName",
+        "bindings",
+        "searchDomain"
+      ],
+      "type": "object"
+    },
+    "ActionTargetingEvent": {
+      "additionalProperties": false,
+      "description": "A structured event emitted during action targeting to provide real-time observability into the action-selection process.\n\nThese events are emitted via the optional  {@link  HostApplicationAdapterObservabilityCallbacks.onActionTargetingEvent  }  callback on the adapter's debugging settings.",
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/ActionName",
+          "description": "The name of the action being targeted, as defined in the content bundle."
+        },
+        "impetus": {
+          "$ref": "#/definitions/ActionTargetingEventImpetus",
+          "description": "The impetus for this instance of action targeting."
+        },
+        "initiator": {
+          "$ref": "#/definitions/UID",
+          "description": "The entity ID of the character for whom this action is being targeted."
+        },
+        "status": {
+          "$ref": "#/definitions/TargetingEventStatus",
+          "description": "The targeting status associated with this event."
+        }
+      },
+      "required": [
+        "status",
+        "impetus",
+        "action",
+        "initiator"
+      ],
+      "type": "object"
+    },
+    "ActionTargetingEventImpetus": {
+      "description": "Enum specifying the possible impetuses for a given instance of action targeting.",
+      "enum": [
+        "forced",
+        "general",
+        "queued"
+      ],
+      "type": "string"
+    },
+    "ActionView": {
+      "additionalProperties": {
+        "$ref": "#/definitions/ExpressionValue",
+        "description": "Additional properties whose structure depends entirely on the host application, with the caveat that the Viv runtime expects a plain object all the way down. As such, the values embedded here should not include types like functions or members of custom classes, but rather exclusively the types defined in the `ExpressionValue` union."
+      },
+      "description": "A read-only entity view for an action that has been performed.\n\nFor details on semantics and constraints, see  {@link  EntityView } , which this interface extends.",
+      "properties": {
+        "active": {
+          "description": "Array containing entity IDs for all characters who participated in this action, meaning all present characters who were cast in non-`bystander` roles. This field supports story sifting.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "ancestors": {
+          "description": "Array containing entity IDs for *all* causal ancestors of this one (always deduplicated).",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "bindings": {
+          "$ref": "#/definitions/RoleBindings",
+          "description": "The final bindings constructed for the action. Bindings map roles to the respective entities (or symbols) that were cast in those roles."
+        },
+        "bystanders": {
+          "description": "Array containing entity IDs for any bystanders who witnessed, but did not participate in, this action. This field supports story sifting.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "caused": {
+          "description": "Array containing entity IDs for all the actions **directly** caused by this one. The array will initially be empty, but may be mutated later on by subsequent actions (always deduplicated).",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "causes": {
+          "description": "Array containing entity IDs for all the actions that **directly** caused this one, if any. This data, produced as the simulation proceeds through what I call *causal bookkeeping*, greatly facilitates story sifting. The value here will always be deduplicated.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "descendants": {
+          "description": "Array containing entity IDs for *all* causal descendants of this one (always deduplicated).",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "entityType": {
+          "const": "action",
+          "description": "Discriminator for the action entity type.",
+          "type": "string"
+        },
+        "gloss": {
+          "description": "A simple string (derived from an author-defined template) describing this action in a sentence or so.\n\nThis field is not `readonly` because it is set after an action is first recorded.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "$ref": "#/definitions/UID",
+          "description": "A unique identifier for the entity."
+        },
+        "importance": {
+          "description": "A numeric score capturing the importance of this action, for purposes of story sifting.",
+          "type": "number"
+        },
+        "initiator": {
+          "$ref": "#/definitions/UID",
+          "description": "Entity ID for the initiator of this action. This field supports story sifting."
+        },
+        "location": {
+          "$ref": "#/definitions/UID",
+          "description": "Entity ID for the storyworld location where this action was performed."
+        },
+        "name": {
+          "$ref": "#/definitions/ActionName",
+          "description": "The name of the action being performed."
+        },
+        "partners": {
+          "description": "Array containing entity IDs for the initiator and any entities cast in `partner` roles (i.e., co-initiator roles) of this action. This field supports story sifting.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "present": {
+          "description": "Array containing entity IDs for all characters who participated in or otherwise directly witnessed this action, meaning all active characters and also bystanders. This field supports story sifting.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "recipients": {
+          "description": "Array containing entity IDs for any recipients of this action. This field supports story sifting.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "relayedActions": {
+          "description": "Array containing entity IDs for all actions about which this one relays knowledge. An action is said to relay knowledge about another one when it casts it in one of its roles.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "report": {
+          "description": "A more detailed string (derived from an author-defined template) describing this action in a paragraph or so.\n\nThis field is not `readonly` because it is set after an action is first recorded.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "scratch": {
+          "additionalProperties": {},
+          "description": "A blackboard storing arbitrary variables that a Viv author may set in the course of an action definition.\n\nThese can be derived via expressions included in the action definition's `scratch` field, and variables can also be set or mutated by assignments in the `effects` field (and also technically by side effects from arbitrary custom function calls, which may be placed almost anywhere in an action definition). In Viv parlance, *scratch variables* are set via the `$` notation, as in `$&foo = 77`, which is really just syntactic sugar for `@this.scratch.foo == 77` -- i.e., syntactic sugar for setting a top-level property in this object. This data persists in the action's entity data so that subsequent actions may refer to it as needed, via expressions like `@past_action.scratch.baz`.",
+          "type": "object"
+        },
+        "tags": {
+          "description": "Tags on the action. These are meant to facilitate search over actions, for story sifting, and their function may be extended in the host application.\n\nThis field is not `readonly` because it is set after an action is first recorded.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "timeOfDay": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TimeOfDay"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The time of day at which the action was performed. If the host application does not model time of day, this will be `null`."
+        },
+        "timestamp": {
+          "$ref": "#/definitions/DiegeticTimestamp",
+          "description": "The timestamp (in story time) at which this action occurred. Like all Viv timestamps, this is represented as the number of minutes that have elapsed, in story time, since the running simulation instance in the host application first commenced."
+        }
+      },
+      "required": [
+        "active",
+        "ancestors",
+        "bindings",
+        "bystanders",
+        "caused",
+        "causes",
+        "descendants",
+        "entityType",
+        "gloss",
+        "id",
+        "importance",
+        "initiator",
+        "location",
+        "name",
+        "partners",
+        "present",
+        "recipients",
+        "relayedActions",
+        "report",
+        "scratch",
+        "tags",
+        "timeOfDay",
+        "timestamp"
+      ],
+      "type": "object"
+    },
+    "ActiveEmbargo": {
+      "additionalProperties": false,
+      "description": "An active embargo that has been asserted in the running simulation instance of the host application.",
+      "properties": {
+        "actionName": {
+          "$ref": "#/definitions/ActionName",
+          "description": "The name of the action associated with this embargo."
+        },
+        "bindings": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/RoleBindings"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "A mapping from a role name to an array of entity IDs for entities who the embargo prohibits from being cast in that role again (assuming the other embargo constraints hold). If the embargo places no such constraints, this field will be set to `null`."
+        },
+        "expiration": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/DiegeticTimestamp"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The timestamp at which the embargo will be lifted, otherwise `null` for a permanent embargo."
+        },
+        "id": {
+          "description": "A unique identifier for the embargo, provisioned by Viv.",
+          "type": "string"
+        },
+        "location": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/UID"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If applicable, the entity ID for the location associated with this embargo."
+        }
+      },
+      "required": [
+        "id",
+        "actionName",
+        "location",
+        "expiration",
+        "bindings"
+      ],
+      "type": "object"
+    },
+    "ArithmeticExpression": {
+      "additionalProperties": false,
+      "description": "A Viv arithmetic expression, which accepts two numeric operands and evaluates to a number.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "arithmeticExpression",
+          "description": "Discriminator for a Viv arithmetic expression.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ArithmeticExpressionValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ArithmeticExpressionValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv arithmetic expression.",
+      "properties": {
+        "left": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the left operand in the arithmetic expression."
+        },
+        "operator": {
+          "$ref": "#/definitions/ArithmeticOperator",
+          "description": "The arithmetic operator."
+        },
+        "right": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the right operand in the arithmetic expression."
+        }
+      },
+      "required": [
+        "left",
+        "operator",
+        "right"
+      ],
+      "type": "object"
+    },
+    "ArithmeticOperator": {
+      "description": "Enum containing the arithmetic operators supported by Viv.",
+      "enum": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
+      "type": "string"
+    },
+    "Assignment": {
+      "additionalProperties": false,
+      "description": "A Viv assignment (or update).",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "assignment",
+          "description": "Discriminator for a Viv assignment.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/AssignmentValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "AssignmentOperator": {
+      "description": "Enum containing the Viv assignment (and update) operators.",
+      "enum": [
+        "=",
+        "+=",
+        "-=",
+        "*=",
+        "/=",
+        "append",
+        "remove"
+      ],
+      "type": "string"
+    },
+    "AssignmentValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv assignment.",
+      "properties": {
+        "left": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/EntityReference"
+            },
+            {
+              "$ref": "#/definitions/SymbolReference"
+            }
+          ],
+          "description": "A reference specifying the target of the assignment/update."
+        },
+        "operator": {
+          "$ref": "#/definitions/AssignmentOperator",
+          "description": "The assignment/update operator."
+        },
+        "right": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the right operand in the assignment/update.\n\nNote that for assignments that update persistent entity data, the value will always be proactively dehydrated, such that all entity data included in the value will be converted into the associated entity ID. We do this to prevent several potential issues, and the data can be rehydrated later on."
+        }
+      },
+      "required": [
+        "left",
+        "operator",
+        "right"
+      ],
+      "type": "object"
+    },
+    "AttemptActionArgs": {
+      "additionalProperties": false,
+      "description": "Arguments parameterizing a request to force a specific action to be attempted and/or performed.",
+      "properties": {
+        "actionName": {
+          "$ref": "#/definitions/ActionName",
+          "description": "The name of the action to attempt."
+        },
+        "causes": {
+          "description": "An array containing entity IDs for arbitrary actions that the host application has indicated as causes of the action about to be performed.\n\nThis parameter supports a design pattern in which a host application captures player activity Viv actions. In such a design, the host application might reason about the causes of player activity, to identify which NPC actions led to the behaviors that are being represented as simulation actions via the call here.\n\nIt can also support a design pattern where something like a drama manager decides that it would be desirable if an action that did not occur actually had occurred -- for instance, a character affronted another one, who could have concocted a revenge scheme that fits nicely in a larger central narrative, but they did not happen to queue `plot-revenge` as a reaction. The drama manager could intervene by effectively forcing `plot-revenge` with the original affronting action as its cause, which means story sifting could work per usual over the causal line.\n\nNote: The runtime will confirm that each entry here is in fact the entity ID for some action, and it will also deduplicate the given causes automatically.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "initiatorID": {
+          "$ref": "#/definitions/UID",
+          "description": "Entity ID for the character who will attempt the action.\n\nIf elided, characters will be shuffled, and each will attempt the action in turn. If this field is set, the same entity ID must appear in the initial role in `precastBindings`.\n\nNote: The runtime will confirm that this is an entity ID for a character."
+        },
+        "precastBindings": {
+          "$ref": "#/definitions/RoleBindings",
+          "description": "Partial or complete role bindings to use when targeting the action.\n\nIf both `initiatorID` and this field are present, `initiatorID` must be bound to the initiator role here. If there are any required role slots that have not been precast here, the role caster will attempt to fill them, and targeting will fail if they cannot be filled (though see `suppressConditions`). Likewise, the role caster will also attempt to fill any unfilled optional role slots."
+        },
+        "suppressConditions": {
+          "const": true,
+          "description": "A flag specifying that the action conditions should be ignored when targeting the action.\n\nIn such cases, the action can effectively be forced to occur, so long as the role caster is able to find enough entities to fill each required role slot. For instance, if `precastBindings` does not cover all required role slots, and if a given role with an open slot requires nearby characters, and if there are not enough characters near the initiator, then targeting could fail even though this flag was set here. In other words, the flag doesn't force an action to occur, but rather prevents condition failure from thwarting actions for which casts could otherwise be assembled.\n\nNote that the flag only suppresses the `conditions` field of the action at hand. Any implied conditions in concerns like casting-pool declarations will still be honored.\n\nThis field should always be `true` when present.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "actionName"
+      ],
+      "type": "object"
+    },
+    "BacktrackingReasonCounts": {
+      "additionalProperties": false,
+      "description": "A mapping from a reason for backtracking to a count indicating the number of times that reason applied during the debugging window.",
+      "properties": {
+        "blacklisted role candidate": {
+          "type": "number"
+        },
+        "blacklisted role quorum": {
+          "type": "number"
+        },
+        "candidate failed role conditions": {
+          "type": "number"
+        },
+        "casting pool too small": {
+          "type": "number"
+        },
+        "downstream role could not be cast": {
+          "type": "number"
+        },
+        "global conditions failed": {
+          "type": "number"
+        },
+        "min slots not filled": {
+          "type": "number"
+        },
+        "outstanding precast candidate(s)": {
+          "type": "number"
+        },
+        "precast candidate could not be cast": {
+          "type": "number"
+        },
+        "precast candidate not in casting pool": {
+          "type": "number"
+        },
+        "quorum failed role conditions": {
+          "type": "number"
+        },
+        "quorum member failed role conditions": {
+          "type": "number"
+        },
+        "role candidate already cast": {
+          "type": "number"
+        },
+        "role candidate not present": {
+          "type": "number"
+        },
+        "role candidate violates embargo": {
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "BoolField": {
+      "additionalProperties": false,
+      "description": "A Viv boolean.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "bool",
+          "description": "Discriminator for a Viv boolean.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The boolean literal to which this expression will evaluate.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ChanceExpression": {
+      "additionalProperties": false,
+      "description": "A Viv chance expression, which is a kind of condition that evaluates to true if the specified probability value (a number between 0.0 and 1.0) exceeds a pseudorandom number generated by the interpreter.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "chanceExpression",
+          "description": "Discriminator for a Viv chance expression.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The specified probability, which the compiler guarantees to be a number in the range `[0, 1]`.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "CharacterMemories": {
+      "additionalProperties": {
+        "$ref": "#/definitions/CharacterMemory"
+      },
+      "description": "A mapping from action entity IDs to memories of those actions.",
+      "propertyNames": {
+        "description": "A unique identifier in the host application that is provisioned by the host application.\n\nThese do not need to be UUIDs, but they do need to be UIDs with regard to the running instance of the host application at hand.\n\nWhen a UID is associated with an  {@link  EntityView }  in the storyworld of the running instance of the host application, it is referred to as an 'entity ID'. This term is used throughout the Viv codebase accordingly."
+      },
+      "type": "object"
+    },
+    "CharacterMemory": {
+      "additionalProperties": false,
+      "description": "A character's (subjective) knowledge of an action that has occurred in a simulated storyworld, including metadata like salience and associations.",
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/UID",
+          "description": "Entity ID for the action that is the subject of this memory."
+        },
+        "associations": {
+          "description": "A set of tags representing subjective associations held by the character at hand with regard to the action that is the subject of this memory.\n\nThis is always deduplicated.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "forgotten": {
+          "description": "Whether the memory has been forgotten.\n\nA memory is forgotten when its salience falls below the  {@link  HostApplicationAdapterConfig.memoryForgettingSalienceThreshold  } .",
+          "type": "boolean"
+        },
+        "formationTimestamp": {
+          "$ref": "#/definitions/DiegeticTimestamp",
+          "description": "The story-time timestamp when the memory was first formed."
+        },
+        "salience": {
+          "description": "A numeric value capturing how noteworthy the action is to the character who holds this memory.\n\nThis is also operationalized as the *strength* of the memory, with forgetting being modeled by reducing this increment over time.",
+          "type": "number"
+        },
+        "sources": {
+          "description": "An array containing entity IDs for all the actions that have led to this person learning or hearing about this action.\n\nFor direct observers of the action, the value will begin as a singleton array containing the action itself. For characters who learn about it secondhand, via another action or an item inspection, the array will initially contain only the action that relayed this knowledge.\n\nIn any event, over time the array may grow as a character recalls or imparts the action, or hears about it again later on from other characters.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "action",
+        "formationTimestamp",
+        "salience",
+        "associations",
+        "sources",
+        "forgotten"
+      ],
+      "type": "object"
+    },
+    "Comparator": {
+      "description": "Enum containing the Viv comparison operators.",
+      "enum": [
+        "==",
+        ">",
+        ">=",
+        "<",
+        "<=",
+        "!="
+      ],
+      "type": "string"
+    },
+    "Comparison": {
+      "additionalProperties": false,
+      "description": "A Viv comparison, whereby two values are compared using a comparator.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "comparison",
+          "description": "Discriminator for a Viv comparison.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ComparisonValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ComparisonValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv comparison.",
+      "properties": {
+        "left": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will serve as the left operand in the comparison."
+        },
+        "operator": {
+          "$ref": "#/definitions/Comparator",
+          "description": "The comparison operator."
+        },
+        "right": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will serve as the right operand in the comparison."
+        }
+      },
+      "required": [
+        "left",
+        "operator",
+        "right"
+      ],
+      "type": "object"
+    },
+    "ConditionResultCounts": {
+      "additionalProperties": false,
+      "description": "An object recording for a given condition its number of successes and failures (across tests of the condition).",
+      "properties": {
+        "condition": {
+          "description": "The original source code for this condition.",
+          "type": "string"
+        },
+        "failures": {
+          "description": "The number of times this condition failed.",
+          "type": "number"
+        },
+        "successes": {
+          "description": "The number of times this condition succeeded.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "condition",
+        "successes",
+        "failures"
+      ],
+      "type": "object"
+    },
+    "Conditional": {
+      "additionalProperties": false,
+      "description": "A Viv conditional expression, allowing for branching based on the value of a test.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "conditional",
+          "description": "Discriminator for a Viv conditional.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ConditionalValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ConditionalBranch": {
+      "additionalProperties": false,
+      "description": "A Viv conditional branch, representing an `if` or `elif` clause.",
+      "properties": {
+        "condition": {
+          "$ref": "#/definitions/Expression",
+          "description": "The condition that will be tested, which holds if its evaluation is truthy."
+        },
+        "consequent": {
+          "description": "An array of expressions that will be evaluated/executed should the condition hold.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "condition",
+        "consequent"
+      ],
+      "type": "object"
+    },
+    "ConditionalValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv conditional.",
+      "properties": {
+        "alternative": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/Expression"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If an author has provided an alternative body (via an `else` clause), an array of expressions that will be evaluated/executed should the condition *not* hold."
+        },
+        "branches": {
+          "description": "Branches representing the `if` and `elif` clauses in this conditional expression.",
+          "items": {
+            "$ref": "#/definitions/ConditionalBranch"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "branches",
+        "alternative"
+      ],
+      "type": "object"
+    },
+    "Conjunction": {
+      "additionalProperties": false,
+      "description": "A Viv conjunction, which takes multiple expressions and evaluates to `true` if and only if all the respective expressions evaluate to JavaScript-truthy values.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "conjunction",
+          "description": "Discriminator for a Viv conjunction.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ConjunctionValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ConjunctionValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv conjunction.",
+      "properties": {
+        "operands": {
+          "description": "An array of expressions that will be evaluated in turn to determine the result of the conjunction.\n\nNote that the interpreter stops evaluating as soon as a falsy (in JavaScript) evaluation is encountered.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "operands"
+      ],
+      "type": "object"
+    },
+    "ConstructDiscriminator": {
+      "description": "Enum specifying the discriminators for all Viv construct types.",
+      "enum": [
+        "action",
+        "actionSelector",
+        "plan",
+        "planSelector",
+        "query",
+        "siftingPattern",
+        "trope"
+      ],
+      "type": "string"
+    },
+    "ConstructName": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ActionName"
+        },
+        {
+          "$ref": "#/definitions/PlanName"
+        },
+        {
+          "$ref": "#/definitions/QueryName"
+        },
+        {
+          "$ref": "#/definitions/SelectorName"
+        },
+        {
+          "$ref": "#/definitions/SiftingPatternName"
+        },
+        {
+          "$ref": "#/definitions/TropeName"
+        }
+      ],
+      "description": "A Viv construct name."
+    },
+    "CustomFunction": {
+      "isFunction": true
+    },
+    "CustomFunctionCall": {
+      "additionalProperties": false,
+      "description": "A Viv custom-function call, which parameterizes a call to a custom function that is registered in the host application's Viv adapter.\n\nFor instance, a Viv author might specify a function call in an action such as `~transport(@person.id,",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "customFunctionCall",
+          "description": "Discriminator for a Viv custom-function call.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/CustomFunctionCallValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "CustomFunctionCallValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv custom-function call.",
+      "properties": {
+        "args": {
+          "description": "An ordered array of Viv expressions whose evaluations will be passed as arguments to the function, in that same order.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        },
+        "failSafe": {
+          "description": "Whether the expression component should fail safely by converting a nullish evaluation into the falsy 'eval fail-safe signal'.\n\nThis allows for references whose (intermediate) references may be undefined, as in `@foo.bar?.baz`.",
+          "type": "boolean"
+        },
+        "name": {
+          "$ref": "#/definitions/CustomFunctionName",
+          "description": "The name of the custom function.\n\nThere must be a function stored in the host application's Viv adapter, via a key by this same name."
+        }
+      },
+      "required": [
+        "args",
+        "failSafe",
+        "name"
+      ],
+      "type": "object"
+    },
+    "CustomFunctionName": {
+      "description": "The name for a custom function exposed by the host application in its Viv adapter.",
+      "type": "string"
+    },
+    "DiegeticTimestamp": {
+      "description": "The number of minutes that have elapsed, in story time, since some initial reference point in the running simulation instance of the host application.\n\nNote that you can actually define whatever starting point you'd like, so long as the time unit is minutes and timestamps increase monotonically as a simulation proceeds.\n\nEvery host application must be capable of representing a given point in story time as a simple numeric timestamp, in the manner of Unix epoch time.",
+      "type": "number"
+    },
+    "Disjunction": {
+      "additionalProperties": false,
+      "description": "A Viv disjunction, which takes multiple expressions and evaluates to `true` if and only if at least one of the respective expressions evaluate to a JavaScript-truthy value.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "disjunction",
+          "description": "Discriminator for a Viv disjunction.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/DisjunctionValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "DisjunctionValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv disjunction.",
+      "properties": {
+        "operands": {
+          "description": "An array of expressions that will be evaluated in turn to determine the result of the disjunction.\n\nNote that the interpreter stops evaluating as soon as a truthy (in JavaScript) evaluation is encountered.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "operands"
+      ],
+      "type": "object"
+    },
+    "EntityReference": {
+      "additionalProperties": false,
+      "description": "A Viv entity reference, structured as an anchor role and a (possibly empty) path to a specific property value.\n\nUsually, the property is on the entity cast into the anchor role, but this is not the case if the reference contains a pointer. For instance, `@person.boss->boss->traits.cruel` would return the value stored at the path `traits.cruel` on the boss of the boss of the entity cast in the anchor role `@person`. Note that the compiler currently prevents an author from anchoring an entity reference in a symbol role, which allows the interpreter to assume that the anchor role binds an entity. Also note that references anchored in scratch variables, e.g. `$@foo.bar.baz`, are compiled to entity references -- this is because `$` is really just syntactic sugar for `@this.scratch.`, with the next sigil indicating the type of the scratch variable.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "entityReference",
+          "description": "Discriminator for a Viv entity reference.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ReferenceValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "EntityType": {
+      "description": "Enum containing discriminators for the Viv entity types.",
+      "enum": [
+        "character",
+        "item",
+        "location",
+        "action"
+      ],
+      "type": "string"
+    },
+    "EntityView": {
+      "additionalProperties": {
+        "$ref": "#/definitions/ExpressionValue",
+        "description": "Additional properties whose structure depends entirely on the host application, with the caveat that the Viv runtime expects a plain object all the way down. As such, the values embedded here should not include types like functions or members of custom classes, but rather exclusively the types defined in the `ExpressionValue` union."
+      },
+      "description": "A read-only data view describing an entity in a host application.\n\nAn 'entity' in Viv parlance is a character, location, item, or action. In terms of operational semantics, it is something for which an entity ID must be provisioned (by the host application), such that any call to  {@link  HostApplicationAdapter.getEntityView }  with that entity ID will return a read-only entity view.\n\nMinimally, the entity view must contain a few required fields, but generally it should contain any custom fields that are referenced in your Viv code, so that conditions and other expressions can be evaluated.\n\nThe host application is responsible for furnishing entity views in the formats that inherit from this shape --  {@link  CharacterView } ,  {@link  ItemView } ,  {@link  LocationView } , and  {@link  ActionView }  -- and as such it is also responsible for persisting the entity data undergirding those views.\n\nThat said, the host application is free to model and persist this underlying data using whatever representations and methods its developers see fit. For instance, you might store a compact representation that is expanded into a richer view with derived properties. The key is to ensure that the actual underlying representation can be modified via calls to  {@link  HostApplicationAdapter.updateEntityProperty } , if implemented, and/or any  {@link  CustomFunction } .",
+      "properties": {
+        "entityType": {
+          "$ref": "#/definitions/EntityType",
+          "description": "Discriminator for the entity type."
+        },
+        "id": {
+          "$ref": "#/definitions/UID",
+          "description": "A unique identifier for the entity."
+        }
+      },
+      "required": [
+        "entityType",
+        "id"
+      ],
+      "type": "object"
+    },
+    "Enum": {
+      "additionalProperties": false,
+      "description": "A Viv enum. Enums are resolved at runtime using the host application's Viv adapter.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "enum",
+          "description": "Discriminator for a Viv enum.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/EnumValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "EnumName": {
+      "description": "A unique label for an enum value.",
+      "type": "string"
+    },
+    "EnumValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv enum.",
+      "properties": {
+        "minus": {
+          "description": "Whether to flip the sign of a numeric value associated with the enum.",
+          "type": "boolean"
+        },
+        "name": {
+          "$ref": "#/definitions/EnumName",
+          "description": "The name of the enum.\n\nThis must be resolvable by the host application at runtime."
+        }
+      },
+      "required": [
+        "name",
+        "minus"
+      ],
+      "type": "object"
+    },
+    "EvaluationContext": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "$ref": "#/definitions/UID"
+          },
+          {
+            "$ref": "#/definitions/EntityView"
+          },
+          {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "additionalProperties": {},
+                "type": "object"
+              },
+              {
+                "items": {},
+                "type": "array"
+              }
+            ],
+            "description": "Union containing the possible types for symbol-role bindings.\n\n*This is an internal type that is not part of the stable API surface. Its shape may change in any release.*"
+          }
+        ]
+      },
+      "description": "A Viv evaluation context, which is a data structure that is needed by the interpreter to evaluate Viv expressions at runtime.",
+      "properties": {
+        "__causes__": {
+          "description": "An array containing entity IDs for all the actions that should be recorded as causes for any reactions to the one at hand, should any be successfully performed in the future.\n\nWe need to store these here to propagate them to the interpreter, since that module is the one that ultimately evaluates reaction declarations to queue actions.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "__constructName__": {
+          "$ref": "#/definitions/ConstructName",
+          "description": "Name of the construct that is currently being targeted.\n\nThis is used purely for debugging purposes, because it's often helpful in error messages to identify the target construct at hand."
+        },
+        "__constructType__": {
+          "$ref": "#/definitions/ConstructDiscriminator",
+          "description": "The type of construct that is current being targeted.\n\nThis is used purely for debugging purposes, because it's often helpful in error messages to identify the target construct at hand."
+        },
+        "__groups__": {
+          "additionalProperties": {
+            "items": {
+              "$ref": "#/definitions/GroupMember"
+            },
+            "type": "array"
+          },
+          "description": "For all *group roles* in the action, meaning ones with multiple slots (max\\>1), this maps the name of the group role to an array containing either IDs for all entities cast in the role or the literal values in the case of a symbol role.\n\nNote that optional singleton roles (min=0, max=1) are not considered group roles and thus are not stored here. Also note that the actual arrays will be homogeneous in terms of type: only a symbol role may take symbol bindings, and symbol roles only allow symbol bindings. But from a TypeScript perspective, it's easiest to union over the element type here.",
+          "propertyNames": {
+            "description": "A name for a role (unique only within its definition)."
+          },
+          "type": "object"
+        },
+        "__locals__": {
+          "additionalProperties": {
+            "$ref": "#/definitions/ExpressionValue"
+          },
+          "description": "A temporary store for reading and writing local variables, whose lifespan is limited to the execution of post-hoc action material, like scratch operations, effects, and reactions.\n\nViv authors usually create local variables in loop bodies, where they are transient only within the loop scope. Local variables are also used to compute saliences and assocations.",
+          "propertyNames": {
+            "description": "The name for a variable used in an assignment or a loop."
+          },
+          "type": "object"
+        },
+        "__searchDomain__": {
+          "$ref": "#/definitions/SearchDomain",
+          "description": "A prepared search domain, ready for use in story sifting.\n\nA search domain must be present in order to execute a  {@link  ActionSearch  }  or a  {@link  Sifting  } , and we need to store this in the evaluation context to allow for action searches and/or siftings that nest other action searches and/or siftings. In such cases, we narrow the search domain to the intersection of the enclosing search domain and the search domain specified for the nested action search or sifting."
+        },
+        "hearer": {
+          "$ref": "#/definitions/UID"
+        },
+        "this": {
+          "$ref": "#/definitions/UID"
+        }
+      },
+      "required": [
+        "__groups__",
+        "__locals__"
+      ],
+      "type": "object"
+    },
+    "Expression": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ActionRelation"
+        },
+        {
+          "$ref": "#/definitions/ActionSearch"
+        },
+        {
+          "$ref": "#/definitions/CustomFunctionCall"
+        },
+        {
+          "$ref": "#/definitions/ArithmeticExpression"
+        },
+        {
+          "$ref": "#/definitions/Assignment"
+        },
+        {
+          "$ref": "#/definitions/BoolField"
+        },
+        {
+          "$ref": "#/definitions/ChanceExpression"
+        },
+        {
+          "$ref": "#/definitions/Comparison"
+        },
+        {
+          "$ref": "#/definitions/Conditional"
+        },
+        {
+          "$ref": "#/definitions/Conjunction"
+        },
+        {
+          "$ref": "#/definitions/Disjunction"
+        },
+        {
+          "$ref": "#/definitions/EntityReference"
+        },
+        {
+          "$ref": "#/definitions/Enum"
+        },
+        {
+          "$ref": "#/definitions/FloatField"
+        },
+        {
+          "$ref": "#/definitions/Inspection"
+        },
+        {
+          "$ref": "#/definitions/Inscription"
+        },
+        {
+          "$ref": "#/definitions/IntField"
+        },
+        {
+          "$ref": "#/definitions/ListField"
+        },
+        {
+          "$ref": "#/definitions/Loop"
+        },
+        {
+          "$ref": "#/definitions/MembershipTest"
+        },
+        {
+          "$ref": "#/definitions/MemoryCheck"
+        },
+        {
+          "$ref": "#/definitions/NullField"
+        },
+        {
+          "$ref": "#/definitions/ObjectField"
+        },
+        {
+          "$ref": "#/definitions/Reaction"
+        },
+        {
+          "$ref": "#/definitions/Sifting"
+        },
+        {
+          "$ref": "#/definitions/StringField"
+        },
+        {
+          "$ref": "#/definitions/SymbolReference"
+        },
+        {
+          "$ref": "#/definitions/TemplateStringField"
+        },
+        {
+          "$ref": "#/definitions/TropeFit"
+        }
+      ],
+      "description": "A Viv expression."
+    },
+    "ExpressionValue": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "not": {}
+        },
+        {},
+        {
+          "$ref": "#/definitions/UID"
+        },
+        {
+          "$ref": "#/definitions/EntityView"
+        },
+        {
+          "$ref": "#/definitions/TimeOfDay"
+        },
+        {
+          "$ref": "#/definitions/CharacterMemory"
+        },
+        {
+          "items": {},
+          "type": "array"
+        },
+        {
+          "additionalProperties": {},
+          "type": "object"
+        }
+      ],
+      "description": "Union containing the possible types for evaluated Viv expressions."
+    },
+    "FloatField": {
+      "additionalProperties": false,
+      "description": "A Viv floating-point number.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "float",
+          "description": "Discriminator for a Viv floating-point number.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The float literal to which this expression will evaluate.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "GroupMember": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/UID"
+        },
+        {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            },
+            {
+              "additionalProperties": {},
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            }
+          ],
+          "description": "Union containing the possible types for symbol-role bindings.\n\n*This is an internal type that is not part of the stable API surface. Its shape may change in any release.*"
+        }
+      ],
+      "description": "Union containing the possible types for binding arrays associated with group roles.\n\nNote that a group role cannot mix entities and symbols, hence the union being over homogeneous arrays."
+    },
+    "HostApplicationAdapter": {
+      "additionalProperties": false,
+      "description": "A collection of functions and other parameters that are required by the runtime in order to properly integrate with a host application.\n\nNote that the Viv runtime does not catch or wrap exceptions thrown by adapter functions. As such, if an adapter function throws, the error will propagate through the runtime and find its way back to the caller, with its original type and stack trace intact.\n\nAs such, you can use `instanceof` to distinguish between Viv errors (always an instance of  {@link  VivError  } ) and your own adapter errors (any other error type):\n\n```ts try {     const actionID = await selectAction({ initiatorID }); } catch (error) {     if (error instanceof VivError) {         // Something went wrong in the Viv runtime (e.g., a bad expression,         // a role-casting issue, or a validation failure).     } else {         // Something went wrong in your adapter (e.g., a failed database         // query, a missing entity, or a bug in a custom function).     } } ```\n\n**Important:** Viv assumes that it can freely mutate the furnished data, with any actual updates being persisted via calls to the explicit adapter functions specified in the documentation below, so be sure to clone data as needed.",
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/HostApplicationAdapterConfig",
+          "description": "If supplied, configuration parameters controlling various aspects of Viv system behavior. Default values will be used for parameters that are not supplied."
+        },
+        "debug": {
+          "$ref": "#/definitions/HostApplicationAdapterDebuggingSettings",
+          "description": "If supplied, settings activating debugging facilities of the Viv runtime."
+        },
+        "enums": {
+          "additionalProperties": {
+            "type": [
+              "number",
+              "string"
+            ]
+          },
+          "description": "If supplied, a mapping from enum names to their associated literal values in the host application.\n\nIn Viv, *enums* are abstract labels like `#BIG` or `#SMALL` that may be used in places like effects, in lieu of magic numbers (or strings) that are prone to changing. For instance, an author could specify an effect like `@insulted.updateAffinity(@insulter, -#MEDIUM)`, which specifies that someone who has just been insulted should greatly lower their affinity toward their insulter. For various reasons, this is preferable to something like `@insulted.updateAffinity(@insulter, -35)`.\n\nUpon adapter registration, the Viv runtime will confirm that all enums referenced in your content bundle are present in this mapping here.",
+          "propertyNames": {
+            "description": "A unique label for an enum value."
+          },
+          "type": "object"
+        },
+        "fastPaths": {
+          "$ref": "#/definitions/HostApplicationAdapterFastPaths",
+          "description": "If supplied, a collection of optional functions implementing frequent read and write operations, so as to be optimized according to implementation details specific to the host application at hand."
+        },
+        "functions": {
+          "additionalProperties": {
+            "$ref": "#/definitions/CustomFunction"
+          },
+          "description": "If supplied, a mapping from custom-function names to  {@link  CustomFunction } .\n\nA host application can expose arbitrary functions in its Viv adapter, which authors can reference using the `~` sigil, as in e.g. `~transport(@person.id,",
+          "propertyNames": {
+            "description": "The name for a custom function exposed by the host application in its Viv adapter."
+          },
+          "type": "object"
+        },
+        "getCurrentTimeOfDay": {
+          "isFunction": true
+        },
+        "getCurrentTimestamp": {
+          "isFunction": true
+        },
+        "getEntityIDs": {
+          "isFunction": true
+        },
+        "getEntityLabel": {
+          "isFunction": true
+        },
+        "getEntityView": {
+          "isFunction": true
+        },
+        "getVivInternalState": {
+          "isFunction": true
+        },
+        "provisionActionID": {
+          "isFunction": true
+        },
+        "saveActionData": {
+          "isFunction": true
+        },
+        "saveCharacterMemory": {
+          "isFunction": true
+        },
+        "saveItemInscriptions": {
+          "isFunction": true
+        },
+        "saveVivInternalState": {
+          "isFunction": true
+        },
+        "updateEntityProperty": {
+          "isFunction": true
+        }
+      },
+      "required": [
+        "getEntityView",
+        "saveActionData",
+        "saveCharacterMemory",
+        "saveItemInscriptions",
+        "getVivInternalState",
+        "saveVivInternalState",
+        "getEntityIDs",
+        "provisionActionID",
+        "getCurrentTimestamp",
+        "getEntityLabel"
+      ],
+      "type": "object"
+    },
+    "HostApplicationAdapterConfig": {
+      "additionalProperties": false,
+      "description": "Configuration parameters controlling various aspects of Viv system behavior.",
+      "properties": {
+        "loopMaxIterations": {
+          "description": "The maximum number of iterations to allow in a Viv loop. Rather than throwing an error if the threshold is reached, the runtime will simply exit the loop.",
+          "type": "number"
+        },
+        "memoryForgettingSalienceThreshold": {
+          "description": "A positive number specifying a salience threshold for memories, below which memories will be forgotten.\n\nViv models character memories fading over time by reducing salience during periods where a memory is not *re-experienced* by a character -- re-experiencing happens when the memory's subject action is cast in another action that the character experiences, observes, or hears about. This is driven by the value set in `memoryRetentionMonthlyMultiplier`.\n\nIf ever a salience value is reduced such that this threshold exceeds it, the associated memory will be marked  {@link  CharacterMemory.forgotten } , to model total forgetting of the past event. To be clear, we only do this if the salience value is strictly less than the threshold.\n\nNote that a forgotten memory can be revitalized for a character who relearns about the subject action.\n\n**Important:** If the initial salience value for a new memory is lower than this threshold, it will not immediately be marked as forgotten, but instead this will occur the first time the memory is faded (via  {@link  fadeCharacterMemories  } ).",
+          "type": "number"
+        },
+        "memoryMaxSalience": {
+          "description": "If specified, the maximum salience value for character memories.\n\nClamping will not occur if this field is elided or set to `null`.\n\nNote that saliences accumulate as memories are *re-experienced* -- re-experiencing happens when the memory's subject action is cast in another action that the character experiences, observes, or hears about. As such, saliences have no explicit upper bound given a content bundle, even if you e.g. use enum values to specify salience increments. This parameter allows you to specify such an upper bound.",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "memoryRetentionMonthlyMultiplier": {
+          "description": "A number specifying the degree to which character memories will be retained month over month.\n\nThis important config parameter drives the modeling of characters gradually forgetting past events. I recommend a value around `0.9` here, but you might have your own intuitions (or empirical methods).\n\nSpecifically, the value here must be a number between `0.0` (characters quickly forget everything) and `1.0` (characters never forget anything). With each passing month, a given character's salience value will be multiplied by this number to model how much the character's memory faded over that time.\n\nFor instance, if the character's current salience is `10` and the value set here is `0.9`, the character's updated salience after one month would be `9`. If another month passed without the character *re-experiencing* the memory -- re-experiencing happens when the memory's subject action is cast in another action that the character experiences, observes, or hears about -- the salience would be further reduced to `8.1`. And so forth.\n\nIf ever the salience is reduced to a number below the threshold set via `memoryForgettingSalienceThreshold`, the memory will be marked  {@link  CharacterMemory.forgotten } , to model total forgetting of the past event.\n\nNote that the salience scale will always be (`memoryForgettingSalienceThreshold`, `memoryMaxSalience`] -- or (`memoryForgettingSalienceThreshold`, `Infinity`) if `memoryForgettingSalienceThreshold` is not defined -- where the meaning of a given value is entirely defined by your host application. This lower bound is established because any initial salience value less than or equal to `memoryForgettingSalienceThreshold` will prevent the associated memory from being formed in the first place.\n\n**Important:** We use a timeframe of one month here only to support designer intuitions around forgetting, since it would be difficult to reason about e.g. the degree to which one forgets a past event each minute. The actual frequency of memory fading depends on the frequency with which the host application invokes  {@link  fadeCharacterMemories  }  -- but that function will always convert the time since the last invocation into a number of months, so as to always honor your config parameter here.",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "HostApplicationAdapterConstructWatchlists": {
+      "additionalProperties": false,
+      "description": "An object identifying constructs to watch.\n\nAs part of adapter validation, the runtime will confirm that all the constructs included in the watchlists here are in fact defined in the registered content bundle.",
+      "properties": {
+        "actionSelectors": {
+          "description": "If specified, an array containing the names of the action selectors to watch.",
+          "items": {
+            "$ref": "#/definitions/SelectorName"
+          },
+          "type": "array"
+        },
+        "actions": {
+          "description": "If specified, an array containing the names of the actions to watch.",
+          "items": {
+            "$ref": "#/definitions/ActionName"
+          },
+          "type": "array"
+        },
+        "planSelectors": {
+          "description": "If specified, an array containing the names of the plan selectors to watch.",
+          "items": {
+            "$ref": "#/definitions/SelectorName"
+          },
+          "type": "array"
+        },
+        "plans": {
+          "description": "If specified, an array containing the names of the plans to watch.",
+          "items": {
+            "$ref": "#/definitions/PlanName"
+          },
+          "type": "array"
+        },
+        "queries": {
+          "description": "If specified, an array containing the names of the queries to watch.",
+          "items": {
+            "$ref": "#/definitions/QueryName"
+          },
+          "type": "array"
+        },
+        "siftingPatterns": {
+          "description": "If specified, an array containing the names of the sifting patterns to watch.",
+          "items": {
+            "$ref": "#/definitions/SiftingPatternName"
+          },
+          "type": "array"
+        },
+        "tropes": {
+          "description": "If specified, an array containing the names of the tropes to watch.",
+          "items": {
+            "$ref": "#/definitions/TropeName"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "HostApplicationAdapterDebuggingSettings": {
+      "additionalProperties": false,
+      "description": "Configuration parameters controlling activation of the Viv runtime's debugging facilities.",
+      "properties": {
+        "callbacks": {
+          "$ref": "#/definitions/HostApplicationAdapterObservabilityCallbacks",
+          "description": "An object specifying *observability callbacks* to register with the Viv runtime.\n\nObservability callbacks cause the runtime to emit events that support real-time observability into processes such as action selection and plan execution. These events can be processed by the host application to drive debugging facilities pertaining to the Viv integration.\n\n**Important:** Observability callbacks slow down the runtime, and thus should only be used when the host application's Viv integration is being debugged or otherwise monitored."
+        },
+        "validateAPICalls": {
+          "description": "Whether to carry out structural validation (against a schema) of all calls to the Viv runtime's API functions (e.g., `selectAction()`).\n\nThis will produce more informative error messages for malformed calls, at the cost of some overhead per call. As such, this setting is most useful during initial integration of Viv into a host application.",
+          "type": "boolean"
+        },
+        "watchlists": {
+          "$ref": "#/definitions/HostApplicationAdapterConstructWatchlists",
+          "description": "An object identifying constructs to *watch*.\n\nWhen a construct is being watched,  {@link  WatchedConstructDebuggingState  }  is collected whenever it is targeted. This information can be used to investigate why a construct has not been successfully targeted, especially if this is due to something like a mistyped condition."
+        }
+      },
+      "type": "object"
+    },
+    "HostApplicationAdapterFastPaths": {
+      "additionalProperties": false,
+      "description": "A collection of optional functions implementing frequent read and write operations, so as to be optimized according to implementation details specific to the host application at hand.\n\nAll the entries here are optional. If a given entry isn't present, the Viv runtime will use a corresponding naive procedure with the same semantics. For instance, if an  {@link  HostApplicationAdapter.updateEntityProperty }  fast path is not supplied, the Viv runtime will read the complete entity data, mutate it to capture the property update, and then write the complete updated entity data.",
+      "properties": {
+        "appendActionCaused": {
+          "isFunction": true
+        },
+        "appendActionDescendants": {
+          "isFunction": true
+        },
+        "appendEntityProperty": {
+          "isFunction": true
+        },
+        "deletePlanState": {
+          "isFunction": true
+        },
+        "getActionAncestors": {
+          "isFunction": true
+        },
+        "getActionDescendants": {
+          "isFunction": true
+        },
+        "getActionQueue": {
+          "isFunction": true
+        },
+        "getAllPlanStates": {
+          "isFunction": true
+        },
+        "getCharacterMemory": {
+          "isFunction": true
+        },
+        "getEntityLocation": {
+          "isFunction": true
+        },
+        "getEntityProperty": {
+          "isFunction": true
+        },
+        "getEntityType": {
+          "isFunction": true
+        },
+        "getItemInscriptions": {
+          "isFunction": true
+        },
+        "getPlanQueue": {
+          "isFunction": true
+        },
+        "getPlanState": {
+          "isFunction": true
+        },
+        "getQueuedConstructStatuses": {
+          "isFunction": true
+        },
+        "isEntityID": {
+          "isFunction": true
+        },
+        "saveActionQueue": {
+          "isFunction": true
+        },
+        "savePlanQueue": {
+          "isFunction": true
+        },
+        "savePlanState": {
+          "isFunction": true
+        },
+        "saveQueuedConstructStatus": {
+          "isFunction": true
+        }
+      },
+      "type": "object"
+    },
+    "HostApplicationAdapterObservabilityCallbacks": {
+      "additionalProperties": false,
+      "description": "An object specifying observability callbacks.",
+      "properties": {
+        "onActionTargetingEvent": {
+          "isFunction": true
+        },
+        "onPlanExecutionEvent": {
+          "isFunction": true
+        }
+      },
+      "type": "object"
+    },
+    "Inscription": {
+      "additionalProperties": false,
+      "description": "A Viv inscription.\n\nThis kind of expression causes an item to be inscribed with knowledge about a given action. If a character later inspects the item, they will learn about the action.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "inscription",
+          "description": "Discriminator for a Viv inscription.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/InscriptionValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "InscriptionValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv inscription.",
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the action operand in the inscription."
+        },
+        "item": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the item operand in the inscription."
+        }
+      },
+      "required": [
+        "item",
+        "action"
+      ],
+      "type": "object"
+    },
+    "Inspection": {
+      "additionalProperties": false,
+      "description": "A Viv inspection, which causes a character to *inspect* an item, which in turn may lead them to learn about actions inscribed in the item.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "inspection",
+          "description": "Discriminator for a Viv inspection.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/InspectionValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "InspectionValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv inspection.",
+      "properties": {
+        "character": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the character operand in the inspection."
+        },
+        "item": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the item operand in the inspection."
+        }
+      },
+      "required": [
+        "character",
+        "item"
+      ],
+      "type": "object"
+    },
+    "IntField": {
+      "additionalProperties": false,
+      "description": "A Viv integer.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "int",
+          "description": "Discriminator for a Viv integer.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The integer literal to which this expression will evaluate.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ListField": {
+      "additionalProperties": false,
+      "description": "A Viv list, defined as an ordered array of Viv expressions.\n\nOnce evaluated, the result will contain the respective evaluations of the expressions, in that same order.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "list",
+          "description": "Discriminator for a Viv list.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The actual expression value.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "LocalVariable": {
+      "additionalProperties": false,
+      "description": "A Viv local variable.",
+      "properties": {
+        "isEntityVariable": {
+          "description": "Whether the variable is marked as binding an entity (as opposed to a symbol).",
+          "type": "boolean"
+        },
+        "name": {
+          "$ref": "#/definitions/VariableName",
+          "description": "The name of the local variable."
+        }
+      },
+      "required": [
+        "name",
+        "isEntityVariable"
+      ],
+      "type": "object"
+    },
+    "Loop": {
+      "additionalProperties": false,
+      "description": "A Viv loop, allowing for iteration over some iterable value.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "loop",
+          "description": "Discriminator for a Viv loop.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/LoopValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "LoopValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv loop.",
+      "properties": {
+        "body": {
+          "description": "The body of the loop, structured as an array of expressions that will each be interpreted, in order, on each iteration.\n\nThese body expressions can reference the loop variable, allowing for Viv code that acts on each member of an iterable.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        },
+        "iterable": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression that should evaluate to a value that is iterable in JavaScript."
+        },
+        "variable": {
+          "$ref": "#/definitions/LocalVariable",
+          "description": "The local variable to which each member of the iterable is assigned on its respective iteration of the loop."
+        }
+      },
+      "required": [
+        "iterable",
+        "variable",
+        "body"
+      ],
+      "type": "object"
+    },
+    "MembershipTest": {
+      "additionalProperties": false,
+      "description": "A Viv membership test, which takes two expressions and evaluates to true if the evaluation of the first expression is a member of the evaluation of the second expression.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "membershipTest",
+          "description": "Discriminator for a Viv membership test.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/MembershipTestValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "MembershipTestValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv membership test.",
+      "properties": {
+        "collection": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the collection operand in the membership test."
+        },
+        "item": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the item operand in the membership test."
+        }
+      },
+      "required": [
+        "item",
+        "collection"
+      ],
+      "type": "object"
+    },
+    "MemoryCheck": {
+      "additionalProperties": false,
+      "description": "A Viv memory check.\n\nThis kind of expression takes two expressions as operands and evaluates to `True` if the evaluation of the first expression is a character, the second expression is an action, and the character has a memory of the action.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "memoryCheck",
+          "description": "Discriminator for a Viv memory check.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/MemoryCheckValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "MemoryCheckValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv memory check.",
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the action operand in the memory check."
+        },
+        "character": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression whose evaluation will be used as the character operand in the memory check."
+        }
+      },
+      "required": [
+        "character",
+        "action"
+      ],
+      "type": "object"
+    },
+    "NullField": {
+      "additionalProperties": false,
+      "description": "A Viv null value.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "nullType",
+          "description": "Discriminator for a Viv null value.",
+          "type": "string"
+        },
+        "value": {
+          "description": "JavaScript's `null`, to which the expression always evaluates.",
+          "type": "null"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ObjectField": {
+      "additionalProperties": false,
+      "description": "A Viv object literal, which maps keys (string literals) to Viv expressions.\n\nOnce evaluated, the result will map those same keys to the respective evaluations of the Viv expressions.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "object",
+          "description": "Discriminator for a Viv object literal.",
+          "type": "string"
+        },
+        "value": {
+          "additionalProperties": {
+            "$ref": "#/definitions/Expression"
+          },
+          "description": "The actual expression value.",
+          "type": "object"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "PlanBlockedOnReactionWindowEvent": {
+      "additionalProperties": false,
+      "description": "Emitted when plan execution blocks on a reaction window, waiting for queued constructs to resolve according to the window's operator.\n\nIf the window becomes unsatisfiable (e.g., all constructs fail under an `any` operator), the plan will fail and a  {@link  PlanFailedEvent }  will be emitted.",
+      "properties": {
+        "operator": {
+          "$ref": "#/definitions/PlanPhaseReactionWindowOperator",
+          "description": "The operator governing the reaction window."
+        },
+        "phase": {
+          "$ref": "#/definitions/PlanPhaseName",
+          "description": "The name of the phase in which the plan is blocked."
+        },
+        "plan": {
+          "$ref": "#/definitions/PlanName",
+          "description": "The name of the plan, as defined in the content bundle."
+        },
+        "planID": {
+          "$ref": "#/definitions/UID",
+          "description": "The unique identifier for the plan state associated with this event."
+        },
+        "queuedConstructs": {
+          "description": "UIDs for the constructs queued during this reaction window, over which the operator holds.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "type": {
+          "const": "blockedOnReactionWindow",
+          "description": "Discriminator for a blocked-on-reaction-window event.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "operator",
+        "phase",
+        "plan",
+        "planID",
+        "queuedConstructs",
+        "type"
+      ],
+      "type": "object"
+    },
+    "PlanBlockedOnWaitEvent": {
+      "additionalProperties": false,
+      "description": "Emitted when plan execution blocks on a wait instruction, pausing until a deadline elapses or optional resume conditions are satisfied.",
+      "properties": {
+        "deadline": {
+          "$ref": "#/definitions/DiegeticTimestamp",
+          "description": "The diegetic timestamp at which the wait will expire, allowing execution to resume."
+        },
+        "phase": {
+          "$ref": "#/definitions/PlanPhaseName",
+          "description": "The name of the phase at hand (in which the plan is blocked)."
+        },
+        "plan": {
+          "$ref": "#/definitions/PlanName",
+          "description": "The name of the plan, as defined in the content bundle."
+        },
+        "planID": {
+          "$ref": "#/definitions/UID",
+          "description": "The unique identifier for the plan state associated with this event."
+        },
+        "type": {
+          "const": "blockedOnWait",
+          "description": "Discriminator for a blocked-on-wait event.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "deadline",
+        "phase",
+        "plan",
+        "planID",
+        "type"
+      ],
+      "type": "object"
+    },
+    "PlanExecutionEvent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/PlanLaunchedEvent"
+        },
+        {
+          "$ref": "#/definitions/PlanPhaseAdvancedEvent"
+        },
+        {
+          "$ref": "#/definitions/PlanBlockedOnWaitEvent"
+        },
+        {
+          "$ref": "#/definitions/PlanBlockedOnReactionWindowEvent"
+        },
+        {
+          "$ref": "#/definitions/PlanSucceededEvent"
+        },
+        {
+          "$ref": "#/definitions/PlanFailedEvent"
+        }
+      ],
+      "description": "A plan-execution event, as issued to the  {@link  HostApplicationAdapterObservabilityCallbacks.onPlanExecutionEvent  }  observability callback."
+    },
+    "PlanFailedEvent": {
+      "additionalProperties": false,
+      "description": "Emitted when a plan fails, either due to a `fail` instruction or an unsatisfiable reaction window.",
+      "properties": {
+        "phase": {
+          "$ref": "#/definitions/PlanPhaseName",
+          "description": "The name of the phase in which the plan failed."
+        },
+        "plan": {
+          "$ref": "#/definitions/PlanName",
+          "description": "The name of the plan, as defined in the content bundle."
+        },
+        "planID": {
+          "$ref": "#/definitions/UID",
+          "description": "The unique identifier for the plan state associated with this event."
+        },
+        "type": {
+          "const": "failed",
+          "description": "Discriminator for a plan-failed event.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "phase",
+        "plan",
+        "planID",
+        "type"
+      ],
+      "type": "object"
+    },
+    "PlanInstructionAddress": {
+      "description": "An address for an  {@link  PlanInstruction }  in a  {@link  PlanPhase  } , which is really just as an index into the phase's `tape` array property.\n\nAs plan execution proceeds, the executor maintains the address for the current instruction as a program counter.",
+      "type": "number"
+    },
+    "PlanLaunchedEvent": {
+      "additionalProperties": false,
+      "description": "Emitted when a plan is launched, i.e., when role casting succeeds and plan execution begins.\n\nNote: A  {@link  PlanPhaseAdvancedEvent }  for the initial phase will immediately follow this event.",
+      "properties": {
+        "plan": {
+          "$ref": "#/definitions/PlanName",
+          "description": "The name of the plan, as defined in the content bundle."
+        },
+        "planID": {
+          "$ref": "#/definitions/UID",
+          "description": "The unique identifier for the plan state associated with this event."
+        },
+        "type": {
+          "const": "launched",
+          "description": "Discriminator for a plan-launched event.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "plan",
+        "planID",
+        "type"
+      ],
+      "type": "object"
+    },
+    "PlanLoopFrame": {
+      "additionalProperties": false,
+      "description": "A loop frame in the loop stack for an active plan.\n\nThis stores data about a loop that is in progress.",
+      "properties": {
+        "iterable": {
+          "description": "An array storing the evaluated loop iterable, which will be iterated over one element at a time, with the element at hand being bound to `variable`.\n\nNote that the iterable is evaluated only once, upon  {@link  PlanInstructionLoopInit } , and that it is stored in a  {@link  dehydrateExpressionValue  }  state.",
+          "items": {
+            "$ref": "#/definitions/ExpressionValue"
+          },
+          "type": "array"
+        },
+        "iterationIndex": {
+          "description": "The index in `iterable` to be used to retrieve the loop-variable binding for the next iteration.\n\nThis is incremented by one at the end of each iteration, and the loop  {@link  PlanInstructionLoopNext }  once this matches the length of `iterable`.",
+          "type": "number"
+        },
+        "variable": {
+          "$ref": "#/definitions/LocalVariable",
+          "description": "The local variable to which each member of the iterable is assigned on its respective iteration of the loop."
+        }
+      },
+      "required": [
+        "iterable",
+        "variable",
+        "iterationIndex"
+      ],
+      "type": "object"
+    },
+    "PlanName": {
+      "description": "A (unique) name for a plan.",
+      "type": "string"
+    },
+    "PlanPhaseAdvancedEvent": {
+      "additionalProperties": false,
+      "description": "Emitted when plan execution advances into a new phase.",
+      "properties": {
+        "phase": {
+          "$ref": "#/definitions/PlanPhaseName",
+          "description": "The name of the phase into which execution is advancing."
+        },
+        "plan": {
+          "$ref": "#/definitions/PlanName",
+          "description": "The name of the plan, as defined in the content bundle."
+        },
+        "planID": {
+          "$ref": "#/definitions/UID",
+          "description": "The unique identifier for the plan state associated with this event."
+        },
+        "type": {
+          "const": "phaseAdvanced",
+          "description": "Discriminator for a phase-advanced event.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "phase",
+        "plan",
+        "planID",
+        "type"
+      ],
+      "type": "object"
+    },
+    "PlanPhaseName": {
+      "description": "A name for a plan phase, guaranteed to be unique only within the enclosing plan.",
+      "type": "string"
+    },
+    "PlanPhaseReactionWindowOperator": {
+      "description": "Enum containing the valid operators for reaction windows.\n\nWhen a reaction window is active during execution of a plan phase, all reactions that are queued during the window are tracked. Once the end of the window is reached, execution focuses on resolving the window according to its operator. Depending on the operator and the reaction outcomes, this may require all the queued reactions to be resolved.\n\nNote: The DSL allows for authors to specify an `untracked` operator, but this is equivalent to declaring a sequence of bare reactions, and in fact this is how an `untracked` window is compiled. As such, the operator never makes it into the compiled content bundle, hence it not appearing here.",
+      "enum": [
+        "all",
+        "any"
+      ],
+      "type": "string"
+    },
+    "PlanQueue": {
+      "description": "An array storing queued plans (and queued plan selectors), in insertion order (FIFO).",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/definitions/QueuedPlan"
+          },
+          {
+            "$ref": "#/definitions/QueuedPlanSelector"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "PlanSucceededEvent": {
+      "additionalProperties": false,
+      "description": "Emitted when a plan completes successfully.",
+      "properties": {
+        "phase": {
+          "$ref": "#/definitions/PlanPhaseName",
+          "description": "The name of the phase in which the plan succeeded."
+        },
+        "plan": {
+          "$ref": "#/definitions/PlanName",
+          "description": "The name of the plan, as defined in the content bundle."
+        },
+        "planID": {
+          "$ref": "#/definitions/UID",
+          "description": "The unique identifier for the plan state associated with this event."
+        },
+        "type": {
+          "const": "succeeded",
+          "description": "Discriminator for a plan-succeeded event.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "phase",
+        "plan",
+        "planID",
+        "type"
+      ],
+      "type": "object"
+    },
+    "PrecastBindings": {
+      "additionalProperties": false,
+      "description": "Precast bindings for the targeting of some construct, as in a reaction or a sifting expression.",
+      "properties": {
+        "partial": {
+          "description": "Whether the precast bindings are marked partial, meaning additional required role slots will need to be cast.\n\nThe compiler will verify that all required slots appear to be precast, but we will also confirm this at runtime.",
+          "type": "boolean"
+        },
+        "roles": {
+          "additionalProperties": {
+            "$ref": "#/definitions/Expression"
+          },
+          "description": "A mapping from role name to an expression that will evaluate to precast bindings for that role.",
+          "propertyNames": {
+            "description": "A name for a role (unique only within its definition)."
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "partial",
+        "roles"
+      ],
+      "type": "object"
+    },
+    "QueryName": {
+      "description": "A unique name for a query.",
+      "type": "string"
+    },
+    "QueuePlanArgs": {
+      "additionalProperties": false,
+      "description": "Arguments parameterizing a request to force queueing of a specific plan, potentially urgently.\n\nNote: No initiator is specified here because, unlike actions, plans are executed globally without regard to any single character. Indeed, plans can orchestrate actions that will be initiated by distinct characters. This is why queued plans live in a global plan queue (stored in the  {@link  VivInternalState  } ), as opposed to character-specific queues (as with queued actions).",
+      "properties": {
+        "causes": {
+          "description": "An array containing entity IDs for arbitrary actions that the host application has indicated as causes for the plan being queued. If the plan ultimately directly causes any actions to be performed, these will be attributed as the causes of those actions.\n\nSee the documentation for  {@link  AttemptActionArgs }  for examples of design patterns enabled by this parameter.\n\nNote: The runtime will confirm that each entry here is in fact the entity ID for some action, and it will also deduplicate the given causes automatically.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "planName": {
+          "$ref": "#/definitions/PlanName",
+          "description": "The name of the plan to queue."
+        },
+        "precastBindings": {
+          "$ref": "#/definitions/RoleBindings",
+          "description": "Partial or complete role bindings to use when targeting the plan.\n\nIf there are any required role slots that have not been precast here, the role caster will attempt to fill them, and targeting will fail if they cannot be filled. Likewise, the role caster will also attempt to fill any unfilled optional role slots."
+        },
+        "urgent": {
+          "const": true,
+          "description": "Whether to queue the plan *urgently*.\n\nIf this flag is set, the planner will immediately target the plan upon queueing it. If this initial targeting succeeds, the plan will be launched immediately and then greedily executed to the degree possible, up to potential resolution. This matches the behavior that occurs when a reaction queues a plan (or plan selector) with a truthy `urgent` value.\n\nIf the flag is *not* set, the planner will queue the plan immediately, but will not attempt to target it until the next  {@link  tickPlanner  } .\n\nNote: This should always be `true` when present.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "planName"
+      ],
+      "type": "object"
+    },
+    "QueuedAction": {
+      "additionalProperties": false,
+      "description": "An action that is queued for potential future performance by a given character.\n\nConcretely, an action is queued when a reaction declaration for another action (or a plan) is acted upon. Queueing entails insertion into the prospective initiator's action queue, and ultimately there is no guarantee the action will actually be performed, since the author can constrain performance in various ways, including via expiration and abandonment criteria.",
+      "properties": {
+        "abandonmentConditions": {
+          "$ref": "#/definitions/QueuedConstructAbandonmentConditions",
+          "description": "Abandonment conditions for the queued construct.\n\nIf *all* these hold at any point at which the queued construct is being targeted, it will be dequeued."
+        },
+        "causes": {
+          "description": "Entity IDs for all the actions recorded as causes of the queued construct.\n\nWhenever an action is ultimately performed by virtue of the queued construct -- even if transitively, e.g., via a plan queueing a plan queueing a plan that queues an action that is performed -- these causes will be recorded for the action as a matter of causal bookkeeping. This enables story sifting later on.\n\nNote that the causes here may contain multiple entries, which occurs when an action relays knowledge about the action to which the reaction was actually attached. To illustrate, consider the case of a reaction R that is attached to an action A1, which ultimately causes a queued action to be performed, which we will call Q. Now let's further say that Q's initiator, C, learned about A1, the direct cause of Q, via another action, A2, which relays knowledge about A1 -- i.e., A2 casts A1 in one of its roles. In this case, when C experiences A2, as a matter of course C will be cast in A1's special `hearer` role, with A1's effects and reactions being handled for C accordingly. It is through this process that Q, a reaction on A1, would be queued for C as a result of C learning about A1 via A2. In this case, both A1 and A2 would be included in the causes for Q, with A1 being the zeroth entry (see the note on this just below). Note that if A1 relays knowledge about an earlier action, A0, we will not evaluate A0's reactions upon C learning about A1 via A2. We only follow a single chain link for effect and reaction handling, since knowledge propagation would get out of hand otherwise.\n\nBecause reaction declarations can be wrapped in conditionals and loops, the only way for the causes to make their way into the queued construct is insertion into the evaluation context, which we do via the special `__causes__` field in the evaluation context.\n\nSome more notes: no duplicates will appear here, and the zeroth entry will always be the action that directly triggered queuing. We place this one first in order to ground temporal constraints on reactions, which may be anchored in the timestamp of the action that triggered the reaction.\n\nIf a plan triggered queueing, the action that queued the plan -- or the action that queued the plan that queued the plan, etc. -- will be the zeroth entry.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "constructName": {
+          "$ref": "#/definitions/ActionName",
+          "description": "The name of the queued action."
+        },
+        "id": {
+          "$ref": "#/definitions/UID",
+          "description": "A unique identifier for the queued construct, provisioned by the host application via a call to the  {@link  HostApplicationAdapter.provisionActionID  }  adapter function. Should an actual action be performed or an actual plan be launched, the resulting action or plan will take on this UID."
+        },
+        "initiator": {
+          "$ref": "#/definitions/UID",
+          "description": "Entity ID for the prospective initiator of the action (selector)."
+        },
+        "location": {
+          "description": "If present, predicates that will constrain where the eventual action may be performed.",
+          "items": {
+            "$ref": "#/definitions/SetPredicate"
+          },
+          "type": "array"
+        },
+        "precastBindings": {
+          "$ref": "#/definitions/RoleBindings",
+          "description": "A mapping from a role name to an array of entity IDs for entities precast in that role."
+        },
+        "priority": {
+          "description": "A numeric priority value that governs insertion into the initiator's queue. If the queued action is also marked `urgent`, this will be used as a secondary ordering key inside the urgency bucket. Higher values indicating a higher priority, and thus an earlier position in the queue.",
+          "type": "number"
+        },
+        "repeatLogic": {
+          "$ref": "#/definitions/QueuedConstructRepeatLogic",
+          "description": "Repeat logic for the queued construct."
+        },
+        "time": {
+          "$ref": "#/definitions/QueuedActionTemporalConstraints",
+          "description": "Temporal constraints on when exactly the eventual action may be performed. The constraints may specify a time-of-day window and/or a point-in-time window, with story time being the domain in each case. Note that the interpreter is tasked with grounding constraints into actual story time, as needed, by making use of the host application's Viv adapter."
+        },
+        "type": {
+          "const": "action",
+          "description": "Discriminator for a queued action.",
+          "type": "string"
+        },
+        "urgent": {
+          "description": "Whether the queued construct is to be marked urgent.\n\nFor a queued action or action selector, this will cause it to be placed in the urgent heap of the associated initiator's action queue. For a queued plan or plan selector, this will cause the resulting plan to be immediately targeted (and potentially launched) upon being queued. This allows authors to specify complex action machinery that is intended to play out on the same timestep as precipitating action.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "causes",
+        "constructName",
+        "id",
+        "initiator",
+        "precastBindings",
+        "priority",
+        "type",
+        "urgent"
+      ],
+      "type": "object"
+    },
+    "QueuedActionSelector": {
+      "additionalProperties": false,
+      "description": "An action selector that is queued for future consideration on behalf of a given character.\n\nConcretely, an action selector is queued when a reaction declaration for another action (or a plan) is acted upon. Queueing entails insertion into the prospective initiator's action queue. When the selector is considered, it will succeed (and be dequeued) if it causes one of its associated actions to successfully be performed. Ultimately there is no guarantee that any action will actually be performed by virtue of the queued action selector, since the author can constrain performance in various ways, including via expiration and abandonment criteria.",
+      "properties": {
+        "abandonmentConditions": {
+          "$ref": "#/definitions/QueuedConstructAbandonmentConditions",
+          "description": "Abandonment conditions for the queued construct.\n\nIf *all* these hold at any point at which the queued construct is being targeted, it will be dequeued."
+        },
+        "causes": {
+          "description": "Entity IDs for all the actions recorded as causes of the queued construct.\n\nWhenever an action is ultimately performed by virtue of the queued construct -- even if transitively, e.g., via a plan queueing a plan queueing a plan that queues an action that is performed -- these causes will be recorded for the action as a matter of causal bookkeeping. This enables story sifting later on.\n\nNote that the causes here may contain multiple entries, which occurs when an action relays knowledge about the action to which the reaction was actually attached. To illustrate, consider the case of a reaction R that is attached to an action A1, which ultimately causes a queued action to be performed, which we will call Q. Now let's further say that Q's initiator, C, learned about A1, the direct cause of Q, via another action, A2, which relays knowledge about A1 -- i.e., A2 casts A1 in one of its roles. In this case, when C experiences A2, as a matter of course C will be cast in A1's special `hearer` role, with A1's effects and reactions being handled for C accordingly. It is through this process that Q, a reaction on A1, would be queued for C as a result of C learning about A1 via A2. In this case, both A1 and A2 would be included in the causes for Q, with A1 being the zeroth entry (see the note on this just below). Note that if A1 relays knowledge about an earlier action, A0, we will not evaluate A0's reactions upon C learning about A1 via A2. We only follow a single chain link for effect and reaction handling, since knowledge propagation would get out of hand otherwise.\n\nBecause reaction declarations can be wrapped in conditionals and loops, the only way for the causes to make their way into the queued construct is insertion into the evaluation context, which we do via the special `__causes__` field in the evaluation context.\n\nSome more notes: no duplicates will appear here, and the zeroth entry will always be the action that directly triggered queuing. We place this one first in order to ground temporal constraints on reactions, which may be anchored in the timestamp of the action that triggered the reaction.\n\nIf a plan triggered queueing, the action that queued the plan -- or the action that queued the plan that queued the plan, etc. -- will be the zeroth entry.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "constructName": {
+          "$ref": "#/definitions/SelectorName",
+          "description": "The name of the queued action selector."
+        },
+        "id": {
+          "$ref": "#/definitions/UID",
+          "description": "A unique identifier for the queued construct, provisioned by the host application via a call to the  {@link  HostApplicationAdapter.provisionActionID  }  adapter function. Should an actual action be performed or an actual plan be launched, the resulting action or plan will take on this UID."
+        },
+        "initiator": {
+          "$ref": "#/definitions/UID",
+          "description": "Entity ID for the prospective initiator of the action (selector)."
+        },
+        "location": {
+          "description": "If present, predicates that will constrain where the eventual action may be performed.",
+          "items": {
+            "$ref": "#/definitions/SetPredicate"
+          },
+          "type": "array"
+        },
+        "precastBindings": {
+          "$ref": "#/definitions/RoleBindings",
+          "description": "A mapping from a role name to an array of entity IDs for entities precast in that role."
+        },
+        "priority": {
+          "description": "A numeric priority value that governs insertion into the initiator's queue. If the queued action is also marked `urgent`, this will be used as a secondary ordering key inside the urgency bucket. Higher values indicating a higher priority, and thus an earlier position in the queue.",
+          "type": "number"
+        },
+        "repeatLogic": {
+          "$ref": "#/definitions/QueuedConstructRepeatLogic",
+          "description": "Repeat logic for the queued construct."
+        },
+        "time": {
+          "$ref": "#/definitions/QueuedActionTemporalConstraints",
+          "description": "Temporal constraints on when exactly the eventual action may be performed. The constraints may specify a time-of-day window and/or a point-in-time window, with story time being the domain in each case. Note that the interpreter is tasked with grounding constraints into actual story time, as needed, by making use of the host application's Viv adapter."
+        },
+        "type": {
+          "const": "actionSelector",
+          "description": "Discriminator for a queued action selector.",
+          "type": "string"
+        },
+        "urgent": {
+          "description": "Whether the queued construct is to be marked urgent.\n\nFor a queued action or action selector, this will cause it to be placed in the urgent heap of the associated initiator's action queue. For a queued plan or plan selector, this will cause the resulting plan to be immediately targeted (and potentially launched) upon being queued. This allows authors to specify complex action machinery that is intended to play out on the same timestep as precipitating action.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "causes",
+        "constructName",
+        "id",
+        "initiator",
+        "precastBindings",
+        "priority",
+        "type",
+        "urgent"
+      ],
+      "type": "object"
+    },
+    "QueuedActionTemporalConstraintTimeFrame": {
+      "additionalProperties": false,
+      "description": "A temporal constraint on a queued action (selector) specifying an acceptable range that begins and/or ends with a certain point in story time, such that the eventual action may only be performed during that window.",
+      "properties": {
+        "close": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/DiegeticTimestamp"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If present, the latest point in story time at which the eventual action may be performed. Should this timestamp be eclipsed, the planner will automatically dequeue the action."
+        },
+        "open": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/DiegeticTimestamp"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If present, the earliest point in story time at which the eventual action may be performed."
+        }
+      },
+      "required": [
+        "open",
+        "close"
+      ],
+      "type": "object"
+    },
+    "QueuedActionTemporalConstraintTimeOfDay": {
+      "additionalProperties": false,
+      "description": "A temporal constraint on a queued action (selector) specifying an acceptable range that begins and/or ends with a certain  point in story time, such that the eventual action may only be performed during that window.",
+      "properties": {
+        "close": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TimeOfDay"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If present, the latest time of day at which the queued action may be performed."
+        },
+        "open": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TimeOfDay"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If present, the earliest time of day at which the queued action may be performed."
+        }
+      },
+      "required": [
+        "open",
+        "close"
+      ],
+      "type": "object"
+    },
+    "QueuedActionTemporalConstraints": {
+      "additionalProperties": false,
+      "description": "Temporal constraints on a queued action (selector) that have already been grounded to story time in the running instance of the host application at hand.",
+      "properties": {
+        "timeFrame": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/QueuedActionTemporalConstraintTimeFrame"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "A temporal constraint specifying an acceptable range that begins and/or ends with a certain point in story time, such that the eventual action may only be performed during that window."
+        },
+        "timeOfDay": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/QueuedActionTemporalConstraintTimeOfDay"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "A temporal constraint specifying an acceptable range that begins and/or ends with a certain time of day, such that the eventual action may only be performed during that window. There's no need to ground these expressions in story time, so we can reuse the content types here."
+        }
+      },
+      "required": [
+        "timeFrame",
+        "timeOfDay"
+      ],
+      "type": "object"
+    },
+    "QueuedConstructAbandonmentConditions": {
+      "additionalProperties": false,
+      "description": "Abandonment conditions for a queued construct.\n\nIf these all hold at any point at which the queued construct is being targeted, it will be dequeued.",
+      "properties": {
+        "conditions": {
+          "description": "An array of Viv expressions such that, if all of them hold (i.e. evaluate to truthy values), the queued construct will be abandoned (i.e., dequeued).",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        },
+        "context": {
+          "$ref": "#/definitions/EvaluationContext",
+          "description": "The evaluation context to use when evaluating the abandonment conditions.\n\nAt the time a reaction declaration was executed to queue the construct, this will have been dehydrated, meaning all entity data will have been converted into entity IDs. This allows the planner to pull the latest entity state at the time of condition evaluation. Note that we have to attach this context here in order to preserve any local variables that may be pertinent, which is a common case that results from an author queueing reactions within a loop. If we were to instead store the entity ID for the cause of this reaction, and then reconstruct a context from its bindings, we would lose this local variable.\n\nThis and  {@link  QueuedConstructRepeatLogic.context }  are the only cases where local variables persist beyond action performance."
+        }
+      },
+      "required": [
+        "conditions",
+        "context"
+      ],
+      "type": "object"
+    },
+    "QueuedConstructRepeatLogic": {
+      "additionalProperties": false,
+      "description": "Repeat logic for a queued construct.\n\nIf the queued construct succeeds, meaning the associated action is performed or the plan resolves successfully, the construct will be re-queued provided all conditions hold and its instances have not all been exhausted.",
+      "properties": {
+        "conditions": {
+          "description": "An array of Viv expressions such that, if all of them hold (i.e., evaluate to truthy values) after the queued construct succeeds, a copy of the construct will be re-queued.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        },
+        "context": {
+          "$ref": "#/definitions/EvaluationContext",
+          "description": "The evaluation context to use when evaluating the repeat conditions.\n\nAt the time a reaction declaration was executed to queue the construct, this will have been dehydrated, meaning all entity data will have been converted into entity IDs. This allows the runtime to pull the latest entity state at the time of condition evaluation.\n\nThis and  {@link  QueuedConstructAbandonmentConditions.context }  are the only cases where local variables persist beyond action performance."
+        },
+        "remainingInstances": {
+          "description": "The remaining number of times this construct may be re-queued upon successful performance/execution.\n\nThis value is decremented on each instance of re-queueing, and when it reaches zero, no further re-queueing will occur.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "conditions",
+        "context",
+        "remainingInstances"
+      ],
+      "type": "object"
+    },
+    "QueuedConstructStatuses": {
+      "additionalProperties": {
+        "description": "Enum specifying the possible statuses for a Viv queued construct.\n\nEach queued construct begins with a pending status, prior to a terminal status (success or failure) being reached. A terminal status can never change.\n\n*This is an internal type that is not part of the stable API surface. Its shape may change in any release.*",
+        "enum": [
+          "failed",
+          "pending",
+          "succeeded"
+        ],
+        "type": "string"
+      },
+      "description": "A mapping from queued-construct UID to queued-construct status, for all constructs that have ever been queued.",
+      "propertyNames": {
+        "description": "A unique identifier in the host application that is provisioned by the host application.\n\nThese do not need to be UUIDs, but they do need to be UIDs with regard to the running instance of the host application at hand.\n\nWhen a UID is associated with an  {@link  EntityView }  in the storyworld of the running instance of the host application, it is referred to as an 'entity ID'. This term is used throughout the Viv codebase accordingly."
+      },
+      "type": "object"
+    },
+    "QueuedPlan": {
+      "additionalProperties": false,
+      "description": "A plan that is queued for potential future launching by the planner.\n\nConcretely, a plan is queued when a reaction declaration for an action (or another plan) is acted upon. Queueing entails appending to the global plan queue, which is not sorted in any priority order. Instead, the planner greedily pursues all queued plans (and plan selectors) each tick. If a plan is successfully targeted, because its required roles can be cast, then it will be launched. Ultimately there is no guarantee that the plan will actually be launched, since the author can constrain launching in various ways, including via expiration and abandonment criteria.",
+      "properties": {
+        "abandonmentConditions": {
+          "$ref": "#/definitions/QueuedConstructAbandonmentConditions",
+          "description": "Abandonment conditions for the queued construct.\n\nIf *all* these hold at any point at which the queued construct is being targeted, it will be dequeued."
+        },
+        "causes": {
+          "description": "Entity IDs for all the actions recorded as causes of the queued construct.\n\nWhenever an action is ultimately performed by virtue of the queued construct -- even if transitively, e.g., via a plan queueing a plan queueing a plan that queues an action that is performed -- these causes will be recorded for the action as a matter of causal bookkeeping. This enables story sifting later on.\n\nNote that the causes here may contain multiple entries, which occurs when an action relays knowledge about the action to which the reaction was actually attached. To illustrate, consider the case of a reaction R that is attached to an action A1, which ultimately causes a queued action to be performed, which we will call Q. Now let's further say that Q's initiator, C, learned about A1, the direct cause of Q, via another action, A2, which relays knowledge about A1 -- i.e., A2 casts A1 in one of its roles. In this case, when C experiences A2, as a matter of course C will be cast in A1's special `hearer` role, with A1's effects and reactions being handled for C accordingly. It is through this process that Q, a reaction on A1, would be queued for C as a result of C learning about A1 via A2. In this case, both A1 and A2 would be included in the causes for Q, with A1 being the zeroth entry (see the note on this just below). Note that if A1 relays knowledge about an earlier action, A0, we will not evaluate A0's reactions upon C learning about A1 via A2. We only follow a single chain link for effect and reaction handling, since knowledge propagation would get out of hand otherwise.\n\nBecause reaction declarations can be wrapped in conditionals and loops, the only way for the causes to make their way into the queued construct is insertion into the evaluation context, which we do via the special `__causes__` field in the evaluation context.\n\nSome more notes: no duplicates will appear here, and the zeroth entry will always be the action that directly triggered queuing. We place this one first in order to ground temporal constraints on reactions, which may be anchored in the timestamp of the action that triggered the reaction.\n\nIf a plan triggered queueing, the action that queued the plan -- or the action that queued the plan that queued the plan, etc. -- will be the zeroth entry.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "constructName": {
+          "$ref": "#/definitions/PlanName",
+          "description": "The name of the queued plan."
+        },
+        "id": {
+          "$ref": "#/definitions/UID",
+          "description": "A unique identifier for the queued construct, provisioned by the host application via a call to the  {@link  HostApplicationAdapter.provisionActionID  }  adapter function. Should an actual action be performed or an actual plan be launched, the resulting action or plan will take on this UID."
+        },
+        "precastBindings": {
+          "$ref": "#/definitions/RoleBindings",
+          "description": "A mapping from a role name to an array of entity IDs for entities precast in that role."
+        },
+        "repeatLogic": {
+          "$ref": "#/definitions/QueuedConstructRepeatLogic",
+          "description": "Repeat logic for the queued construct."
+        },
+        "type": {
+          "const": "plan",
+          "description": "Discriminator for a queued plan.",
+          "type": "string"
+        },
+        "urgent": {
+          "description": "Whether the queued construct is to be marked urgent.\n\nFor a queued action or action selector, this will cause it to be placed in the urgent heap of the associated initiator's action queue. For a queued plan or plan selector, this will cause the resulting plan to be immediately targeted (and potentially launched) upon being queued. This allows authors to specify complex action machinery that is intended to play out on the same timestep as precipitating action.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "causes",
+        "constructName",
+        "id",
+        "precastBindings",
+        "type",
+        "urgent"
+      ],
+      "type": "object"
+    },
+    "QueuedPlanSelector": {
+      "additionalProperties": false,
+      "description": "A plan selector that is queued for future consideration by the planner.\n\nConcretely, a plan selector is queued when a reaction declaration for an action (or a plan) is acted upon. Queueing entails appending the plan selector to the global plan queue, which is not sorted in any priority order. Instead, the planner greedily pursues all queued plans (and plan selectors) each tick. A plan selector is successfully targeted when its required roles can be cast and it successfully launches one of its associated plans. Ultimately there is no guarantee that any plan will actually be launched, since the author can constrain launching in various ways, including via expiration and abandonment criteria.",
+      "properties": {
+        "abandonmentConditions": {
+          "$ref": "#/definitions/QueuedConstructAbandonmentConditions",
+          "description": "Abandonment conditions for the queued construct.\n\nIf *all* these hold at any point at which the queued construct is being targeted, it will be dequeued."
+        },
+        "causes": {
+          "description": "Entity IDs for all the actions recorded as causes of the queued construct.\n\nWhenever an action is ultimately performed by virtue of the queued construct -- even if transitively, e.g., via a plan queueing a plan queueing a plan that queues an action that is performed -- these causes will be recorded for the action as a matter of causal bookkeeping. This enables story sifting later on.\n\nNote that the causes here may contain multiple entries, which occurs when an action relays knowledge about the action to which the reaction was actually attached. To illustrate, consider the case of a reaction R that is attached to an action A1, which ultimately causes a queued action to be performed, which we will call Q. Now let's further say that Q's initiator, C, learned about A1, the direct cause of Q, via another action, A2, which relays knowledge about A1 -- i.e., A2 casts A1 in one of its roles. In this case, when C experiences A2, as a matter of course C will be cast in A1's special `hearer` role, with A1's effects and reactions being handled for C accordingly. It is through this process that Q, a reaction on A1, would be queued for C as a result of C learning about A1 via A2. In this case, both A1 and A2 would be included in the causes for Q, with A1 being the zeroth entry (see the note on this just below). Note that if A1 relays knowledge about an earlier action, A0, we will not evaluate A0's reactions upon C learning about A1 via A2. We only follow a single chain link for effect and reaction handling, since knowledge propagation would get out of hand otherwise.\n\nBecause reaction declarations can be wrapped in conditionals and loops, the only way for the causes to make their way into the queued construct is insertion into the evaluation context, which we do via the special `__causes__` field in the evaluation context.\n\nSome more notes: no duplicates will appear here, and the zeroth entry will always be the action that directly triggered queuing. We place this one first in order to ground temporal constraints on reactions, which may be anchored in the timestamp of the action that triggered the reaction.\n\nIf a plan triggered queueing, the action that queued the plan -- or the action that queued the plan that queued the plan, etc. -- will be the zeroth entry.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "constructName": {
+          "$ref": "#/definitions/SelectorName",
+          "description": "The name of the queued plan selector."
+        },
+        "id": {
+          "$ref": "#/definitions/UID",
+          "description": "A unique identifier for the queued construct, provisioned by the host application via a call to the  {@link  HostApplicationAdapter.provisionActionID  }  adapter function. Should an actual action be performed or an actual plan be launched, the resulting action or plan will take on this UID."
+        },
+        "precastBindings": {
+          "$ref": "#/definitions/RoleBindings",
+          "description": "A mapping from a role name to an array of entity IDs for entities precast in that role."
+        },
+        "repeatLogic": {
+          "$ref": "#/definitions/QueuedConstructRepeatLogic",
+          "description": "Repeat logic for the queued construct."
+        },
+        "type": {
+          "const": "planSelector",
+          "description": "Discriminator for a queued plan selector.",
+          "type": "string"
+        },
+        "urgent": {
+          "description": "Whether the queued construct is to be marked urgent.\n\nFor a queued action or action selector, this will cause it to be placed in the urgent heap of the associated initiator's action queue. For a queued plan or plan selector, this will cause the resulting plan to be immediately targeted (and potentially launched) upon being queued. This allows authors to specify complex action machinery that is intended to play out on the same timestep as precipitating action.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "causes",
+        "constructName",
+        "id",
+        "precastBindings",
+        "type",
+        "urgent"
+      ],
+      "type": "object"
+    },
+    "Reaction": {
+      "additionalProperties": false,
+      "description": "A Viv reaction.\n\nA reaction specifies a construct (action, plan, or selector) that will be queued upon evaluation of the reaction expression.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "reaction",
+          "description": "Discriminator for Viv reaction expressions.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ReactionValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ReactionRepeatLogic": {
+      "additionalProperties": false,
+      "description": "An object specifying logic around repeating the reaction after it *succeeds*.\n\nThis logic is only considered when the construct queued by the reaction is successfully performed/executed.\n\nAs a motivating example, consider the case of one character, Alice, trying to track down another character, Bob, to arrest him. The arrest action is queued by a plan, with high priority, but it requires the two characters to be in the same location. To make this happen, the plan queues a subplan that causes Alice to search for Bob, going to his home, workplace, and favorite haunts. This subplan will succeed if Alice travels to those places. But what if she doesn't find Bob in any of these spots? She should probably try again tomorrow, going to the likely spots once again.\n\nUsing repeat logic, an author can easily specify this by declaring that, if the search subplan succeeds but Alice has not found Bob, it should be queued again. In this case, `conditions` would specify that Alice and Bob are not co-located, and `maxRepeats` would capture how many times Alice should attempt the search.\n\nNote: Viv already has automatic retry logic for reactions that can't be targeted currently.",
+      "properties": {
+        "conditions": {
+          "description": "A set of expressions such that, if all of them hold (i.e., evaluate to a truthy value), a copy of the reaction will be queued again for its initiator.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        },
+        "maxRepeats": {
+          "description": "The maximum number of times this reaction may be repeated.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "conditions",
+        "maxRepeats"
+      ],
+      "type": "object"
+    },
+    "ReactionTargetConstructDiscriminator": {
+      "anyOf": [
+        {
+          "const": "action",
+          "description": "Discriminator for action definitions.",
+          "type": "string"
+        },
+        {
+          "const": "actionSelector",
+          "description": "Discriminator for action-selector definitions.",
+          "type": "string"
+        },
+        {
+          "const": "plan",
+          "description": "Discriminator for plan definitions.",
+          "type": "string"
+        },
+        {
+          "const": "planSelector",
+          "description": "Discriminator for plan-selector definitions.",
+          "type": "string"
+        }
+      ],
+      "description": "Union containing discriminators for the construct types that a reaction may queue."
+    },
+    "ReactionValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv reaction.",
+      "properties": {
+        "abandonmentConditions": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/Expression"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "A set of expressions such that, if all of them hold (i.e., evaluate to a truthy value), the queued construct will be dequeued.\n\nThis will always be either `null` or a non-empty array."
+        },
+        "bindings": {
+          "$ref": "#/definitions/PrecastBindings",
+          "description": "Precast bindings for the target construct, as asserted in the reaction declaration."
+        },
+        "location": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/SetPredicate"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An expression that should evaluate to a location, that being the specific location at which an eventual action must be performed.\n\nThe compiler will flag the use of this option in a reaction queueing a plan or plan selector."
+        },
+        "priority": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Expression"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An expression that should evaluate to a numeric value specifying the priority of the queued construct.\n\nWithin a given queue group (urgent or non-urgent), queued actions (and queued action selectors) are targeted in descending order of priority.\n\nBecause the global plan queue is unordered, the compiler will flag the use of this option in a reaction queueing a plan or plan selector."
+        },
+        "repeatLogic": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ReactionRepeatLogic"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An object specifying logic around repeating the reaction should it succeed.\n\nNote: Viv already has automatic retry logic for reactions that can't be targeted currently."
+        },
+        "targetName": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ActionName"
+            },
+            {
+              "$ref": "#/definitions/PlanName"
+            },
+            {
+              "$ref": "#/definitions/SelectorName"
+            }
+          ],
+          "description": "The name of the target construct, i.e., the one queued up by this reaction."
+        },
+        "targetType": {
+          "$ref": "#/definitions/ReactionTargetConstructDiscriminator",
+          "description": "The type of construct that the reaction will queue."
+        },
+        "time": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/definitions/TemporalConstraint"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "A set of 0-3 temporal constraints constraining the time at which an eventual action may be performed.\n\nThe compiler will flag the use of this option in a reaction queueing a plan or plan selector."
+        },
+        "urgent": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Expression"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An expression that should evaluate to a boolean value indicating whether the reaction will queue its target construct urgently.\n\nThe evaluated value will be cast to a boolean, so authors should be careful when using this parameter. Urgent actions and action selectors receive the highest priority in action queues, while an urgent plan or plan selector will be targeted (and potentially launched) upon being queued.\n\nIf no expression is supplied, the reaction will not be marked urgent."
+        }
+      },
+      "required": [
+        "targetName",
+        "targetType",
+        "bindings",
+        "urgent",
+        "priority",
+        "location",
+        "time",
+        "abandonmentConditions",
+        "repeatLogic"
+      ],
+      "type": "object"
+    },
+    "ReferencePathComponent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ReferencePathComponentPropertyName"
+        },
+        {
+          "$ref": "#/definitions/ReferencePathComponentPointer"
+        },
+        {
+          "$ref": "#/definitions/ReferencePathComponentLookup"
+        }
+      ],
+      "description": "A component in a Viv reference path."
+    },
+    "ReferencePathComponentLookup": {
+      "additionalProperties": false,
+      "description": "A component of a Viv reference path specifying a property lookup or an array access, where the key/index can be specified by an arbitrary Viv expression.",
+      "properties": {
+        "failSafe": {
+          "description": "Whether the expression component should fail safely by converting a nullish evaluation into the falsy 'eval fail-safe signal'.\n\nThis allows for references whose (intermediate) references may be undefined, as in `@foo.bar?.baz`.",
+          "type": "boolean"
+        },
+        "key": {
+          "$ref": "#/definitions/Expression",
+          "description": "An expression that should evaluate to a valid JavaScript property key.\n\nThis mainly comprises strings and integers. Note that in JavaScript, array indices are actually just property keys."
+        },
+        "type": {
+          "const": "referencePathComponentLookup",
+          "description": "Discriminator for a lookup reference path component.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "failSafe",
+        "key",
+        "type"
+      ],
+      "type": "object"
+    },
+    "ReferencePathComponentPointer": {
+      "additionalProperties": false,
+      "description": "A component of a Viv reference path specifying a pointer to dereference.",
+      "properties": {
+        "failSafe": {
+          "description": "Whether the expression component should fail safely by converting a nullish evaluation into the falsy 'eval fail-safe signal'.\n\nThis allows for references whose (intermediate) references may be undefined, as in `@foo.bar?.baz`.",
+          "type": "boolean"
+        },
+        "propertyName": {
+          "description": "The name of the property to access in the entity data of the entity targeted by the pointer.",
+          "type": "string"
+        },
+        "type": {
+          "const": "referencePathComponentPointer",
+          "description": "Discriminator for a pointer reference path component.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "failSafe",
+        "propertyName",
+        "type"
+      ],
+      "type": "object"
+    },
+    "ReferencePathComponentPropertyName": {
+      "additionalProperties": false,
+      "description": "A component of a Viv reference path specifying a property to access.",
+      "properties": {
+        "failSafe": {
+          "description": "Whether the expression component should fail safely by converting a nullish evaluation into the falsy 'eval fail-safe signal'.\n\nThis allows for references whose (intermediate) references may be undefined, as in `@foo.bar?.baz`.",
+          "type": "boolean"
+        },
+        "name": {
+          "description": "The name of the property to access.",
+          "type": "string"
+        },
+        "type": {
+          "const": "referencePathComponentPropertyName",
+          "description": "Discriminator for a property-name reference path component.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "failSafe",
+        "name",
+        "type"
+      ],
+      "type": "object"
+    },
+    "ReferenceValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv entity reference or symbol reference.",
+      "properties": {
+        "anchor": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/RoleName"
+            },
+            {
+              "$ref": "#/definitions/VariableName"
+            }
+          ],
+          "description": "The name anchoring this reference."
+        },
+        "failSafe": {
+          "description": "Whether the expression component should fail safely by converting a nullish evaluation into the falsy 'eval fail-safe signal'.\n\nThis allows for references whose (intermediate) references may be undefined, as in `@foo.bar?.baz`.",
+          "type": "boolean"
+        },
+        "group": {
+          "description": "Whether the anchor is marked as a group role, in which case it will evaluate to an array containing the bindings for the role.",
+          "type": "boolean"
+        },
+        "local": {
+          "description": "Whether the anchor is a local variable.\n\nThis is a common pattern when an author loops over a group role.",
+          "type": "boolean"
+        },
+        "path": {
+          "description": "If applicable, the path to a specified property value.\n\nIf the reference is just to the entity or symbol itself, this will be an empty list. Otherwise, it will specify a path to a specific property value, either on that entity or symbol or another entity (via a pointer).",
+          "items": {
+            "$ref": "#/definitions/ReferencePathComponent"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "anchor",
+        "failSafe",
+        "group",
+        "local",
+        "path"
+      ],
+      "type": "object"
+    },
+    "RoleBindings": {
+      "additionalProperties": {
+        "items": {
+          "$ref": "#/definitions/RoleCandidate"
+        },
+        "type": "array"
+      },
+      "description": "A mapping from a role name to an array of binding candidates cast in that role.\n\nNote that the actual arrays must be homogeneous in terms of type: only a symbol role may take symbol bindings, and symbol roles only allow symbol bindings. But from a TypeScript perspective, it's easiest to union over the element type here.",
+      "propertyNames": {
+        "description": "A name for a role (unique only within its definition)."
+      },
+      "type": "object"
+    },
+    "RoleCandidate": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/UID"
+        },
+        {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            },
+            {
+              "additionalProperties": {},
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            }
+          ],
+          "description": "Union containing the possible types for symbol-role bindings.\n\n*This is an internal type that is not part of the stable API surface. Its shape may change in any release.*"
+        }
+      ],
+      "description": "The possible types that may be bound to a role."
+    },
+    "RoleName": {
+      "description": "A name for a role (unique only within its definition).",
+      "type": "string"
+    },
+    "RunSearchQueryArgs": {
+      "additionalProperties": false,
+      "description": "Arguments parameterizing a request to run a specified search query.",
+      "properties": {
+        "limit": {
+          "description": "The maximum number of query matches to return.\n\nIf omitted, all matches are returned.\n\nIntegers are most sensible, and any value here must be greater than or equal to one.",
+          "type": "number"
+        },
+        "precastBindings": {
+          "$ref": "#/definitions/RoleBindings",
+          "description": "Partial or complete role bindings to use when running the search query."
+        },
+        "queryName": {
+          "$ref": "#/definitions/QueryName",
+          "description": "The name of the query to run."
+        },
+        "searchDomain": {
+          "$ref": "#/definitions/UID",
+          "description": "The entity ID for a character whose memories will serve as the search domain, if any.\n\nWhen this field is present, the search query is run against the given character's memories, and otherwise the pattern is run against the entire chronicle -- meaning all actions that have ever occurred in the simulation instance at hand. If the specified search query uses memory criteria (the `salience` and/or `associations` fields), an error will be thrown if a search domain is not provided."
+        }
+      },
+      "required": [
+        "queryName"
+      ],
+      "type": "object"
+    },
+    "RunSiftingPatternArgs": {
+      "additionalProperties": false,
+      "description": "Arguments parameterizing a request to run a specified sifting pattern.",
+      "properties": {
+        "patternName": {
+          "$ref": "#/definitions/SiftingPatternName",
+          "description": "The name of the sifting pattern to run."
+        },
+        "precastBindings": {
+          "$ref": "#/definitions/RoleBindings",
+          "description": "Partial or complete role bindings to use when running the sifting pattern."
+        },
+        "searchDomain": {
+          "$ref": "#/definitions/UID",
+          "description": "The entity ID for a character whose memories will serve as the search domain.\n\nWhen this field is present, the sifting pattern is run against the given character's memories, and otherwise the pattern is run against the entire chronicle (meaning all actions that have ever occurred in the simulation instance at hand)."
+        }
+      },
+      "required": [
+        "patternName"
+      ],
+      "type": "object"
+    },
+    "SearchDomain": {
+      "additionalProperties": false,
+      "description": "A prepared search domain, ready for use in story sifting.",
+      "properties": {
+        "domain": {
+          "description": "An array containing entity IDs for all actions in the search domain at hand.",
+          "items": {
+            "$ref": "#/definitions/UID"
+          },
+          "type": "array"
+        },
+        "memoryLayer": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/CharacterMemories"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If applicable, the memories associated with the actions in the search domain.\n\nThis layer is needed to evaluate query criteria pertaining to saliences and associations.\n\nIf we are searching over the full chronicle, this will be elided."
+        }
+      },
+      "required": [
+        "domain",
+        "memoryLayer"
+      ],
+      "type": "object"
+    },
+    "SearchDomainDeclaration": {
+      "additionalProperties": false,
+      "description": "A declaration for how to prepare a search domain for a  {@link  ActionSearch }  or a  {@link  Sifting } .",
+      "properties": {
+        "expression": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Expression"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "If the search is to run over a character's memories, this is an expression that should evaluate to a reference to that character.\n\nIf `null` is here, the query will be run over the chronicle (all historical actions), though an error will be thrown if a query is specified and it uses memory criteria (the `salience` and/or `associations` fields).\n\nA few notes:  - The compiler will ensure that a value is only present here if `policy` is     {@link  SearchDomainPreparationPolicy.Expression } .  - If there is already a search domain enclosing this one, the resulting domain will    be narrowed to the intersection of the two domains (the existing one and the memories    of the character specified by this expression).  - If a character has  {@link  CharacterMemory.forgotten  }  an action, it will    not be included in the constructed search domain."
+        },
+        "policy": {
+          "$ref": "#/definitions/SearchDomainPreparationPolicy",
+          "description": "The policy to use when preparing the search domain."
+        }
+      },
+      "required": [
+        "policy",
+        "expression"
+      ],
+      "type": "object"
+    },
+    "SearchDomainPreparationPolicy": {
+      "description": "Enum containing the valid policies for preparing search domains for story sifting.",
+      "enum": [
+        "chronicle",
+        "expression",
+        "inherit"
+      ],
+      "type": "string"
+    },
+    "SelectActionArgs": {
+      "additionalProperties": false,
+      "description": "Arguments parameterizing a request to carry out action selection on behalf of the given character.",
+      "properties": {
+        "initiatorID": {
+          "$ref": "#/definitions/UID",
+          "description": "Entity ID for the character for whom action selection will be undertaken. Should an action be performed as a result, this character will be cast in its initiator role."
+        },
+        "urgentOnly": {
+          "const": true,
+          "description": "Whether to exclusively target queued actions or action selectors marked urgent (in the given initiator's queue).\n\nIf this flag is set, *only* urgent queued actions will be targeted, and action selection will fail if no urgent queued actions exist or none are successfully performed.\n\nIf the flag is *not* set, the action manager will also target each of the character's non-urgent queued actions, if any. And if there are none of those, or if none are successfully performed, the action manager will then attempt to perform a general action, meaning one that is defined in the Viv content bundle and is not marked `reserved`. If any action is successfully performed, this function will return its entity ID, else `null`.\n\nThis enables a simulation pattern whereby characters target urgent actions once a timestep has otherwise completed, to allow for emergent sequences to fully play out.\n\nNote: This should always be `true` when present.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "initiatorID"
+      ],
+      "type": "object"
+    },
+    "SelectorName": {
+      "description": "A unique name for a selector.",
+      "type": "string"
+    },
+    "SetPredicate": {
+      "additionalProperties": false,
+      "description": "A set predicate that allows for certain values to appear in a set against which the operand will be tested.",
+      "properties": {
+        "operand": {
+          "description": "The operand to use when testing this predicate.",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          },
+          "type": "array"
+        },
+        "operator": {
+          "$ref": "#/definitions/SetPredicateOperator",
+          "description": "The operator associated with this predicate."
+        }
+      },
+      "required": [
+        "operator",
+        "operand"
+      ],
+      "type": "object"
+    },
+    "SetPredicateOperator": {
+      "description": "Enum containing the valid operators for set predicates.",
+      "enum": [
+        "none",
+        "any",
+        "all",
+        "exactly"
+      ],
+      "type": "string"
+    },
+    "Sifting": {
+      "additionalProperties": false,
+      "description": "A Viv sifting expression, which tests a sifting pattern against either the chronicle, meaning all historical actions, or a character's memories.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "sifting",
+          "description": "Discriminator for a Viv sifting.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/SiftingValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "SiftingPatternName": {
+      "description": "A unique name for a sifting pattern.",
+      "type": "string"
+    },
+    "SiftingValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv sifting.",
+      "properties": {
+        "bindings": {
+          "$ref": "#/definitions/PrecastBindings",
+          "description": "Precast bindings for the target pattern, as asserted in the sifting expression."
+        },
+        "patternName": {
+          "$ref": "#/definitions/SiftingPatternName",
+          "description": "The name of the sifting pattern to run."
+        },
+        "searchDomain": {
+          "$ref": "#/definitions/SearchDomainDeclaration",
+          "description": "A declaration for how to construct a search domain for this sifting."
+        }
+      },
+      "required": [
+        "patternName",
+        "bindings",
+        "searchDomain"
+      ],
+      "type": "object"
+    },
+    "SourceAnnotations": {
+      "additionalProperties": false,
+      "description": "An object containing annotations on the expression, specifying its original source code and position in a source file.",
+      "properties": {
+        "code": {
+          "description": "The source code for the expression.",
+          "type": "string"
+        },
+        "column": {
+          "description": "Column number (1-based) at the start of the expression.",
+          "type": "number"
+        },
+        "endColumn": {
+          "description": "Column number (1-based) at the end of the expression.",
+          "type": "number"
+        },
+        "endLine": {
+          "description": "Line number (1-based) at the end of the expression.",
+          "type": "number"
+        },
+        "filePath": {
+          "description": "Path to the source file including the expression, relative to the entry file's parent directory.",
+          "type": "string"
+        },
+        "line": {
+          "description": "Line number (1-based) at the start of the expression.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "filePath",
+        "line",
+        "column",
+        "endLine",
+        "endColumn",
+        "code"
+      ],
+      "type": "object"
+    },
+    "StringField": {
+      "additionalProperties": false,
+      "description": "A Viv string literal.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "string",
+          "description": "Discriminator for a Viv string literal.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The string literal to which this expression will evaluate.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "SymbolReference": {
+      "additionalProperties": false,
+      "description": "A Viv symbol reference, structured as an anchor name and a (possibly empty) path to a specific property value.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "symbolReference",
+          "description": "Discriminator for a Viv symbol reference.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/ReferenceValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "TargetingEventStatus": {
+      "description": "Enum specifying the possible statuses associated with action-targeting attempts.",
+      "enum": [
+        "started",
+        "succeeded",
+        "failed"
+      ],
+      "type": "string"
+    },
+    "TemplateStringField": {
+      "additionalProperties": false,
+      "description": "A Viv templated string, structured as an ordered array of string literals and string-producing expressions, the evaluations of which are concatenated to form the rendered string.",
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "templateString",
+          "description": "Discriminator for a Viv templated string.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The actual expression value.",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/definitions/Expression"
+              }
+            ]
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "TemporalConstraint": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/TimeFrameStatement"
+        },
+        {
+          "$ref": "#/definitions/TimeOfDayStatement"
+        }
+      ],
+      "description": "A temporal constraint specifying a range between either points in time or times of day."
+    },
+    "TimeDelta": {
+      "additionalProperties": false,
+      "description": "A time period (e.g., \"2 weeks\") that can be used as a delta to resolve a point in time relative to some anchor time (e.g., the current simulation time).",
+      "properties": {
+        "amount": {
+          "description": "The number of time units -- e.g., `2` in `2 weeks`.",
+          "type": "number"
+        },
+        "unit": {
+          "$ref": "#/definitions/TimeFrameTimeUnit",
+          "description": "The unit of time -- e.g., `weeks` in `2 weeks`."
+        }
+      },
+      "required": [
+        "amount",
+        "unit"
+      ],
+      "type": "object"
+    },
+    "TimeFrameStatement": {
+      "additionalProperties": false,
+      "description": "A temporal constraint specifying a range between two points in time.",
+      "properties": {
+        "close": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TimeDelta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The point in time at which the range closes.\n\nThis is specified as a time delta (e.g., `5 days`) that the host application can resolve at runtime into a point in time (by anchoring it relative to a given simulation timestamp). If no delta is specified here, the range is open on this end."
+        },
+        "open": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TimeDelta"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The point in time at which the range opens.\n\nThis is specified as a time delta (e.g., `5 days`) that the host application can resolve at runtime into a point in time (by anchoring it relative to a given simulation timestamp). If no relative delta is specified here, the range is open on this end."
+        },
+        "type": {
+          "const": "timeFrame",
+          "description": "Discriminator for a time-frame temporal constraint.",
+          "type": "string"
+        },
+        "useActionTimestamp": {
+          "description": "Whether to anchor the time-frame constraint in the timestamp of the action that directly triggered a reaction -- meaning the action whose definition included the reaction declaration -- as opposed to the current simulation timestamp.\n\nThis distinction only matters for cases where a reaction is triggered because a character has learned about an action after the fact. In such cases, we need to know whether a time-frame constraint like \"between 1 year and 3 years\" holds relative to the timestamp of the original  action or relative to the time at which the character learned about the original action.\n\nNote: The compiler ensures that this field can only be `true` for temporal constraints on reactions.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type",
+        "open",
+        "close",
+        "useActionTimestamp"
+      ],
+      "type": "object"
+    },
+    "TimeFrameTimeUnit": {
+      "description": "Enum containing the valid time units for time-frame statements.",
+      "enum": [
+        "minutes",
+        "hours",
+        "days",
+        "weeks",
+        "months",
+        "years"
+      ],
+      "type": "string"
+    },
+    "TimeOfDay": {
+      "additionalProperties": false,
+      "description": "The time of day in the running simulation instance in the host application.",
+      "properties": {
+        "hour": {
+          "description": "The hour of day, specified using the range [0, 23].",
+          "type": "number"
+        },
+        "minute": {
+          "description": "The minute of the hour of day, specified using the range [0, 59].",
+          "type": "number"
+        }
+      },
+      "required": [
+        "hour",
+        "minute"
+      ],
+      "type": "object"
+    },
+    "TimeOfDayDeclaration": {
+      "additionalProperties": false,
+      "description": "A time of day specified by a Viv author.",
+      "properties": {
+        "hour": {
+          "description": "The hour of day.\n\nThe compiler ensures that all values fall in the range `[0, 23]`.",
+          "type": "number"
+        },
+        "minute": {
+          "description": "The minute of the hour of day.\n\nThe compiler ensures that all values fall in the range `[0, 59]`.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "hour",
+        "minute"
+      ],
+      "type": "object"
+    },
+    "TimeOfDayStatement": {
+      "additionalProperties": false,
+      "description": "A temporal constraint specifying a range between two times of day.",
+      "properties": {
+        "close": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TimeOfDayDeclaration"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The time of day that closes the range.\n\nIf no time of day is specified here, the range is open on this end.\n\nNote that the host application is tasked with determining whether a given time of day has passed."
+        },
+        "open": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TimeOfDayDeclaration"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The time of day that opens the range.\n\nIf no time of day is specified here, the range is open on this end.\n\nNote that the host application is tasked with determining whether a given time of day has passed."
+        },
+        "type": {
+          "const": "timeOfDay",
+          "description": "Discriminator for a time-of-day temporal constraint.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "open",
+        "close"
+      ],
+      "type": "object"
+    },
+    "TropeFit": {
+      "additionalProperties": false,
+      "description": "A Viv trope fit, which evaluates to true if the trope holds with the given arguments.",
+      "properties": {
+        "negated": {
+          "description": "Whether to negate the result of the expression.",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SourceAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Annotations on the expression specifying its original source code and position in a source file.\n\nThis will be `null` in certain expressions, such as default values for optional fields, that do not originate in source code."
+        },
+        "type": {
+          "const": "tropeFit",
+          "description": "Discriminator for a Viv trope fit.",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/definitions/TropeFitValue",
+          "description": "The actual expression value."
+        }
+      },
+      "required": [
+        "negated",
+        "source",
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "TropeFitValue": {
+      "additionalProperties": false,
+      "description": "The actual expression value for a Viv trope fit.",
+      "properties": {
+        "bindings": {
+          "$ref": "#/definitions/PrecastBindings",
+          "description": "Precast bindings for the target trope, as asserted in the trope-fit expression."
+        },
+        "tropeName": {
+          "$ref": "#/definitions/TropeName",
+          "description": "The name of the trope that will be used for the test."
+        }
+      },
+      "required": [
+        "tropeName",
+        "bindings"
+      ],
+      "type": "object"
+    },
+    "TropeName": {
+      "description": "A unique name for a trope.",
+      "type": "string"
+    },
+    "UID": {
+      "description": "A unique identifier in the host application that is provisioned by the host application.\n\nThese do not need to be UUIDs, but they do need to be UIDs with regard to the running instance of the host application at hand.\n\nWhen a UID is associated with an  {@link  EntityView }  in the storyworld of the running instance of the host application, it is referred to as an 'entity ID'. This term is used throughout the Viv codebase accordingly.",
+      "type": "string"
+    },
+    "VariableName": {
+      "description": "The name for a variable used in an assignment or a loop.",
+      "type": "string"
+    },
+    "VivInternalState": {
+      "additionalProperties": false,
+      "description": "Internal state required by the Viv runtime. The host application must persist this state, but Viv is in charge of managing it (via calls to  {@link  HostApplicationAdapter.saveVivInternalState } ).",
+      "properties": {
+        "actionEmbargoes": {
+          "additionalProperties": {
+            "items": {
+              "$ref": "#/definitions/ActiveEmbargo"
+            },
+            "type": "array"
+          },
+          "description": "A mapping from action name to an array containing all active embargoes associated with that action.\n\nAction embargoes are a kind of authorial affordance that allows a Viv author to constrain the subsequent performance of some action according to various constraints. For instance, an embargo can prevent a character from performing the same action for some period of time, or from doing so at the same location, and so forth. Embargoes can specify locations, time windows, and arbitrary subsets of an action's bindings.",
+          "propertyNames": {
+            "description": "A unique name for an action."
+          },
+          "type": "object"
+        },
+        "actionQueues": {
+          "additionalProperties": {
+            "$ref": "#/definitions/ActionQueue"
+          },
+          "description": "A mapping from entity ID for a character to an array storing queued actions (and queued action selectors) for that character, with the following invariants: urgent actions come first, and the two buckets (urgent, non-urgent) are themselves sorted in order of priority. Character keys are added only as needed.",
+          "propertyNames": {
+            "description": "A unique identifier in the host application that is provisioned by the host application.\n\nThese do not need to be UUIDs, but they do need to be UIDs with regard to the running instance of the host application at hand.\n\nWhen a UID is associated with an  {@link  EntityView }  in the storyworld of the running instance of the host application, it is referred to as an 'entity ID'. This term is used throughout the Viv codebase accordingly."
+          },
+          "type": "object"
+        },
+        "activePlans": {
+          "additionalProperties": {
+            "additionalProperties": false,
+            "description": "State for an active plan, meaning what that has been launched and is still underway.\n\nExecution of the plan will continue until a success or failure point is reached.\n\n*This is an internal type that is not part of the stable API surface. Its shape may change in any release.*",
+            "properties": {
+              "bindings": {
+                "$ref": "#/definitions/RoleBindings",
+                "description": "The final bindings that were constructed for the plan during role casting.\n\nBindings map roles to the respective entities (or symbols) that were cast in those roles."
+              },
+              "currentPhase": {
+                "$ref": "#/definitions/PlanPhaseName",
+                "description": "The name of the current plan phase.\n\nAlways initializes to the name of the first phase in the plan."
+              },
+              "evaluationContext": {
+                "$ref": "#/definitions/EvaluationContext",
+                "description": "The (dehydrated) evaluation context associated with the launched plan."
+              },
+              "id": {
+                "$ref": "#/definitions/UID",
+                "description": "UID for the launched plan."
+              },
+              "loopStack": {
+                "description": "The current stack of loop frames, which we process using a LIFO policy.\n\nThis is an empty array when there are no active loops.",
+                "items": {
+                  "$ref": "#/definitions/PlanLoopFrame"
+                },
+                "type": "array"
+              },
+              "planName": {
+                "$ref": "#/definitions/PlanName",
+                "description": "The name of the plan at hand."
+              },
+              "programCounter": {
+                "$ref": "#/definitions/PlanInstructionAddress",
+                "description": "A program counter indicating the address of the current plan instruction, which is concretely an index into the `tape` array of the current plan phase.\n\nAlways initializes to `0`."
+              },
+              "reactionWindowQueuedConstructs": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/definitions/UID"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "UIDs for all queued constructs that have been queued during the active reaction window, if there is one, else `null`.\n\nFollowing the opening of a reaction window, all reactions queued during the window are tracked. At the close of the window, depending on the operator and the  {@link  QueuedConstructStatus  }  of these queued constructs, either the plan will fail entirely or plan execution will advance to the next instruction."
+              },
+              "resolved": {
+                "description": "Whether plan execution has terminated, regardless of the reason.",
+                "type": "boolean"
+              },
+              "sourceQueuedPlan": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/QueuedPlan"
+                  },
+                  {
+                    "$ref": "#/definitions/QueuedPlanSelector"
+                  }
+                ],
+                "description": "When applicable, the original queued plan (or plan selector) that resulted in this plan being launched.\n\nThis field is only present when the original queued plan has repeat logic. In such cases, the plan might be re-queued upon successful execution, and as such we need to keep the original queued plan around so that we can make a copy later on.\n\nNote that this situation differs considerably from action re-queueing: because an action is performed instantaneously, we will always still have the queued action handy at the time it's successfully executed. In the case of a plan, however, arbitrary amounts of time can pass between launching a queued plan and its being successfully performed."
+              },
+              "waitDeadline": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/DiegeticTimestamp"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "The deadline for an active wait instruction, if any, else `null`.\n\nThis is the diegetic timestamp at which the wait will expire, though there may be associated conditions that could cause an earlier progression to the next instruction."
+              }
+            },
+            "required": [
+              "id",
+              "planName",
+              "bindings",
+              "evaluationContext",
+              "currentPhase",
+              "programCounter",
+              "loopStack",
+              "reactionWindowQueuedConstructs",
+              "waitDeadline",
+              "resolved"
+            ],
+            "type": "object"
+          },
+          "description": "A mapping from plan UID to plan state, for all active plans. A plan is active between launching (not queueing) and reaching either a success or failure state.",
+          "propertyNames": {
+            "description": "A unique identifier in the host application that is provisioned by the host application.\n\nThese do not need to be UUIDs, but they do need to be UIDs with regard to the running instance of the host application at hand.\n\nWhen a UID is associated with an  {@link  EntityView }  in the storyworld of the running instance of the host application, it is referred to as an 'entity ID'. This term is used throughout the Viv codebase accordingly."
+          },
+          "type": "object"
+        },
+        "debugging": {
+          "$ref": "#/definitions/VivInternalStateDebugging",
+          "description": "When applicable, live data associated with the debugging facilities of the Viv runtime."
+        },
+        "lastMemoryDecayTimestamp": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/DiegeticTimestamp"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The story-time timestamp at which memory saliences were last decayed.\n\nThis value is used as the starting point for computing elapsed time when fading character memories. It is initialized to `null` until a first instance of memory fading occurs."
+        },
+        "planQueue": {
+          "$ref": "#/definitions/PlanQueue",
+          "description": "The global plan queue, which stores all queued plans (and queued plan selectors). This is not keyed by character because plans are not associated with initiators (they can orchestrate complex action sequences across multiple total initiators). While this is maintained as a FIFO queue, it can more accurately be considered to be conceptually unordered, because all queued plans are pursued every planner tick, and a plan launched before another one on the same tick has no advantage as far as being the first to action performance. This is because plans can only queue actions -- and not cause them to be immediately performed -- and the action manager always pursues queued actions in priority order."
+        },
+        "queuedConstructStatuses": {
+          "$ref": "#/definitions/QueuedConstructStatuses",
+          "description": "A mapping from queued-construct UID to queued-construct status, for all constructs that have ever been queued. Note that entries are never deleted."
+        }
+      },
+      "required": [
+        "actionQueues",
+        "planQueue",
+        "activePlans",
+        "queuedConstructStatuses",
+        "actionEmbargoes",
+        "lastMemoryDecayTimestamp"
+      ],
+      "type": "object"
+    },
+    "VivInternalStateDebugging": {
+      "additionalProperties": false,
+      "description": "Data associated with the debugging facilities of the Viv runtime.",
+      "properties": {
+        "watchlists": {
+          "$ref": "#/definitions/VivInternalStateDebuggingWatchlists",
+          "description": "Watchlists containing debugging information about a set of constructs that the host application's Viv adapter has identified for watching."
+        }
+      },
+      "type": "object"
+    },
+    "VivInternalStateDebuggingWatchlists": {
+      "additionalProperties": false,
+      "description": "Watchlists containing debugging information about a set of constructs that the host application's Viv adapter has identified for watching.",
+      "properties": {
+        "actionSelectors": {
+          "additionalProperties": {
+            "$ref": "#/definitions/WatchedConstructDebuggingState"
+          },
+          "description": "A mapping from the name of a watched action selector to debugging information for the selector.",
+          "propertyNames": {
+            "description": "A unique name for a selector."
+          },
+          "type": "object"
+        },
+        "actions": {
+          "additionalProperties": {
+            "$ref": "#/definitions/WatchedConstructDebuggingState"
+          },
+          "description": "A mapping from the name of a watched action to debugging information for the action.",
+          "propertyNames": {
+            "description": "A unique name for an action."
+          },
+          "type": "object"
+        },
+        "planSelectors": {
+          "additionalProperties": {
+            "$ref": "#/definitions/WatchedConstructDebuggingState"
+          },
+          "description": "A mapping from the name of a watched plan selector to debugging information for the selector.",
+          "propertyNames": {
+            "description": "A unique name for a selector."
+          },
+          "type": "object"
+        },
+        "plans": {
+          "additionalProperties": {
+            "$ref": "#/definitions/WatchedConstructDebuggingState"
+          },
+          "description": "A mapping from the name of a watched plan to debugging information for the plan.",
+          "propertyNames": {
+            "description": "A (unique) name for a plan."
+          },
+          "type": "object"
+        },
+        "queries": {
+          "additionalProperties": {
+            "$ref": "#/definitions/WatchedConstructDebuggingState"
+          },
+          "description": "A mapping from the name of a watched query to debugging information for the query.",
+          "propertyNames": {
+            "description": "A unique name for a query."
+          },
+          "type": "object"
+        },
+        "siftingPatterns": {
+          "additionalProperties": {
+            "$ref": "#/definitions/WatchedConstructDebuggingState"
+          },
+          "description": "A mapping from the name of a watched sifting pattern to debugging information for the pattern.",
+          "propertyNames": {
+            "description": "A unique name for a sifting pattern."
+          },
+          "type": "object"
+        },
+        "tropes": {
+          "additionalProperties": {
+            "$ref": "#/definitions/WatchedConstructDebuggingState"
+          },
+          "description": "A mapping from the name of a watched trope to debugging information for the trope.",
+          "propertyNames": {
+            "description": "A unique name for a trope."
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "actions",
+        "actionSelectors",
+        "plans",
+        "planSelectors",
+        "queries",
+        "siftingPatterns",
+        "tropes"
+      ],
+      "type": "object"
+    },
+    "WatchedConstructDebuggingState": {
+      "additionalProperties": false,
+      "description": "Debugging information for a watched construct, capturing information about attempts to target it.\n\nThis information can be used to investigate why a construct has not been successfully targeted, especially if this is due to something like a mistyped condition.",
+      "properties": {
+        "backtrackingReasons": {
+          "additionalProperties": {
+            "$ref": "#/definitions/BacktrackingReasonCounts"
+          },
+          "description": "A mapping from role name to counts for each of the possible backtracking reasons, where the counts apply to attempts to cast this role during the debugging window.",
+          "propertyNames": {
+            "description": "A name for a role (unique only within its definition)."
+          },
+          "type": "object"
+        },
+        "castingAttempts": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "A mapping from role name to the number of attempts to cast that role during the debugging window.",
+          "propertyNames": {
+            "description": "A name for a role (unique only within its definition)."
+          },
+          "type": "object"
+        },
+        "conditionTestResults": {
+          "additionalProperties": {
+            "$ref": "#/definitions/ConditionResultCounts"
+          },
+          "description": "An object recording for a given condition its number of successes and failures (across tests of the condition).",
+          "type": "object"
+        },
+        "targetingAttempts": {
+          "description": "The number of times this construct was targeted during the debugging window.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "targetingAttempts",
+        "castingAttempts",
+        "backtrackingReasons",
+        "conditionTestResults"
+      ],
+      "type": "object"
+    }
+  }
+}

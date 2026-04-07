@@ -1,0 +1,8 @@
+// Action that appends an array value to an array property
+
+action collect:
+    roles:
+        @actor:
+            as: initiator
+    effects:
+        @actor.inventory append @actor.loot

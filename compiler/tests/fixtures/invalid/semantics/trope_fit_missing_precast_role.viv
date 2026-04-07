@@ -1,0 +1,21 @@
+// Invalid: trope fit fails to precast trope's precast role
+
+trope tracked-rivalry:
+    roles:
+        @a:
+            as: character
+        @known:
+            as: character, precast
+    conditions:
+        @known in @a.enemies
+
+action confront:
+    roles:
+        @aggressor:
+            as: initiator
+        @target:
+            as: recipient
+    conditions:
+        fit trope tracked-rivalry:
+            with partial:
+                @a: @aggressor

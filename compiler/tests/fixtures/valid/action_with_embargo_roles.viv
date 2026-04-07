@@ -1,0 +1,12 @@
+// Action with an embargo scoped to specific roles
+
+action interrogate:
+    roles:
+        @detective:
+            as: initiator
+        @suspect:
+            as: recipient
+    embargoes:
+        embargo:
+            time: forever
+            roles: @detective, @suspect

@@ -1,0 +1,8 @@
+// Chance expression in conditions
+
+action gamble:
+    roles:
+        @gambler:
+            as: initiator
+    conditions:
+        25%

@@ -1,0 +1,15 @@
+// Action with an optional partner role and conditional effects
+
+action wander:
+    roles:
+        @walker:
+            as: initiator
+        @companion:
+            as: partner
+            n: 0-1
+    effects:
+        if @companion:
+            @walker.companioned = true
+        else:
+            @walker.companioned = false
+        end

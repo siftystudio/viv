@@ -1,0 +1,19 @@
+// Invalid: weighted selector candidate missing weight
+
+action chat:
+    roles:
+        @talker:
+            as: initiator
+
+action argue:
+    roles:
+        @debater:
+            as: initiator
+
+action-selector social-pick:
+    roles:
+        @actor:
+            as: initiator
+    target with weights:
+        (3) chat;
+        argue;

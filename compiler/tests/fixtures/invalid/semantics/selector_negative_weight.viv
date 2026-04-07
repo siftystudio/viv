@@ -1,0 +1,19 @@
+// Invalid: negative weight in weighted selector
+
+action chat:
+    roles:
+        @talker:
+            as: initiator
+
+action argue:
+    roles:
+        @debater:
+            as: initiator
+
+action-selector social-pick:
+    roles:
+        @actor:
+            as: initiator
+    target with weights:
+        (-1) chat;
+        (3) argue;

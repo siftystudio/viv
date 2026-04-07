@@ -1,0 +1,13 @@
+// Fixture for testing attemptAction without an initiatorID.
+//
+// The condition on the initiator ensures that only one character in the
+// test world can initiate this action. When attemptAction is called without
+// specifying an initiator, the runtime must discover the eligible one by
+// iterating through a shuffled pool of all characters.
+
+action volunteer:
+    roles:
+        @volunteer:
+            as: initiator
+    conditions:
+        @volunteer.willing == true

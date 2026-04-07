@@ -1,0 +1,21 @@
+// Action selector with weighted policy and candidate weights
+
+action chat:
+    roles:
+        @talker:
+            as: initiator
+
+
+action argue:
+    roles:
+        @debater:
+            as: initiator
+
+
+action-selector social-choice:
+    roles:
+        @actor:
+            as: initiator
+    target with weights:
+        (3) chat;
+        (1) argue;

@@ -1,0 +1,8 @@
+// Invalid: trailing fail-safe on assignment LHS
+
+action bad-fail-safe:
+    roles:
+        @actor:
+            as: initiator
+    effects:
+        @actor.mood? = 5

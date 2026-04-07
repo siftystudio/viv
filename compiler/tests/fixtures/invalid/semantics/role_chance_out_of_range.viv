@@ -1,0 +1,9 @@
+// Invalid: role with chance value out of range
+
+action bad-chance-range:
+    roles:
+        @actor:
+            as: initiator
+        @maybe*:
+            as: partner
+            n: 0-3 [150%]

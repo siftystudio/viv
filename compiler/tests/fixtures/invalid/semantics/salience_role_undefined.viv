@@ -1,0 +1,9 @@
+// Action with per-role salience referencing a nonexistent role
+
+action bad-salience:
+    roles:
+        @actor:
+            as: initiator
+    saliences:
+        roles:
+            @ghost: #HIGH

@@ -1,0 +1,15 @@
+// Invalid: query uses 'all' in singular-value field
+
+action fight:
+    roles:
+        @fighter:
+            as: initiator
+
+query bad-all:
+    roles:
+        @witness:
+            as: character
+    action:
+        any: fight
+    location:
+        all: @witness.home

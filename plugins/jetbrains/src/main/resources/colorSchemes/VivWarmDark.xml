@@ -1,0 +1,140 @@
+<scheme name="Viv Warm (Dark)" version="142" parent_scheme="Darcula">
+  <metaInfo>
+    <property name="created">2026-03-25T00:00:00</property>
+    <property name="originalScheme">Viv Warm (Dark)</property>
+  </metaInfo>
+  <attributes>
+    <option name="DEFAULT_KEYWORD">
+      <value>
+        <option name="FOREGROUND" value="f99157"/>
+      </value>
+    </option>
+    <option name="DEFAULT_FUNCTION_DECLARATION">
+      <value>
+        <option name="FOREGROUND" value="5fb3b3"/>
+      </value>
+    </option>
+    <option name="DEFAULT_FUNCTION_CALL">
+      <value>
+        <option name="FOREGROUND" value="5fb3b3"/>
+      </value>
+    </option>
+    <option name="DEFAULT_STRING">
+      <value>
+        <option name="FOREGROUND" value="99c794"/>
+      </value>
+    </option>
+    <option name="DEFAULT_NUMBER">
+      <value>
+        <option name="FOREGROUND" value="ec5f67"/>
+      </value>
+    </option>
+    <option name="DEFAULT_CONSTANT">
+      <value>
+        <option name="FOREGROUND" value="ec5f67"/>
+      </value>
+    </option>
+    <option name="DEFAULT_LINE_COMMENT">
+      <value>
+        <option name="FOREGROUND" value="65737e"/>
+      </value>
+    </option>
+    <option name="DEFAULT_BLOCK_COMMENT">
+      <value>
+        <option name="FOREGROUND" value="65737e"/>
+      </value>
+    </option>
+    <option name="DEFAULT_GLOBAL_VARIABLE">
+      <value>
+        <option name="FOREGROUND" value="fac863"/>
+      </value>
+    </option>
+    <option name="DEFAULT_LOCAL_VARIABLE">
+      <value>
+        <option name="FOREGROUND" value="fac863"/>
+      </value>
+    </option>
+    <option name="DEFAULT_IDENTIFIER">
+      <value>
+        <option name="FOREGROUND" value="d8dee9"/>
+      </value>
+    </option>
+    <option name="DEFAULT_OPERATION_SIGN">
+      <value>
+        <option name="FOREGROUND" value="f99157"/>
+      </value>
+    </option>
+    <option name="DEFAULT_SEMICOLON">
+      <value>
+        <option name="FOREGROUND" value="a6acb9"/>
+      </value>
+    </option>
+    <option name="DEFAULT_COMMA">
+      <value>
+        <option name="FOREGROUND" value="a6acb9"/>
+      </value>
+    </option>
+    <option name="DEFAULT_DOT">
+      <value>
+        <option name="FOREGROUND" value="a6acb9"/>
+      </value>
+    </option>
+    <option name="DEFAULT_PARENTHESES">
+      <value>
+        <option name="FOREGROUND" value="a6acb9"/>
+      </value>
+    </option>
+    <option name="DEFAULT_BRACKETS">
+      <value>
+        <option name="FOREGROUND" value="a6acb9"/>
+      </value>
+    </option>
+    <option name="DEFAULT_BRACES">
+      <value>
+        <option name="FOREGROUND" value="a6acb9"/>
+      </value>
+    </option>
+    <option name="DEFAULT_LABEL">
+      <value>
+        <option name="FOREGROUND" value="5fb3b3"/>
+      </value>
+    </option>
+    <option name="DEFAULT_PREDEFINED_SYMBOL">
+      <value>
+        <option name="FOREGROUND" value="6699cc"/>
+      </value>
+    </option>
+    <option name="DEFAULT_METADATA">
+      <value>
+        <option name="FOREGROUND" value="c594c5"/>
+      </value>
+    </option>
+    <!-- Viv-specific keys -->
+    <option name="VIV_SECTION_KEYWORD">
+      <value>
+        <option name="FOREGROUND" value="c594c5"/>
+      </value>
+    </option>
+    <option name="VIV_KEYWORD_PARAMETER">
+      <value>
+        <option name="FOREGROUND" value="c594c5"/>
+        <option name="FONT_TYPE" value="2"/>
+      </value>
+    </option>
+    <option name="VIV_PHASE_NAME">
+      <value>
+        <option name="FOREGROUND" value="5fb3b3"/>
+      </value>
+    </option>
+    <option name="VIV_ROLE_LABEL">
+      <value>
+        <option name="FOREGROUND" value="6699cc"/>
+      </value>
+    </option>
+    <option name="VIV_RESERVED_IDENT">
+      <value>
+        <option name="FOREGROUND" value="6699cc"/>
+      </value>
+    </option>
+  </attributes>
+</scheme>

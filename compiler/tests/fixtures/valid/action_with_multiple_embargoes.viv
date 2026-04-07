@@ -1,0 +1,17 @@
+// Action with multiple embargo declarations
+
+action trade:
+    roles:
+        @seller:
+            as: initiator
+        @buyer:
+            as: recipient
+    embargoes:
+        embargo:
+            location: here
+            time: 2 hours
+            roles: @seller, @buyer
+        embargo:
+            location: anywhere
+            time: forever
+            roles: @seller

@@ -1,0 +1,147 @@
+{
+  "name": "viv",
+  "displayName": "Viv DSL",
+  "description": "Language support for the Viv engine for emergent narrative in games and simulations.",
+  "version": "0.10.5",
+  "compilerVersion": "0.10.0",
+  "publisher": "siftystudio",
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#f6f0e4",
+    "theme": "light"
+  },
+  "homepage": "https://viv.sifty.studio",
+  "bugs": "https://github.com/siftystudio/viv/issues",
+  "keywords": ["viv", "dsl", "emergent narrative", "game development", "simulation"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/siftystudio/viv.git",
+    "directory": "plugins/vscode"
+  },
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "main": "./out/extension.js",
+  "categories": ["Programming Languages", "Snippets", "Themes"],
+  "contributes": {
+    "commands": [
+      {
+        "command": "viv.compile",
+        "title": "Viv: Compile Current File",
+        "icon": "$(play)"
+      },
+      {
+        "command": "viv.saveContentBundle",
+        "title": "Viv: Save Content Bundle"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "viv.compile",
+        "key": "ctrl+r",
+        "mac": "cmd+r",
+        "when": "editorLangId == viv"
+      },
+      {
+        "command": "viv.saveContentBundle",
+        "key": "shift+ctrl+b",
+        "mac": "shift+cmd+b",
+        "when": "editorLangId == viv"
+      }
+    ],
+    "menus": {
+      "editor/title/run": [{
+        "command": "viv.compile",
+        "when": "resourceLangId == viv",
+        "group": "navigation"
+      }]
+    },
+    "configuration": {
+      "title": "Viv",
+      "properties": {
+        "viv.pythonPath": {
+          "type": "string",
+          "scope": "machine",
+          "description": "Path to a Python interpreter with `viv-compiler` installed. Defaults to the active interpreter for the Python extension, if any, else `python3`. This setting can only be configured in user settings, not workspace settings."
+        },
+        "viv.compileOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically compile `.viv` files on save. When disabled, use `Cmd+R` / `Ctrl+R` or the play button to compile manually."
+        },
+        "viv.compileTimeout": {
+          "type": "number",
+          "default": 120,
+          "description": "Maximum time (in seconds) to wait for the compiler before terminating the process."
+        },
+        "viv.entryFile": {
+          "type": "string",
+          "description": "Path to the Viv entry file that, when compiled, produces the project-level content bundle."
+        },
+        "viv.outputPath": {
+          "type": "string",
+          "description": "Path to the project-level content bundle."
+        }
+      }
+    },
+    "languages": [{
+      "id": "viv",
+      "aliases": ["Viv"],
+      "extensions": [".viv"],
+      "configuration": "./language-configuration.json"
+    }],
+    "snippets": [{
+      "language": "viv",
+      "path": "./snippets/viv.json"
+    }],
+    "grammars": [{
+      "language": "viv",
+      "scopeName": "source.viv",
+      "path": "./viv.tmLanguage.json"
+    }],
+    "themes": [
+      {
+        "label": "Viv Warm (Dark)",
+        "uiTheme": "vs-dark",
+        "path": "./themes/viv-dark-warm.json"
+      },
+      {
+        "label": "Viv Cool (Dark)",
+        "uiTheme": "vs-dark",
+        "path": "./themes/viv-dark-cool.json"
+      },
+      {
+        "label": "Viv Electric (Dark)",
+        "uiTheme": "vs-dark",
+        "path": "./themes/viv-dark-electric.json"
+      },
+      {
+        "label": "Viv Warm (Light)",
+        "uiTheme": "vs",
+        "path": "./themes/viv-light-warm.json"
+      },
+      {
+        "label": "Viv Cool (Light)",
+        "uiTheme": "vs",
+        "path": "./themes/viv-light-cool.json"
+      },
+      {
+        "label": "Viv Electric (Light)",
+        "uiTheme": "vs",
+        "path": "./themes/viv-light-electric.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "tsc && cp ../../syntax/viv.tmLanguage.json ./viv.tmLanguage.json && cp ../../assets/viv-icon-dark-256.png ./icon.png"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.75.0",
+    "typescript": "^5.0.0"
+  },
+  "vsce": {
+    "dependencies": false
+  }
+}

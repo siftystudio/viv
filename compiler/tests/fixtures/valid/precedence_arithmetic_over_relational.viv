@@ -1,0 +1,8 @@
+// Arithmetic binding tighter than relational operators
+
+action test-arith-rel:
+    roles:
+        @a:
+            as: initiator
+    conditions:
+        @a.x + 1 > @a.y * 2

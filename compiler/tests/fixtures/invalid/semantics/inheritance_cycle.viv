@@ -1,0 +1,12 @@
+// Inheritance cycle — should be rejected
+
+action cycle-a from cycle-b:
+    roles:
+        @actor:
+            as: initiator
+
+
+action cycle-b from cycle-a:
+    roles:
+        @actor:
+            as: initiator

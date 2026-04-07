@@ -1,0 +1,12 @@
+// Action that tags memories with associations and custom saliences
+
+action witness:
+    roles:
+        @observer:
+            as: initiator
+        @subject:
+            as: recipient
+    associations:
+        default: notable
+    saliences:
+        default: 5.0

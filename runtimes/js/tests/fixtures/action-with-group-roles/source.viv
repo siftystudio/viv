@@ -1,0 +1,9 @@
+// Action with a multi-slot group role
+
+action rally:
+    roles:
+        @leader:
+            as: initiator
+        @crowd*:
+            as: partner
+            n: 2-3

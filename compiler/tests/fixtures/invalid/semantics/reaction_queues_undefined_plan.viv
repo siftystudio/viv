@@ -1,0 +1,9 @@
+// Invalid: reaction queues undefined plan
+
+action trigger:
+    roles:
+        @actor:
+            as: initiator
+    reactions:
+        queue plan nonexistent:
+            with none:

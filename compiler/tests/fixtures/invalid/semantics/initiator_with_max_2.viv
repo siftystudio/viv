@@ -1,0 +1,7 @@
+// Initiator role with max other than 1 — should be rejected
+
+action bad-action:
+    roles:
+        @leader*:
+            as: initiator
+            n: 1-3

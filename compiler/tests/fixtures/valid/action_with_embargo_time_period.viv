@@ -1,0 +1,11 @@
+// Action with a time-period embargo (not forever)
+
+action greet:
+    roles:
+        @greeter:
+            as: initiator
+        @target:
+            as: recipient
+    embargoes:
+        embargo:
+            time: 3 days

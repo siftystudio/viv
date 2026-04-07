@@ -1,0 +1,13 @@
+// Invalid: loop variable shadows role name
+
+action shadow-loop:
+    roles:
+        @actor:
+            as: initiator
+        @crowd*:
+            as: bystander
+            n: 2-5
+    effects:
+        loop @crowd* as _@actor:
+            _@actor.visited = true
+        end

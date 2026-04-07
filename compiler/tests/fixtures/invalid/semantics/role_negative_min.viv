@@ -1,0 +1,9 @@
+// Invalid: role with negative min
+
+action bad-min:
+    roles:
+        @actor:
+            as: initiator
+        @crowd*:
+            as: bystander
+            n: -1-3

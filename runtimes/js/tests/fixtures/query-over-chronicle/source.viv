@@ -1,0 +1,12 @@
+// Action and a query that searches the chronicle (not character memory)
+
+action event:
+    roles:
+        @actor:
+            as: initiator
+        @witness:
+            as: partner
+
+query chronicle-search:
+    action:
+        any: event

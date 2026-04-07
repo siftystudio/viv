@@ -1,0 +1,8 @@
+// Multiplication binding tighter than addition and subtraction
+
+action test-mult-add:
+    roles:
+        @a:
+            as: initiator
+    effects:
+        @a.result = @a.x + @a.y * @a.z - 1

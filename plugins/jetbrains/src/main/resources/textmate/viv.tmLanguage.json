@@ -1,0 +1,605 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Viv",
+  "scopeName": "source.viv",
+  "fileTypes": ["viv"],
+  "patterns": [
+    {"include": "#comment"},
+    {"include": "#string-double"},
+    {"include": "#string-single"},
+    {"include": "#include-statement"},
+    {"include": "#action-header"},
+    {"include": "#selector-header"},
+    {"include": "#plan-header"},
+    {"include": "#query-header"},
+    {"include": "#pattern-header"},
+    {"include": "#trope-header"},
+    {"include": "#plan-phase"},
+    {"include": "#queue-reaction"},
+    {"include": "#selector-target"},
+    {"include": "#function-call"},
+    {"include": "#binding-with-partial"},
+    {"include": "#binding-with-none"},
+    {"include": "#binding-with"},
+    {"include": "#sugared-binding-none"},
+    {"include": "#sugared-binding-partial"},
+    {"include": "#sugared-binding-complete"},
+    {"include": "#role-slot-range"},
+    {"include": "#comparator-key"},
+    {"include": "#section-field-key"},
+    {"include": "#colon"},
+    {"include": "#control-flow"},
+    {"include": "#domain-verb-with-name"},
+    {"include": "#bare-domain-verb"},
+    {"include": "#storage-modifier"},
+    {"include": "#keyword-parameter"},
+    {"include": "#role-label"},
+    {"include": "#reserved-identifier"},
+    {"include": "#plan-instruction"},
+    {"include": "#language-constant"},
+    {"include": "#boolean-null"},
+    {"include": "#role-slot-tilde"},
+    {"include": "#role-slot-percent"},
+    {"include": "#percentage"},
+    {"include": "#number"},
+    {"include": "#time-unit"},
+    {"include": "#enum-token"},
+    {"include": "#word-operator"},
+    {"include": "#property-access"},
+    {"include": "#pointer-access"},
+    {"include": "#symbol-operator"},
+    {"include": "#scratch-variable"},
+    {"include": "#local-variable"},
+    {"include": "#plain-reference"},
+    {"include": "#bracket"},
+    {"include": "#parenthesis"},
+    {"include": "#comma"},
+    {"include": "#semicolon"}
+  ],
+  "repository": {
+
+    "comment": {
+      "begin": "//",
+      "beginCaptures": {
+        "0": {"name": "punctuation.definition.comment.viv"}
+      },
+      "end": "$",
+      "name": "comment.line.double-slash.viv"
+    },
+
+    "string-double": {
+      "begin": "\"",
+      "end": "\"|$",
+      "name": "string.quoted.double.viv",
+      "patterns": [
+        {"include": "#string-interpolation"}
+      ]
+    },
+
+    "string-single": {
+      "begin": "'",
+      "end": "'|$",
+      "name": "string.quoted.single.viv",
+      "patterns": [
+        {"include": "#string-interpolation"}
+      ]
+    },
+
+    "string-interpolation": {
+      "patterns": [
+        {
+          "begin": "\\{",
+          "beginCaptures": {"0": {"name": "keyword.operator.viv"}},
+          "end": "\\}",
+          "endCaptures": {"0": {"name": "keyword.operator.viv"}},
+          "name": "meta.interpolation.viv",
+          "patterns": [
+            {"include": "$self"}
+          ]
+        },
+        {
+          "match": "(\\$)([@&][A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)(\\*)?",
+          "captures": {
+            "1": {"name": "keyword.operator.viv"},
+            "2": {"name": "entity.name.variable.global.viv"},
+            "3": {"name": "keyword.operator.viv"}
+          }
+        },
+        {
+          "match": "(_)([@&][A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)(\\*)?",
+          "captures": {
+            "1": {"name": "keyword.operator.viv"},
+            "2": {"name": "entity.name.variable.local.viv"},
+            "3": {"name": "keyword.operator.viv"}
+          }
+        },
+        {
+          "match": "([@&][A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)(\\*)?",
+          "captures": {
+            "1": {"name": "entity.name.variable.viv"},
+            "2": {"name": "keyword.operator.viv"}
+          }
+        }
+      ]
+    },
+
+    "include-statement": {
+      "begin": "^\\s*(include)(?![A-Za-z0-9_-])",
+      "beginCaptures": {
+        "1": {"name": "keyword.operator.viv"}
+      },
+      "end": "$",
+      "name": "meta.include.viv",
+      "patterns": [
+        {"include": "#string-double"},
+        {"include": "#string-single"},
+        {"match": "\\S+", "name": "invalid.illegal.viv"}
+      ]
+    },
+
+    "action-header": {
+      "begin": "^\\s*(?:(reserved|template)\\s+)?(action)\\s+([A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)(?:\\s+(from)\\s+([A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*))?",
+      "beginCaptures": {
+        "1": {"name": "keyword.operator.viv"},
+        "2": {"name": "keyword.operator.viv"},
+        "3": {"name": "entity.name.function.action.viv"},
+        "4": {"name": "keyword.operator.viv"},
+        "5": {"name": "entity.name.function.action.viv"}
+      },
+      "end": "[:;]|$",
+      "endCaptures": {
+        "0": {"name": "punctuation.separator.viv"}
+      },
+      "name": "meta.declaration.header.viv",
+      "patterns": [
+        {"match": "\\S+", "name": "invalid.illegal.viv"}
+      ]
+    },
+
+    "selector-header": {
+      "begin": "^\\s*(?:(reserved)\\s+)?(action-selector|plan-selector)\\s+([A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)",
+      "beginCaptures": {
+        "1": {"name": "keyword.operator.viv"},
+        "2": {"name": "keyword.operator.viv"},
+        "3": {"name": "entity.name.function.selector.viv"}
+      },
+      "end": "[:;]|$",
+      "endCaptures": {
+        "0": {"name": "punctuation.separator.viv"}
+      },
+      "name": "meta.declaration.header.viv",
+      "patterns": [
+        {"match": "\\S+", "name": "invalid.illegal.viv"}
+      ]
+    },
+
+    "plan-header": {
+      "begin": "^\\s*(plan)\\s+([A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)",
+      "beginCaptures": {
+        "1": {"name": "keyword.operator.viv"},
+        "2": {"name": "entity.name.function.plan.viv"}
+      },
+      "end": "[:;]|$",
+      "endCaptures": {
+        "0": {"name": "punctuation.separator.viv"}
+      },
+      "name": "meta.declaration.header.viv",
+      "patterns": [
+        {"match": "\\S+", "name": "invalid.illegal.viv"}
+      ]
+    },
+
+    "query-header": {
+      "begin": "^\\s*(query)\\s+([A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)",
+      "beginCaptures": {
+        "1": {"name": "keyword.operator.viv"},
+        "2": {"name": "entity.name.function.query.viv"}
+      },
+      "end": "[:;]|$",
+      "endCaptures": {
+        "0": {"name": "punctuation.separator.viv"}
+      },
+      "name": "meta.declaration.header.viv",
+      "patterns": [
+        {"match": "\\S+", "name": "invalid.illegal.viv"}
+      ]
+    },
+
+    "pattern-header": {
+      "begin": "^\\s*(pattern)\\s+([A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)",
+      "beginCaptures": {
+        "1": {"name": "keyword.operator.viv"},
+        "2": {"name": "entity.name.function.pattern.viv"}
+      },
+      "end": "[:;]|$",
+      "endCaptures": {
+        "0": {"name": "punctuation.separator.viv"}
+      },
+      "name": "meta.declaration.header.viv",
+      "patterns": [
+        {"match": "\\S+", "name": "invalid.illegal.viv"}
+      ]
+    },
+
+    "trope-header": {
+      "begin": "^\\s*(trope)\\s+([A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)",
+      "beginCaptures": {
+        "1": {"name": "keyword.operator.viv"},
+        "2": {"name": "entity.name.function.trope.viv"}
+      },
+      "end": "[:;]|$",
+      "endCaptures": {
+        "0": {"name": "punctuation.separator.viv"}
+      },
+      "name": "meta.declaration.header.viv",
+      "patterns": [
+        {"match": "\\S+", "name": "invalid.illegal.viv"}
+      ]
+    },
+
+    "plan-phase": {
+      "match": "^\\s*(>)\\s*([A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)\\s*(:)",
+      "captures": {
+        "1": {"name": "keyword.operator.viv"},
+        "2": {"name": "entity.name.label.viv"},
+        "3": {"name": "punctuation.separator.key-value.viv"}
+      }
+    },
+
+    "queue-reaction": {
+      "match": "(?<![A-Za-z0-9_-])(queue)\\s+(action-selector|plan-selector|action|plan)\\s+([A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)(?![A-Za-z0-9_-])",
+      "captures": {
+        "1": {"name": "keyword.operator.viv"},
+        "2": {"name": "keyword.operator.viv"},
+        "3": {"name": "entity.name.function.viv"}
+      }
+    },
+
+    "selector-target": {
+      "begin": "(?<![A-Za-z0-9_-])(target)\\s+(randomly|with\\s+weights|in\\s+order)\\s*(:)",
+      "beginCaptures": {
+        "1": {"name": "keyword.other.viv"},
+        "2": {"name": "keyword.other.parameter.viv"},
+        "3": {"name": "punctuation.separator.key-value.viv"}
+      },
+      "end": "(?=^\\s*(?:(?:reserved|template)\\s+)*(?:action-selector|plan-selector|action|plan|query|pattern|trope|include)\\s)",
+      "patterns": [
+        {
+          "match": "(\\()(\\d+)(\\))\\s+([A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)(?=\\s*[:;])",
+          "captures": {
+            "1": {"name": "punctuation.accessor.viv"},
+            "2": {"name": "constant.language.viv"},
+            "3": {"name": "punctuation.accessor.viv"},
+            "4": {"name": "entity.name.function.viv"}
+          }
+        },
+        {
+          "match": "(?<![A-Za-z0-9_-])(selector)\\s+([A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)(?=\\s*[:;])",
+          "captures": {
+            "1": {"name": "keyword.operator.word.viv"},
+            "2": {"name": "entity.name.function.viv"}
+          }
+        },
+        {"include": "$self"},
+        {
+          "match": "[A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*(?=\\s*[:;])",
+          "name": "entity.name.function.viv"
+        }
+      ]
+    },
+
+    "function-call": {
+      "begin": "(~)([A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)(\\()",
+      "beginCaptures": {
+        "1": {"name": "keyword.operator.viv"},
+        "2": {"name": "meta.external-name.viv"},
+        "3": {"name": "keyword.operator.viv"}
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {"name": "keyword.operator.viv"}
+      },
+      "patterns": [
+        {"include": "$self"}
+      ]
+    },
+
+    "binding-with-partial": {
+      "begin": "(?<![A-Za-z0-9_-])(with)\\s+(partial)(?![A-Za-z0-9_-])\\s*(:)",
+      "beginCaptures": {
+        "1": {"name": "keyword.other.viv"},
+        "2": {"name": "keyword.other.parameter.viv"},
+        "3": {"name": "punctuation.separator.key-value.viv"}
+      },
+      "end": "(?=^\\s*(?:(?:reserved|template)\\s+)*(?:action-selector|plan-selector|action|plan|query|pattern|trope|include)\\s)|(?=(?<![A-Za-z0-9_-])(?:urgent|priority|location|time|abandon|repeat|roles|conditions|effects|reactions|embargoes|scratch|phases|target|gloss|report|importance|saliences|associations|tags|with|queue)(?![A-Za-z0-9_-])(?=\\s*:))|(?=^\\s*\\([0-9])|(?=^\\s*[A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*\\s*[:;])",
+      "patterns": [
+        {"include": "#binding-lhs"},
+        {"include": "$self"}
+      ]
+    },
+
+    "binding-with-none": {
+      "match": "(?<![A-Za-z0-9_-])(with)\\s+(none)(?![A-Za-z0-9_-])(?=\\s*;)",
+      "captures": {
+        "1": {"name": "keyword.other.viv"},
+        "2": {"name": "keyword.other.parameter.viv"}
+      }
+    },
+
+    "binding-with": {
+      "begin": "(?<![A-Za-z0-9_-])(with)(?![A-Za-z0-9_-])\\s*(:)",
+      "beginCaptures": {
+        "1": {"name": "keyword.other.viv"},
+        "2": {"name": "punctuation.separator.key-value.viv"}
+      },
+      "end": "(?=^\\s*(?:(?:reserved|template)\\s+)*(?:action-selector|plan-selector|action|plan|query|pattern|trope|include)\\s)|(?=(?<![A-Za-z0-9_-])(?:urgent|priority|location|time|abandon|repeat|roles|conditions|effects|reactions|embargoes|scratch|phases|target|gloss|report|importance|saliences|associations|tags|with|queue)(?![A-Za-z0-9_-])(?=\\s*:))|(?=^\\s*\\([0-9])|(?=^\\s*[A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*\\s*[:;])",
+      "patterns": [
+        {"include": "#binding-lhs"},
+        {"include": "$self"}
+      ]
+    },
+
+    "binding-lhs": {
+      "match": "([@&][A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)(\\*)?(?=\\s*:)",
+      "captures": {
+        "1": {"name": "keyword.other.viv"},
+        "2": {"name": "keyword.operator.viv"}
+      }
+    },
+
+    "sugared-binding-none": {
+      "match": "(<)(none)(>)",
+      "captures": {
+        "1": {"name": "punctuation.section.binding.begin.viv"},
+        "2": {"name": "keyword.other.parameter.viv"},
+        "3": {"name": "punctuation.section.binding.end.viv"}
+      }
+    },
+
+    "sugared-binding-partial": {
+      "begin": "(<)(partial)(?![A-Za-z0-9_-])",
+      "beginCaptures": {
+        "1": {"name": "punctuation.section.binding.begin.viv"},
+        "2": {"name": "keyword.other.parameter.viv"}
+      },
+      "end": ">",
+      "endCaptures": {
+        "0": {"name": "punctuation.section.binding.end.viv"}
+      },
+      "patterns": [
+        {"include": "$self"}
+      ]
+    },
+
+    "sugared-binding-complete": {
+      "begin": "<(?=[$_]?[@&])",
+      "beginCaptures": {
+        "0": {"name": "punctuation.section.binding.begin.viv"}
+      },
+      "end": ">",
+      "endCaptures": {
+        "0": {"name": "punctuation.section.binding.end.viv"}
+      },
+      "patterns": [
+        {"include": "$self"}
+      ]
+    },
+
+    "role-slot-range": {
+      "match": "(n)\\s*(:)\\s*([0-9]+)(-)([0-9]+)",
+      "captures": {
+        "1": {"name": "keyword.other.viv"},
+        "2": {"name": "punctuation.separator.key-value.viv"},
+        "3": {"name": "constant.language.viv"},
+        "4": {"name": "punctuation.accessor.viv"},
+        "5": {"name": "constant.language.viv"}
+      }
+    },
+
+    "comparator-key": {
+      "match": "(==|<=|>=|<|>)(?=\\s*:)",
+      "name": "keyword.other.viv"
+    },
+
+    "section-field-key": {
+      "match": "(?<![A-Za-z0-9_-])(abandon|action|actions|active|after|all|ancestors|any|as|associations|before|between|bystanders|conditions|default|descendants|effects|embargo|embargoes|exactly|from|gloss|if|importance|initiator|is|location|max|n|none|over|partners|phases|present|priority|reactions|recipients|renames|repeat|report|roles|salience|saliences|scratch|spawn|tags|time|timeout|untracked|until|urgent|wait)(?![A-Za-z0-9_-])(?=\\s*:)",
+      "name": "keyword.other.viv"
+    },
+
+    "colon": {
+      "match": ":",
+      "name": "punctuation.separator.key-value.viv"
+    },
+
+    "control-flow": {
+      "match": "(?<![A-Za-z0-9_-])(if|elif|else|end|loop|as|from|for|before|after|between|and)(?![A-Za-z0-9_-])",
+      "name": "keyword.operator.viv"
+    },
+
+    "domain-verb-with-name": {
+      "patterns": [
+        {
+          "match": "(?<![A-Za-z0-9_-])(trope)\\s+([A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)(?![A-Za-z0-9_-])",
+          "captures": {
+            "1": {"name": "keyword.operator.viv"},
+            "2": {"name": "entity.name.function.viv"}
+          }
+        },
+        {
+          "match": "(?<![A-Za-z0-9_-])(query|pattern)\\s+([A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)(?=\\s*:)",
+          "captures": {
+            "1": {"name": "keyword.operator.viv"},
+            "2": {"name": "entity.name.function.viv"}
+          }
+        }
+      ]
+    },
+
+    "bare-domain-verb": {
+      "match": "(?<![A-Za-z0-9_-])(search|sift|fit|fits|query|pattern|trope|queue)(?![A-Za-z0-9_-])",
+      "name": "keyword.operator.viv"
+    },
+
+    "storage-modifier": {
+      "match": "(?<![A-Za-z0-9_-])(reserved|template|join)(?![A-Za-z0-9_-])",
+      "name": "keyword.operator.viv"
+    },
+
+    "keyword-parameter": {
+      "match": "(?<![A-Za-z0-9_-])(partial|none)(?![A-Za-z0-9_-])",
+      "name": "keyword.other.parameter.viv"
+    },
+
+    "role-label": {
+      "match": "(?<![A-Za-z0-9_-])(character|item|action|location|symbol|initiator|partner|recipient|bystander|anywhere|precast|spawn)(?![A-Za-z0-9_-])",
+      "name": "support.constant.viv"
+    },
+
+    "reserved-identifier": {
+      "match": "(?<![A-Za-z0-9_-])__\\w+(?![A-Za-z0-9_-])",
+      "name": "support.variable.reserved.viv"
+    },
+
+    "plan-instruction": {
+      "match": "(?<![A-Za-z0-9_-])(advance|succeed|fail|close)(?![A-Za-z0-9_-])",
+      "name": "keyword.other.viv"
+    },
+
+    "language-constant": {
+      "match": "(?<![A-Za-z0-9_-])(hearing|now|ago|here|forever|inherit|chronicle)(?![A-Za-z0-9_-])",
+      "name": "support.constant.viv"
+    },
+
+    "boolean-null": {
+      "match": "(?<![A-Za-z0-9_-])(true|false|null)(?![A-Za-z0-9_-])",
+      "name": "constant.language.viv"
+    },
+
+    "role-slot-tilde": {
+      "match": "(\\[)(~)([0-9]+(?:\\.[0-9]+)?)(\\])",
+      "captures": {
+        "1": {"name": "punctuation.accessor.viv"},
+        "2": {"name": "keyword.operator.viv"},
+        "3": {"name": "constant.language.viv"},
+        "4": {"name": "punctuation.accessor.viv"}
+      }
+    },
+
+    "role-slot-percent": {
+      "match": "(\\[)([0-9]+(?:\\.[0-9]+)?)(%)(\\])",
+      "captures": {
+        "1": {"name": "punctuation.accessor.viv"},
+        "2": {"name": "constant.language.viv"},
+        "3": {"name": "keyword.operator.viv"},
+        "4": {"name": "punctuation.accessor.viv"}
+      }
+    },
+
+    "percentage": {
+      "match": "(?<!\\w)([+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+))(%)",
+      "captures": {
+        "1": {"name": "constant.language.viv"},
+        "2": {"name": "keyword.operator.viv"}
+      }
+    },
+
+    "number": {
+      "match": "(?<!\\w)[+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?!\\w)",
+      "name": "constant.language.viv"
+    },
+
+    "time-unit": {
+      "patterns": [
+        {
+          "match": "(?<![A-Za-z0-9_-])(?:minutes?|hours?|days?|weeks?|months?|years?)(?![A-Za-z0-9_-])",
+          "name": "support.constant.viv"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_-])(am|pm)(?![A-Za-z0-9_-])",
+          "name": "support.constant.viv"
+        }
+      ]
+    },
+
+    "enum-token": {
+      "match": "([+-]?)(#)([A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)",
+      "captures": {
+        "1": {"name": "keyword.operator.viv"},
+        "2": {"name": "keyword.operator.viv"},
+        "3": {"name": "meta.external-name.viv"}
+      }
+    },
+
+    "word-operator": {
+      "match": "(?<![A-Za-z0-9_-])(in|knows|caused|triggered|preceded|append|remove|inscribe|inspect)(?![A-Za-z0-9_-])",
+      "name": "keyword.operator.viv"
+    },
+
+    "property-access": {
+      "match": "(\\.)([A-Za-z0-9_]+)",
+      "captures": {
+        "1": {"name": "punctuation.accessor.viv"},
+        "2": {"name": "meta.external-name.viv"}
+      }
+    },
+
+    "pointer-access": {
+      "match": "(->)([A-Za-z0-9_]+)",
+      "captures": {
+        "1": {"name": "keyword.operator.viv"},
+        "2": {"name": "meta.external-name.viv"}
+      }
+    },
+
+    "symbol-operator": {
+      "match": "==|!=|<=|>=|\\+=|-=|\\*=|/=|\\|\\||&&|<|>|=|\\+|-|\\*|/|\\?|!",
+      "name": "keyword.operator.viv"
+    },
+
+    "scratch-variable": {
+      "match": "(\\$)([@&][A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)(\\*)?",
+      "captures": {
+        "1": {"name": "keyword.operator.viv"},
+        "2": {"name": "entity.name.variable.global.viv"},
+        "3": {"name": "keyword.operator.viv"}
+      }
+    },
+
+    "local-variable": {
+      "match": "(_)([@&][A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)(\\*)?",
+      "captures": {
+        "1": {"name": "keyword.operator.viv"},
+        "2": {"name": "entity.name.variable.local.viv"},
+        "3": {"name": "keyword.operator.viv"}
+      }
+    },
+
+    "plain-reference": {
+      "match": "([@&][A-Za-z_](?:[A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*)(\\*)?",
+      "captures": {
+        "1": {"name": "entity.name.variable.viv"},
+        "2": {"name": "keyword.operator.viv"}
+      }
+    },
+
+    "bracket": {
+      "match": "[{}\\[\\]]",
+      "name": "keyword.operator.viv"
+    },
+
+    "parenthesis": {
+      "match": "[()]",
+      "name": "punctuation.accessor.viv"
+    },
+
+    "comma": {
+      "match": ",",
+      "name": "punctuation.separator.sequence.viv"
+    },
+
+    "semicolon": {
+      "match": ";",
+      "name": "punctuation.terminator.statement.viv"
+    }
+  }
+}

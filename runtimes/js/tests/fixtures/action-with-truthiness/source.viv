@@ -1,0 +1,15 @@
+// Actions whose conditions test Viv truthiness semantics
+
+action check-list:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        @actor.items
+
+action check-object:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        @actor.metadata

@@ -1,0 +1,35 @@
+// Query exercising multiple fields
+
+action fight:
+    roles:
+        @combatant:
+            as: initiator
+
+
+action argue:
+    roles:
+        @arguer:
+            as: initiator
+
+
+query witnessed-conflict:
+    roles:
+        @witness:
+            as: character
+    action:
+        any: fight, argue
+    tags:
+        all: violent, memorable
+    location:
+        any: @witness.location
+    importance:
+        >=: 2
+        <: 10
+    salience:
+        >: 1
+    time:
+        after: 1 day ago
+    initiator:
+        none: @witness
+    bystanders:
+        any: @witness

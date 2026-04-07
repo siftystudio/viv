@@ -1,0 +1,11 @@
+// Action with conditions that read entity data
+
+action confide:
+    roles:
+        @speaker:
+            as: initiator
+        @listener:
+            as: recipient
+    conditions:
+        @listener in @speaker.friends
+        @speaker.mood > 0

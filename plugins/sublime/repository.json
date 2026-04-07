@@ -1,0 +1,22 @@
+{
+  "$schema": "sublime://packagecontrol.io/schemas/repository",
+  "schema_version": "4.0.0",
+  "packages": [
+    {
+      "name": "Viv",
+      "description": "Lightweight language support for the Viv DSL for emergent narrative in games and simulations.",
+      "author": "Sifty",
+      "homepage": "https://viv.sifty.studio",
+      "readme": "https://raw.githubusercontent.com/siftystudio/viv/main/plugins/sublime/README.md",
+      "issues": "https://github.com/siftystudio/viv/issues",
+      "compilerVersion": "0.10.0",
+      "releases": [
+        {
+          "version": "0.9.0",
+          "url": "https://github.com/siftystudio/viv/releases/download/sublime-v0.9.0/Viv.sublime-package",
+          "sublime_text": ">=3149"
+        }
+      ]
+    }
+  ]
+}

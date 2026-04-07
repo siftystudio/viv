@@ -1,0 +1,19 @@
+// Actions demonstrating item inscription and inspection
+
+action write-note:
+    roles:
+        @writer:
+            as: initiator
+        @note:
+            as: item
+    effects:
+        @note inscribe @this
+
+reserved action read-note:
+    roles:
+        @reader:
+            as: initiator
+        @note:
+            as: item, precast
+    effects:
+        @reader inspect @note

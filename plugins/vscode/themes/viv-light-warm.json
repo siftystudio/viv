@@ -1,0 +1,256 @@
+{
+  "name": "Viv Warm (Light)",
+  "type": "light",
+  "colors": {
+    "editor.background": "#FDF6E3",
+    "editor.foreground": "#3B4048"
+  },
+  "tokenColors": [
+    {
+      "name": "Operators, keywords, control flow, brackets",
+      "scope": [
+        "keyword.operator.viv",
+        "keyword.operator.word.viv"
+      ],
+      "settings": {"foreground": "#C75F00"}
+    },
+    {
+      "name": "Field names, plan instructions, binding LHS",
+      "scope": "keyword.other.viv",
+      "settings": {"foreground": "#9B59B6"}
+    },
+    {
+      "name": "Keyword parameters (partial, none, randomly, etc.)",
+      "scope": "keyword.other.parameter.viv",
+      "settings": {"foreground": "#9B59B6", "fontStyle": "italic"}
+    },
+    {
+      "name": "Construct names (action, plan, query, etc.)",
+      "scope": [
+        "entity.name.function.viv",
+        "entity.name.function.action.viv",
+        "entity.name.function.selector.viv",
+        "entity.name.function.plan.viv",
+        "entity.name.function.query.viv",
+        "entity.name.function.pattern.viv",
+        "entity.name.function.trope.viv",
+        "entity.name.label.viv"
+      ],
+      "settings": {"foreground": "#2A8C82"}
+    },
+    {
+      "name": "Role labels, language constants, time units",
+      "scope": "support.constant.viv",
+      "settings": {"foreground": "#2E6BBD"}
+    },
+    {
+      "name": "Reserved identifiers",
+      "scope": "support.variable.reserved.viv",
+      "settings": {"foreground": "#2E6BBD"}
+    },
+    {
+      "name": "Literals (true, false, null, numbers)",
+      "scope": "constant.language.viv",
+      "settings": {"foreground": "#D03E3E"}
+    },
+    {
+      "name": "Strings",
+      "scope": [
+        "string.quoted.double.viv",
+        "string.quoted.single.viv"
+      ],
+      "settings": {"foreground": "#3A8C2E"}
+    },
+    {
+      "name": "References (@name, &name)",
+      "scope": [
+        "entity.name.variable.viv",
+        "entity.name.variable.global.viv",
+        "entity.name.variable.local.viv"
+      ],
+      "settings": {"foreground": "#B68D00"}
+    },
+    {
+      "name": "Punctuation (dots, parens, colons, commas)",
+      "scope": [
+        "punctuation.accessor.viv",
+        "punctuation.separator.key-value.viv",
+        "punctuation.separator.sequence.viv",
+        "punctuation.separator.viv",
+        "punctuation.terminator.statement.viv"
+      ],
+      "settings": {"foreground": "#7A7A7A"}
+    },
+    {
+      "name": "Comments",
+      "scope": [
+        "comment.line.double-slash.viv",
+        "punctuation.definition.comment.viv"
+      ],
+      "settings": {"foreground": "#A0A0A0"}
+    },
+    {
+      "name": "Author-defined external names (properties, enums, functions, pointers)",
+      "scope": "meta.external-name.viv",
+      "settings": {"foreground": "#3B4048"}
+    },
+    {
+      "name": "Invalid",
+      "scope": "invalid.illegal.viv",
+      "settings": {"foreground": "#D03E3E", "fontStyle": "underline"}
+    },
+
+    {
+      "name": "Keywords",
+      "scope": [
+        "keyword",
+        "keyword.control",
+        "keyword.operator",
+        "keyword.operator.expression",
+        "keyword.operator.logical",
+        "keyword.operator.assignment",
+        "keyword.operator.comparison",
+        "keyword.operator.new"
+      ],
+      "settings": {"foreground": "#C75F00"}
+    },
+    {
+      "name": "Storage and modifiers",
+      "scope": [
+        "keyword.other",
+        "storage.type",
+        "storage.modifier"
+      ],
+      "settings": {"foreground": "#9B59B6"}
+    },
+    {
+      "name": "Functions",
+      "scope": [
+        "entity.name.function",
+        "meta.function-call",
+        "support.function"
+      ],
+      "settings": {"foreground": "#2A8C82"}
+    },
+    {
+      "name": "Types and classes",
+      "scope": [
+        "entity.name.type",
+        "entity.name.class",
+        "support.type",
+        "support.class"
+      ],
+      "settings": {"foreground": "#3B4048"}
+    },
+    {
+      "name": "Constants and language values",
+      "scope": [
+        "support.constant",
+        "constant.language",
+        "constant.numeric",
+        "constant.character",
+        "constant.other"
+      ],
+      "settings": {"foreground": "#D03E3E"}
+    },
+    {
+      "name": "Variables",
+      "scope": [
+        "variable",
+        "variable.other",
+        "variable.parameter",
+        "variable.language"
+      ],
+      "settings": {"foreground": "#B68D00"}
+    },
+    {
+      "name": "Strings",
+      "scope": [
+        "string",
+        "string.quoted",
+        "string.quoted.double",
+        "string.quoted.single",
+        "string.template",
+        "string.interpolated"
+      ],
+      "settings": {"foreground": "#3A8C2E"}
+    },
+    {
+      "name": "Comments",
+      "scope": [
+        "comment",
+        "comment.line",
+        "comment.block",
+        "punctuation.definition.comment"
+      ],
+      "settings": {"foreground": "#A0A0A0"}
+    },
+    {
+      "name": "Punctuation",
+      "scope": [
+        "punctuation",
+        "punctuation.definition.tag",
+        "punctuation.separator",
+        "punctuation.terminator",
+        "punctuation.accessor",
+        "meta.brace",
+        "punctuation.section"
+      ],
+      "settings": {"foreground": "#7A7A7A"}
+    },
+    {
+      "name": "Tags (HTML, XML, JSX)",
+      "scope": [
+        "entity.name.tag",
+        "punctuation.definition.tag"
+      ],
+      "settings": {"foreground": "#D03E3E"}
+    },
+    {
+      "name": "Tag attributes",
+      "scope": [
+        "entity.other.attribute-name"
+      ],
+      "settings": {"foreground": "#B68D00"}
+    },
+    {
+      "name": "CSS properties",
+      "scope": [
+        "support.type.property-name.css",
+        "support.type.property-name"
+      ],
+      "settings": {"foreground": "#2E6BBD"}
+    },
+    {
+      "name": "CSS values and units",
+      "scope": [
+        "support.constant.property-value",
+        "constant.numeric.css",
+        "keyword.other.unit"
+      ],
+      "settings": {"foreground": "#D03E3E"}
+    },
+    {
+      "name": "Regular expressions",
+      "scope": [
+        "string.regexp"
+      ],
+      "settings": {"foreground": "#2A8C82"}
+    },
+    {
+      "name": "Escape characters",
+      "scope": [
+        "constant.character.escape"
+      ],
+      "settings": {"foreground": "#2E6BBD"}
+    },
+    {
+      "name": "Invalid / Illegal",
+      "scope": [
+        "invalid",
+        "invalid.illegal"
+      ],
+      "settings": {"foreground": "#D03E3E", "fontStyle": "underline"}
+    }
+  ]
+}

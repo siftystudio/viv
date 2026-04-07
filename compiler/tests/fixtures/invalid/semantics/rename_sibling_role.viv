@@ -1,0 +1,17 @@
+// Renames a role defined in the same child block, not one inherited from the parent.
+// Should be rejected: renames is for inherited roles, not sibling roles.
+
+template action exchange:
+    roles:
+        @giver:
+            as: initiator
+        @receiver:
+            as: recipient
+
+action trade from exchange:
+    join roles:
+        @witnesses*:
+            as: character, bystander
+            n: 2-4
+        @crowd:
+            renames: @witnesses

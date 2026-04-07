@@ -1,0 +1,12 @@
+// Reserved action with a gloss and effects
+
+reserved action hug:
+    gloss: "@hugger hugs @friend"
+    roles:
+        @hugger:
+            as: initiator
+        @friend:
+            as: recipient
+    effects:
+        @hugger.mood += #NUDGE
+        @friend.mood += #NUDGE

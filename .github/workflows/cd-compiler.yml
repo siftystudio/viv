@@ -1,0 +1,62 @@
+name: CD — Viv Compiler (PyPI)
+
+on:
+  push:
+    tags:
+      - "compiler-v*"
+
+permissions:
+  contents: read
+  actions: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#compiler-v}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify tag is on main
+        run: |
+          git fetch origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Tag must be on main"
+            exit 1
+          fi
+
+      - name: Wait for CI to pass
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.sha }}
+          check-name: ci
+          repo-token: ${{ github.token }}
+          wait-interval: 15
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify version matches pyproject.toml
+        run: |
+          pkg_version=$(grep -Po '(?<=^version = ")[^"]+' compiler/pyproject.toml)
+          if [ "$pkg_version" != "${{ steps.version.outputs.version }}" ]; then
+            echo "::error::Tag version (${{ steps.version.outputs.version }}) does not match pyproject.toml ($pkg_version)"
+            exit 1
+          fi
+
+      - name: Install compiler dependencies
+        run: pip install poetry && cd compiler && poetry install
+
+      - name: Build package
+        run: cd compiler && poetry build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: compiler/dist/

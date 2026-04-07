@@ -1,0 +1,16 @@
+// Action with if/elif/else branching in effects
+
+action assess:
+    roles:
+        @judge:
+            as: initiator
+        @subject:
+            as: partner
+    effects:
+        if @subject.score > 80:
+            @subject.grade = "excellent"
+        elif @subject.score > 50:
+            @subject.grade = "average"
+        else:
+            @subject.grade = "poor"
+        end

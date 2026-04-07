@@ -1,0 +1,12 @@
+// Action with embargoes: permanent location-based embargo
+
+action chat:
+    roles:
+        @speaker:
+            as: initiator
+        @listener:
+            as: recipient
+    embargoes:
+        embargo:
+            location: here
+            time: forever

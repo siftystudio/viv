@@ -1,0 +1,8 @@
+// Invalid: action uses join without parent
+
+action orphan-join:
+    roles:
+        @actor:
+            as: initiator
+    join effects:
+        @actor.mood += 1

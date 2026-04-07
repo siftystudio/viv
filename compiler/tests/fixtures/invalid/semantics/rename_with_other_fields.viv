@@ -1,0 +1,15 @@
+// A renaming role that also specifies other fields.
+// Should be rejected: renames must be the only field on a role.
+
+template action meeting:
+    roles:
+        @host:
+            as: initiator
+        @attendee:
+            as: recipient
+
+action council from meeting:
+    join roles:
+        @delegate:
+            as: character, partner
+            renames: @attendee

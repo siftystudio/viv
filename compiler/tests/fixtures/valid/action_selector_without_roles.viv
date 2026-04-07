@@ -1,0 +1,18 @@
+// Action selector with no explicit roles block
+
+action-selector choose-greeting:
+    target randomly:
+        wave;
+        nod;
+
+
+action wave:
+    roles:
+        @greeter:
+            as: initiator
+
+
+action nod:
+    roles:
+        @greeter:
+            as: initiator

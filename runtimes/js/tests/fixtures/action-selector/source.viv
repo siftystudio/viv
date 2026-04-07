@@ -1,0 +1,24 @@
+// Action selector with random targeting policy, including a conditional candidate
+
+action wave:
+    roles:
+        @actor:
+            as: initiator
+
+action nod:
+    roles:
+        @actor:
+            as: initiator
+
+action bow:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        @actor.formal
+
+action-selector choose-greeting:
+    target randomly:
+        wave;
+        nod;
+        bow;

@@ -1,0 +1,12 @@
+// Invalid: non-numeric saliences expression
+
+action bad-sal-expr:
+    roles:
+        @actor:
+            as: initiator
+        @target:
+            as: recipient
+    saliences:
+        for _@c:
+            true
+        end

@@ -1,0 +1,6 @@
+# Dev-only tsconfig that maps to the live runtime source, within the monorepo
+/tsconfig.json
+
+node_modules/
+*.log
+.DS_Store

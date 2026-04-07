@@ -1,0 +1,10 @@
+// Reserved action with a symbol role used in effects
+
+reserved action label:
+    roles:
+        @actor:
+            as: initiator
+        &tag:
+            as: symbol, precast
+    effects:
+        @actor.label = &tag

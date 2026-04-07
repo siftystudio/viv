@@ -1,0 +1,40 @@
+// Action, query, and sifting pattern working in tandem
+
+action celebrate:
+    roles:
+        @celebrant:
+            as: initiator
+        @guest:
+            as: recipient
+    associations:
+        default: happy
+    saliences:
+        default: 5.0
+
+
+action argue:
+    roles:
+        @instigator:
+            as: initiator
+        @opponent:
+            as: recipient
+    associations:
+        default: sad
+    saliences:
+        default: 5.0
+
+
+query happy-memory:
+    associations:
+        all: happy
+
+
+pattern good-day:
+    roles:
+        @protagonist:
+            as: character
+    actions:
+        @event:
+            from:
+                search query happy-memory:
+                    over: @protagonist

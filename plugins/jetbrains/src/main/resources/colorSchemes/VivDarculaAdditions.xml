@@ -1,0 +1,40 @@
+<list>
+  <!-- Viv-specific color additions for the Darcula scheme.
+       Uses the Viv Cool palette as a subtle enhancement that blends well with Darcula. -->
+
+  <!-- Section keywords, plan instructions (purple) -->
+  <option name="VIV_SECTION_KEYWORD">
+    <value>
+      <option name="FOREGROUND" value="b48ead"/>
+    </value>
+  </option>
+
+  <!-- Keyword parameters: partial, none, randomly, etc. (purple italic) -->
+  <option name="VIV_KEYWORD_PARAMETER">
+    <value>
+      <option name="FOREGROUND" value="b48ead"/>
+      <option name="FONT_TYPE" value="2"/>
+    </value>
+  </option>
+
+  <!-- Phase names (teal) -->
+  <option name="VIV_PHASE_NAME">
+    <value>
+      <option name="FOREGROUND" value="8fbcbb"/>
+    </value>
+  </option>
+
+  <!-- Role labels and language constants (blue) -->
+  <option name="VIV_ROLE_LABEL">
+    <value>
+      <option name="FOREGROUND" value="88c0d0"/>
+    </value>
+  </option>
+
+  <!-- Reserved internal identifiers (blue) -->
+  <option name="VIV_RESERVED_IDENT">
+    <value>
+      <option name="FOREGROUND" value="88c0d0"/>
+    </value>
+  </option>
+</list>

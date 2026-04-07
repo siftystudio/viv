@@ -1,0 +1,194 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+
+permissions:
+  contents: read
+
+jobs:
+  compiler:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install compiler
+        run: pip install poetry && cd compiler && poetry config virtualenvs.in-project true && poetry install
+
+      - name: Check lock file
+        run: cd compiler && poetry check --lock
+
+      - name: Run tests
+        run: cd compiler && poetry run pytest
+
+  runtime:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install compiler
+        run: pip install compiler/
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile
+        run: npm --workspace runtimes/js run build:compile
+
+      - name: Check API surface
+        run: npm --workspace runtimes/js run check:api
+
+      - name: Run tests
+        run: npm --workspace runtimes/js test
+
+      - name: Build
+        run: npm --workspace runtimes/js run build
+
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TextMate grammar tests
+        run: npm --workspace syntax test
+
+      - name: Run Sublime syntax tests
+        uses: SublimeText/syntax-test-action@v2
+        with:
+          build: latest
+          package_root: plugins/sublime
+          package_name: Viv
+
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run sync checks
+        run: python scripts/run_sync_checks.py
+
+  examples:
+    needs: [compiler, runtime]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install compiler
+        run: pip install compiler/
+
+      - name: Install runtime dependencies
+        run: npm ci
+
+      - name: Compile example bundles
+        run: |
+          vivc -q -i examples/hello-viv-ts/src/content/source.viv -o examples/hello-viv-ts/src/content/compiled_content_bundle.json
+          vivc -q -i examples/hello-viv-js/src/content/source.viv -o examples/hello-viv-js/src/content/compiled_content_bundle.json
+
+      - name: Build runtime
+        run: npm --workspace runtimes/js run build
+
+      - name: Run hello-viv-ts
+        run: npm --workspace examples/hello-viv-ts run start
+
+      - name: Run hello-viv-js
+        run: npm --workspace examples/hello-viv-js run start
+
+  jetbrains:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plugins/jetbrains
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      - name: Build and test
+        run: ./gradlew buildPlugin test
+
+  ci:
+    needs: [compiler, runtime, syntax, sync, jetbrains, examples]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "All checks passed"
+
+  docs:
+    if: github.ref == 'refs/heads/main'
+    needs: ci
+    permissions:
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build docs
+        run: cd docs && npm run build
+
+      - name: Restore API docs from last runtime release
+        uses: actions/cache/restore@v4
+        with:
+          path: docs/api/runtimes/js
+          key: api-docs-
+          restore-keys: api-docs-
+
+      - name: Assemble site
+        run: |
+          if [ -d docs/api/runtimes/js ]; then
+            mkdir -p docs/dist/api/runtimes/js
+            cp -r docs/api/runtimes/js/* docs/dist/api/runtimes/js/
+          fi
+
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/dist
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4

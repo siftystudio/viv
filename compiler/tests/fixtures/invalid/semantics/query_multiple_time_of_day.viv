@@ -1,0 +1,16 @@
+// Invalid: query with multiple time-of-day constraints
+
+action fight:
+    roles:
+        @fighter:
+            as: initiator
+
+query bad-time:
+    roles:
+        @witness:
+            as: character
+    action:
+        any: fight
+    time:
+        after: 8am
+        before: 6pm

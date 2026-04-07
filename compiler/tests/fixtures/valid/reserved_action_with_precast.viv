@@ -1,0 +1,8 @@
+// Reserved action where a non-initiator role carries the precast label
+
+reserved action summon:
+    roles:
+        @summoner:
+            as: initiator
+        @summoned:
+            as: character, precast

@@ -1,0 +1,8 @@
+// Invalid: query references undefined action
+
+query bad-action-ref:
+    roles:
+        @witness:
+            as: character
+    action:
+        any: nonexistent

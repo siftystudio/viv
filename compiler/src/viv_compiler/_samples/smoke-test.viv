@@ -1,0 +1,7 @@
+// This file contains a single minimal test action and serves as a quick smoke
+// test to confirm that the Viv compiler is operable on the target machine.
+
+action test:
+    roles:
+        @x:
+        	as: initiator, character

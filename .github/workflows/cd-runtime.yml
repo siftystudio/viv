@@ -1,0 +1,97 @@
+name: CD — Viv Runtime (npm)
+
+on:
+  push:
+    tags:
+      - "runtime-v*"
+
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#runtime-v}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify tag is on main
+        run: |
+          git fetch origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Tag must be on main"
+            exit 1
+          fi
+
+      - name: Wait for CI to pass
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.sha }}
+          check-name: ci
+          repo-token: ${{ github.token }}
+          wait-interval: 15
+
+      - name: Verify version matches package.json
+        run: |
+          pkg_version=$(node -e "console.log(require('./runtimes/js/package.json').version)")
+          if [ "$pkg_version" != "${{ steps.version.outputs.version }}" ]; then
+            echo "::error::Tag version (${{ steps.version.outputs.version }}) does not match package.json ($pkg_version)"
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install runtime dependencies
+        run: npm ci
+
+      - name: Build runtime
+        run: npm --workspace runtimes/js run build
+
+      - name: Publish to npm
+        run: npm --workspace runtimes/js publish --ignore-scripts
+
+      - name: Generate API docs
+        run: npm --workspace runtimes/js run docs
+
+      - name: Cache API docs for CI use
+        uses: actions/cache/save@v4
+        with:
+          path: docs/api/runtimes/js
+          key: api-docs-${{ github.sha }}
+
+      - name: Build language reference
+        run: cd docs && npm run build
+
+      - name: Assemble site
+        run: |
+          mkdir -p docs/dist/api/runtimes/js
+          cp -r docs/api/runtimes/js/* docs/dist/api/runtimes/js/
+
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/dist
+
+  docs:
+    needs: publish
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4

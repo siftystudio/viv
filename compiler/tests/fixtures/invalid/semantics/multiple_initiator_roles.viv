@@ -1,0 +1,8 @@
+// Invalid: action has multiple initiator roles
+
+action confused:
+    roles:
+        @leader:
+            as: initiator
+        @also-leader:
+            as: initiator

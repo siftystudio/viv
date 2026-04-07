@@ -1,0 +1,18 @@
+// Invalid: reaction with multiple time-of-day constraints
+
+reserved action respond:
+    roles:
+        @responder:
+            as: initiator
+
+action trigger:
+    roles:
+        @actor:
+            as: initiator
+    reactions:
+        queue action respond:
+            with:
+                @responder: @actor
+            time:
+                after: 8am
+                before: 6pm

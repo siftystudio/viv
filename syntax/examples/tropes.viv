@@ -1,0 +1,41 @@
+// Tropes for the haunted mansion dinner party
+
+trope hidden-grudge:
+    roles:
+        @antagonist:
+            as: character
+        @target:
+            as: character
+        @oblivious-party:
+            as: character
+    conditions:
+        @antagonist.resentment[@target] > 7
+        @target.suspicion[@antagonist] <= 2
+        @oblivious-party.suspicion[@antagonist] <= 2
+        @antagonist.composure == #CALM || @antagonist.composure == #NERVOUS
+
+trope final-standoff:
+    roles:
+        @survivor:
+            as: character
+        @suspect:
+            as: character
+    conditions:
+        @survivor.location == @suspect.location
+        @survivor.suspicion[@suspect] > 5
+        @survivor.courage > 3
+        @suspect.composure == #NERVOUS || @suspect.composure == #FRIGHTENED
+        @survivor.allies_remaining == 0
+
+trope uneasy-alliance:
+    roles:
+        @ally-a:
+            as: character
+        @ally-b:
+            as: character
+    conditions:
+        @ally-a.trust[@ally-b] < 3
+        @ally-b.trust[@ally-a] < 3
+        @ally-a.location == @ally-b.location
+        @ally-a.dread > 5
+        @ally-b.dread > 5

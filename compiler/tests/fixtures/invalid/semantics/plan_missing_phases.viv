@@ -1,0 +1,6 @@
+// Plan with no phases field — should be rejected
+
+plan incomplete:
+    roles:
+        @actor:
+            as: character

@@ -1,0 +1,595 @@
+{
+
+  "Action Definition": {
+    "prefix": "action",
+    "body": [
+      "action ${1:name}:",
+      "\troles:",
+      "\t\t@${2:initiator}:",
+      "\t\t\tas: character, initiator",
+      "\t\t@${3:recipient}:",
+      "\t\t\tas: character, recipient",
+      "\tconditions:",
+      "\t\t$4",
+      "\teffects:",
+      "\t\t$0"
+    ],
+    "description": "definition"
+  },
+
+  "Child Action": {
+    "prefix": "action from",
+    "body": [
+      "action ${1:name} from ${2:parent}:",
+      "\t$0"
+    ],
+    "description": "child action"
+  },
+
+  "Action Variant": {
+    "prefix": "action variant",
+    "body": "action ${1:name} from ${2:parent};",
+    "description": "variant"
+  },
+
+  "Template Action": {
+    "prefix": "template action",
+    "body": [
+      "template action ${1:name}:",
+      "\troles:",
+      "\t\t@${2:initiator}:",
+      "\t\t\tas: character, initiator",
+      "\t\t@${3:recipient}:",
+      "\t\t\tas: character, recipient",
+      "\t$0"
+    ],
+    "description": "template"
+  },
+
+  "Reserved Action": {
+    "prefix": "reserved action",
+    "body": [
+      "reserved action ${1:name}:",
+      "\troles:",
+      "\t\t@${2:initiator}:",
+      "\t\t\tas: character, initiator",
+      "\t$0"
+    ],
+    "description": "reserved"
+  },
+
+  "Action-Selector Definition": {
+    "prefix": "action-selector",
+    "body": [
+      "action-selector ${1:name}:",
+      "\troles:",
+      "\t\t@${2:actor}:",
+      "\t\t\tas: character, initiator",
+      "\ttarget ${3:randomly}:",
+      "\t\t${4:candidate};",
+      "\t$0"
+    ],
+    "description": "definition"
+  },
+
+  "Plan-Selector Definition": {
+    "prefix": "plan-selector",
+    "body": [
+      "plan-selector ${1:name}:",
+      "\troles:",
+      "\t\t@${2:actor}:",
+      "\t\t\tas: character",
+      "\ttarget ${3:randomly}:",
+      "\t\t${4:candidate};",
+      "\t$0"
+    ],
+    "description": "definition"
+  },
+
+  "Plan Definition": {
+    "prefix": "plan",
+    "body": [
+      "plan ${1:name}:",
+      "\troles:",
+      "\t\t@${2:actor}:",
+      "\t\t\tas: character",
+      "\tphases:",
+      "\t\t>${3:first}:",
+      "\t\t\tqueue action ${4:step}:",
+      "\t\t\t\twith partial:",
+      "\t\t\t\t\t@initiator: @${2:actor}",
+      "\t\t>${5:last}:",
+      "\t\t\t$0"
+    ],
+    "description": "definition"
+  },
+
+  "Query Definition": {
+    "prefix": "query",
+    "body": [
+      "query ${1:name}:",
+      "\troles:",
+      "\t\t@${2:person}:",
+      "\t\t\tas: character",
+      "\tassociations:",
+      "\t\t${3:any}: ${4:tag}",
+      "\t$0"
+    ],
+    "description": "definition"
+  },
+
+  "Sifting-Pattern Definition": {
+    "prefix": "pattern",
+    "body": [
+      "pattern ${1:name}:",
+      "\troles:",
+      "\t\t@${2:a}:",
+      "\t\t\tas: character",
+      "\t\t@${3:b}:",
+      "\t\t\tas: character",
+      "\tactions:",
+      "\t\t@${4:x}: from: @${2:a}.recent_actions",
+      "\t\t@${5:y}: from: @${3:b}.recent_actions",
+      "\tconditions:",
+      "\t\t$0"
+    ],
+    "description": "definition"
+  },
+
+  "Trope Definition": {
+    "prefix": "trope",
+    "body": [
+      "trope ${1:name}:",
+      "\troles:",
+      "\t\t@${2:a}:",
+      "\t\t\tas: character",
+      "\t\t@${3:b}:",
+      "\t\t\tas: character",
+      "\tconditions:",
+      "\t\t$0"
+    ],
+    "description": "definition"
+  },
+
+  "Roles Section": {
+    "prefix": "roles",
+    "body": [
+      "roles:",
+      "\t@${1:initiator}:",
+      "\t\tas: character, initiator",
+      "\t@${2:recipient}:",
+      "\t\tas: character, recipient",
+      "$0"
+    ],
+    "description": "section"
+  },
+
+  "Conditions Section": {
+    "prefix": "conditions",
+    "body": [
+      "conditions:",
+      "\t$0"
+    ],
+    "description": "section"
+  },
+
+  "Effects Section": {
+    "prefix": "effects",
+    "body": [
+      "effects:",
+      "\t$0"
+    ],
+    "description": "section"
+  },
+
+  "Scratch Section": {
+    "prefix": "scratch",
+    "body": [
+      "scratch:",
+      "\t\\$@${1:var} = ${2:0}",
+      "$0"
+    ],
+    "description": "section"
+  },
+
+  "Gloss Field": {
+    "prefix": "gloss",
+    "body": "gloss: \"${1:description}\"",
+    "description": "field"
+  },
+
+  "Report Field": {
+    "prefix": "report",
+    "body": "report: '${1:template}'",
+    "description": "field"
+  },
+
+  "Importance Field": {
+    "prefix": "importance",
+    "body": "importance: ${1:#MODERATE}",
+    "description": "field"
+  },
+
+  "Tags Field": {
+    "prefix": "tags",
+    "body": "tags: ${1:tag1}, ${2:tag2}",
+    "description": "field"
+  },
+
+  "Reactions Section": {
+    "prefix": "reactions",
+    "body": [
+      "reactions:",
+      "\tqueue action ${1:name}:",
+      "\t\twith:",
+      "\t\t\t@initiator: @${2:ref}",
+      "\t\t\t@recipient: @${3:ref}",
+      "$0"
+    ],
+    "description": "section"
+  },
+
+  "Queue Action": {
+    "prefix": "queue action",
+    "body": [
+      "queue action ${1:name}:",
+      "\twith${2: partial}:",
+      "\t\t@${3:initiator}: @${4:ref}",
+      "$0"
+    ],
+    "description": "reaction"
+  },
+
+  "Queue Plan": {
+    "prefix": "queue plan",
+    "body": [
+      "queue plan ${1:name}:",
+      "\twith${2: partial}:",
+      "\t\t@${3:role}: @${4:ref}",
+      "$0"
+    ],
+    "description": "reaction"
+  },
+
+  "Queue Action Selector": {
+    "prefix": "queue action-selector",
+    "body": [
+      "queue action-selector ${1:name}:",
+      "\twith${2: partial}:",
+      "\t\t@${3:role}: @${4:ref}",
+      "$0"
+    ],
+    "description": "reaction"
+  },
+
+  "Queue Plan Selector": {
+    "prefix": "queue plan-selector",
+    "body": [
+      "queue plan-selector ${1:name}:",
+      "\twith${2: partial}:",
+      "\t\t@${3:role}: @${4:ref}",
+      "$0"
+    ],
+    "description": "reaction"
+  },
+
+  "Repeat": {
+    "prefix": "repeat",
+    "body": [
+      "repeat:",
+      "\tif:",
+      "\t\t${1:condition}",
+      "\tmax: ${2:3}"
+    ],
+    "description": "reaction field"
+  },
+
+  "Embargoes Section": {
+    "prefix": "embargoes",
+    "body": [
+      "embargoes:",
+      "\tembargo:",
+      "\t\tlocation: ${1:anywhere}",
+      "\t\ttime: ${2:forever}",
+      "$0"
+    ],
+    "description": "section"
+  },
+
+  "Embargo Entry": {
+    "prefix": "embargo",
+    "body": [
+      "embargo:",
+      "\tlocation: ${1:anywhere}",
+      "\ttime: ${2:forever}",
+      "\troles: @${3:role}",
+      "$0"
+    ],
+    "description": "entry"
+  },
+
+  "Saliences Section": {
+    "prefix": "saliences",
+    "body": [
+      "saliences:",
+      "\tdefault: ${1:#NEUTRAL}",
+      "$0"
+    ],
+    "description": "section"
+  },
+
+  "Saliences with Custom": {
+    "prefix": "saliences for",
+    "body": [
+      "saliences:",
+      "\tdefault: ${1:#NEUTRAL}",
+      "\tfor _@${2:c}:",
+      "\t\tif ${3:_@$2.trust > 5}:",
+      "\t\t\t${4:#INTERESTING}",
+      "\t\telse:",
+      "\t\t\t$1",
+      "\t\tend",
+      "\tend",
+      "$0"
+    ],
+    "description": "custom field"
+  },
+
+  "Associations Section": {
+    "prefix": "associations",
+    "body": [
+      "associations:",
+      "\tdefault: ${1:tag}",
+      "$0"
+    ],
+    "description": "section"
+  },
+
+  "Associations with Custom": {
+    "prefix": "associations for",
+    "body": [
+      "associations:",
+      "\tdefault: ${1:tag}",
+      "\tfor _@${2:c}:",
+      "\t\tif ${3:_@$2.trust > 5}:",
+      "\t\t\t${4:positive-tag}",
+      "\t\telse:",
+      "\t\t\t${5:neutral-tag}",
+      "\t\tend",
+      "\tend",
+      "$0"
+    ],
+    "description": "section with custom field"
+  },
+
+  "Target Randomly": {
+    "prefix": "target randomly",
+    "body": [
+      "target randomly:",
+      "\t${1:candidate};",
+      "\t${2:candidate};",
+      "$0"
+    ],
+    "description": "selector policy"
+  },
+
+  "Target with Weights": {
+    "prefix": "target with weights",
+    "body": [
+      "target with weights:",
+      "\t(${1:3}) ${2:candidate}:",
+      "\t\twith${3: partial}:",
+      "\t\t\t@${4:role}: @${5:ref}",
+      "\t(${6:1}) ${7:candidate}:",
+      "\t\twith${8: partial}:",
+      "\t\t\t@${9:role}: @${10:ref}",
+      "$0"
+    ],
+    "description": "selector policy"
+  },
+
+  "Target in Order": {
+    "prefix": "target in order",
+    "body": [
+      "target in order:",
+      "\t${1:candidate}:",
+      "\t\twith${2: partial}:",
+      "\t\t\t@${3:role}: @${4:ref}",
+      "\t${5:fallback}:",
+      "\t\twith${6: partial}:",
+      "\t\t\t@${7:role}: @${8:ref}",
+      "$0"
+    ],
+    "description": "selector policy"
+  },
+
+  "Phases Section": {
+    "prefix": "phases",
+    "body": [
+      "phases:",
+      "\t>${1:name}:",
+      "\t\t$0"
+    ],
+    "description": "section"
+  },
+
+  "Wait": {
+    "prefix": "wait",
+    "body": [
+      "wait:",
+      "\ttimeout: ${1:1} ${2:days}",
+      "\tuntil:",
+      "\t\t${3:condition}",
+      "$0"
+    ],
+    "description": "plan instruction"
+  },
+
+  "Reaction Window All": {
+    "prefix": "all",
+    "body": [
+      "all:",
+      "\tqueue action ${1:name}:",
+      "\t\twith partial:",
+      "\t\t\t@initiator: @${2:ref}",
+      "\tqueue action ${3:name}:",
+      "\t\twith partial:",
+      "\t\t\t@initiator: @${4:ref}",
+      "close",
+      "$0"
+    ],
+    "description": "reaction window"
+  },
+
+  "Reaction Window Any": {
+    "prefix": "any",
+    "body": [
+      "any:",
+      "\tqueue action ${1:name}:",
+      "\t\twith partial:",
+      "\t\t\t@initiator: @${2:ref}",
+      "\tqueue action ${3:name}:",
+      "\t\twith partial:",
+      "\t\t\t@initiator: @${4:ref}",
+      "close",
+      "$0"
+    ],
+    "description": "reaction window"
+  },
+
+  "Reaction Window Untracked": {
+    "prefix": "untracked",
+    "body": [
+      "untracked:",
+      "\tqueue action ${1:name}:",
+      "\t\twith partial:",
+      "\t\t\t@initiator: @${2:ref}",
+      "close",
+      "$0"
+    ],
+    "description": "reaction window"
+  },
+
+  "Time Constraint": {
+    "prefix": "time",
+    "body": [
+      "time:",
+      "\tafter: ${1:1} ${2:hours} from ${3:action}",
+      "$0"
+    ],
+    "description": "temporal constraint"
+  },
+
+  "After Time Constraint": {
+    "prefix": "after",
+    "body": "after: ${1:1} ${2:hours} from ${3:action}",
+    "description": "temporal constraint"
+  },
+
+  "Before Time Constraint": {
+    "prefix": "before",
+    "body": "before: ${1:1} ${2:hours} from ${3:action}",
+    "description": "temporal constraint"
+  },
+
+  "Between Time Constraint": {
+    "prefix": "between",
+    "body": "between: ${1:1} ${2:hours} and ${3:3} ${4:hours} from ${5:action}",
+    "description": "temporal constraint"
+  },
+
+  "If Conditional": {
+    "prefix": "if",
+    "body": [
+      "if ${1:condition}:",
+      "\t$0",
+      "end"
+    ],
+    "description": "conditional"
+  },
+
+  "If Else Conditional": {
+    "prefix": "if else",
+    "body": [
+      "if ${1:condition}:",
+      "\t${2}",
+      "else:",
+      "\t$0",
+      "end"
+    ],
+    "description": "conditional"
+  },
+
+  "Loop": {
+    "prefix": "loop",
+    "body": [
+      "loop @${1:group}* as _@${2:x}:",
+      "\t$0",
+      "end"
+    ],
+    "description": "statement"
+  },
+
+  "Search Query": {
+    "prefix": "search query",
+    "body": [
+      "search query ${1:name}:",
+      "\tover: ${2:chronicle}",
+      "\twith:",
+      "\t\t@${3:role}: @${4:ref}",
+      "$0"
+    ],
+    "description": "expression"
+  },
+
+  "Bare Search": {
+    "prefix": "search",
+    "body": [
+      "search:",
+      "\tover: ${1:chronicle}",
+      "$0"
+    ],
+    "description": "bare search"
+  },
+
+  "Sift Pattern": {
+    "prefix": "sift",
+    "body": [
+      "sift pattern ${1:name}:",
+      "\tover: ${2:chronicle}",
+      "\twith partial:",
+      "\t\t@${3:role}: @${4:ref}",
+      "$0"
+    ],
+    "description": "sifting"
+  },
+
+  "Fit Trope": {
+    "prefix": "fit trope",
+    "body": [
+      "fit trope ${1:name}:",
+      "\twith:",
+      "\t\t@${2:role}: @${3:ref}",
+      "$0"
+    ],
+    "description": "trope fit"
+  },
+
+  "Fits Trope": {
+    "prefix": "fits",
+    "body": "<@${1:a}: @${2:b}> fits trope ${3:name}",
+    "description": "trope fit (sugared)"
+  },
+
+  "Function Call": {
+    "prefix": "~",
+    "body": "~${1:function}(${2:@entity})",
+    "description": "custom function call"
+  },
+
+  "Include Statement": {
+    "prefix": "include",
+    "body": "include \"${1:path}\"",
+    "description": "include"
+  }
+}

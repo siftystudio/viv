@@ -1,0 +1,15 @@
+// Group action role with * but no n: field (max defaults to 1, which conflicts with *)
+
+action foo:
+    roles:
+        @doer:
+            as: initiator
+
+
+pattern bad:
+    roles:
+        @p:
+            as: character
+    actions:
+        @acts*:
+            from: @p.memories

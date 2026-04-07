@@ -1,0 +1,17 @@
+// Invalid: reaction fails to bind initiator role
+
+reserved action respond:
+    roles:
+        @responder:
+            as: initiator
+        @witness:
+            as: bystander
+
+action trigger:
+    roles:
+        @actor:
+            as: initiator
+    reactions:
+        queue action respond:
+            with partial:
+                @witness: @actor

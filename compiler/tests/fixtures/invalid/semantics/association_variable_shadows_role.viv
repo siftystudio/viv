@@ -1,0 +1,12 @@
+// Invalid: associations variable shadows role name
+
+action shadow-assoc:
+    roles:
+        @actor:
+            as: initiator
+        @target:
+            as: recipient
+    associations:
+        for _@actor:
+            commerce
+        end

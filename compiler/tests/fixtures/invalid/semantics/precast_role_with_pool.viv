@@ -1,0 +1,9 @@
+// Invalid: precast role with pool directive
+
+reserved action bad-precast-pool:
+    roles:
+        @actor:
+            as: initiator
+        @helper:
+            as: character, precast
+            from: @actor.friends

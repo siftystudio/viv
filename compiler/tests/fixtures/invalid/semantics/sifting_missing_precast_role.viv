@@ -1,0 +1,28 @@
+// Invalid: sifting fails to precast pattern's precast role
+
+action betray:
+    roles:
+        @betrayer:
+            as: initiator
+
+pattern tracked-treachery:
+    roles:
+        @watcher:
+            as: character
+        @known-perp:
+            as: character, precast
+    actions:
+        @act1:
+            from: @watcher.memories
+    conditions:
+        true
+
+action detect:
+    roles:
+        @detective:
+            as: initiator
+    conditions:
+        sift pattern tracked-treachery:
+            with partial:
+                @watcher: @detective
+            over: @detective

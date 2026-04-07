@@ -1,0 +1,23 @@
+// Invalid: trope fit precasts role not in trope
+
+trope rivals:
+    roles:
+        @a:
+            as: character
+        @b:
+            as: character
+    conditions:
+        @b in @a.enemies
+
+action confront:
+    roles:
+        @aggressor:
+            as: initiator
+        @target:
+            as: recipient
+    conditions:
+        fit trope rivals:
+            with:
+                @a: @aggressor
+                @b: @target
+                @c: @aggressor

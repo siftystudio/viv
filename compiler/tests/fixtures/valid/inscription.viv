@@ -1,0 +1,10 @@
+// Item inscription — inscribe the current action onto an item
+
+action write-note:
+    roles:
+        @writer:
+            as: initiator
+        @note:
+            as: item
+    effects:
+        @note inscribe @this

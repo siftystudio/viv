@@ -1,0 +1,40 @@
+// Plan with multiple phases
+
+action scout:
+    roles:
+        @scout:
+            as: initiator
+
+
+action prepare:
+    roles:
+        @preparer:
+            as: initiator
+
+
+action strike:
+    roles:
+        @attacker:
+            as: initiator
+
+
+plan raid:
+    roles:
+        @leader:
+            as: character
+    phases:
+        >reconnaissance:
+            queue action scout:
+                with partial:
+                    @scout: @leader
+            advance;
+        >preparation:
+            queue action prepare:
+                with partial:
+                    @preparer: @leader
+            advance;
+        >execution:
+            queue action strike:
+                with partial:
+                    @attacker: @leader
+            succeed;

@@ -1,0 +1,19 @@
+// Invalid: reaction location exactly with multiple operands
+
+reserved action respond:
+    roles:
+        @responder:
+            as: initiator
+
+action trigger:
+    roles:
+        @actor:
+            as: initiator
+        @friend:
+            as: partner
+    reactions:
+        queue action respond:
+            with:
+                @responder: @actor
+            location:
+                exactly: @actor.home, @friend.home

@@ -1,0 +1,17 @@
+// Invalid: reaction full cast missing required role
+
+reserved action respond:
+    roles:
+        @responder:
+            as: initiator
+        @witness:
+            as: recipient
+
+action trigger:
+    roles:
+        @actor:
+            as: initiator
+    reactions:
+        queue action respond:
+            with:
+                @responder: @actor

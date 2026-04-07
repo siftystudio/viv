@@ -1,0 +1,8 @@
+// Sifting pattern with no actions field — should be rejected
+
+pattern incomplete-pattern:
+    roles:
+        @actor:
+            as: character
+    conditions:
+        @actor.trust > 0

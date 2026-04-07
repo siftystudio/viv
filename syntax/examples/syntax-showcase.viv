@@ -1,0 +1,705 @@
+// ==========================================================================
+// Viv Syntax Showcase
+// Every syntactic feature in the language, for evaluating editor themes.
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Includes
+// --------------------------------------------------------------------------
+
+include "more-actions.viv"
+include 'tropes.viv'
+
+// --------------------------------------------------------------------------
+// Stubs (targets referenced elsewhere in the file)
+// --------------------------------------------------------------------------
+
+action nervous-laugh from mansion-encounter;
+action glance-around from mansion-encounter;
+action dismiss-noise from mansion-encounter;
+plan confront-suspect:
+    roles:
+        @interrogator:
+            as: character
+        @suspect:
+            as: character
+    phases:
+        >only:
+            succeed;
+plan bribe-butler:
+    roles:
+        @guest:
+            as: character
+        @butler:
+            as: character
+    phases:
+        >only:
+            succeed;
+plan flee-mansion:
+    roles:
+        @fugitive:
+            as: character
+        @companion:
+            as: character
+    phases:
+        >only:
+            succeed;
+action wander-halls from mansion-encounter;
+action peek-through-keyhole from mansion-encounter;
+action share-clue from mansion-encounter;
+action slip-away from mansion-encounter;
+action search-room from mansion-encounter;
+action rally-guests from mansion-encounter;
+action invoke-old-debt from mansion-encounter;
+action gather-supplies from mansion-encounter;
+action post-watch from mansion-encounter;
+action pick-lock from mansion-encounter;
+action keep-vigil from mansion-encounter;
+action create-diversion from mansion-encounter;
+action prepare-escape-route from mansion-encounter;
+action delayed-fright from mansion-encounter;
+action return-pleasantry from mansion-encounter;
+
+plan calm-nerves:
+    roles:
+        @comforter:
+            as: character
+    phases:
+        >only:
+            succeed;
+plan-selector choose-retreat:
+    roles:
+        @escapee:
+            as: character
+    target randomly:
+        calm-nerves:
+            with partial:
+                @comforter: @escapee
+
+
+// --------------------------------------------------------------------------
+// Actions: stubs, templates, inheritance, reserved
+// --------------------------------------------------------------------------
+
+action stand-nervously from mansion-encounter;
+
+reserved action clock-chimes from mansion-encounter;
+
+template action mansion-encounter:
+    gloss: "An encounter in the mansion"
+    report: '{@initiator.name} encounters {@recipient.name} in the gloom'
+    importance: #MODERATE
+    tags: mansion, encounter
+    roles:
+        @initiator:
+            as: initiator
+        @recipient:
+            as: recipient
+
+action introduce-self from mansion-encounter:
+    gloss: "One guest introduces themselves to another"
+    report: '{@initiator.name} extends a hand to {@recipient.name}'
+    importance: 3
+    tags: greeting, polite
+    roles:
+        @initiator:
+            as: initiator
+        @recipient:
+            as: recipient
+
+action confront from mansion-encounter:
+    join tags: conflict, tense
+    join roles:
+        @eavesdroppers*:
+            as: bystander
+            n: 0-5 [60%]
+        &accusation:
+            as: symbol
+            from: @initiator.suspicions
+    join conditions:
+        @initiator.composure == #SUSPICIOUS || @initiator.composure == #FRIGHTENED
+        @recipient.location == @initiator.location
+    join scratch:
+        $@tension = 0
+        $@tension += @initiator.suspicion[@recipient]
+        $@tension += @recipient.defensiveness
+    join effects:
+        if $@tension > 7:
+            @recipient.composure = #HYSTERICAL
+            @initiator.composure = #SUSPICIOUS
+            @recipient.credibility -= 5
+        elif $@tension > 4:
+            @initiator.composure = #FRIGHTENED
+            @recipient.composure = #SHAKEN
+        else:
+            @initiator.composure = #NERVOUS
+            @initiator.credibility -= 2
+        end
+        loop @eavesdroppers* as _@witness:
+            _@witness.dread += 1
+            _@witness.suspicion[@recipient] += 2
+        end
+    join reactions:
+        queue plan calm-nerves:
+            with partial:
+                @comforter: @recipient
+        queue action-selector pick-retort:
+            with:
+                @defendant: @recipient
+                @accuser: @initiator
+            urgent: false
+    join embargoes:
+        embargo:
+            location: here
+            time: 2 hours
+            roles: @initiator, @recipient
+        embargo:
+            location: anywhere
+            time: forever
+
+
+// --------------------------------------------------------------------------
+// Roles: all labels, casting directives, spawn, renames, group decorator
+// --------------------------------------------------------------------------
+
+action seance from mansion-encounter:
+    join roles:
+        @medium:
+            as: character
+            is: @initiator
+        @participants*:
+            as: partner
+            n: 2-5 [~3]
+            from: @medium.trusted_guests
+        @scribe:
+            as: recipient, spawn
+            spawn: ~create-scribe(@medium.location)
+        @skeptic:
+            renames: @recipient
+        @spirit-board:
+            as: item
+        @parlor:
+            as: location
+            is: @medium.preferred_room
+        &invocation:
+            as: symbol
+            from: @medium.known_rituals
+        @witnesses*:
+            as: bystander
+            n: 0-5
+        @ghost:
+            as: character, anywhere
+    conditions:
+        @medium.psychic_gift >= 5
+    effects:
+        @medium.seance_held = true
+
+
+// --------------------------------------------------------------------------
+// Saliences: default, roles, custom field with elif
+// --------------------------------------------------------------------------
+
+action reveal-secret:
+    importance: #HIGH
+    tags: intimate, confession
+    roles:
+        @confessor:
+            as: initiator
+        @confidant:
+            as: recipient
+    saliences:
+        default: #VERY_HIGH
+        roles:
+            @confessor: 10
+            @confidant: 8
+        for _@observer:
+            if _@observer.location == @confessor.location:
+                7
+            elif _@observer knows @confessor:
+                4
+            else:
+                1
+            end
+        end
+    effects:
+        @confessor.guilt[@confidant] += 15
+        @confidant.knowledge append @confessor.secret
+
+
+// --------------------------------------------------------------------------
+// Associations: default, roles, custom field with elif
+// --------------------------------------------------------------------------
+
+action double-cross:
+    importance: #CRITICAL
+    tags: betrayal, dramatic
+    roles:
+        @turncoat:
+            as: initiator
+        @mark:
+            as: recipient
+    associations:
+        default: treachery, deceit
+        roles:
+            @turncoat: guilt, scheming
+            @mark: shock, vulnerability
+        for _@witness:
+            if _@witness.loyalty[@mark] > 5:
+                outrage, sympathy
+            elif _@witness.loyalty[@turncoat] > 5:
+                conflict, doubt
+            else:
+                gossip
+            end
+        end
+
+
+// --------------------------------------------------------------------------
+// Embargoes: all location/time forms
+// --------------------------------------------------------------------------
+
+action challenge-to-wager:
+    roles:
+        @challenger:
+            as: initiator
+        @defender:
+            as: recipient
+    embargoes:
+        embargo:
+            location: here
+            time: 1 week
+            roles: @challenger, @defender
+        embargo:
+            location: anywhere
+            time: 3 months
+        embargo:
+            time: forever
+            roles: @challenger
+
+
+// --------------------------------------------------------------------------
+// Reactions: bindings, urgency, priority, location, time, abandon, repeat
+// --------------------------------------------------------------------------
+
+action secret-meeting:
+    roles:
+        @sleuth:
+            as: initiator
+        @informant:
+            as: partner
+    reactions:
+        queue action share-clue:
+            with:
+                @initiator: @sleuth
+                @recipient: @informant
+            urgent: true
+            priority: 8
+            location:
+                any: @sleuth.location, @informant.location
+            time:
+                after: 2 hours from action
+                between: 3 hours and 12 hours from now
+                between: 10 pm and 6 am
+            abandon:
+                @sleuth.disguise_broken == true
+            repeat:
+                if:
+                    @sleuth.suspicion_level > 0
+                max: 5
+        queue plan-selector choose-retreat:
+            with partial:
+                @escapee: @sleuth
+        queue action slip-away:
+            with partial:
+                @initiator: @sleuth
+
+
+// --------------------------------------------------------------------------
+// Selectors: action-selector, plan-selector, all target policies
+// --------------------------------------------------------------------------
+
+action-selector pick-idle-action:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        @actor.composure > 0
+    target randomly:
+        introduce-self;
+        nervous-laugh;
+        glance-around;
+
+reserved action-selector pick-retort:
+    roles:
+        @defendant:
+            as: initiator
+        @accuser:
+            as: character
+    target with weights:
+        (5) confront:
+            with partial:
+                @initiator: @defendant
+                @recipient: @accuser
+        (3) dismiss-noise:
+            with:
+                @initiator: @defendant
+                @recipient: @accuser
+        (1) selector pick-idle-action:
+            with:
+                @actor: @defendant
+
+plan-selector choose-approach:
+    roles:
+        @investigator:
+            as: character
+        @subject:
+            as: character
+    target in order:
+        confront-suspect:
+            with:
+                @interrogator: @investigator
+                @suspect: @subject
+        bribe-butler:
+            with:
+                @guest: @investigator
+                @butler: @subject
+        flee-mansion:
+            with:
+                @fugitive: @investigator
+                @companion: @subject
+
+action-selector ambient-behavior:
+    target randomly:
+        stand-nervously;
+        wander-halls;
+        peek-through-keyhole;
+
+
+// --------------------------------------------------------------------------
+// Plans: phases, all instructions, wait, windows, elif
+// --------------------------------------------------------------------------
+
+plan investigation:
+    roles:
+        @detective:
+            as: character
+        @locksmith:
+            as: character
+        @lookout:
+            as: character
+        @crime-scene:
+            as: location
+    conditions:
+        @detective.theory_ready == true
+    phases:
+        >gathering-clues:
+            queue action search-room:
+                with partial:
+                    @initiator: @detective
+            wait:
+                timeout: 2 days
+                until:
+                    @detective.evidence[@crime-scene] >= 3
+        >forming-theory:
+            if @detective.allies >= 5:
+                queue action rally-guests:
+                    with partial:
+                        @initiator: @detective
+                    priority: 10
+            elif @detective.allies >= 2:
+                queue action invoke-old-debt:
+                    with partial:
+                        @initiator: @detective
+            else:
+                fail;
+            end
+            all:
+                queue action gather-supplies:
+                    with partial:
+                        @initiator: @locksmith
+                queue action post-watch:
+                    with partial:
+                        @initiator: @lookout
+            close
+        >the-confrontation:
+            any:
+                queue action pick-lock:
+                    with partial:
+                        @initiator: @locksmith
+                queue action keep-vigil:
+                    with partial:
+                        @initiator: @lookout
+            close
+            untracked:
+                queue action create-diversion:
+                    with partial:
+                        @initiator: @detective
+            close
+            loop @detective.escape_routes as _@route:
+                queue action prepare-escape-route:
+                    with partial:
+                        @initiator: @detective
+            end
+            wait:
+                timeout: 6 hours
+                until:
+                    @locksmith.task_complete == true
+            if @locksmith.task_complete:
+                succeed;
+            else:
+                fail;
+            end
+
+
+// --------------------------------------------------------------------------
+// Queries: every field
+// --------------------------------------------------------------------------
+
+query recent-haunting:
+    roles:
+        @person:
+            as: character
+    conditions:
+        @person.alive == true
+    action:
+        any: confront, double-cross, challenge-to-wager
+    ancestors:
+        any: @person
+    descendants:
+        none: @person
+    importance:
+        >=: #HIGH
+        <=: 10
+    tags:
+        all: tense
+        any: conflict, dramatic
+    salience:
+        >: 3
+    associations:
+        any: treachery, deceit
+    location:
+        any: @person.location
+        none: @person.sealed_rooms
+    time:
+        after: 3 days ago
+    initiator:
+        any: @person
+    partners:
+        exactly: @person.suspects
+    recipients:
+        all: @person
+    bystanders:
+        none: @person.enemies
+    active:
+        any: @person
+    present:
+        any: @person
+
+
+// --------------------------------------------------------------------------
+// Sifting patterns
+// --------------------------------------------------------------------------
+
+pattern haunting-cycle:
+    roles:
+        @a:
+            as: character
+        @b:
+            as: character
+        @c:
+            as: character
+    actions:
+        @ab-incident:
+            from: search:
+                over: @a
+        @trigger:
+            is: @b.last_action
+    conditions:
+        @a != @b
+        @b != @c
+        @a != @c
+        @ab-incident preceded @trigger
+        @a.suspicion[@b] > 5
+        @b.suspicion[@c] > 5
+        @c.suspicion[@a] > 5
+
+
+// --------------------------------------------------------------------------
+// Tropes
+// --------------------------------------------------------------------------
+
+trope guilty-conscience:
+    roles:
+        @suspect:
+            as: character
+        @witness:
+            as: character
+    conditions:
+        @suspect.guilt > 7
+        @witness.knowledge[@suspect] > 5
+        @suspect.dread > 3
+        @suspect.location == @witness.location
+
+
+// --------------------------------------------------------------------------
+// Expressions: operators, references, literals, searches, trope fits
+// --------------------------------------------------------------------------
+
+action paranormal-encounter:
+    roles:
+        @subject:
+            as: initiator
+        &omen:
+            as: symbol
+            from: @subject.omens
+    conditions:
+        // Relational operators
+        @subject.nights_here > 1
+        @subject.nights_here < 7
+        @subject.courage >= 3
+        @subject.sanity <= 20
+        @subject.name != "nobody"
+        @subject.room_number == 5
+        // Logical operators
+        @subject.alive == true && @subject.sanity > 0
+        @subject.composure == #CALM || @subject.composure == #NERVOUS
+        !(@subject.unconscious)
+        // Membership and knowledge
+        @subject in @subject.location.occupants
+        @subject knows &omen
+        // Causal operators
+        @subject caused @subject.last_action
+        @subject triggered @subject.last_action
+        @subject preceded @subject.last_action
+        // Arithmetic
+        @subject.courage + @subject.willpower > 10
+        @subject.sanity - @subject.dread >= 0
+        @subject.influence * 2 <= @subject.max_influence
+        @subject.evidence / 3 > 1
+        // Parenthesized
+        (@subject.nights_here > 1) && (@subject.courage >= 3)
+        // Chance expression
+        50%
+        // Negation variants
+        !(@subject.fleeing)
+        !~is-haunted(@subject)
+        // Trope fit
+        fit trope guilty-conscience:
+            with:
+                @suspect: @subject
+                @witness: @subject.nemesis
+        // Sugared trope fit
+        <@subject, @subject.nemesis> fits trope guilty-conscience
+        <partial @suspect: @subject> fits trope guilty-conscience
+        <none> fits trope guilty-conscience
+        // Action search
+        search query recent-haunting:
+            over: @subject
+            with:
+                @person: @subject
+        search:
+            over: chronicle
+        search:
+            over: @subject
+        // Sifting
+        sift pattern haunting-cycle:
+            over: chronicle
+            with partial:
+                @a: @subject
+        // Custom function calls
+        ~calculate-danger(@subject.enemies, @subject.location)
+        ~roll-dice(6)
+        // Fail-safe markers
+        @subject.nemesis?.name?
+        @subject.allegiance->loyalty?
+        @subject.inventory[0]?
+    scratch:
+        $@counter = 0
+        $&sign = &omen
+    effects:
+        // Assignment operators
+        @subject.sanity = 100
+        @subject.sanity += 50
+        @subject.sanity -= 10
+        @subject.courage *= 2
+        @subject.dread /= 2
+        @subject.inventory append {name: "candelabra", quality: #ORNATE}
+        @subject.inventory remove @subject.inventory[0]
+        // Object literal
+        @subject.profile = {name: @subject.name, room: @subject.room_number, alive: true, alibi: null}
+        // List literal
+        @subject.traits = [#BRAVE, #PARANOID, #STUBBORN]
+        // Enum values
+        @subject.composure = #RESOLUTE
+        @subject.alignment = +#GOOD
+        @subject.karma = -#TERRIBLE
+        // Booleans and null
+        @subject.investigated = true
+        @subject.exonerated = false
+        @subject.alibi = null
+        // Numbers
+        @subject.sanity = 100
+        @subject.speed = 3.5
+        @subject.modifier = -2
+        @subject.bonus = +1
+        // String templates
+        @subject.title = '{@subject.name} the {@subject.role}'
+        @subject.warning = "Beware, {&omen.label}!"
+        // Inscribe / inspect
+        @subject inscribe &omen
+        @subject inspect &omen
+        // Reference paths: property, pointer, lookup
+        @subject.location.name = "Conservatory"
+        @subject.allegiance->loyalty = &omen
+        @subject.inventory[@subject.equipped] = null
+        // Scratch and local variables
+        $@counter += 1
+        // Local variables (_@) are only valid in loops and for-headers;
+        // showcased above in the saliences and associations sections
+        // Reserved internal identifiers appear only in runtime internals,
+        // not in authored Viv source. Syntax: __system_clock
+
+
+// --------------------------------------------------------------------------
+// Time words and units (one through twelve, all units, am/pm)
+// --------------------------------------------------------------------------
+
+action phantom-manifestation:
+    roles:
+        @actor:
+            as: initiator
+    reactions:
+        queue action delayed-fright:
+            with partial:
+                @initiator: @actor
+            time:
+                after: 2 hours from action
+                between: 4 weeks and 5 months from now
+    embargoes:
+        embargo:
+            time: 1 year
+        embargo:
+            time: 8 weeks
+        embargo:
+            time: 9 days
+        embargo:
+            time: 10 hours
+        embargo:
+            time: 11 minutes
+        embargo:
+            time: 12 months
+
+
+// --------------------------------------------------------------------------
+// Identifiers with keyword prefixes (must not be swallowed by keywords)
+// --------------------------------------------------------------------------
+
+action end-of-evening-tally:
+    roles:
+        @endtable:
+            as: initiator
+    effects:
+        @endtable.include_all = true
+        @endtable.looper_count += 1
+        @endtable.if_modified = false

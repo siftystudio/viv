@@ -1,0 +1,9 @@
+// Entry point that includes another file
+
+include "basic_included.viv"
+
+
+action greet:
+    roles:
+        @greeter:
+            as: initiator

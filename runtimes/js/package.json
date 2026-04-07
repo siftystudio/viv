@@ -1,0 +1,90 @@
+{
+  "name": "@siftystudio/viv-runtime",
+  "version": "0.10.1",
+  "publishConfig": {
+    "access": "public"
+  },
+  "private": false,
+  "engines": {
+    "node": ">=16"
+  },
+  "author": "James Ryan",
+  "description": "JavaScript runtime for the Viv engine for emergent narrative in games and simulations.",
+  "keywords": [
+    "viv",
+    "dsl",
+    "runtime",
+    "games",
+    "simulation",
+    "emergent-narrative",
+    "story-sifting",
+    "procedural-generation",
+    "npc"
+  ],
+  "homepage": "https://viv.sifty.studio",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/siftystudio/viv.git",
+    "directory": "runtimes/js"
+  },
+  "bugs": {
+    "url": "https://github.com/siftystudio/viv/issues"
+  },
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "dist/index.js",
+    "dist/index.js.map",
+    "dist/index.cjs",
+    "dist/index.cjs.map",
+    "dist/index.d.ts",
+    "dist/tsdoc-metadata.json",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist temp",
+    "build:compile": "tsc",
+    "build:extract": "api-extractor run --local",
+    "build:bundle": "rollup -c",
+    "build": "npm run clean && npm run build:compile && npm run build:extract && npm run build:bundle",
+    "docs": "typedoc",
+    "docs:clean": "rm -rf ../../docs/api/runtimes/js",
+    "prepublishOnly": "npm run build && npm run check:api",
+    "check:api": "api-extractor run",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "ajv": "^8.18.0",
+    "semver": "^7.7.2"
+  },
+  "devDependencies": {
+    "lodash": "^4.17.21",
+    "@microsoft/api-extractor": "^7.52.11",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "rollup-plugin-sourcemaps": "^0.6.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@types/lodash": "^4.17.20",
+    "@types/node": "^24.3.0",
+    "@types/semver": "^7.7.1",
+    "rollup": "^3.29.5",
+    "ts-json-schema-generator": "^2.5.0",
+    "typedoc": "^0.28.17",
+    "typescript": "5.9.2",
+    "vitest": "^4.1.0"
+  }
+}

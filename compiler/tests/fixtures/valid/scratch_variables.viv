@@ -1,0 +1,15 @@
+// Action using scratch variables
+
+action negotiate:
+    roles:
+        @negotiator:
+            as: initiator
+        @counterpart:
+            as: partner
+    scratch:
+        $@offer = 10
+        $@counter = 0
+    effects:
+        $@counter = $@offer + 5
+    conditions:
+        @negotiator.skill > 3

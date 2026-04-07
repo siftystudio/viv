@@ -1,0 +1,54 @@
+// Base actions for moving through the haunted mansion
+
+template action room-action:
+    gloss: "A guest interacts with a room"
+    report: '{@actor.name} does something in the {@room.name}'
+    importance: #LOW
+    roles:
+        @actor:
+            as: initiator
+        @room:
+            as: location
+
+action enter-room from room-action:
+    gloss: "A guest enters a room"
+    report: '{@actor.name} enters the {@room.name}'
+    conditions:
+        @actor.location != @room
+        !~is-haunted(@room)
+    effects:
+        @actor.location = @room
+        @actor.rooms_visited append @room
+
+action light-candle from room-action:
+    gloss: "A guest lights a candle against the darkness"
+    report: '{@actor.name} lights a candle in the {@room.name}'
+    conditions:
+        @room.dark == true
+    effects:
+        @room.dark = false
+        @actor.courage += 1
+
+action lock-door from room-action:
+    gloss: "A guest locks a door behind them"
+    report: '{@actor.name} locks the door to the {@room.name}'
+    join tags: defensive, cautious
+    importance: #MODERATE
+    conditions:
+        @actor.location == @room
+        @room.lockable == true
+    effects:
+        @room.locked = true
+        @actor.safety += 2
+        @actor.courage -= 1
+
+action search-for-passage from room-action:
+    gloss: "A guest searches a room for hidden passages"
+    report: '{@actor.name} runs their hands along the walls of the {@room.name}'
+    join tags: exploration, secret
+    importance: #HIGH
+    conditions:
+        @actor.location == @room
+        @actor.curiosity > 3
+    effects:
+        @actor.rooms_searched append @room

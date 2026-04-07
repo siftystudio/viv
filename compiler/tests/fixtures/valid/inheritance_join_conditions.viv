@@ -1,0 +1,15 @@
+// Child action that joins (merges) conditions with a parent action
+
+template action base-guarded:
+    roles:
+        @actor:
+            as: initiator
+        @target:
+            as: recipient
+    conditions:
+        @actor.trust > 10
+
+
+action extra-guarded from base-guarded:
+    join conditions:
+        @target.mood > 0

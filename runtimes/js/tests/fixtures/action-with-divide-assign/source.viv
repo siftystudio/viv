@@ -1,0 +1,8 @@
+// Action that divides an entity property by another entity property using /=
+
+action divide:
+    roles:
+        @actor:
+            as: initiator
+    effects:
+        @actor.health /= @actor.divisor

@@ -1,0 +1,16 @@
+// Invalid: query exactly with additional criteria
+
+action fight:
+    roles:
+        @fighter:
+            as: initiator
+
+query bad-exactly-extra:
+    roles:
+        @witness:
+            as: character
+    action:
+        any: fight
+    bystanders:
+        exactly: @witness
+        any: @witness

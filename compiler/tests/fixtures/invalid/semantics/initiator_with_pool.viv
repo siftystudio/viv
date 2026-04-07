@@ -1,0 +1,7 @@
+// Invalid: initiator role with a pool directive
+
+action bad-pool:
+    roles:
+        @actor:
+            as: initiator
+            from: @actor.friends

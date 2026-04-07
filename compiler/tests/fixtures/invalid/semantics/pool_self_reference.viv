@@ -1,0 +1,9 @@
+// Invalid: role references itself in pool directive
+
+action circular-pool:
+    roles:
+        @actor:
+            as: initiator
+        @item:
+            as: item
+            from: @item.contents

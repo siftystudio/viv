@@ -1,0 +1,30 @@
+// Selector that targets another selector as a candidate
+
+action wave:
+    roles:
+        @waver:
+            as: initiator
+
+
+action nod:
+    roles:
+        @nodder:
+            as: initiator
+
+
+action-selector basic-greeting:
+    roles:
+        @greeter:
+            as: initiator
+    target randomly:
+        wave;
+        nod;
+
+
+action-selector meta-greeting:
+    roles:
+        @greeter:
+            as: initiator
+    target randomly:
+        selector basic-greeting;
+        wave;

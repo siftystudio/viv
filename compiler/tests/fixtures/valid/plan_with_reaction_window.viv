@@ -1,0 +1,52 @@
+// Plan with reaction windows (all, any, untracked)
+
+action task-a:
+    roles:
+        @worker:
+            as: initiator
+
+
+action task-b:
+    roles:
+        @worker:
+            as: initiator
+
+
+action task-c:
+    roles:
+        @worker:
+            as: initiator
+
+
+plan complex-operation:
+    roles:
+        @operator:
+            as: character
+    phases:
+        >parallel-phase:
+            all:
+                queue action task-a:
+                    with partial:
+                        @worker: @operator
+                queue action task-b:
+                    with partial:
+                        @worker: @operator
+            close
+            advance;
+        >any-phase:
+            any:
+                queue action task-a:
+                    with partial:
+                        @worker: @operator
+                queue action task-c:
+                    with partial:
+                        @worker: @operator
+            close
+            advance;
+        >fire-and-forget:
+            untracked:
+                queue action task-c:
+                    with partial:
+                        @worker: @operator
+            close
+            succeed;

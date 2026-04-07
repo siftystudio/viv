@@ -1,0 +1,31 @@
+// Child action that joins (merges) reactions with a parent action
+
+action helper:
+    roles:
+        @helper:
+            as: initiator
+
+
+action supporter:
+    roles:
+        @supporter:
+            as: initiator
+
+
+template action base-reactive:
+    roles:
+        @actor:
+            as: initiator
+        @target:
+            as: recipient
+    reactions:
+        queue action helper:
+            with partial:
+                @helper: @actor
+
+
+action extra-reactive from base-reactive:
+    join reactions:
+        queue action supporter:
+            with partial:
+                @supporter: @target

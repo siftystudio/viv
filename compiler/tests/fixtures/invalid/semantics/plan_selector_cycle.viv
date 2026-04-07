@@ -1,0 +1,33 @@
+// Invalid: cycle among plan selectors
+
+action step:
+    roles:
+        @doer:
+            as: initiator
+
+plan real-plan:
+    roles:
+        @actor:
+            as: character
+    phases:
+        >do-it:
+            queue action step:
+                with partial:
+                    @doer: @actor
+            succeed;
+
+plan-selector alpha:
+    roles:
+        @actor:
+            as: character
+    target in order:
+        selector beta;
+        real-plan;
+
+plan-selector beta:
+    roles:
+        @actor:
+            as: character
+    target in order:
+        selector alpha;
+        real-plan;

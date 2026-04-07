@@ -1,0 +1,19 @@
+// Invalid: non-numeric weight expression in weighted selector
+
+action chat:
+    roles:
+        @talker:
+            as: initiator
+
+action argue:
+    roles:
+        @debater:
+            as: initiator
+
+action-selector social-pick:
+    roles:
+        @actor:
+            as: initiator
+    target with weights:
+        (true) chat;
+        (1) argue;

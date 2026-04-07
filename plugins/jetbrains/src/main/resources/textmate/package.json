@@ -1,0 +1,19 @@
+{
+  "name": "viv",
+  "contributes": {
+    "grammars": [
+      {
+        "language": "viv",
+        "scopeName": "source.viv",
+        "path": "./viv.tmLanguage.json"
+      }
+    ],
+    "languages": [
+      {
+        "id": "viv",
+        "extensions": [".viv"],
+        "configuration": "./language-configuration.json"
+      }
+    ]
+  }
+}

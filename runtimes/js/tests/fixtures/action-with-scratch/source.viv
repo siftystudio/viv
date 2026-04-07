@@ -1,0 +1,10 @@
+// Action with scratch variables computed and used in effects
+
+action compute:
+    roles:
+        @actor:
+            as: initiator
+    scratch:
+        $&temp = @actor.base * 2
+    effects:
+        @actor.result = $&temp

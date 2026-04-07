@@ -1,0 +1,11 @@
+// Trope with conditions using multiple operators
+
+trope allies:
+    roles:
+        @a:
+            as: character
+        @b:
+            as: character
+    conditions:
+        @b in @a.friends
+        @a.trust > 50 || @b.trust > 50

@@ -1,0 +1,13 @@
+// Fixture for testing that a bad pool directive triggers VivRoleCastingError.
+//
+// The helper role draws its pool from @leader.team. If the test world sets
+// `team` to a non-array value, the pool evaluation will fail and the runtime
+// will throw VivRoleCastingError.
+
+action delegate:
+    roles:
+        @leader:
+            as: initiator
+        @helper:
+            as: partner
+            from: @leader.team

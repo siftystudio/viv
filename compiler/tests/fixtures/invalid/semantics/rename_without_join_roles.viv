@@ -1,0 +1,13 @@
+// Invalid: action renames role without 'join roles'
+
+template action base:
+    roles:
+        @actor:
+            as: initiator
+        @friend:
+            as: partner
+
+action child from base:
+    roles:
+        @buddy:
+            renames: @friend

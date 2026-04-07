@@ -1,0 +1,16 @@
+// Identifiers that start with reserved keyword prefixes (e.g., `endangered`
+// starting with `end`, `endpoint` starting with `end`)
+
+action endangered-species-report:
+    roles:
+        @reporter:
+            as: initiator
+        @endpoint:
+            as: location
+    associations:
+        default: ecological
+        for _@c:
+            endangered
+        end
+    saliences:
+        default: #INTERESTING

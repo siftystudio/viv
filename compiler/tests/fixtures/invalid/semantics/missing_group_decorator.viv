@@ -1,0 +1,11 @@
+// Invalid: references group role without group-role decorator
+
+action distribute:
+    roles:
+        @distributor:
+            as: initiator
+        @recipients*:
+            as: recipient
+            n: 2-5
+    effects:
+        @recipients.items += 1

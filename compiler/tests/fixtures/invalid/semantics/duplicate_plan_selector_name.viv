@@ -1,0 +1,42 @@
+// Invalid: duplicate plan-selector name
+
+action step:
+    roles:
+        @doer:
+            as: initiator
+
+plan plan-a:
+    roles:
+        @actor:
+            as: character
+    phases:
+        >do-it:
+            queue action step:
+                with partial:
+                    @doer: @actor
+            succeed;
+
+plan plan-b:
+    roles:
+        @actor:
+            as: character
+    phases:
+        >do-it:
+            queue action step:
+                with partial:
+                    @doer: @actor
+            succeed;
+
+plan-selector pick:
+    roles:
+        @actor:
+            as: character
+    target in order:
+        plan-a;
+
+plan-selector pick:
+    roles:
+        @actor:
+            as: character
+    target in order:
+        plan-b;

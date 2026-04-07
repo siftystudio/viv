@@ -1,0 +1,93 @@
+/* Theme: warm tan/brown palette for both modes */
+:root {
+    --sl-color-white: #2b2520;
+    --sl-color-gray-1: #3a3530;
+    --sl-color-gray-2: #655b4e;
+    --sl-color-gray-3: #8a7e70;
+    --sl-color-gray-4: #a89e93;
+    --sl-color-gray-5: #d0c7b8;
+    --sl-color-gray-6: #ece4d5;
+    --sl-color-gray-7: #f2ece0;
+    --sl-color-black: #faf6ee;
+    --sl-color-bg: #f6f0e4;
+    --sl-color-bg-nav: #f6f0e4;
+    --sl-color-bg-sidebar: #f6f0e4;
+    --sl-color-text: #2b2520;
+    --sl-color-accent-low: #e8dfd0;
+    --sl-color-accent: #2b2520;
+    --sl-color-accent-high: #3a3530;
+    --sl-color-backdrop-overlay: hsla(25, 15%, 10%, 0.66);
+    --sl-font: 'Source Serif 4', 'Georgia', serif;
+}
+:root[data-theme="dark"] {
+    --sl-color-white: #f6f0e4;
+    --sl-color-gray-1: #e2dacb;
+    --sl-color-gray-2: #bfb5a4;
+    --sl-color-gray-3: #8a7e70;
+    --sl-color-gray-4: #655b4e;
+    --sl-color-gray-5: #453c34;
+    --sl-color-gray-6: #3a3530;
+    --sl-color-black: #1e1a16;
+    --sl-color-bg: #2b2520;
+    --sl-color-bg-nav: #2b2520;
+    --sl-color-bg-sidebar: #2b2520;
+    --sl-color-text: #f6f0e4;
+    --sl-color-accent-low: #3a3530;
+    --sl-color-accent: #f6f0e4;
+    --sl-color-accent-high: #e2dacb;
+    --sl-color-backdrop-overlay: hsla(25, 15%, 8%, 0.66);
+}
+
+/* Header: "Viv" text */
+.site-title span {
+    color: #2b2520 !important;
+}
+:root[data-theme="dark"] .site-title span {
+    color: #f6f0e4 !important;
+}
+
+/* Pagination: panel style with hover */
+.pagination-links a {
+    background-color: var(--sl-color-black);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    box-shadow: none;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+.pagination-links a:hover {
+    background-color: var(--sl-color-gray-6);
+    border-color: var(--sl-color-gray-4);
+}
+
+/* Hero buttons: card-like style */
+.sl-link-button {
+    border-radius: 0.5rem !important;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+.sl-link-button.primary {
+    background-color: var(--sl-color-white);
+    border-color: var(--sl-color-white);
+    color: var(--sl-color-bg);
+}
+.sl-link-button.primary:hover {
+    background-color: var(--sl-color-gray-1);
+    border-color: var(--sl-color-gray-1);
+    color: var(--sl-color-bg);
+}
+.sl-link-button.secondary {
+    background-color: var(--sl-color-black);
+    border-color: var(--sl-color-gray-5);
+}
+.sl-link-button.secondary:hover {
+    background-color: var(--sl-color-gray-6);
+    border-color: var(--sl-color-gray-4);
+}
+
+/* Hero: image on left, reduced size */
+.hero {
+    flex-direction: row-reverse !important;
+}
+.hero > img {
+    max-width: 67% !important;
+    height: auto !important;
+}

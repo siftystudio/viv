@@ -1,0 +1,15 @@
+// Child action that joins (merges) roles with a parent action
+
+template action base-conversation:
+    roles:
+        @speaker:
+            as: initiator
+        @listener:
+            as: recipient
+
+
+action public-speech from base-conversation:
+    join roles:
+        @audience*:
+            as: bystander
+            n: 1-10

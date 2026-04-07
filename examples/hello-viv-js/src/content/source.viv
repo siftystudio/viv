@@ -1,0 +1,17 @@
+// This file contains all the Viv code used in this minimal example project, and it was
+// submitted to the Viv compiler to create `compiled_content_bundle.json`. If you make
+// changes to a Viv source file, you need to recompile to produce an updated content
+// bundle in order for the changes to take effect. Consult the Viv docs for more details.
+
+
+// Hello, world!
+action hello:
+    gloss: "@greeter says hello to @friend"
+    roles:
+        @greeter:
+            as: initiator
+        @friend:
+            as: recipient
+    effects:
+        @greeter.mood += 10
+        @friend.mood += 10

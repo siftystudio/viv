@@ -1,0 +1,8 @@
+// Invalid: Unclosed string literal
+
+action greet:
+    roles:
+        @greeter:
+            as: initiator
+    effects:
+        @greeter.mood = "happy

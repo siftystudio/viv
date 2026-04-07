@@ -1,0 +1,42 @@
+// Plan with repeat logic on the reaction that queues it
+
+reserved action trigger:
+    roles:
+        @guard:
+            as: initiator
+        @bystander:
+            as: bystander
+    reactions:
+        queue plan patrol:
+            with:
+                @patroller: @guard
+                @companion: @bystander
+            repeat:
+                if:
+                    true
+                max: 1
+
+
+reserved action check-post:
+    roles:
+        @checker:
+            as: initiator
+        @observer:
+            as: bystander
+
+
+plan patrol:
+    roles:
+        @patroller:
+            as: character
+        @companion:
+            as: character
+    phases:
+        >execute:
+            all:
+                queue action check-post:
+                    with:
+                        @checker: @patroller
+                        @observer: @companion
+            close
+            succeed;

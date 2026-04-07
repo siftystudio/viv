@@ -1,0 +1,21 @@
+// Action with a reaction that queues a reserved action
+
+action provoke:
+    roles:
+        @provoker:
+            as: initiator
+        @target:
+            as: recipient
+    reactions:
+        queue action retaliate:
+            with:
+                @aggressor: @target
+                @victim: @provoker
+
+
+reserved action retaliate:
+    roles:
+        @aggressor:
+            as: initiator
+        @victim:
+            as: recipient

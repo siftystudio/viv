@@ -1,0 +1,11 @@
+{
+  "name": "viv-syntax",
+  "private": true,
+  "description": "TextMate grammar (and test infrastructure) for the Viv DSL.",
+  "scripts": {
+    "test": "vscode-tmgrammar-test -g viv.tmLanguage.json tests/syntax_test_viv.viv"
+  },
+  "devDependencies": {
+    "vscode-tmgrammar-test": "^0.1.3"
+  }
+}

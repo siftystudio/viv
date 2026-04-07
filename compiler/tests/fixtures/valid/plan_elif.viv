@@ -1,0 +1,42 @@
+// Plan phase with elif conditional branching
+
+action step-one:
+    roles:
+        @actor:
+            as: initiator
+
+
+action step-two:
+    roles:
+        @actor:
+            as: initiator
+
+
+action step-three:
+    roles:
+        @actor:
+            as: initiator
+
+
+plan branching-plan:
+    roles:
+        @leader:
+            as: character
+    phases:
+        > evaluate:
+            if @leader.trust > 70:
+                queue action step-one:
+                    with partial:
+                        @actor: @leader
+                advance;
+            elif @leader.trust > 30:
+                queue action step-two:
+                    with partial:
+                        @actor: @leader
+                advance;
+            else:
+                queue action step-three:
+                    with partial:
+                        @actor: @leader
+                succeed;
+            end

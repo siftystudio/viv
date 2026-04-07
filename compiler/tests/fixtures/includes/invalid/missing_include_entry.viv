@@ -1,0 +1,9 @@
+// Entry point that includes a nonexistent file
+
+include "does_not_exist.viv"
+
+
+action greet:
+    roles:
+        @greeter:
+            as: initiator

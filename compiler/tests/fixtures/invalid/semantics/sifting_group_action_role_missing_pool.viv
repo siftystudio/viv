@@ -1,0 +1,15 @@
+// Group action role with n: but no is: or from: casting-pool directive
+
+action foo:
+    roles:
+        @doer:
+            as: initiator
+
+
+pattern bad:
+    roles:
+        @p:
+            as: character
+    actions:
+        @acts*:
+            n: 2-5

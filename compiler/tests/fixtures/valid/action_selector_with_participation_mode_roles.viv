@@ -1,0 +1,33 @@
+// Action selector exercising all permitted role labels
+
+action stub-action:
+    roles:
+        @actor:
+            as: initiator
+
+reserved action-selector comprehensive-selector:
+    roles:
+        @actor:
+            as: initiator
+        @helper:
+            as: partner
+        @victim:
+            as: recipient
+        @witness:
+            as: bystander
+        @observer:
+            as: character, anywhere
+        @tool:
+            as: item
+        @venue:
+            as: location
+        @past-event:
+            as: action
+            from: ~getEvents(@actor)
+        &marker:
+            as: symbol
+            from: ["a", "b"]
+        @precast-target:
+            as: character, precast
+    target randomly:
+        stub-action;

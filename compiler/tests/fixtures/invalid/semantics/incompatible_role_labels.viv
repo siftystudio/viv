@@ -1,0 +1,8 @@
+// Invalid: role has incompatible labels (character + item)
+
+action bad-labels:
+    roles:
+        @actor:
+            as: initiator
+        @thing:
+            as: character, item

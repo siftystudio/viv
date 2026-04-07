@@ -1,0 +1,10 @@
+// Invalid: assignment recasts role
+
+action bad-recast:
+    roles:
+        @actor:
+            as: initiator
+        @target:
+            as: recipient
+    effects:
+        @target = @actor

@@ -1,0 +1,10 @@
+// Invalid: spawn role with pool directive
+
+action bad-spawn-pool:
+    roles:
+        @actor:
+            as: initiator
+        @thing:
+            as: item, spawn
+            spawn: ~createItem("widget")
+            from: @actor.inventory

@@ -1,0 +1,864 @@
+// VERSION: 0.10.0
+
+// This is a specification of the syntax of the Viv domain-specific language, declared in a variant
+// of extended Backus--Naur form (EBNF) that is associated with the parsing expression grammar (PEG)
+// formalism. More specifically, it is in the format expected by the Arpeggio Python library,
+// which is the parser solution used in the Viv compiler.
+
+// // //
+// Grammar root: source file
+// // //
+
+file =
+	(include / action / selector / plan / query / sifting_pattern / trope)* EOF
+
+
+// // //
+// Includes
+// // //
+
+include =
+	"include" file_path
+file_path =
+	'"' r'[A-Za-z0-9_./-]+' '"' /
+	"'" r"[A-Za-z0-9_./-]+" "'"
+
+
+// // //
+// Actions
+// // //
+
+action =
+	action_header ":" action_body /
+	action_header ";"
+action_header =
+	(reserved_construct_marker / template_action_marker)? "action" identifier parent_action_declaration?
+template_action_marker =
+	"template"
+parent_action_declaration =
+	"from" identifier
+action_body =
+	(
+		// Non-mergeable fields
+		(&"gloss"			action_gloss)? /
+		(&"report"			action_report)? /
+		(&"importance"		action_importance)? /
+		(&"saliences"		action_saliences)? /
+		(&"associations"	action_associations)? /
+
+		// Mergeable fields
+		(&"tags" 		action_tags 		/ 	&child_join_operator action_tags)? /
+		(&"roles" 		action_roles 		/ 	&child_join_operator action_roles)? /
+		(&"conditions" 	action_conditions 	/ 	&child_join_operator action_conditions)? /
+		(&"scratch" 	action_scratch 		/ 	&child_join_operator action_scratch)? /
+		(&"effects" 	action_effects 		/ 	&child_join_operator action_effects)? /
+		(&"reactions" 	action_reactions 	/ 	&child_join_operator action_reactions)? /
+		(&"embargoes" 	action_embargoes 	/ 	&child_join_operator action_embargoes)?
+	)#
+action_gloss =
+	"gloss" ":" string
+action_report =
+	"report" ":" string
+action_importance =
+	"importance" ":" (enum / number)
+action_saliences =
+	"saliences" ":" saliences_body
+action_associations =
+	"associations" ":" associations_body
+action_tags =
+	child_join_operator? "tags" ":" tags
+action_roles =
+	child_join_operator? "roles" ":" role+
+action_conditions =
+	child_join_operator? "conditions" ":" statements
+action_scratch =
+	child_join_operator? "scratch" ":" statements
+action_effects =
+	child_join_operator? "effects" ":" statements
+action_reactions =
+	child_join_operator? "reactions" ":" (conditional / loop / reaction)+
+action_embargoes =
+	child_join_operator? "embargoes" ":" embargo+
+child_join_operator =
+	"join"
+
+
+// // //
+// Roles
+// // //
+
+role =
+	role_reference ":" role_body
+role_reference =
+	binding_type identifier group_role_decorator?
+binding_type =
+	entity_sigil / symbol_sigil
+role_body =
+	(
+		(&"as" 			role_labels)? /
+		(&"n" 			role_slots)? /
+		(&"is" 			role_casting_pool_is)? /
+		(&"from" 		role_casting_pool_from)? /
+		(&"spawn" 		role_spawn_directive)? /
+		(&"renames" 	role_renaming)?
+	)#
+role_labels =
+	"as" ":" role_label ("," role_label)*
+role_label =
+	"character" /
+	"item" /
+	"action" /
+	"location" /
+	"symbol" /
+	"initiator" /
+	"partner" /
+	"recipient" /
+	"bystander" /
+	"anywhere" /
+	"precast" /
+	"spawn"
+role_slots =
+	"n" ":" role_slots_range (role_slots_mean / role_slots_optional_slot_casting_probability)?
+role_slots_range =
+	r"[0-9]+" ("-" r"[0-9]+")?
+role_slots_mean =
+	"[" "~" r"[0-9]+(\.[0-9]+)?" "]"
+role_slots_optional_slot_casting_probability =
+	"[" r"[0-9]+(\.[0-9]+)?" "%" "]"
+role_casting_pool_is =
+	"is" ":" expression
+role_casting_pool_from =
+	"from" ":" expression
+role_spawn_directive =
+	"spawn" ":" custom_function_call
+role_renaming =
+	"renames" ":" role_reference
+
+
+// // //
+// Reactions
+// // //
+
+reaction =
+	reaction_header ":" reaction_body
+reaction_header =
+	"queue" reaction_target
+reaction_target =
+	reaction_target_type identifier
+reaction_target_type =
+	// Substrings must come last
+	"action-selector" / "plan-selector" / "action" / "plan"
+reaction_body =
+	(
+		(&"with" 		bindings)? /
+		(&"urgent" 		reaction_urgency)? /
+		(&"priority" 	reaction_priority)? /
+		(&"location" 	reaction_location)? /
+		(&"time" 		reaction_time)? /
+		(&"abandon" 	reaction_abandonment_conditions)? /
+		(&"repeat"		reaction_repeat_logic)?
+	)#
+reaction_urgency =
+	"urgent" ":" expression
+reaction_priority =
+	"priority" ":" expression
+reaction_location =
+	"location" ":" set_predicate+
+reaction_time =
+	"time" ":" temporal_constraint+
+reaction_abandonment_conditions =
+	"abandon" ":" statements
+reaction_repeat_logic =
+	"repeat" ":" reaction_repeat_logic_if reaction_repeat_logic_max /
+	"repeat" ":" reaction_repeat_logic_max reaction_repeat_logic_if
+reaction_repeat_logic_if =
+	"if" ":" statements
+reaction_repeat_logic_max =
+	"max" ":" r"[0-9]+"
+
+
+// // //
+// Temporal constraints
+// // //
+
+temporal_constraint =
+    time_frame_statement / time_of_day_statement
+time_frame_statement =
+	(time_frame_statement_before / time_frame_statement_after / time_frame_statement_between)
+time_frame_statement_before =
+	"before" ":" time_period time_frame_anchor
+time_frame_statement_after =
+	"after" ":" time_period time_frame_anchor
+time_frame_statement_between =
+	"between" ":" time_period "and" time_period time_frame_anchor
+time_period =
+	number time_unit
+time_unit =
+	"minutes" /
+	"hours" /
+	"days" /
+	"weeks" /
+	"months" /
+	"years" /
+	"minute" /
+	"hour" /
+	"day" /
+	"week" /
+	"month" /
+	"year"
+time_frame_anchor =
+	time_frame_anchor_from_action / time_frame_anchor_from_hearing / time_frame_anchor_from_now / time_frame_anchor_ago
+time_frame_anchor_from_action =
+	"from" "action"
+time_frame_anchor_from_hearing =
+	"from" "hearing"
+time_frame_anchor_from_now =
+	"from" "now"
+time_frame_anchor_ago =
+	"ago"
+time_of_day_statement =
+	time_of_day_statement_before / time_of_day_statement_after / time_of_day_statement_between
+time_of_day_statement_before =
+	"before" ":" time_of_day
+time_of_day_statement_after =
+	"after" ":" time_of_day
+time_of_day_statement_between =
+	"between" ":" time_of_day "and" time_of_day
+time_of_day =
+	time_of_day_hh (":" time_of_day_mm)? ("pm" / "am")?
+time_of_day_hh =
+	r"[0-9]{1,2}"
+time_of_day_mm =
+	r"[0-9]{2}"
+
+
+// // //
+// Precast bindings
+// // //
+
+bindings =
+	bindings_none / bindings_partial / bindings_complete
+bindings_none =
+	"with" "none" ";"
+bindings_partial =
+	"with" "partial" ":" binding+
+bindings_complete =
+	"with" ":" binding+
+bindings_sugared =
+	bindings_sugared_none / bindings_sugared_partial / bindings_sugared_complete
+bindings_sugared_none =
+	"<" "none" ">"
+bindings_sugared_partial =
+	"<" "partial" bindings_sugared_actual_bindings ">"
+bindings_sugared_complete =
+	"<" bindings_sugared_actual_bindings ">"
+bindings_sugared_actual_bindings =
+	binding ("," binding)* /
+	positional_binding ("," positional_binding)*
+binding =
+	role_reference ":" expression
+positional_binding =
+	expression ''
+
+
+// // //
+// Saliences
+// // //
+
+saliences_body =
+	(
+		(&"default" 	saliences_default)? /
+		(&"roles" 		saliences_roles)? /
+		(&"for" 		saliences_custom_field)?
+	)#
+saliences_default =
+	"default" ":" (enum / number)
+saliences_roles =
+	"roles" ":" saliences_roles_entry+
+saliences_roles_entry =
+	entity_sigil identifier group_role_decorator? ":" (enum / number)
+saliences_custom_field =
+	"for" local_variable ":" statement+ "end"
+
+
+// // //
+// Associations
+// // //
+
+associations_body =
+	(
+		(&"default" 	associations_default)? /
+		(&"roles" 		associations_roles)? /
+		(&"for" 		associations_custom_field)?
+	)#
+associations_default =
+	"default" ":" tags
+associations_roles =
+	"roles" ":" associations_roles_entry+
+associations_roles_entry =
+	entity_sigil identifier group_role_decorator? ":" tags
+associations_custom_field =
+	"for" local_variable ":" (!r"end(?![A-Za-z0-9_-])" associations_statement)+ "end"
+associations_statement =
+	associations_conditional / associations_loop / tags
+associations_loop =
+    "loop" unary_expression "as" local_variable ":" associations_scoped_statements "end"
+associations_conditional =
+	associations_conditional_branches ("else:" associations_conditional_alternative)? "end"
+associations_conditional_branches =
+	"if" associations_conditional_branch ("elif" associations_conditional_branch)*
+associations_conditional_branch =
+	condition ":" associations_conditional_consequent
+associations_conditional_consequent =
+	associations_scoped_statements ''
+associations_conditional_alternative =
+	associations_scoped_statements ''
+associations_scoped_statements =
+	(!r"end(?![A-Za-z0-9_-])" !r"elif(?![A-Za-z0-9_-])" !"else:" associations_statement)+
+
+
+// // //
+// Embargoes
+// // //
+
+embargo =
+	"embargo" ":" embargo_body
+embargo_body =
+	(
+		(&"location" 	embargo_location)? /
+		(&"time" 		embargo_time_period)? /
+		(&"roles" 		embargo_roles)?
+	)#
+embargo_location =
+	"location" ":" (embargo_location_here / embargo_location_anywhere)
+embargo_location_here =
+	"here"
+embargo_location_anywhere =
+	"anywhere"
+embargo_time_period =
+	"time" ":" (embargo_time_period_forever / time_period)
+embargo_time_period_forever =
+	"forever"
+embargo_roles =
+	"roles" ":" role_reference ("," role_reference)*
+
+// // //
+// Selectors
+// // //
+
+selector =
+	selector_header ":" selector_body
+selector_header =
+	reserved_construct_marker? selector_type identifier
+selector_type =
+	action_selector_type / plan_selector_type
+action_selector_type =
+	"action-selector"
+plan_selector_type =
+	"plan-selector"
+selector_body =
+	(
+		(&"roles" 		selector_roles)? /
+		(&"conditions" 	selector_conditions)? /
+		(&"target" 		selector_target_group)?
+	)#
+selector_roles =
+	"roles" ":" role+
+selector_conditions =
+	"conditions" ":" statements
+selector_target_group =
+	"target" selector_policy ":" selector_candidates
+selector_policy =
+	"randomly" / "with" "weights" / "in" "order"
+selector_candidates =
+	selector_candidate+
+selector_candidate =
+	selector_candidate_weight? selector_candidate_name ";" /
+	selector_candidate_weight? selector_candidate_name ":" bindings
+selector_candidate_name =
+	"selector"? identifier
+selector_candidate_weight =
+	"(" expression ")"
+
+
+// // //
+// Plans
+// // //
+
+plan =
+	plan_header ":" plan_body
+plan_header =
+    "plan" identifier
+plan_body =
+    (
+        (&"roles"   	plan_roles)? /
+        (&"conditions"  plan_conditions)? /
+        (&"phases"  	plan_phases)?
+    )#
+plan_roles =
+    "roles" ":" role+
+plan_conditions =
+	"conditions" ":" statements
+plan_phases =
+    "phases" ":" plan_phase+
+plan_phase =
+    plan_phase_name ":" plan_instructions
+plan_phase_name =
+    plan_phase_sigil identifier
+plan_instructions =
+    plan_instruction+
+
+
+// // //
+// Plan instructions
+// // //
+
+plan_instruction =
+	plan_conditional /
+	plan_loop /
+	plan_instruction_reaction /
+	plan_instruction_reaction_window /
+	plan_instruction_wait /
+	plan_instruction_advance /
+	plan_instruction_succeed /
+	plan_instruction_fail
+plan_loop =
+    "loop" unary_expression "as" local_variable ":" plan_scoped_statements "end"
+plan_conditional =
+    plan_conditional_branches ("else:" plan_conditional_alternative)? "end"
+plan_conditional_branches =
+    "if" plan_conditional_branch ("elif" plan_conditional_branch)*
+plan_conditional_branch =
+    condition ":" plan_conditional_consequent
+plan_conditional_consequent =
+    plan_scoped_statements ''
+plan_conditional_alternative =
+    plan_scoped_statements ''
+plan_scoped_statements =
+    (!"end" !"else:" !"elif" plan_instruction)+
+plan_instruction_reaction =
+	reaction ''
+plan_instruction_reaction_window =
+	plan_instruction_reaction_window_operator ":" plan_instruction+ "close"
+plan_instruction_reaction_window_operator =
+	"all" / "any" / "untracked"
+plan_instruction_wait =
+	"wait" ":" plan_instruction_wait_timeout plan_instruction_wait_until? /
+	"wait" ":" plan_instruction_wait_until? plan_instruction_wait_timeout
+plan_instruction_wait_timeout =
+	"timeout" ":" time_period
+plan_instruction_wait_until =
+	"until" ":" statements
+plan_instruction_advance =
+	"advance" ";"
+plan_instruction_succeed =
+	"succeed" ";"
+plan_instruction_fail =
+	"fail" ";"
+
+
+// // //
+// Queries
+// // //
+
+query =
+	query_header ":" query_body
+query_header =
+	"query" identifier
+query_body =
+	(
+		(&"roles" 			query_roles)? /
+		(&"conditions" 		query_conditions)? /
+		(&"action" 			query_action_name)? /
+		(&"ancestors" 		query_ancestors)? /
+		(&"descendants" 	query_descendants)? /
+		(&"importance" 		query_importance)? /
+		(&"tags" 			query_tags)? /
+		(&"salience" 		query_salience)? /
+		(&"associations" 	query_associations)? /
+		(&"location" 		query_location)? /
+		(&"time" 			query_time)? /
+		(&"initiator" 		query_initiator)? /
+		(&"partners" 		query_partners)? /
+		(&"recipients" 		query_recipients)? /
+		(&"bystanders" 		query_bystanders)? /
+		(&"active" 			query_active)? /
+		(&"present" 		query_present)?
+	)#
+query_roles =
+	"roles" ":" role+
+query_conditions =
+	"conditions" ":" statements
+query_action_name =
+	"action" ":" set_predicate_tags+  // Action names are effectively tags
+query_ancestors =
+	"ancestors" ":" set_predicate+
+query_descendants =
+	"descendants" ":" set_predicate+
+query_importance =
+	"importance" ":" query_numeric_criteria
+query_tags =
+	"tags" ":" set_predicate_tags+
+query_salience =
+	"salience" ":" query_numeric_criteria
+query_associations =
+	"associations" ":" set_predicate_tags+
+query_location =
+	"location" ":" set_predicate+
+query_time =
+	"time" ":" temporal_constraint+
+query_initiator =
+	"initiator" ":" set_predicate+
+query_partners =
+	"partners" ":" set_predicate+
+query_recipients =
+	"recipients" ":" set_predicate+
+query_bystanders =
+	"bystanders" ":" set_predicate+
+query_active =
+	"active" ":" set_predicate+
+query_present =
+	"present" ":" set_predicate+
+query_numeric_criteria =
+	query_numeric_criterion+
+query_numeric_criterion =
+	query_numeric_criterion_operator ":" (enum / number)
+query_numeric_criterion_operator =
+	"==" / "<=" / ">=" / "<" / ">"
+set_predicate =
+	set_predicate_operator ":" expression ("," expression)*
+set_predicate_tags =
+	set_predicate_operator ":" tag ("," tag)*
+set_predicate_operator =
+	"none" / "any" / "all" / "exactly"
+
+
+// // //
+// Sifting patterns
+// // //
+
+sifting_pattern =
+	sifting_pattern_header ":" sifting_pattern_body
+sifting_pattern_header =
+	"pattern" identifier
+sifting_pattern_body =
+	(
+		(&"roles" 		sifting_pattern_roles)? /
+		(&"actions" 	sifting_pattern_actions)? /
+		(&"conditions" 	sifting_pattern_conditions)?
+	)#
+sifting_pattern_roles =
+	"roles" ":" role+
+sifting_pattern_actions =
+	"actions" ":" sifting_pattern_action+
+sifting_pattern_action =
+	role_reference ":" sifting_pattern_action_body
+sifting_pattern_action_body =
+	(
+		(&"n" 		role_slots)? /
+		(&"is" 		role_casting_pool_is)? /
+		(&"from" 	role_casting_pool_from)?
+	)#
+sifting_pattern_conditions =
+	"conditions" ":" statements
+
+
+// // //
+// Tropes
+// // //
+
+trope =
+	trope_header ":" trope_body
+trope_header =
+	"trope" identifier
+trope_body =
+	(
+		(&"roles" 			trope_roles)? /
+		(&"conditions" 		trope_conditions)?
+	)#
+trope_roles =
+	"roles" ":" role+
+trope_conditions =
+	"conditions" ":" statements
+
+
+// // //
+// Statements and control flow
+// // //
+
+statements =
+	statement+
+scoped_statements =
+	(!"end" !"else:" !"elif" statement)+
+statement =
+	conditional / loop / reaction / expression
+conditional =
+	conditional_branches ("else:" alternative)? "end"
+conditional_branches =
+ 	"if" conditional_branch ("elif" conditional_branch)*
+conditional_branch =
+	condition ":" consequent
+condition =
+	expression ''
+consequent =
+	scoped_statements ''
+alternative =
+	scoped_statements ''
+loop =
+	"loop" unary_expression "as" local_variable ":" scoped_statements "end"
+local_variable =
+	local_variable_sigil binding_type identifier
+
+
+// // //
+// Expressions
+// // //
+
+expression =
+	assignment /
+	inscription /
+	inspection /
+	precedence_governed_expression
+precedence_governed_expression =
+	disjunction ''
+
+
+// // //
+// Assignments
+// // //
+
+assignment =
+	assignment_lvalue assignment_operator precedence_governed_expression
+assignment_lvalue =
+	reference ''
+assignment_operator =
+	"+=" / "-=" / "*=" / "/=" / "=" / "append" / "remove"
+
+
+// // //
+// Logical expressions
+// // //
+
+disjunction =
+	conjunction ("||" conjunction)*
+conjunction =
+	relational_expression ("&&" relational_expression)*
+relational_expression =
+    additive_expression (relational_operator additive_expression)?  // No repeating for relational operators
+relational_operator =
+    "==" /
+    "!=" /
+    "<=" /
+    ">=" /
+    ">" /
+    !bindings_sugared "<" /  // Don't gobble sugared bindings (for a trope fit)
+    "in" /
+    "knows" /
+    "caused" /
+    "triggered" /
+    "preceded"
+
+
+// // //
+// Arithmetic expressions
+// // //
+
+additive_expression =
+    multiplicative_expression (additive_operator multiplicative_expression)*
+additive_operator =
+	"+" / "-" !">"  // Don't gobble a pointer (->)
+multiplicative_expression =
+    unary_expression (multiplicative_operator unary_expression)*
+multiplicative_operator =
+	"*" / "/"
+
+
+// // //
+// Unary expressions
+// // //
+
+unary_expression =
+	negation? "(" expression ")" /
+	negation? simple_unary_expression
+simple_unary_expression =
+    // It's worth optimizing here
+    &"{"						object /
+    &"["						list /
+    &"~"						custom_function_call /
+    &("@" / "&" / "$" / "_") 	reference /
+    &("-" / r"[0-9]") 			chance_expression /
+    							literal /
+    &"fit" 						trope_fit /
+    &"<"						trope_fit_sugared /
+    &"search" 					action_search /
+    &"sift" 					sifting
+negation =
+	"!"
+literal =
+	enum / string / number / boolean / null_type
+
+
+// // //
+// Domain-specific expressions
+// // //
+
+inscription =
+    unary_expression "inscribe" unary_expression
+inspection =
+    unary_expression "inspect" unary_expression
+trope_fit =
+	"fit" "trope" identifier ":" bindings
+trope_fit_sugared =
+	bindings_sugared "fits" "trope" identifier
+action_search =
+	action_search_header ":" action_search_body /
+	action_search_bare_header ":" action_search_bare_body
+action_search_header =
+	"search" "query" identifier
+action_search_bare_header =
+    "search" !("query")
+action_search_body =
+	(
+		(&"over"	search_domain)? /
+		(&"with"	bindings)?
+	)#
+action_search_bare_body =
+    search_domain ''
+search_domain =
+	"over" ":" (search_domain_inherit / search_domain_chronicle / search_domain_expression)
+search_domain_inherit =
+	"inherit"
+search_domain_chronicle =
+	"chronicle"
+search_domain_expression =
+	expression ''
+sifting =
+	sifting_header sifting_body
+sifting_header =
+	"sift" "pattern" identifier ":"
+sifting_body =
+	(
+		(&"over"	search_domain)? /
+		(&"with"	bindings)?
+	)#
+custom_function_call =
+	"~" identifier "(" args? ")" eval_fail_safe_marker?
+args =
+	expression ("," expression)*
+chance_expression =
+	number "%"
+
+
+// // //
+// References
+// // //
+
+reference =
+	(scratch_variable_sigil / local_variable_sigil)? (entity_sigil / symbol_sigil) identifier group_role_decorator?
+	eval_fail_safe_marker? reference_path?
+reference_path =
+	(reference_path_property_name / reference_path_pointer / reference_path_lookup)+
+reference_path_property_name =
+	"." property_name eval_fail_safe_marker?
+reference_path_pointer =
+	"->" property_name eval_fail_safe_marker?
+reference_path_lookup =
+	"[" expression "]" eval_fail_safe_marker?
+property_name =
+	r"[a-zA-Z0-9_]+"
+eval_fail_safe_marker =
+	"?"
+
+
+// // //
+// Objects
+// // //
+
+object =
+	"{" (key_value_pair ("," key_value_pair)*)? "}"
+object_key_start =
+	'"' / "'" / r"[A-Za-z_]"
+key_value_pair =
+	key ":" value
+key =
+	string / bare_key
+bare_key =
+	r"[A-Za-z_][A-Za-z0-9_\-]*"
+value =
+	expression ''
+
+
+// // //
+// Strings
+// // //
+
+string = template_string / string_literal
+string_literal =
+    '"' r'[^"\n]*' '"' /
+    "'" r"[^'\n]*" "'"
+template_string =
+    '"' ( template_gap / r'[^"{}@*&$_]+' )+ '"' /
+    "'" ( template_gap / r"[^'{}@*&$_]+" )+ "'"
+template_gap =  // Note: Visitor relies on this exact name currently
+    "{" expression "}" / reference
+
+
+// // //
+// Other literals
+// // //
+
+enum =
+	('-' / '+')? "#" identifier
+list =
+	"[" (expression ("," expression)*)? "]"
+number =
+	sign? r"[0-9]+(\.[0-9]+)?"
+sign =
+	'-' / '+'
+boolean =
+	"true" / "false"
+null_type =
+	"null"
+
+
+// // //
+// Identifiers, tags, markers
+// // //
+
+identifier =
+	!reserved_internal_keyword !reserved_keyword r"[A-Za-z_]([A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*"
+reserved_keyword =
+	("include" / "if" / "elif" / "else" / "end" / "loop") !r"[A-Za-z0-9\-_]"  // Regex allows e.g. "trope looper:"
+reserved_internal_keyword = r"__\w+"
+tags =
+	tag ("," tag)*
+tag =
+	identifier
+reserved_construct_marker =
+	"reserved"
+
+
+// // //
+// Sigils, decorators
+// // //
+
+entity_sigil =
+	"@"
+symbol_sigil =
+	"&"
+scratch_variable_sigil =
+	"$"
+local_variable_sigil =
+	"_"
+plan_phase_sigil =
+	">"
+group_role_decorator =
+	"*"
+
+
+// // //
+// Comments
+// // //
+
+comment =
+	r"\/\/[^\n]*"

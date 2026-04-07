@@ -1,0 +1,28 @@
+// Invalid: duplicate plan name
+
+action step:
+    roles:
+        @doer:
+            as: initiator
+
+plan my-plan:
+    roles:
+        @actor:
+            as: character
+    phases:
+        >do-it:
+            queue action step:
+                with partial:
+                    @doer: @actor
+            succeed;
+
+plan my-plan:
+    roles:
+        @actor:
+            as: character
+    phases:
+        >do-it:
+            queue action step:
+                with partial:
+                    @doer: @actor
+            succeed;

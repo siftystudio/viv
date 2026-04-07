@@ -1,0 +1,19 @@
+// Associations `for` block with elif branches
+
+action evaluate-candidate:
+    roles:
+        @evaluator:
+            as: initiator
+        @candidate:
+            as: character
+    associations:
+        default: routine
+        for _@c:
+            if _@c.trust > 70:
+                strong-endorsement
+            elif _@c.trust > 30:
+                cautious-support
+            else:
+                skepticism
+            end
+        end

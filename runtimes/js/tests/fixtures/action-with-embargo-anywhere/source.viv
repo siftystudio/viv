@@ -1,0 +1,10 @@
+// Action with a global (anywhere) permanent embargo
+
+action announce:
+    roles:
+        @herald:
+            as: initiator
+    embargoes:
+        embargo:
+            location: anywhere
+            time: forever

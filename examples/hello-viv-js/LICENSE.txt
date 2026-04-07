@@ -1,0 +1,43 @@
+Viv License Agreement
+
+Copyright (c) 2025-2026 Sifty LLC. All rights reserved.
+
+Viv and its associated components are proprietary software developed
+and owned by Sifty LLC.
+
+For non-commercial purposes only: permission is hereby granted to
+use, reproduce, and modify this software, provided that this notice
+is included in all copies or substantial portions of the software.
+"Non-commercial purposes" means use for personal, educational,
+or research purposes, and not in connection with any business,
+organization, or activity intended for profit.
+
+Use of Viv or its components for commercial purposes requires a
+commercial license from Sifty LLC. "Commercial use" includes, but
+is not limited to: incorporation into products or services offered
+for sale, use within a for-profit organization, any use that
+contributes to internal operations of a business, or use that
+otherwise generates revenue.
+
+Use of Viv by government agencies or government-funded research
+programs is considered commercial unless explicitly approved in
+writing by Sifty LLC.
+
+For more information on commercial licensing:
+
+* Visit: https://sifty.studio/licensing
+
+* Contact: licensing@sifty.studio
+
+Viv is provided "as is," without warranty of any kind, express
+or implied, including but not limited to the warranties of
+merchantability, fitness for a particular purpose, and
+non-infringement. In no event shall the authors or copyright
+holders be liable for any claim, damages, or other liability
+arising from the use of this software.
+
+For more information on Viv, visit https://sifty.studio/viv.
+
+--
+Sifty LLC
+licensing@sifty.studio

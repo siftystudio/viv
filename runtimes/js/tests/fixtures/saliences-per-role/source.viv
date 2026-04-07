@@ -1,0 +1,13 @@
+// Action with per-role salience overrides
+
+action negotiate:
+    roles:
+        @proposer:
+            as: initiator
+        @responder:
+            as: partner
+    saliences:
+        default: 3.0
+        roles:
+            @proposer: 8.0
+            @responder: 2.0

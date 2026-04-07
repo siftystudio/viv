@@ -1,0 +1,8 @@
+// Invalid: plan selector targets undefined plan
+
+plan-selector pick:
+    roles:
+        @actor:
+            as: character
+    target in order:
+        nonexistent;

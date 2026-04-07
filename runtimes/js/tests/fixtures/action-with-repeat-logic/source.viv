@@ -1,0 +1,25 @@
+// Action with a reaction that has repeat logic (always-true condition, capped by max)
+
+reserved action provoke:
+    roles:
+        @provoker:
+            as: initiator
+        @target:
+            as: recipient
+    reactions:
+        queue action retaliate:
+            with:
+                @aggressor: @target
+                @victim: @provoker
+            repeat:
+                if:
+                    true
+                max: 2
+
+
+reserved action retaliate:
+    roles:
+        @aggressor:
+            as: initiator
+        @victim:
+            as: recipient

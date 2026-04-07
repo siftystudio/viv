@@ -1,0 +1,20 @@
+// Plan with 'from action' temporal anchor — should be rejected (must use 'from now' in plans)
+
+action respond:
+    roles:
+        @responder:
+            as: initiator
+
+
+plan bad-timing:
+    roles:
+        @planner:
+            as: character
+    phases:
+        >execute:
+            queue action respond:
+                with partial:
+                    @responder: @planner
+                time:
+                    after: 1 hour from action
+            succeed;

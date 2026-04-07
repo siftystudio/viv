@@ -1,0 +1,19 @@
+// Trope and action using trope-fit condition
+
+trope friendship:
+    roles:
+        @person:
+            as: character
+        @other:
+            as: character
+    conditions:
+        @other in @person.friends
+
+action share-secret:
+    roles:
+        @teller:
+            as: initiator
+        @confidant:
+            as: partner
+    conditions:
+        <@teller, @confidant> fits trope friendship

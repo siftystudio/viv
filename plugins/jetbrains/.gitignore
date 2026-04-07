@@ -1,0 +1,11 @@
+# Gradle
+.gradle/
+
+# IntelliJ Platform
+.intellijPlatform/
+
+# Kotlin compiler
+.kotlin/
+
+# JVM crash dumps
+*.hprof

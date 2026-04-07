@@ -1,0 +1,11 @@
+// Action with effects using compound assignment operators
+
+action insult:
+    roles:
+        @bully:
+            as: initiator
+        @victim:
+            as: recipient
+    effects:
+        @victim.mood -= #CHANGE_MEDIUM
+        @bully.mood += #NUDGE

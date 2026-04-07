@@ -1,0 +1,12 @@
+// Invalid: group-role decorator on singleton role
+
+action greet:
+    roles:
+        @greeter:
+            as: initiator
+        @target:
+            as: recipient
+    effects:
+        loop @target* as _@t:
+            _@t.greeted = true
+        end

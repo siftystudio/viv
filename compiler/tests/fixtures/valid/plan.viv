@@ -1,0 +1,18 @@
+// Plan with a single phase that queues an action
+
+plan get-revenge:
+    roles:
+        @schemer:
+            as: character
+        @target:
+            as: character
+    phases:
+        >plot:
+            queue action scheme:
+                with:
+                    @plotter: @schemer
+
+action scheme:
+    roles:
+        @plotter:
+            as: initiator

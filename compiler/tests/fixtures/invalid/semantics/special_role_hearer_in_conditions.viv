@@ -1,0 +1,10 @@
+action greet:
+    roles:
+        @greeter:
+            as: initiator
+        @target:
+            as: recipient
+    conditions:
+        @hearer.age > 10
+    effects:
+        @target.greeted = true

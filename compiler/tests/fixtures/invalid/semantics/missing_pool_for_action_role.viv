@@ -1,0 +1,8 @@
+// Invalid: action role without pool directive
+
+action missing-pool:
+    roles:
+        @actor:
+            as: initiator
+        &flag:
+            as: symbol

@@ -1,0 +1,14 @@
+// Basic action inheritance: child overrides gloss, inherits roles and importance
+
+template action base-verbal:
+    roles:
+        @speaker:
+            as: initiator
+        @listener:
+            as: recipient
+    importance: 2.0
+    gloss: "a verbal action"
+
+
+action compliment from base-verbal:
+    gloss: "@speaker compliments @listener"

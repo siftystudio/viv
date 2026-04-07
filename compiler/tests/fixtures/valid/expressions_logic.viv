@@ -1,0 +1,12 @@
+// Logical expressions in conditions: conjunction, disjunction, negation
+
+action secret-meeting:
+    roles:
+        @host:
+            as: initiator
+        @guest:
+            as: partner
+    conditions:
+        @host.trust > 50 && @guest.trust > 50
+        @host.mood > 0 || @guest.mood > 0
+        !(@host.busy)

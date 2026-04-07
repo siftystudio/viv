@@ -1,0 +1,9 @@
+// Middle file in a transitive include chain
+
+include "chain_leaf.viv"
+
+
+action wave:
+    roles:
+        @waver:
+            as: initiator

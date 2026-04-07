@@ -1,0 +1,7 @@
+// Invalid: initiator role with min != 1
+
+action bad-init-min:
+    roles:
+        @actor:
+            as: initiator
+            n: 0-1

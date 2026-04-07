@@ -1,0 +1,16 @@
+// Invalid: query with multiple time-frame constraints
+
+action fight:
+    roles:
+        @fighter:
+            as: initiator
+
+query bad-time-frame:
+    roles:
+        @witness:
+            as: character
+    action:
+        any: fight
+    time:
+        after: 1 hour ago
+        before: 2 days ago

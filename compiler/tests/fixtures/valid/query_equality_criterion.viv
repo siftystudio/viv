@@ -1,0 +1,11 @@
+// Query with == numeric criterion
+
+action test-act:
+    roles:
+        @a:
+            as: initiator
+
+
+query exact-importance:
+    importance:
+        ==: 5

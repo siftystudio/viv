@@ -1,0 +1,8 @@
+// Action with an explicit conjunction in its condition
+
+action guarded:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        @actor.items && @actor.score > 0

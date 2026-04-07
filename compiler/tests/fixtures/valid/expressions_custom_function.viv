@@ -1,0 +1,10 @@
+// Custom function call in conditions
+
+action research:
+    roles:
+        @scholar:
+            as: initiator
+    conditions:
+        ~hasSkill(@scholar, "research")
+    effects:
+        @scholar.knowledge = ~computeGain(@scholar.level, 2)

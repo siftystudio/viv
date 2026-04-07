@@ -1,0 +1,23 @@
+// Conditional effects using a trope-fit test
+
+trope rivals:
+    roles:
+        @a:
+            as: character
+        @b:
+            as: character
+    conditions:
+        @b in @a.enemies
+
+action confront:
+    roles:
+        @aggressor:
+            as: initiator
+        @target:
+            as: recipient
+    effects:
+        if <@aggressor, @target> fits trope rivals:
+            @target.mood -= #CHANGE_BIG
+        else:
+            @target.mood -= #NUDGE
+        end

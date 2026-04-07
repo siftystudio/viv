@@ -1,0 +1,23 @@
+// Action with associations, plus a query that matches by association
+
+action observe:
+    roles:
+        @observer:
+            as: initiator
+        @subject:
+            as: recipient
+    associations:
+        default: notable
+
+
+action idle:
+    roles:
+        @idler:
+            as: initiator
+    associations:
+        default: mundane
+
+
+query notable-memory:
+    associations:
+        all: notable

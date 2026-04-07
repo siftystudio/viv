@@ -1,0 +1,12 @@
+// Action exercising assignment operators: =, *=, /=, append, remove
+
+action modify:
+    roles:
+        @actor:
+            as: initiator
+    effects:
+        @actor.label = "modified"
+        @actor.score *= 2
+        @actor.health /= 2
+        @actor.tags append "new-tag"
+        @actor.tags remove "old-tag"

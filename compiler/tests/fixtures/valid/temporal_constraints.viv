@@ -1,0 +1,47 @@
+// Action with reactions using various temporal constraints
+
+action remind:
+    roles:
+        @reminder:
+            as: initiator
+        @target:
+            as: recipient
+    reactions:
+        // Time frame with 'after' and 'from action' anchor
+        queue action follow-up:
+            with partial:
+                @actor: @reminder
+            time:
+                after: 2 hours from action
+
+        // Time frame with 'before' and 'from now' anchor
+        queue action check-in:
+            with partial:
+                @actor: @reminder
+            time:
+                before: 1 day from now
+
+        // Time of day constraint (between form)
+        queue action morning-reminder:
+            with partial:
+                @actor: @reminder
+            time:
+                between: 8am and 12pm
+
+
+action follow-up:
+    roles:
+        @actor:
+            as: initiator
+
+
+action check-in:
+    roles:
+        @actor:
+            as: initiator
+
+
+action morning-reminder:
+    roles:
+        @actor:
+            as: initiator

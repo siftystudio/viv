@@ -1,0 +1,17 @@
+// Invalid: reaction fails to precast a precast role
+
+reserved action ceremony:
+    roles:
+        @leader:
+            as: initiator
+        @guest:
+            as: character, precast
+
+action invite:
+    roles:
+        @host:
+            as: initiator
+    reactions:
+        queue action ceremony:
+            with partial:
+                @leader: @host

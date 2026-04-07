@@ -1,0 +1,7 @@
+# DAPT pipeline outputs
+dapt/checkpoints/
+dapt/synthesis/assignments/
+
+# Weights & Biases run data
+wandb/
+dapt/wandb/

@@ -1,0 +1,20 @@
+// Action with a reaction that has repeat logic
+
+action patrol:
+    roles:
+        @guard:
+            as: initiator
+    reactions:
+        queue action check-post:
+            with partial:
+                @checker: @guard
+            repeat:
+                max: 3
+                if:
+                    @guard.alert > 0
+
+
+action check-post:
+    roles:
+        @checker:
+            as: initiator

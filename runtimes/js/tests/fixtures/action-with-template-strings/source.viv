@@ -1,0 +1,10 @@
+// Action with template string interpolation in gloss and report
+
+action greet:
+    roles:
+        @greeter:
+            as: initiator
+        @target:
+            as: partner
+    gloss: "@greeter greets @target"
+    report: "@greeter walks over and warmly greets @target"

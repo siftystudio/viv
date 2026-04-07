@@ -1,0 +1,26 @@
+{
+  "name": "hello-viv-ts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A minimal example project demonstrating how to use Viv in a TypeScript project.",
+  "author": "James Ryan",
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "type": "module",
+  "engines": {
+    "node": ">=18 <23"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "@siftystudio/viv-runtime": "^0.10.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.20",
+    "@types/node": "^25.3.0",
+    "tsx": "^4.15.7",
+    "typescript": "5.8.2"
+  },
+  "scripts": {
+    "dev:local": "npx tsx --tsconfig tsconfig.json src/main.ts",
+    "start": "npx tsx --tsconfig tsconfig.base.json src/main.ts"
+  }
+}

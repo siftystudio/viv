@@ -1,0 +1,14 @@
+// Invalid: duplicate candidate name in selector
+
+action wave:
+    roles:
+        @waver:
+            as: initiator
+
+action-selector pick:
+    roles:
+        @actor:
+            as: initiator
+    target randomly:
+        wave;
+        wave;

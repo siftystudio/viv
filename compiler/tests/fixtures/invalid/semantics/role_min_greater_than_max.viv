@@ -1,0 +1,9 @@
+// Role with min > max — should be rejected
+
+action bad-slots:
+    roles:
+        @actor:
+            as: initiator
+        @crowd*:
+            as: bystander
+            n: 5-3

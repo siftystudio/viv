@@ -1,0 +1,12 @@
+// Query with conflicting numeric criteria: == combined with >= — should be rejected
+
+action test-act:
+    roles:
+        @actor:
+            as: initiator
+
+
+query bad-criteria:
+    importance:
+        ==: 5
+        >=: 3

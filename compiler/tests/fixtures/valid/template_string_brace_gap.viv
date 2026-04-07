@@ -1,0 +1,8 @@
+// Template strings with brace-delimited expression gaps
+
+action score-report:
+    roles:
+        @player:
+            as: initiator
+    gloss: "Score: {@player.points}"
+    report: "@player scored {@player.hits + @player.bonus} points!"

@@ -1,0 +1,29 @@
+// Invalid: nested reaction windows in plan
+
+action task-a:
+    roles:
+        @worker:
+            as: initiator
+
+action task-b:
+    roles:
+        @worker:
+            as: initiator
+
+plan bad-nesting:
+    roles:
+        @operator:
+            as: character
+    phases:
+        >bad-phase:
+            all:
+                any:
+                    queue action task-a:
+                        with partial:
+                            @worker: @operator
+                    queue action task-b:
+                        with partial:
+                            @worker: @operator
+                close
+            close
+            succeed;

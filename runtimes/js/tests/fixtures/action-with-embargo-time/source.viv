@@ -1,0 +1,11 @@
+// Action with a time-limited embargo
+
+action chat:
+    roles:
+        @speaker:
+            as: initiator
+        @listener:
+            as: partner
+    embargoes:
+        embargo:
+            time: 30 minutes

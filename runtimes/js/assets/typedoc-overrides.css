@@ -1,0 +1,20 @@
+/* Tan theme (matches Starlight overrides) */
+:root {
+    --light-color-background: #F6F0E4;
+    --light-color-background-secondary: #ece4d5;
+    --light-color-background-active: #e0d6c4;
+    --light-code-background: #ece4d5;
+}
+:root {
+    --dark-color-background: #2b2520;
+    --dark-color-background-secondary: #3a3530;
+    --dark-color-background-active: #5a5045;
+    --dark-code-background: #3a3530;
+}
+
+.tsd-filter-visibility { display: none; }
+
+/* Hide "Other" category from sidebar and index page */
+.tsd-navigation [data-key="Other"] { display: none; }
+.tsd-navigation [data-key="Other"] + * { display: none; }
+.tsd-index-group .tsd-accordion:has(summary[data-key="section-Other"]) { display: none; }

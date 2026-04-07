@@ -1,0 +1,11 @@
+// Invalid: assignment on symbol role
+
+action bad-symbol-assign:
+    roles:
+        @actor:
+            as: initiator
+        &flag:
+            as: symbol
+            from: @actor.flags
+    effects:
+        &flag.active = true

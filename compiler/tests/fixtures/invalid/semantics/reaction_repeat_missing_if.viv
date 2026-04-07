@@ -1,0 +1,18 @@
+// Invalid: reaction repeat missing if
+// NOTE: This may be grammar-prevented (parser requires both 'if' and 'max')
+
+reserved action respond:
+    roles:
+        @responder:
+            as: initiator
+
+action trigger:
+    roles:
+        @actor:
+            as: initiator
+    reactions:
+        queue action respond:
+            with:
+                @responder: @actor
+            repeat:
+                max: 3

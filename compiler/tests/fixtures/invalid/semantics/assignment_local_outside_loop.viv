@@ -1,0 +1,8 @@
+// Invalid: local variable assignment outside loop
+
+action bad-local:
+    roles:
+        @actor:
+            as: initiator
+    effects:
+        _@temp = 5

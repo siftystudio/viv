@@ -1,0 +1,1233 @@
+// SYNTAX TEST "Packages/Viv/Viv.sublime-syntax"
+
+// ==========================================================================
+// Comments
+// ==========================================================================
+
+// This is a line comment
+// <- punctuation.definition.comment.viv
+//    ^^^^^^^^^^^^^^^^^^^ comment.line.double-slash.viv
+
+// ==========================================================================
+// Include statements
+// ==========================================================================
+
+include "base-actions.viv"
+// <- keyword.operator.viv
+//      ^ string.quoted.double.viv
+//      ^ meta.include.viv
+//       ^^^^^^^^^^^^^^^^^ string.quoted.double.viv
+
+include 'my-tropes.viv'
+// <- keyword.operator.viv
+//      ^ string.quoted.single.viv
+//       ^^^^^^^^^^^^^^ string.quoted.single.viv
+
+// ==========================================================================
+// Action declarations
+// ==========================================================================
+
+// Minimal action (stub with semicolon terminator)
+action stub-action;
+// <- keyword.operator.viv
+//     ^^^^^^^^^^^ entity.name.function.action.viv
+//                ^ punctuation.separator.viv
+
+// Action with colon terminator (the colon lives inside meta.declaration.header.viv)
+action my-action:
+// <- keyword.operator.viv
+//     ^^^^^^^^^ entity.name.function.action.viv
+//              ^ punctuation.separator.viv
+//              ^ meta.declaration.header.viv
+    roles:
+//  ^^^^^ keyword.other.viv
+//       ^ punctuation.separator.key-value.viv
+        @actor:
+//      ^^^^^^ entity.name.variable.viv
+//            ^ punctuation.separator.key-value.viv
+            as: character, initiator
+//          ^^ keyword.other.viv
+//            ^ punctuation.separator.key-value.viv
+//              ^^^^^^^^^ support.constant.viv
+//                       ^ punctuation.separator.sequence.viv
+//                         ^^^^^^^^^ support.constant.viv
+
+// Reserved action
+reserved action system-tick;
+// <- keyword.operator.viv
+//       ^^^^^^ keyword.operator.viv
+//              ^^^^^^^^^^^ entity.name.function.action.viv
+//                         ^ punctuation.separator.viv
+
+// Template action
+template action social-exchange:
+// <- keyword.operator.viv
+//       ^^^^^^ keyword.operator.viv
+//              ^^^^^^^^^^^^^^^ entity.name.function.action.viv
+//                             ^ punctuation.separator.viv
+    roles:
+        @actor:
+            as: character
+
+// Action with inheritance
+action greet from social-exchange;
+// <- keyword.operator.viv
+//     ^^^^^ entity.name.function.action.viv
+//           ^^^^ keyword.operator.viv
+//                ^^^^^^^^^^^^^^^ entity.name.function.action.viv
+//                               ^ punctuation.separator.viv
+
+// ==========================================================================
+// Selector declarations
+// ==========================================================================
+
+action-selector pick-action:
+// <- keyword.operator.viv
+//              ^^^^^^^^^^^ entity.name.function.selector.viv
+//                         ^ punctuation.separator.viv
+    target randomly:
+//  ^^^^^^ keyword.other.viv
+//         ^^^^^^^^ keyword.other.parameter.viv
+//                 ^ punctuation.separator.key-value.viv
+        idle;
+//      ^^^^ entity.name.function.viv
+//          ^ punctuation.terminator.statement.viv
+
+reserved action-selector system-pick:
+// <- keyword.operator.viv
+//       ^^^^^^^^^^^^^^^ keyword.operator.viv
+//                       ^^^^^^^^^^^ entity.name.function.selector.viv
+//                                  ^ punctuation.separator.viv
+    target randomly:
+        idle;
+
+plan-selector choose-plan:
+// <- keyword.operator.viv
+//            ^^^^^^^^^^^ entity.name.function.selector.viv
+    target in order:
+//  ^^^^^^ keyword.other.viv
+//         ^^^^^^^^ keyword.other.parameter.viv
+//                 ^ punctuation.separator.key-value.viv
+        my-plan;
+
+// ==========================================================================
+// Plan declarations
+// ==========================================================================
+
+plan my-plan:
+// <- keyword.operator.viv
+//   ^^^^^^^ entity.name.function.plan.viv
+//          ^ punctuation.separator.viv
+    roles:
+        @agent:
+            as: character
+    phases:
+//  ^^^^^^ keyword.other.viv
+//        ^ punctuation.separator.key-value.viv
+        >setup:
+//      ^ keyword.operator.viv
+//       ^^^^^ entity.name.label.viv
+//            ^ punctuation.separator.key-value.viv
+            advance;
+//          ^^^^^^^ keyword.other.viv
+//                 ^ punctuation.terminator.statement.viv
+        >execute:
+            succeed;
+//          ^^^^^^^ keyword.other.viv
+
+// ==========================================================================
+// Query declarations
+// ==========================================================================
+
+query find-events:
+// <- keyword.operator.viv
+//    ^^^^^^^^^^^ entity.name.function.query.viv
+//               ^ punctuation.separator.viv
+    roles:
+        @person:
+            as: character
+    action:
+//  ^^^^^^ keyword.other.viv
+        any: fight, argue
+//      ^^^ keyword.other.viv
+//         ^ punctuation.separator.key-value.viv
+    ancestors:
+//  ^^^^^^^^^ keyword.other.viv
+        any: @person
+    descendants:
+//  ^^^^^^^^^^^ keyword.other.viv
+        none: @person
+//      ^^^^ keyword.other.viv
+    importance:
+//  ^^^^^^^^^^ keyword.other.viv
+        >=: #HIGH
+//      ^^ keyword.other.viv
+//        ^ punctuation.separator.key-value.viv
+//          ^ keyword.operator.viv
+//           ^^^^ meta.external-name.viv
+        <=: 10
+//      ^^ keyword.other.viv
+    tags:
+//  ^^^^ keyword.other.viv
+        all: conflict
+//      ^^^ keyword.other.viv
+    salience:
+//  ^^^^^^^^ keyword.other.viv
+        >: 3
+//      ^ keyword.other.viv
+    associations:
+//  ^^^^^^^^^^^^ keyword.other.viv
+        any: betrayal
+    location:
+//  ^^^^^^^^ keyword.other.viv
+        any: @person.location
+    time:
+//  ^^^^ keyword.other.viv
+        after: 3 days ago
+//      ^^^^^ keyword.other.viv
+//             ^ constant.language.viv
+//               ^^^^ support.constant.viv
+//                    ^^^ support.constant.viv
+    initiator:
+//  ^^^^^^^^^ keyword.other.viv
+        any: @person
+    partners:
+//  ^^^^^^^^ keyword.other.viv
+        exactly: @person.rivals
+//      ^^^^^^^ keyword.other.viv
+    recipients:
+//  ^^^^^^^^^^ keyword.other.viv
+        all: @person
+    bystanders:
+//  ^^^^^^^^^^ keyword.other.viv
+        none: @person.enemies
+    active:
+//  ^^^^^^ keyword.other.viv
+        any: @person
+    present:
+//  ^^^^^^^ keyword.other.viv
+        any: @person
+
+// ==========================================================================
+// Pattern declarations (sifting patterns)
+// ==========================================================================
+
+pattern love-triangle:
+// <- keyword.operator.viv
+//      ^^^^^^^^^^^^^ entity.name.function.pattern.viv
+//                   ^ punctuation.separator.viv
+    roles:
+        @a:
+            as: character
+        @b:
+            as: character
+    actions:
+//  ^^^^^^^ keyword.other.viv
+        @x: from: @a.recent_actions
+//      ^^ entity.name.variable.viv
+//        ^ punctuation.separator.key-value.viv
+//          ^^^^ keyword.other.viv
+//              ^ punctuation.separator.key-value.viv
+    conditions:
+//  ^^^^^^^^^^ keyword.other.viv
+        @a != @b
+//         ^^ keyword.operator.viv
+
+// ==========================================================================
+// Trope declarations
+// ==========================================================================
+
+trope forbidden-love:
+// <- keyword.operator.viv
+//    ^^^^^^^^^^^^^^ entity.name.function.trope.viv
+//                  ^ punctuation.separator.viv
+    roles:
+        @lover-a:
+            as: character
+        @lover-b:
+            as: character
+    conditions:
+        @lover-a.faction != @lover-b.faction
+
+// ==========================================================================
+// Roles: all labels, casting, slots, spawn, renames
+// ==========================================================================
+
+action role-showcase:
+    roles:
+        @protagonist:
+            as: character, initiator
+//              ^^^^^^^^^ support.constant.viv
+//                         ^^^^^^^^^ support.constant.viv
+        @sidekick:
+            as: character, partner
+//                         ^^^^^^^ support.constant.viv
+        @enemy:
+            as: character, recipient
+//                         ^^^^^^^^^ support.constant.viv
+        @crowd*:
+//      ^^^^^^ entity.name.variable.viv
+//            ^ keyword.operator.viv
+            as: character, bystander
+//                         ^^^^^^^^ support.constant.viv
+            n: 0-5 [~3]
+//          ^ keyword.other.viv
+//           ^ punctuation.separator.key-value.viv
+//             ^ constant.language.viv
+//              ^ punctuation.accessor.viv
+//               ^ constant.language.viv
+//                 ^ punctuation.accessor.viv
+//                  ^ keyword.operator.viv
+//                   ^ constant.language.viv
+//                    ^ punctuation.accessor.viv
+        @extras*:
+            n: 1-3 [60%]
+//                 ^ punctuation.accessor.viv
+//                  ^^ constant.language.viv
+//                    ^ keyword.operator.viv
+//                     ^ punctuation.accessor.viv
+        @tool:
+            as: item
+//              ^^^^ support.constant.viv
+        @place:
+            as: location
+//              ^^^^^^^^ support.constant.viv
+        &marker:
+//      ^^^^^^^ entity.name.variable.viv
+            as: symbol
+//              ^^^^^^ support.constant.viv
+        @guard:
+            as: character, precast
+//                         ^^^^^^^ support.constant.viv
+            is: @protagonist
+//          ^^ keyword.other.viv
+        @allies*:
+            from: @protagonist.friends
+//          ^^^^ keyword.other.viv
+        @helper:
+            spawn: ~create-helper(@place)
+//          ^^^^^ keyword.other.viv
+//                 ^ keyword.operator.viv
+//                  ^^^^^^^^^^^^^ meta.external-name.viv
+//                               ^ keyword.operator.viv
+//                                ^^^^^^ entity.name.variable.viv
+//                                      ^ keyword.operator.viv
+        @old-name:
+            renames: @sidekick
+//          ^^^^^^^ keyword.other.viv
+        @any-place:
+            as: location, anywhere
+//                        ^^^^^^^^ support.constant.viv
+        @new-entity:
+            as: character, spawn
+//                         ^^^^^ support.constant.viv
+
+// ==========================================================================
+// Conditions: relational, logical, membership, knowledge, causal operators
+// ==========================================================================
+
+action operator-showcase:
+    roles:
+        @subject:
+            as: character, initiator
+        &flag:
+            as: symbol
+    conditions:
+        // Relational operators
+        @subject.age > 18
+//                   ^ keyword.operator.viv
+//                     ^^ constant.language.viv
+        @subject.age < 100
+//                   ^ keyword.operator.viv
+        @subject.age >= 21
+//                   ^^ keyword.operator.viv
+        @subject.age <= 65
+//                   ^^ keyword.operator.viv
+        @subject.name != "nobody"
+//                    ^^ keyword.operator.viv
+//                       ^ string.quoted.double.viv
+        @subject.rank == 5
+//                    ^^ keyword.operator.viv
+
+        // Logical operators
+        @subject.alive == true && @subject.health > 0
+//                        ^^^^ constant.language.viv
+//                             ^^ keyword.operator.viv
+        @subject.mood == #HAPPY || @subject.mood == #SAD
+//                              ^^ keyword.operator.viv
+        !(@subject.hidden)
+//      ^ keyword.operator.viv
+//       ^ punctuation.accessor.viv
+
+        // Membership and knowledge
+        @subject in @subject.location.occupants
+//               ^^ keyword.operator.viv
+        @subject knows &flag
+//               ^^^^^ keyword.operator.viv
+
+        // Causal operators
+        @subject caused @subject.last_action
+//               ^^^^^^ keyword.operator.viv
+        @subject triggered @subject.last_action
+//               ^^^^^^^^^ keyword.operator.viv
+        @subject preceded @subject.last_action
+//               ^^^^^^^^ keyword.operator.viv
+
+// ==========================================================================
+// Effects: assignment operators, append, remove, inscribe, inspect
+// ==========================================================================
+
+action effect-showcase:
+    roles:
+        @subject:
+            as: character, initiator
+        &marker:
+            as: symbol
+    effects:
+//  ^^^^^^^ keyword.other.viv
+        @subject.xp = 100
+//                  ^ keyword.operator.viv
+        @subject.xp += 50
+//                  ^^ keyword.operator.viv
+        @subject.xp -= 10
+//                  ^^ keyword.operator.viv
+        @subject.health *= 2
+//                      ^^ keyword.operator.viv
+        @subject.debt /= 2
+//                    ^^ keyword.operator.viv
+        @subject.inventory append {name: "sword"}
+//                         ^^^^^^ keyword.operator.viv
+//                                ^ keyword.operator.viv
+//                                     ^ punctuation.separator.key-value.viv
+//                                       ^ string.quoted.double.viv
+//                                              ^ keyword.operator.viv
+        @subject.inventory remove @subject.inventory[0]
+//                         ^^^^^^ keyword.operator.viv
+//                                                  ^ keyword.operator.viv
+//                                                   ^ constant.language.viv
+//                                                    ^ keyword.operator.viv
+        @subject inscribe &marker
+//               ^^^^^^^^ keyword.operator.viv
+        @subject inspect &marker
+//               ^^^^^^^ keyword.operator.viv
+
+// ==========================================================================
+// Expressions: arithmetic, parenthesized, chance
+// ==========================================================================
+
+action expression-showcase:
+    roles:
+        @subject:
+            as: character, initiator
+    conditions:
+        // Arithmetic
+        @subject.strength + @subject.skill > 10
+//                        ^ keyword.operator.viv
+        @subject.wealth - @subject.debts >= 0
+//                      ^ keyword.operator.viv
+        @subject.power * 2 <= @subject.max_power
+//                     ^ keyword.operator.viv
+        @subject.resources / 3 > 1
+//                         ^ keyword.operator.viv
+
+        // Parenthesized expression
+        (@subject.age > 18) && (@subject.rank >= 3)
+//      ^ punctuation.accessor.viv
+//                        ^ punctuation.accessor.viv
+
+        // Chance expression
+        50%
+//      ^^ constant.language.viv
+//        ^ keyword.operator.viv
+
+// ==========================================================================
+// References: plain, scratch, local, property, pointer, lookup, fail-safe
+// ==========================================================================
+
+action reference-showcase:
+    roles:
+        @entity:
+            as: character, initiator
+        &sym:
+            as: symbol
+    scratch:
+//  ^^^^^^^ keyword.other.viv
+        $@counter = 0
+//      ^ keyword.operator.viv
+//       ^^^^^^^^ entity.name.variable.global.viv
+//                ^ keyword.operator.viv
+//                  ^ constant.language.viv
+        $&flag = &sym
+//      ^ keyword.operator.viv
+//       ^^^^^ entity.name.variable.global.viv
+    effects:
+        // Plain references
+        @entity.name = "test"
+//      ^^^^^^^ entity.name.variable.viv
+        &sym.value = 1
+//      ^^^^ entity.name.variable.viv
+
+        // Property access
+        @entity.location.name = "Tavern"
+//             ^ punctuation.accessor.viv
+//              ^^^^^^^^ meta.external-name.viv
+//                      ^ punctuation.accessor.viv
+//                       ^^^^ meta.external-name.viv
+
+        // Pointer access
+        @entity.faction->allegiance = &sym
+//                     ^^ keyword.operator.viv
+//                       ^^^^^^^^^^ meta.external-name.viv
+
+        // Lookup access
+        @entity.inventory[0] = null
+//                       ^ keyword.operator.viv
+//                        ^ constant.language.viv
+//                         ^ keyword.operator.viv
+//                             ^^^^ constant.language.viv
+
+        // Fail-safe markers
+        @entity.partner?.name? = "unknown"
+//                     ^ keyword.operator.viv
+//                           ^ keyword.operator.viv
+
+        // Group role decorator
+        @entity* = null
+//      ^^^^^^^ entity.name.variable.viv
+//             ^ keyword.operator.viv
+
+        // Scratch variable with fail-safe
+        $@counter? += 1
+//      ^ keyword.operator.viv
+//       ^^^^^^^^ entity.name.variable.global.viv
+//               ^ keyword.operator.viv
+
+// ==========================================================================
+// Literals: numbers, booleans, null, enums, strings, objects, lists
+// ==========================================================================
+
+action literal-showcase:
+    roles:
+        @subject:
+            as: character, initiator
+    effects:
+        // Numbers
+        @subject.val = 42
+//                     ^^ constant.language.viv
+        @subject.val = 3.14
+//                     ^^^^ constant.language.viv
+        @subject.val = -2
+//                     ^^ constant.language.viv
+        @subject.val = +1
+//                     ^^ constant.language.viv
+
+        // Booleans
+        @subject.flag = true
+//                      ^^^^ constant.language.viv
+        @subject.flag = false
+//                      ^^^^^ constant.language.viv
+
+        // Null
+        @subject.data = null
+//                      ^^^^ constant.language.viv
+
+        // Enum tokens
+        @subject.mood = #HAPPY
+//                      ^ keyword.operator.viv
+//                       ^^^^^ meta.external-name.viv
+        @subject.karma = +#GOOD
+//                       ^ keyword.operator.viv
+//                        ^ keyword.operator.viv
+//                         ^^^^ meta.external-name.viv
+        @subject.penalty = -#BAD
+//                         ^ keyword.operator.viv
+//                          ^ keyword.operator.viv
+//                           ^^^ meta.external-name.viv
+
+        // String literals
+        @subject.name = "hello world"
+//                      ^ string.quoted.double.viv
+//                       ^^^^^^^^^^^ string.quoted.double.viv
+//                                  ^ string.quoted.double.viv
+        @subject.label = 'single quotes'
+//                       ^ string.quoted.single.viv
+//                        ^^^^^^^^^^^^^^ string.quoted.single.viv
+//                                     ^ string.quoted.single.viv
+
+        // Object literal
+        @subject.profile = {name: "sword", quality: #FINE}
+//                         ^ keyword.operator.viv
+//                              ^ punctuation.separator.key-value.viv
+//                                       ^ punctuation.separator.sequence.viv
+//                                                       ^ keyword.operator.viv
+
+        // List literal
+        @subject.tags = [#BRAVE, #LOYAL]
+//                      ^ keyword.operator.viv
+//                       ^ keyword.operator.viv
+//                        ^^^^^ meta.external-name.viv
+//                             ^ punctuation.separator.sequence.viv
+//                                     ^ keyword.operator.viv
+
+// ==========================================================================
+// String interpolation
+// ==========================================================================
+
+action interpolation-showcase:
+    roles:
+        @subject:
+            as: character, initiator
+    gloss:
+//  ^^^^^ keyword.other.viv
+        "plain string"
+//      ^ string.quoted.double.viv
+//       ^^^^^^^^^^^^ string.quoted.double.viv
+    report:
+//  ^^^^^^ keyword.other.viv
+        '{@subject.name} greets {@subject.partner.name}'
+//      ^ string.quoted.single.viv
+//       ^ keyword.operator.viv
+//        ^^^^^^^^^^^^^^ meta.interpolation.viv
+//                     ^ keyword.operator.viv
+//                               ^^^^^^^^^^^^^^^^^^^^^^ meta.interpolation.viv
+    effects:
+        // Interpolation with brace expression
+        @subject.title = "Score: {@subject.hits + @subject.bonus}"
+//                        ^^^^^^^ string.quoted.double.viv
+//                               ^ keyword.operator.viv
+
+        // Inline reference in string (no braces)
+        @subject.greeting = "Hello, @subject!"
+//                           ^^^^^^^ string.quoted.double.viv
+//                                  ^^^^^^^^ entity.name.variable.viv
+
+        // Scratch variable in string
+        @subject.log = "$@counter times"
+//                      ^ keyword.operator.viv
+//                       ^^^^^^^^ entity.name.variable.global.viv
+
+        // Local variable in string (for display purposes)
+        @subject.msg = "_@witness saw it"
+//                      ^ keyword.operator.viv
+//                       ^^^^^^^^ entity.name.variable.local.viv
+
+// ==========================================================================
+// Control flow: if/elif/else/end, loops
+// ==========================================================================
+
+action control-flow-showcase:
+    roles:
+        @subject:
+            as: character, initiator
+        @targets*:
+            as: character, partner
+            n: 0-5
+    effects:
+        if @subject.rank > 5:
+//      ^^ keyword.operator.viv
+            @subject.title = "Commander"
+        elif @subject.rank > 3:
+//      ^^^^ keyword.operator.viv
+            @subject.title = "Captain"
+        else:
+//      ^^^^ keyword.operator.viv
+            @subject.title = "Recruit"
+        end
+//      ^^^ keyword.operator.viv
+
+        loop @targets* as _@target:
+//      ^^^^ keyword.operator.viv
+//                     ^^ keyword.operator.viv
+//                        ^ keyword.operator.viv
+//                         ^^^^^^^ entity.name.variable.local.viv
+            _@target.stress += 1
+//          ^ keyword.operator.viv
+//           ^^^^^^^ entity.name.variable.local.viv
+
+        end
+
+// ==========================================================================
+// Reactions: queue with all target types, bindings, urgency, priority,
+//            location, time, abandon, repeat
+// ==========================================================================
+
+action reaction-showcase:
+    roles:
+        @actor:
+            as: character, initiator
+        @target:
+            as: character, recipient
+    reactions:
+        // Queue action with full bindings
+        queue action respond:
+//      ^^^^^ keyword.operator.viv
+//            ^^^^^^ keyword.operator.viv
+//                   ^^^^^^^ entity.name.function.viv
+            with:
+//          ^^^^ keyword.other.viv
+//              ^ punctuation.separator.key-value.viv
+                @initiator: @actor
+                @recipient: @target
+
+        // Queue action-selector with partial bindings
+        queue action-selector pick-response:
+//      ^^^^^ keyword.operator.viv
+//            ^^^^^^^^^^^^^^^ keyword.operator.viv
+//                            ^^^^^^^^^^^^^ entity.name.function.viv
+            with partial:
+//          ^^^^ keyword.other.viv
+//               ^^^^^^^ keyword.other.parameter.viv
+//                      ^ punctuation.separator.key-value.viv
+                @actor: @actor
+
+        // Queue plan
+        queue plan investigate:
+//      ^^^^^ keyword.operator.viv
+//            ^^^^ keyword.operator.viv
+//                 ^^^^^^^^^^^ entity.name.function.viv
+            with none;
+//          ^^^^ keyword.other.viv
+//               ^^^^ keyword.other.parameter.viv
+//                   ^ punctuation.terminator.statement.viv
+
+        // Queue plan-selector with reaction fields
+        queue plan-selector choose-exit:
+//      ^^^^^ keyword.operator.viv
+//            ^^^^^^^^^^^^^ keyword.operator.viv
+//                          ^^^^^^^^^^^ entity.name.function.viv
+            with partial:
+                @agent: @actor
+            urgent: true
+//          ^^^^^^ keyword.other.viv
+//                  ^^^^ constant.language.viv
+            priority: 8
+//          ^^^^^^^^ keyword.other.viv
+//                    ^ constant.language.viv
+            location:
+//          ^^^^^^^^ keyword.other.viv
+                any: @actor.location
+            time:
+                after: 2 hours from action
+//              ^^^^^ keyword.other.viv
+//                     ^ constant.language.viv
+//                       ^^^^^ support.constant.viv
+//                             ^^^^ keyword.operator.viv
+//                                  ^^^^^^ support.constant.viv
+                before: 1 day from now
+//              ^^^^^^ keyword.other.viv
+//                        ^^^ support.constant.viv
+//                            ^^^^ keyword.operator.viv
+//                                 ^^^ support.constant.viv
+                between: 3 hours and 12 hours from hearing
+//              ^^^^^^^ keyword.other.viv
+//                         ^^^^^ support.constant.viv
+//                               ^^^ keyword.operator.viv
+//                                   ^^ constant.language.viv
+//                                      ^^^^^ support.constant.viv
+//                                            ^^^^ keyword.operator.viv
+//                                                 ^^^^^^^ support.constant.viv
+                between: 10 pm and 6 am
+//                       ^^ constant.language.viv
+//                          ^^ support.constant.viv
+//                             ^^^ keyword.operator.viv
+//                                 ^ constant.language.viv
+//                                   ^^ support.constant.viv
+            abandon:
+//          ^^^^^^^ keyword.other.viv
+                @actor.cover_blown == true
+            repeat:
+//          ^^^^^^ keyword.other.viv
+                if:
+//              ^^ keyword.other.viv
+                    @actor.alert > 0
+                max: 5
+//              ^^^ keyword.other.viv
+//                   ^ constant.language.viv
+
+// ==========================================================================
+// Selectors: all target policies, weighted candidates, sub-selectors
+// ==========================================================================
+
+action idle;
+action wander;
+action observe;
+action respond;
+action investigate;
+
+action-selector random-pick:
+    target randomly:
+//  ^^^^^^ keyword.other.viv
+//         ^^^^^^^^ keyword.other.parameter.viv
+        idle;
+//      ^^^^ entity.name.function.viv
+        wander;
+        observe;
+
+action-selector weighted-pick:
+    target with weights:
+//  ^^^^^^ keyword.other.viv
+//         ^^^^^^^^^^^^ keyword.other.parameter.viv
+        (5) idle:
+//      ^ punctuation.accessor.viv
+//       ^ constant.language.viv
+//        ^ punctuation.accessor.viv
+//          ^^^^ entity.name.function.viv
+            with partial:
+                @initiator: @actor
+        (3) wander;
+        (1) selector random-pick:
+//          ^^^^^^^^ keyword.operator.word.viv
+//                   ^^^^^^^^^^^ entity.name.function.viv
+            with:
+                @actor: @actor
+
+plan-selector ordered-pick:
+    target in order:
+//         ^^^^^^^^ keyword.other.parameter.viv
+        idle;
+        wander;
+
+// ==========================================================================
+// Plans: phases, plan instructions, wait, reaction windows, conditionals
+// ==========================================================================
+
+plan complex-plan:
+    roles:
+        @operator:
+            as: character
+    phases:
+        >phase-one:
+//      ^ keyword.operator.viv
+//       ^^^^^^^^^ entity.name.label.viv
+//                ^ punctuation.separator.key-value.viv
+            // Wait instruction
+            wait:
+//          ^^^^ keyword.other.viv
+                timeout: 2 days
+//              ^^^^^^^ keyword.other.viv
+//                       ^ constant.language.viv
+//                         ^^^^ support.constant.viv
+                until:
+//              ^^^^^ keyword.other.viv
+                    @operator.ready == true
+            advance;
+//          ^^^^^^^ keyword.other.viv
+//                 ^ punctuation.terminator.statement.viv
+        >phase-two:
+            // Reaction windows
+            all:
+//          ^^^ keyword.other.viv
+                queue action idle:
+                    with partial:
+                        @initiator: @operator
+            close
+//          ^^^^^ keyword.other.viv
+            any:
+//          ^^^ keyword.other.viv
+                queue action idle:
+                    with partial:
+                        @initiator: @operator
+            close
+            untracked:
+//          ^^^^^^^^^ keyword.other.viv
+                queue action idle:
+                    with partial:
+                        @initiator: @operator
+            close
+            // Plan conditional
+            if @operator.ready:
+                succeed;
+//              ^^^^^^^ keyword.other.viv
+            elif @operator.waiting:
+                advance;
+            else:
+                fail;
+//              ^^^^ keyword.other.viv
+            end
+            // Loop in plan
+            loop @operator.tasks as _@task:
+//          ^^^^ keyword.operator.viv
+//                               ^^ keyword.operator.viv
+                queue action idle:
+                    with partial:
+                        @initiator: @operator
+            end
+
+// ==========================================================================
+// Embargoes
+// ==========================================================================
+
+action embargo-showcase:
+    roles:
+        @attacker:
+            as: character, initiator
+        @defender:
+            as: character, recipient
+    embargoes:
+//  ^^^^^^^^^ keyword.other.viv
+        embargo:
+//      ^^^^^^^ keyword.other.viv
+            location: here
+//          ^^^^^^^^ keyword.other.viv
+//                    ^^^^ support.constant.viv
+            time: 2 hours
+//          ^^^^ keyword.other.viv
+//                ^ constant.language.viv
+//                  ^^^^^ support.constant.viv
+            roles: @attacker, @defender
+//          ^^^^^ keyword.other.viv
+//                 ^^^^^^^^^ entity.name.variable.viv
+//                          ^ punctuation.separator.sequence.viv
+//                            ^^^^^^^^^ entity.name.variable.viv
+        embargo:
+            location: anywhere
+//                    ^^^^^^^^ support.constant.viv
+            time: forever
+//                ^^^^^^^ support.constant.viv
+        embargo:
+            time: 1 week
+//                  ^^^^ support.constant.viv
+
+// ==========================================================================
+// Saliences
+// ==========================================================================
+
+action salience-showcase:
+    roles:
+        @actor:
+            as: character, initiator
+    saliences:
+//  ^^^^^^^^^ keyword.other.viv
+        default: #MODERATE
+//      ^^^^^^^ keyword.other.viv
+//               ^ keyword.operator.viv
+//                ^^^^^^^^ meta.external-name.viv
+        roles:
+//      ^^^^^ keyword.other.viv
+            @actor: 10
+        for _@observer:
+//      ^^^ keyword.operator.viv
+//          ^ keyword.operator.viv
+//           ^^^^^^^^^ entity.name.variable.local.viv
+            if _@observer.location == @actor.location:
+                7
+            elif _@observer knows @actor:
+                4
+            else:
+                1
+            end
+        end
+
+// ==========================================================================
+// Associations
+// ==========================================================================
+
+action association-showcase:
+    roles:
+        @actor:
+            as: character, initiator
+    associations:
+//  ^^^^^^^^^^^^ keyword.other.viv
+        default: betrayal, treachery
+//      ^^^^^^^ keyword.other.viv
+        roles:
+            @actor: guilt, deception
+        for _@witness:
+            if _@witness.loyalty[@actor] > 5:
+                outrage, sympathy
+            elif _@witness.loyalty[@actor] < -3:
+                conflict
+            else:
+                gossip
+            end
+        end
+
+// ==========================================================================
+// Join keyword for child action merging
+// ==========================================================================
+
+action child-action from social-exchange:
+    join tags: extra-tag
+//  ^^^^ keyword.operator.viv
+    join roles:
+//  ^^^^ keyword.operator.viv
+        @extra:
+            as: character
+    join conditions:
+//  ^^^^ keyword.operator.viv
+        @extra.alive == true
+    join scratch:
+//  ^^^^ keyword.operator.viv
+        $@temp = 0
+    join effects:
+//  ^^^^ keyword.operator.viv
+        @extra.notified = true
+    join reactions:
+//  ^^^^ keyword.operator.viv
+        queue action idle:
+            with partial:
+                @initiator: @extra
+    join embargoes:
+//  ^^^^ keyword.operator.viv
+        embargo:
+            time: forever
+
+// ==========================================================================
+// Custom function calls
+// ==========================================================================
+
+action function-showcase:
+    roles:
+        @subject:
+            as: character, initiator
+    conditions:
+        ~is-hostile(@subject)
+//      ^ keyword.operator.viv
+//       ^^^^^^^^^ meta.external-name.viv
+//                 ^ keyword.operator.viv
+//                  ^^^^^^^^ entity.name.variable.viv
+//                          ^ keyword.operator.viv
+        !~is-friendly(@subject, @subject.partner)
+//      ^ keyword.operator.viv
+//       ^ keyword.operator.viv
+//        ^^^^^^^^^^^ meta.external-name.viv
+//                   ^ keyword.operator.viv
+//                    ^^^^^^^^ entity.name.variable.viv
+//                            ^ punctuation.separator.sequence.viv
+//                                              ^ keyword.operator.viv
+        ~calculate-score(@subject.strength, 10, #HIGH)
+//       ^^^^^^^^^^^^^^^ meta.external-name.viv
+//                       ^^^^^^^^ entity.name.variable.viv
+//                               ^ punctuation.accessor.viv
+//                                ^^^^^^^^ meta.external-name.viv
+//                                        ^ punctuation.separator.sequence.viv
+//                                          ^^ constant.language.viv
+//                                            ^ punctuation.separator.sequence.viv
+//                                              ^ keyword.operator.viv
+//                                               ^^^^ meta.external-name.viv
+
+// ==========================================================================
+// Domain verbs with construct name references
+// ==========================================================================
+
+action domain-verb-showcase:
+    roles:
+        @subject:
+            as: character, initiator
+    conditions:
+        // Trope fit
+        fit trope forbidden-love:
+//      ^^^ keyword.operator.viv
+//          ^^^^^ keyword.operator.viv
+//                ^^^^^^^^^^^^^^ entity.name.function.viv
+            with:
+                @lover-a: @subject
+                @lover-b: @subject.partner
+
+        // Search with named query
+        search query find-events:
+//      ^^^^^^ keyword.operator.viv
+//             ^^^^^ keyword.operator.viv
+//                   ^^^^^^^^^^^ entity.name.function.viv
+            over: chronicle
+//          ^^^^ keyword.other.viv
+//                ^^^^^^^^^ support.constant.viv
+            with:
+                @person: @subject
+
+        // Bare search
+        search:
+//      ^^^^^^ keyword.operator.viv
+            over: inherit
+//                ^^^^^^^ support.constant.viv
+
+        // Sift with named pattern
+        sift pattern love-triangle:
+//      ^^^^ keyword.operator.viv
+//           ^^^^^^^ keyword.operator.viv
+//                   ^^^^^^^^^^^^^ entity.name.function.viv
+            over: chronicle
+            with partial:
+                @a: @subject
+
+// ==========================================================================
+// Sugared bindings
+// ==========================================================================
+
+action sugared-binding-showcase:
+    roles:
+        @actor:
+            as: character, initiator
+        @target:
+            as: character, recipient
+    conditions:
+        // Sugared none binding
+        <none> fits trope forbidden-love
+//      ^ punctuation.section.binding.begin.viv
+//       ^^^^ keyword.other.parameter.viv
+//           ^ punctuation.section.binding.end.viv
+//             ^^^^ keyword.operator.viv
+
+        // Sugared partial binding
+        <partial @actor: @actor> fits trope forbidden-love
+//      ^ punctuation.section.binding.begin.viv
+//       ^^^^^^^ keyword.other.parameter.viv
+//               ^^^^^^ entity.name.variable.viv
+//                             ^ punctuation.section.binding.end.viv
+
+        // Sugared complete binding
+        <@actor: @actor> fits trope forbidden-love
+//      ^ punctuation.section.binding.begin.viv
+//       ^^^^^^ entity.name.variable.viv
+//                     ^ punctuation.section.binding.end.viv
+
+        // Sugared complete binding with scratch variable
+        <$@hero: @actor> fits trope forbidden-love
+//      ^ punctuation.section.binding.begin.viv
+//       ^ keyword.operator.viv
+//        ^^^^^ entity.name.variable.global.viv
+//                     ^ punctuation.section.binding.end.viv
+
+        // Sugared complete binding with local variable
+        <_@temp: @actor> fits trope forbidden-love
+//      ^ punctuation.section.binding.begin.viv
+//       ^ keyword.operator.viv
+//        ^^^^^ entity.name.variable.local.viv
+//                     ^ punctuation.section.binding.end.viv
+
+        // Sugared complete binding with symbol reference
+        <&marker: @actor> fits trope forbidden-love
+//      ^ punctuation.section.binding.begin.viv
+//       ^^^^^^^ entity.name.variable.viv
+//                      ^ punctuation.section.binding.end.viv
+
+// ==========================================================================
+// Time units (all forms)
+// ==========================================================================
+
+action time-unit-showcase:
+    roles:
+        @actor:
+            as: character, initiator
+    reactions:
+        queue action idle:
+            with partial:
+                @initiator: @actor
+            time:
+                after: 1 minute from action
+//                       ^^^^^^ support.constant.viv
+                after: 2 minutes from now
+//                       ^^^^^^^ support.constant.viv
+                after: 1 hour from action
+//                       ^^^^ support.constant.viv
+                after: 3 hours from now
+//                       ^^^^^ support.constant.viv
+                after: 1 day from action
+//                       ^^^ support.constant.viv
+                after: 5 days ago
+//                       ^^^^ support.constant.viv
+                after: 1 week from action
+//                       ^^^^ support.constant.viv
+                after: 2 weeks from now
+//                       ^^^^^ support.constant.viv
+                after: 1 month from action
+//                       ^^^^^ support.constant.viv
+                after: 6 months ago
+//                       ^^^^^^ support.constant.viv
+                after: 1 year from action
+//                       ^^^^ support.constant.viv
+                after: 2 years ago
+//                       ^^^^^ support.constant.viv
+                // Time-of-day forms
+                after: 8 am
+//                     ^ constant.language.viv
+//                       ^^ support.constant.viv
+                before: 5 pm
+//                      ^ constant.language.viv
+//                        ^^ support.constant.viv
+
+// ==========================================================================
+// Reserved internal identifiers
+// ==========================================================================
+
+action internal-showcase:
+    roles:
+        @actor:
+            as: character, initiator
+    conditions:
+        __system_clock > 0
+//      ^^^^^^^^^^^^^^ support.variable.reserved.viv
+
+// ==========================================================================
+// Percentages
+// ==========================================================================
+
+action percentage-showcase:
+    roles:
+        @actor:
+            as: character, initiator
+    conditions:
+        75%
+//      ^^ constant.language.viv
+//        ^ keyword.operator.viv
+        33.5%
+//      ^^^^ constant.language.viv
+//          ^ keyword.operator.viv
+        -10%
+//      ^^^ constant.language.viv
+//         ^ keyword.operator.viv
+
+// ==========================================================================
+// Edge cases
+// ==========================================================================
+
+// Identifier with keyword prefix (should not be swallowed)
+action endangered-species:
+//     ^^^^^^^^^^^^^^^^^^ entity.name.function.action.viv
+    roles:
+        @endpoint:
+//      ^^^^^^^^^ entity.name.variable.viv
+            as: character, initiator
+    effects:
+        @endpoint.include_all = true
+        @endpoint.looper_count += 1
+        @endpoint.if_modified = false
+
+// Binding LHS in with context
+action binding-edge-case:
+    roles:
+        @actor:
+            as: character, initiator
+    reactions:
+        queue action respond:
+            with:
+                @actor: @actor
+//              ^^^^^^ keyword.other.viv
+
+// Hyphenated identifiers
+action multi-word-action-name from social-exchange;
+//     ^^^^^^^^^^^^^^^^^^^^^^ entity.name.function.action.viv
+//                                 ^^^^^^^^^^^^^^^ entity.name.function.action.viv
+
+// Property access stops at hyphens (no hyphens in property names)
+action property-hyphen-edge:
+    roles:
+        @entity:
+            as: character, initiator
+    conditions:
+        @entity.some_prop > 0
+//             ^ punctuation.accessor.viv
+//              ^^^^^^^^^ meta.external-name.viv
+
+// The "action" role label (as: action)
+action action-role-showcase:
+    roles:
+        @event:
+            as: action
+//              ^^^^^^ support.constant.viv
+
+// Empty semicolon-terminated constructs
+query empty-query;
+// <- keyword.operator.viv
+//    ^^^^^^^^^^^ entity.name.function.query.viv
+//               ^ punctuation.separator.viv

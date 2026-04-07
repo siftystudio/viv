@@ -1,0 +1,10 @@
+// Trope with a membership-test condition
+
+trope friends:
+    roles:
+        @a:
+            as: character
+        @b:
+            as: character
+    conditions:
+        @b in @a.friends

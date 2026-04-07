@@ -1,0 +1,15 @@
+// Child action that joins (merges) effects with a parent action
+
+template action base-effect:
+    roles:
+        @actor:
+            as: initiator
+        @target:
+            as: recipient
+    effects:
+        @target.mood -= 1
+
+
+action enhanced-effect from base-effect:
+    join effects:
+        @actor.reputation += 1

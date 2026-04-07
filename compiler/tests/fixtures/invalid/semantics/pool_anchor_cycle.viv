@@ -1,0 +1,12 @@
+// Invalid: cycle among casting-pool anchors
+
+action cycle-pool:
+    roles:
+        @actor:
+            as: initiator
+        @tool:
+            as: item
+            from: @gadget.tools
+        @gadget:
+            as: item
+            from: @tool.gadgets

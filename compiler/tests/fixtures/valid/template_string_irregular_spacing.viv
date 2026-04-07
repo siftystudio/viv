@@ -1,0 +1,9 @@
+// Template string with irregular whitespace between gaps and text
+
+action announce:
+    roles:
+        @herald:
+            as: initiator
+        @noble:
+            as: recipient
+    gloss: "@herald      announces      @noble"

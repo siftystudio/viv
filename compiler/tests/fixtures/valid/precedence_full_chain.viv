@@ -1,0 +1,14 @@
+// Full precedence chain mixing arithmetic, relational, conjunction, and disjunction
+
+action test-full-chain:
+    roles:
+        @a:
+            as: initiator
+        @b:
+            as: partner
+        @c:
+            as: character
+        @d:
+            as: character
+    conditions:
+        @a.x + 1 > 2 && @b.y * 3 <= @c.z || @d.w != 0

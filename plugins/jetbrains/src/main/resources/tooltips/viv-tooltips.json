@@ -1,0 +1,810 @@
+[
+  {
+    "trigger": "action",
+    "context": "action_header",
+    "tooltip": "Defines something a character can do in the storyworld."
+  },
+  {
+    "trigger": "plan",
+    "context": "plan_header",
+    "tooltip": "Defines a multi-phase sequence of reactions that unfolds over time.\n\nPlans let you orchestrate complex action sequences."
+  },
+  {
+    "trigger": "query",
+    "context": "query_header",
+    "tooltip": "Defines a search pattern for finding actions in a character's memories or in the global chronicle.\n\nInvoked via query searches (`search query`)."
+  },
+  {
+    "trigger": "pattern",
+    "context": "sifting_pattern_header",
+    "tooltip": "Defines a search pattern for finding action sequences in a character's memories or in the global chronicle.\n\nInvoked via siftings (`sift pattern`)."
+  },
+  {
+    "trigger": "trope",
+    "context": "trope_header",
+    "tooltip": "Defines a named bundle of reusable conditions. Invoked via trope fits (`fit trope` or `fits trope`).\n\nComposability is achieved via tropes that invoke other tropes."
+  },
+  {
+    "trigger": "action-selector",
+    "context": "selector_header (action-selector)",
+    "tooltip": "Defines a selector that chooses an action from a set of candidates using a targeting policy.\n\nSupported targeting policies: `randomly`, `with weights`, `in order`.\n\nComposability is supported by using other action selectors as candidates."
+  },
+  {
+    "trigger": "plan-selector",
+    "context": "selector_header (plan-selector)",
+    "tooltip": "Defines a selector that chooses a plan from a set of candidates using a targeting policy.\n\nSupported targeting policies: `randomly`, `with weights`, `in order`.\n\nComposability is supported by using other plan selectors as candidates."
+  },
+  {
+    "trigger": "reserved",
+    "context": "reserved_construct_marker",
+    "tooltip": "Marks that an action may only be targeted via a reaction or selector, as opposed to general action targeting.\n\nRequired if the construct has any non-initiator `precast` roles."
+  },
+  {
+    "trigger": "template",
+    "context": "template_action_marker",
+    "tooltip": "Marks this action definition as a template that exists only to be inherited from.\n\nTemplate actions are excluded from the compiled content bundle and cannot be performed directly."
+  },
+  {
+    "trigger": "roles:",
+    "context": "action_roles",
+    "tooltip": "Declares the cast of characters, items, and symbols involved in this action.\n\nEach role specifies who or what can fill it and how they participate."
+  },
+  {
+    "trigger": "roles:",
+    "context": "selector_roles",
+    "tooltip": "Declares roles whose bindings are shared across all candidates in this selector."
+  },
+  {
+    "trigger": "roles:",
+    "context": "plan_roles",
+    "tooltip": "Declares roles whose bindings are shared across this plan's phases."
+  },
+  {
+    "trigger": "roles:",
+    "context": "query_roles",
+    "tooltip": "Declares roles whose bindings are shared across the fields of the query."
+  },
+  {
+    "trigger": "roles:",
+    "context": "trope_roles",
+    "tooltip": "Declares roles whose bindings are shared across this trope's conditions."
+  },
+  {
+    "trigger": "roles:",
+    "context": "sifting_pattern_roles",
+    "tooltip": "Declares roles whose bindings are associated with the action matched by this sifting pattern.\n\nThe `actions` field is a continuation of the `roles` field, except that it can only cast actions, and the actions cast there are collected and exposed as the sifting match."
+  },
+  {
+    "trigger": "conditions:",
+    "context": "action_conditions",
+    "tooltip": "A block of statements that must all hold (evaluate to a truthy value) in order for this action to be targeted successfully.\n\nConditions are checked both during general action targeting and when a queued action is being targeted."
+  },
+  {
+    "trigger": "conditions:",
+    "context": "selector_conditions",
+    "tooltip": "A block of statements that must all hold (evaluate to a truthy value) in order for this selector to choose a candidate."
+  },
+  {
+    "trigger": "conditions:",
+    "context": "plan_conditions",
+    "tooltip": "A block of statements that must all hold (evaluate to a truthy value) in order for this plan to be launched."
+  },
+  {
+    "trigger": "conditions:",
+    "context": "query_conditions",
+    "tooltip": "A block of statements that must all hold (evaluate to a truthy value) for a given query match, in addition to the actual query criteria."
+  },
+  {
+    "trigger": "conditions:",
+    "context": "trope_conditions",
+    "tooltip": "The conditions that make up this trope.\n\nIf all the statements hold (evaluate to a truthy value) for the given role bindings, the trope holds, and the trope fit targeting it evaluates to `true`."
+  },
+  {
+    "trigger": "conditions:",
+    "context": "sifting_pattern_conditions",
+    "tooltip": "A block of statements that must all hold (evaluate to a truthy value) for a given sifting match."
+  },
+  {
+    "trigger": "effects:",
+    "context": "action_effects",
+    "tooltip": "A block of statements that are executed when an action instance is performed.\n\nThis is your basic means of directly updating the storyworld state."
+  },
+  {
+    "trigger": "scratch:",
+    "context": "action_scratch",
+    "tooltip": "A block for preparing temporary variables (prefixed with `$`) that persist across this action's fields.\n\nThe statements are executed in order following action performance—after `roles` and `conditions` are handled, but before `effects`, `reactions`, and all the other action fields. The Viv expression sublanguage is Turing-complete, so there's nothing you can't do in this block. Use it with care."
+  },
+  {
+    "trigger": "reactions:",
+    "context": "action_reactions",
+    "tooltip": "A block of reaction declarations that queue other actions, plans, or selectors in response to this action being performed.\n\nThis is the primary means of one action causing another. Should the queued construct result in any actions being performed, each of them will have the present one attributed as a direct cause."
+  },
+  {
+    "trigger": "embargoes:",
+    "context": "action_embargoes",
+    "tooltip": "A block of embargo declarations that control subsequent performance of this action according to constraints of time, location, and/or role bindings.\n\nUseful for preventing otherwise repetitive actions, or for marking that actions can only occur once in a world's history, or in a specific location, or to a specific character, and so forth."
+  },
+  {
+    "trigger": "saliences:",
+    "context": "action_saliences",
+    "tooltip": "Specifies the salience of an action for a given character, which is a numeric score stored as metadata on their memory of the action.\n\nUnlike `importance`, which is a global objective measure, salience is a subjective measure. Both can be used in queries. For example, you might specify that characters care more about rare events than everyday ones, and more about things that happen to them and to loved ones than to strangers.\n\nThe value here is used as the initial salience the first time a character learns about an action, and thereafter as a salience increment—that is, salience grows the more a character hears about a past event. Whenever a character hears about or recalls an action after the fact, they are placed in the special `@hearer` role—even if they were originally cast in one of its actual roles.\n\nSalience also fades over time, to model forgetting, as documented in the runtime."
+  },
+  {
+    "trigger": "associations:",
+    "context": "action_associations",
+    "tooltip": "Specifies the subjective tags on an action for a given character, which is stored as metadata on their memory of the action.\n\nUnlike `tags`, which is a global objective field, associations is a subjective field. Both can be used in queries. The `@bully` in an `insult` action might associate it with `fun`, while the `@victim` attributes `embarrassing`.\n\nAny time a character hears about an action, they recompute their associations, to model reconsidering. For instance, the `@bully` may later become friends with `@victim`, and recalling the `insult` could yield the recomputed association `guilt`. Whenever a character hears about or recalls an action after the fact, they are placed in the special `@hearer` role—even if they were originally cast in one of its actual roles.\n\nAssociations do not otherwise change or attenuate over time."
+  },
+  {
+    "trigger": "tags:",
+    "context": "action_tags",
+    "tooltip": "Global annotations attached to every instance of this action.\n\nUnlike associations, which are subjective, tags are objective. Both can be used in queries."
+  },
+  {
+    "trigger": "tags:",
+    "context": "query_tags",
+    "tooltip": "Filters query candidates by their tags.\n\nUses set predicates (`any:`, `all:`, `none:`, `exactly:`) over a candidate action's `tags`."
+  },
+  {
+    "trigger": "gloss:",
+    "context": "action_gloss",
+    "tooltip": "A brief description of this action that is rendered upon its performance.\n\nYou might treat the gloss as the action's headline. It's often used in display or debugging contexts.\n\nReferences can be salted in directly, and the full Viv expression sublanguage is available between curly braces:\n\n`gloss: 'Someone greets their friend'`\n`gloss: '@initiator.name says hello to @recipient.name'`\n`gloss: '{@initiator.name.full} says {~randomGreeting()} to @recipient'`"
+  },
+  {
+    "trigger": "report:",
+    "context": "action_report",
+    "tooltip": "A description of this action that is longer than the gloss, rendered upon its performance.\n\nDifferent projects will have different use cases for this field. Generally, you might write a full-paragraph template that uses all the roles.\n\nReferences can be salted in directly, and the full Viv expression sublanguage is available between curly braces."
+  },
+  {
+    "trigger": "importance:",
+    "context": "action_importance",
+    "tooltip": "A numeric score indicating how important this action is from an objective standpoint.\n\nUnlike salience, which is subjective, importance is objective. Both can be used in queries.\n\nCan be a number or an enum like `#HIGH`."
+  },
+  {
+    "trigger": "importance:",
+    "context": "query_importance",
+    "tooltip": "Filters query candidates by their importance scores.\n\nUses numeric comparison operators (`>=:`, `<=:`, etc.) over a candidate action's `importance`."
+  },
+  {
+    "trigger": "phases:",
+    "context": "plan_phases",
+    "tooltip": "An ordered sequence of plan phases.\n\nExecution begins at the first phase and advances through them in order. Each phase contains plan instructions."
+  },
+  {
+    "trigger": "target",
+    "context": "selector_target_group",
+    "tooltip": "Introduces the pool of candidates for a selector, along with the targeting policy.\n\nSupported targeting policies: `randomly`, `with weights`, `in order`."
+  },
+  {
+    "trigger": "actions:",
+    "context": "sifting_pattern_actions",
+    "tooltip": "Declares the actions that make up a sifting match.\n\nThis is a continuation of the `roles` field, except that each entry can only cast actions, and the actions cast in these roles will be exposed as the sifting match.\n\nNote that action roles can appear in the `roles` field too, but they will not be included in the match (which can sometimes be useful). Further, the general constraint that an entity cannot be bound into multiple roles is not enforced in the `actions` field."
+  },
+  {
+    "trigger": "with",
+    "context": "bindings",
+    "tooltip": "Precast bindings for the construct being queued.\n\nPrecast bindings pre-assign candidates for a role, allowing for coordination between the bindings present at a queueing site and the roles of the queued construct itself.\n\nThere are three parameterizations for precast bindings: `with none;` (no precasting), `with partial:` (some required role slots are not precast), or `with:` (all required role slots are precast). When a required role is not precast, the role caster will attempt to fill it targeting time, and targeting will fail if this cannot be done. Likewise for optional roles, except that targeting will still succeed if they cannot be filled.\n\nNote that precast bindings will be validated at targeting time."
+  },
+  {
+    "trigger": "partial",
+    "context": "bindings",
+    "tooltip": "Marks the precast bindings as being partial, meaning not all required role slots are precast.\n\nWhen a required role is not precast, the role caster will attempt to fill it targeting time, and targeting will fail if this cannot be done."
+  },
+  {
+    "trigger": "none",
+    "context": "bindings",
+    "tooltip": "Marks the precast bindings as being empty, meaning no role slots are precast.\n\nThe role caster will attempt to fill all required role slots at targeting time, and targeting will fail if this cannot be done.\n\nNote that `with none;` is not allowed when queueing an action or an action selector, since the initiator role must always be precast for those construct types. An example use case: running a sifting pattern `with none;` as a condition (a character knows about a certain kind of story, regardless of who was involved, and now they can do a certain action)."
+  },
+  {
+    "trigger": "as:",
+    "context": "role_labels",
+    "tooltip": "Declares this role's labels, which parameterize: its entity type (`character`, `item`, `location`, `action`, `symbol`), participation mode (`initiator`, `partner`, `recipient`, `bystander`), and/or other modifiers (`anywhere`, `precast`, `spawn`)."
+  },
+  {
+    "trigger": "is:",
+    "context": "role_casting_pool_is",
+    "tooltip": "Sets the casting pool for this role to a single specific value.\n\nThe expression should evaluate to one candidate entity (or symbol)."
+  },
+  {
+    "trigger": "from:",
+    "context": "role_casting_pool_from",
+    "tooltip": "Sets the casting pool for this role to a collection of candidates.\n\nThe expression should evaluate to an array of entities (or symbols), or to a plain object whose keys are entities (or symbols), in which case the keys are used. Like all casting pools, a custom pool here will be shuffled prior to targeting."
+  },
+  {
+    "trigger": "spawn:",
+    "context": "role_spawn_directive",
+    "tooltip": "Specifies a custom-function call that creates a new entity to fill this role.\n\nThe role must also carry the `spawn` label, and the custom function will be called immediately following successful targeting (i.e., all conditions passing). A spawn role cannot be referenced in the `conditions` field."
+  },
+  {
+    "trigger": "renames:",
+    "context": "role_renaming",
+    "tooltip": "Declares that this role is an alias for a parent action's role.\n\nUsed with inheritance to give a child action's role a different name while keeping the source role definition from the parent action."
+  },
+  {
+    "trigger": "n:",
+    "context": "role_slots",
+    "tooltip": "Controls the number of slots for this role.\n\nA single number like `n: 3` means exactly that many. A range like `n: 2-5` means between min and max. Additionally, a mean can be specified via something like `n: 1-10 [~5]`, which means there must be at least one slot filled, and at most ten, but generally there will be around five slots filled. Alternatively, you can use notation like `n: 1-10 [75%]`, which says that an otherwise qualifying candidate will have a 75% chance of being cast (until all ten slots have been filled). When attached to a `bystander` role with a large max, this works as a pattern declaring the likelihood that a nearby character will witness an action.\n\nDefaults to `n: 1` if omitted."
+  },
+  {
+    "trigger": "if",
+    "context": "conditional_branches",
+    "tooltip": "Introduces a conditional block.\n\nThe condition after if is evaluated, and if that value is truthy, the indented block runs. Can be followed by `elif` and `else` branches. Must end with `end`."
+  },
+  {
+    "trigger": "elif",
+    "context": "conditional_branches",
+    "tooltip": "An additional conditional branch, checked only if the all preceding `if` and `elif` conditions did not hold (evaluated to falsy values)."
+  },
+  {
+    "trigger": "else:",
+    "context": "conditional",
+    "tooltip": "The fallback conditional branch, executed if no `if` or `elif` condition evaluated to a truthy value."
+  },
+  {
+    "trigger": "end",
+    "context": [
+      "conditional",
+      "loop",
+      "plan_conditional",
+      "plan_loop",
+      "associations_conditional",
+      "associations_loop",
+      "saliences_custom_field",
+      "associations_custom_field"
+    ],
+    "tooltip": "Terminates a scoped block, namely a conditional or a loop, and also `for` blocks in `saliences` and `associations`."
+  },
+  {
+    "trigger": "loop",
+    "context": "loop",
+    "tooltip": "Iterates over a collection, binding each element to a local variable.\n\nSyntax: `loop <collection> as <_@var>: ... end`."
+  },
+  {
+    "trigger": "as",
+    "context": "loop",
+    "tooltip": "Introduces the local variable to which each element of the collection will be bound during loop iteration."
+  },
+  {
+    "trigger": "advance;",
+    "context": "plan_instruction_advance",
+    "tooltip": "Advances execution to the next phase, skipping any remaining instructions in the current phase.\n\nIn the final phase, `advance;` is equivalent to `succeed;`. Plan execution will automatically advance if the end of a phase is reached, so it's not necessary (or idiomatic) to put `advance;` at the end of a phase."
+  },
+  {
+    "trigger": "succeed;",
+    "context": "plan_instruction_succeed",
+    "tooltip": "Immediately terminates the plan in a success state, skipping any remaining instructions in the current phase or any subsequent phases.\n\nPlan execution will automatically succeed if the end of the final phase is reached, so it's not necessary (or idiomatic) to put `succeed;` at the end of the final phase. In the final phase, `advance;` is equivalent to `succeed;`."
+  },
+  {
+    "trigger": "fail;",
+    "context": "plan_instruction_fail",
+    "tooltip": "Immediately terminates the plan in a failure state.\n\nPlans can also fail when a reaction window isn't satisfied."
+  },
+  {
+    "trigger": "wait:",
+    "context": "plan_instruction_wait",
+    "tooltip": "Pauses plan execution.\n\nRequires a `timeout:` duration, and also accepts an optional `until:` early-exit condition."
+  },
+  {
+    "trigger": "close",
+    "context": "plan_instruction_reaction_window",
+    "tooltip": "Terminates a reaction window inside a plan phase.\n\nReaction windows are blocks that are introduced with one of the associated operators: `all:`, `any:`, or `untracked:`."
+  },
+  {
+    "trigger": "queue",
+    "context": "reaction_header",
+    "tooltip": "Queues a construct for future targeting.\n\nThe type of construct to target follows `queue`: `action`, `plan`, `action-selector`, or `plan-selector`."
+  },
+  {
+    "trigger": "embargo:",
+    "context": "embargo",
+    "tooltip": "An individual embargo controlling subsequent performance of this action according to constraints of time, location, and/or role bindings.\n\nUse `location:` to specify either `here` or `anywhere`, `time:` to specify a time-frame serving as a cooldown period, and/or `roles:` to limit the embargo to certain kinds of repetition (e.g., same initiator)."
+  },
+  {
+    "trigger": "urgent:",
+    "context": "reaction_urgency",
+    "tooltip": "Controls whether the queued construct will be marked `urgent`.\n\nFor actions and action selectors, this means putting it in the urgent heap at the front of the initiator's action queue. As such, urgently queued actions and action selectors are targeted first on each case of action selection for the associated character. Further, there is a pattern of not advancing to the next simulation tick until every character's urgent actions have been targeted at least once. This allows Viv to simulate moment-to-moment reactions.\n\nQueueing a plan or plan selector urgently causes it to be targeted immediately, which, if successful, causes the plan to immediately launch (i.e., begin execution of its first phase)."
+  },
+  {
+    "trigger": "priority:",
+    "context": "reaction_priority",
+    "tooltip": "A numeric value that determines the queued action's position in its prospective initiator's action queue (higher values are processed first).\n\nThis field cannot be used when the target construct is not an action or an action selector."
+  },
+  {
+    "trigger": "abandon:",
+    "context": "reaction_abandonment_conditions",
+    "tooltip": "A block of conditions that, should they all hold (evaluate to a truthy value) on any given targeting instance, will cause the dequeueing of this reaction."
+  },
+  {
+    "trigger": "repeat:",
+    "context": "reaction_repeat_logic",
+    "tooltip": "Controls whether this reaction re-queues itself on success.\n\nContains an `if:` condition block and a `max:` count.\n\nWhereas reactions are always retried upon failed targeting (unless the abandonment conditions hold), this field causes requeueing upon successful targeting. The pattern here is doing something again if it didn't result in a desired state change or if it didn't occur in tandem with a desired state. For instance, a plan might require a character to track down another character, which it achieves via a `goto` reaction that moves the character to the target's home. Success here means the `goto` action is performed, but actual success from the plan's standpoint means the character finds the target there. If they try it one day and the target isn't home, it may be worth trying again the next day. This could be achieved using the `repeat:` field with an `if:` condition specifying the target not being home, and a `max:` field limiting the number of total attempts."
+  },
+  {
+    "trigger": "max:",
+    "context": "reaction_repeat_logic_max",
+    "tooltip": "The maximum number of times this reaction may be requeued upon successful targeting."
+  },
+  {
+    "trigger": "randomly",
+    "context": "selector_policy",
+    "tooltip": "Candidates are targeted in a random order.\n\nThe order is shuffled, and each candidate has an equal chance of being targeted. The first candidate whose targeting succeeds is selected."
+  },
+  {
+    "trigger": "weights",
+    "context": "selector_policy",
+    "tooltip": "Candidates are targeted with probability proportional to their weight expressions.\n\nMore precisely, candidates are sorted into a new order probabilistically, according to their weights. If targeting fails, the candidate won't be reconsidered, regardless of weight. The first candidate whose targeting succeeds is selected.\n\nEvery candidate must be attributed a `(<weight_expression>)`—e.g., `(3)` or `(@person.age)`. Weights evaluating to non-positive numbers cause the associated candidate to be excluded."
+  },
+  {
+    "trigger": "order",
+    "context": "selector_policy",
+    "tooltip": "Candidates are targeted in order, top-to-bottom.\n\nThe first candidate whose targeting succeeds is selected. Use this when you have a strict priority ranking."
+  },
+  {
+    "trigger": "selector",
+    "context": "selector_candidate_name",
+    "tooltip": "Indicates this candidate is itself a selector.\n\nEnables composability and chaining for layered decision making."
+  },
+  {
+    "trigger": "action:",
+    "context": "query_action_name",
+    "tooltip": "Filters on the name of the matched action.\n\nUses set predicates over action names. Supported operators: `any:` (at least one must match), `all:` (all must match), `none:` (all must not match), `exactly:` (the candidate value must contain exactly and only these members). Multiple operators can be used simultaneously to compose elaborate filters."
+  },
+  {
+    "trigger": "ancestors:",
+    "context": "query_ancestors",
+    "tooltip": "Filters on the causal ancestors of the matched action, meaning the actions that directly or transitively caused it.\n\nUses set predicates over action entity IDs. Supported operators: `any:` (at least one must match), `all:` (all must match), `none:` (all must not match), `exactly:` (the candidate value must contain exactly and only these members). Multiple operators can be used simultaneously to compose elaborate filters."
+  },
+  {
+    "trigger": "descendants:",
+    "context": "query_descendants",
+    "tooltip": "Filters on the causal descendants of the matched action, meaning the actions that it directly or transitively caused.\n\nUses set predicates over action entity IDs. Supported operators: `any:` (at least one must match), `all:` (all must match), `none:` (all must not match), `exactly:` (the candidate value must contain exactly and only these members). Multiple operators can be used simultaneously to compose elaborate filters."
+  },
+  {
+    "trigger": "salience:",
+    "context": "query_salience",
+    "tooltip": "Filters on the salience score for the matched action, in the memories of the character serving as the search domain.\n\nOnly valid when searching over character memories, not the chronicle.\n\nAccepts numbers and enums only, and uses the following numeric operators: `==:`, `<=:`, `>=:`, `<:`, `>:`. Multiple operators can be used simultaneously to compose elaborate filters."
+  },
+  {
+    "trigger": "associations:",
+    "context": "query_associations",
+    "tooltip": "Filters on subjective associations for the matched action, in the memories of the character serving as the search domain.\n\nOnly valid when searching over character memories, not the chronicle.\n\nUses set predicates over action association tags. Supported operators: `any:` (at least one must match), `all:` (all must match), `none:` (all must not match), `exactly:` (the candidate value must contain exactly and only these members). Multiple operators can be used simultaneously to compose elaborate filters."
+  },
+  {
+    "trigger": "location:",
+    "context": "query_location",
+    "tooltip": "Filters on the location where the matched action was performed.\n\nUses set predicates over location entity IDs. Supported operators: `any:` (at least one must match), `none:` (none must match), `exactly:` (the candidate value must contain exactly and only these members). Because `location` is a singular-value field, the `all` operator is not permitted—use `exactly` instead. Multiple operators can be used simultaneously to compose elaborate filters."
+  },
+  {
+    "trigger": "time:",
+    "context": "query_time",
+    "tooltip": "Filters on the time at which the matched action was performed.\n\nUses the sublanguage for temporal constraints, which supports the following operators: `before:` (matched action occurred before a specified time), `after:` (matched action occurred after a specified time), `between:` (matched action occurred between two specified times).\n\nExamples: `after: 2 days ago`, `between: 9am and 5pm`. Multiple operators can be used simultaneously to compose elaborate filters."
+  },
+  {
+    "trigger": "initiator:",
+    "context": "query_initiator",
+    "tooltip": "Filters on the character who initiated the matched action.\n\nUses set predicates over initiator entity IDs. Supported operators: `any:` (at least one must match), `none:` (none must match), `exactly:` (the candidate value must contain exactly and only these members). Because `initiator` is a singular-value field, the `all` operator is not permitted—use `exactly` instead. Multiple operators can be used simultaneously to compose elaborate filters."
+  },
+  {
+    "trigger": "partners:",
+    "context": "query_partners",
+    "tooltip": "Filters on the characters who carried out the matched action.\n\nThe `partners` of an action are its initiator and any characters cast in roles carrying the `partner` label.\n\nUses set predicates over entity IDs. Supported operators: `any:` (at least one must match), `all:` (all must match), `none:` (all must not match), `exactly:` (the candidate value must contain exactly and only these members). Multiple operators can be used simultaneously to compose elaborate filters."
+  },
+  {
+    "trigger": "recipients:",
+    "context": "query_recipients",
+    "tooltip": "Filters on the characters at whom the matched action was directed.\n\nThe `recipients` of an action are the characters cast in roles carrying the `recipient` label.\n\nUses set predicates over entity IDs. Supported operators: `any:` (at least one must match), `all:` (all must match), `none:` (all must not match), `exactly:` (the candidate value must contain exactly and only these members). Multiple operators can be used simultaneously to compose elaborate filters."
+  },
+  {
+    "trigger": "bystanders:",
+    "context": "query_bystanders",
+    "tooltip": "Filters on the characters who witnessed the matched action.\n\nThe `bystanders` of an action are the characters cast in roles carrying the `bystander` label.\n\nUses set predicates over entity IDs. Supported operators: `any:` (at least one must match), `all:` (all must match), `none:` (all must not match), `exactly:` (the candidate value must contain exactly and only these members). Multiple operators can be used simultaneously to compose elaborate filters."
+  },
+  {
+    "trigger": "active:",
+    "context": "query_active",
+    "tooltip": "Filters on the characters who actively participated in the matched action.\n\nThe `active` field of an action records all characters cast in roles carrying the `initiator`, `partner`, or `recipient` labels.\n\nUses set predicates over entity IDs. Supported operators: `any:` (at least one must match), `all:` (all must match), `none:` (all must not match), `exactly:` (the candidate value must contain exactly and only these members). Multiple operators can be used simultaneously to compose elaborate filters."
+  },
+  {
+    "trigger": "present:",
+    "context": "query_present",
+    "tooltip": "Filters on the characters who were physically present for (and cast in) the matched action.\n\nThe `present` field of an action records all characters cast in roles carrying the `initiator`, `partner`, `recipient`, and `bystander` labels. Note that this does not include characters cast in `anywhere` roles, nor characters who were at the location where the action occurred but were not cast in any of its roles.\n\nUses set predicates over entity IDs. Supported operators: `any:` (at least one must match), `all:` (all must match), `none:` (all must not match), `exactly:` (the candidate value must contain exactly and only these members). Multiple operators can be used simultaneously to compose elaborate filters."
+  },
+  {
+    "trigger": "sift",
+    "context": "sifting_header",
+    "tooltip": "Runs a sifting pattern.\n\nIf there is a match, the expression evaluates to an array containing entity IDs for all the actions cast in the roles of the sifting pattern's `actions` field. As such, a sifting can be used as a custom pool in a construct—for example, `@story*: from: sift pattern revenge`. In fact, this is a primary use case for sifting patterns."
+  },
+  {
+    "trigger": "fit",
+    "context": "trope_fit",
+    "tooltip": "Tests whether a trope matches for a given set of bindings.\n\nEvaluates to `true` if the trope's conditions hold, and otherwise `false`.\n\nThere is also a sugared syntax for trope fits—e.g., `<@person> fits trope remorseful`."
+  },
+  {
+    "trigger": "fits",
+    "context": "trope_fit_sugared",
+    "tooltip": "Tests whether a trope matches for a given set of bindings.\n\nEvaluates to `true` if the trope's conditions hold, and otherwise `false`. This is the sugared form of a trope fit; the standard form uses a conventional `with:` block for the bindings.\n\nSugared trope-fit bindings come in three modes mirroring standard bindings: complete (`<@person, @other> fits trope rivalry`), partial (`<partial @person> fits trope rivalry`), and none (`<none> fits trope rivalry`). The latter is used to generally test whether some set of conditions holds for the storyworld at hand.\n\nWhen bindings are provided, they can be either mapped or positional. Mapped bindings explicitly name the target role (`<@rival1: @person, @rival2: @other> fits trope rivalry`), while positional bindings match expressions to roles in the order they are defined in the trope (`<@person, @other> fits trope rivalry`). The two styles cannot be mixed within a single expression."
+  },
+  {
+    "trigger": "after:",
+    "context": "time_frame_statement_after",
+    "tooltip": "Specifies a point in time that must have elapsed.\n\nSyntax: `after: <N> <units> <anchor>`. Example: `after: 3 days from action`.\n\nThe supported time units are as follows (both singular and plural work in all cases): `minute`/`minutes`, `hour`/`hours`, `day`/`days`, `week`/`weeks`, `month`/`months`, `year`/`years`.\n\nThere are four time-frame anchors, whose availability depends on context. `from action` is used in reactions queued in action definitions, where it measures from the time the action at hand is performed. `from hearing` is also used in reactions queued in action definitions, where it measures from the time a character learns about the action at hand, which differs if the character was not present and heard about it later. `from now` is used in reactions queued in plans, where it measures from the current simulation time. And `ago` is used in queries, where it also measures from the current simulation time."
+  },
+  {
+    "trigger": "after:",
+    "context": "time_of_day_statement_after",
+    "tooltip": "Specifies a time of day that must have occurred.\n\nThe constraint is satisfied at any time of day after the specified clock time. Only available in simulations that model the time of day (and expose it via the Viv adapter).\n\nExample: `after: 6:00 pm`"
+  },
+  {
+    "trigger": "before:",
+    "context": "time_frame_statement_before",
+    "tooltip": "Specifies a point in time that must not have elapsed.\n\nSyntax: `before: <N> <units> <anchor>`. Example: `before: 10 years ago`.\n\nThe supported time units are as follows (both singular and plural work in all cases): `minute`/`minutes`, `hour`/`hours`, `day`/`days`, `week`/`weeks`, `month`/`months`, `year`/`years`.\n\nThere are four time-frame anchors, whose availability depends on context. `from action` is used in reactions queued in action definitions, where it measures from the time the action at hand is performed. `from hearing` is also used in reactions queued in action definitions, where it measures from the time a character learns about the action at hand, which differs if the character was not present and heard about it later. `from now` is used in reactions queued in plans, where it measures from the current simulation time. And `ago` is used in queries, where it also measures from the current simulation time."
+  },
+  {
+    "trigger": "before:",
+    "context": "time_of_day_statement_before",
+    "tooltip": "Specifies a time of day that must not have occurred yet.\n\nThe constraint is satisfied at any time of day before the specified clock time. Only available in simulations that model the time of day (and expose it via the Viv adapter).\n\nExample: `before: 9:00 am`"
+  },
+  {
+    "trigger": "between:",
+    "context": "time_frame_statement_between",
+    "tooltip": "Specifies a window in which some point in time must fall.\n\nSyntax: `between: <N> <units> and <N> <units> <anchor>`. Example: `between: 7.9 days and 16.3 months from now`.\n\nThe supported time units are as follows (both singular and plural work in all cases): `minute`/`minutes`, `hour`/`hours`, `day`/`days`, `week`/`weeks`, `month`/`months`, `year`/`years`.\n\nThere are four time-frame anchors, whose availability depends on context. `from action` is used in reactions queued in action definitions, where it measures from the time the action at hand is performed. `from hearing` is also used in reactions queued in action definitions, where it measures from the time a character learns about the action at hand, which differs if the character was not present and heard about it later. `from now` is used in reactions queued in plans, where it measures from the current simulation time. And `ago` is used in queries, where it also measures from the current simulation time."
+  },
+  {
+    "trigger": "between:",
+    "context": "time_of_day_statement_between",
+    "tooltip": "Specifies a window in which some time of day must fall.\n\nThe constraint is satisfied within the window of clock time.\n\nExample: `between: 9:00 am and 5:00 pm`"
+  },
+  {
+    "trigger": "from",
+    "context": "time_frame_anchor_from_action",
+    "tooltip": "Used in reactions queued in action definitions, to anchor a time-frame constraint to the time the action at hand is performed."
+  },
+  {
+    "trigger": "from",
+    "context": "time_frame_anchor_from_hearing",
+    "tooltip": "Used in reactions queued in action definitions, to anchor a time-frame constraint to the time a character learns about the action at hand, which differs from its time of performance if the character was not present and heard about it later."
+  },
+  {
+    "trigger": "from",
+    "context": "time_frame_anchor_from_now",
+    "tooltip": "Used in reactions queued in plans, to anchor a time-frame constraint to the current simulation time."
+  },
+  {
+    "trigger": "ago",
+    "context": "time_frame_anchor_ago",
+    "tooltip": "Used in queries, to anchor a time-frame constraint to the current simulation time."
+  },
+  {
+    "trigger": "forever",
+    "context": "embargo_time_period",
+    "tooltip": "The embargo never expires and is thus permanent."
+  },
+  {
+    "trigger": "in",
+    "context": "relational_operator",
+    "tooltip": "Tests whether the left value is contained in the right value.\n\nThe right value should be a collection.\n\nExample: `@person in @other.friends`."
+  },
+  {
+    "trigger": "knows",
+    "context": "relational_operator",
+    "tooltip": "Tests whether a character (left value) has a memory of an action (right value)."
+  },
+  {
+    "trigger": "caused",
+    "context": "relational_operator",
+    "tooltip": "Tests whether an action (left value) is a causal ancestor of another action (right value).\n\nHolds for both direct and transitive causation. To test direct causation specifically, use `triggered`."
+  },
+  {
+    "trigger": "triggered",
+    "context": "relational_operator",
+    "tooltip": "Tests whether an action (left value) directly caused another action (right value).\n\nNarrower than `caused`, which also allows transitive ancestry."
+  },
+  {
+    "trigger": "preceded",
+    "context": "relational_operator",
+    "tooltip": "Tests whether an action (left value) occurred in time before another action (right value).\n\nThere is no `succeeded` operator, but the semantics can be captured by flipping the operands."
+  },
+  {
+    "trigger": "append",
+    "context": "assignment_operator",
+    "tooltip": "Appends the right value to the left value (a collection)."
+  },
+  {
+    "trigger": "remove",
+    "context": "assignment_operator",
+    "tooltip": "Removes the right value from the left value (a collection)."
+  },
+  {
+    "trigger": "inscribe",
+    "context": "inscription",
+    "tooltip": "Inscribes an item (left value) with knowledge of an action (right value).\n\nA character who later inspects the item, via an expression using the `inspect` operator, will learn about all the actions about which the item inscribes knowledge."
+  },
+  {
+    "trigger": "inspect",
+    "context": "inspection",
+    "tooltip": "Causes a character (left value) to learn about all the actions inscribed in an item (right value).\n\nExpressions using the `inscribe` operator cause knowledge of specified actions to be inscribed into storyworld items. When a character inspects an item, they learn of all the actions about which knowledge is inscribed in the item. If an item has no inscriptions, this is a no-op."
+  },
+  {
+    "trigger": "true",
+    "context": "boolean_literal",
+    "tooltip": "The boolean true literal."
+  },
+  {
+    "trigger": "false",
+    "context": "boolean_literal",
+    "tooltip": "The boolean false literal."
+  },
+  {
+    "trigger": "null",
+    "context": "null_literal",
+    "tooltip": "The null literal."
+  },
+  {
+    "trigger": "chronicle",
+    "context": "search_domain_chronicle",
+    "tooltip": "Use the entire chronicle as a search domain.\n\nIn Viv parlance, the 'chronicle' is the global record of every action that has ever occurred in the simulation instance at hand. Alternatively, a search can be performed over a given character's memories."
+  },
+  {
+    "trigger": "inherit",
+    "context": "search_domain_inherit",
+    "tooltip": "Use the search domain active in the enclosing context, without narrowing it.\n\nThis is meaningful when sifting patterns invoke queries or other sifting patterns. For instance, imagine a sifting pattern that casts one of its actions using a query—what search domain should the pattern specify for the query? Using `inherit` means the query will search over whatever domain the pattern itself was invoked with. So if you sift a pattern `over: chronicle`, all its inner searches inherit the chronicle as a search domain. If you sift it `over: @person` (a character's memories), the inner searches inherit that character's memories.\n\nThis is opposed to domain narrowing, where an outer search specifies e.g. `@person` and an inner search specifies `@other`, with the inner search domain automatically narrowing to the actions that both `@person` and `@other` know about."
+  },
+  {
+    "trigger": "@",
+    "context": "binding_type",
+    "tooltip": "The entity sigil `@` marks a name as binding a character, item, location, or past action in the storyworld."
+  },
+  {
+    "trigger": "&",
+    "context": "binding_type",
+    "tooltip": "The symbol sigil `&` marks a name as binding a literal value that doesn't correspond to a storyworld entity.\n\nSymbols are values like strings and numbers that are cast in roles for flavor or logic."
+  },
+  {
+    "trigger": "$",
+    "context": "scratch_variable_sigil",
+    "tooltip": "The scratch-variable sigil `$` marks a temporary value that can be used across the action definition.\n\nIdiomatically, these are defined in the `scratch` field, and then used in all the fields downstream from there: `conditions`, `effects`, `reactions`, `embargoes`, `tags`, `gloss`, and `report`. They cannot occur in the `roles` field."
+  },
+  {
+    "trigger": "_",
+    "context": "local_variable_sigil",
+    "tooltip": "The local-variable sigil `_` marks a temporary value that is scoped to a single block.\n\nLocal variables appear in loops and in `for` blocks for defining custom salience- and associations-producing code."
+  },
+  {
+    "trigger": "#",
+    "context": "enum",
+    "tooltip": "The symbol `#` introduces an enum, which is a label that will be evaluated to a configured number or string at runtime.\n\nExamples: `#HIGH`, `#CALM`, `#LIFE_CHANGING`. Use enums to avoid magic numbers/strings in your code. If you need to change the value, you only need to change one line in your Viv adapter (where the enum value is defined). If you need to change the label, right-click on it and select `Rename...`.\n\nEnums can optionally be signed: `+#BIG` or `-#SMALL`."
+  },
+  {
+    "trigger": "~",
+    "context": "custom_function_call",
+    "tooltip": "The symbol `~` introduces a custom-function call.\n\nA custom function is an arbitrary function that is defined in your host application and registered in your Viv adapter. While Viv is Turing-complete, it is often easier to define a procedure in your own application. This is especially pragmatic if the procedure is prone to changing. With a custom function, you can write the procedure in one place, update it in that one place as needed, and all its invocations in your Viv code will continue to work (pending a signature change)."
+  },
+  {
+    "trigger": "*",
+    "context": "group_role_decorator",
+    "tooltip": "The group-role decorator `*` marks a role that has more than one slot.\n\nWhen a role has multiple slots, it is called a group role, and in such cases both the declaration and every subsequent reference must carry the group-role decorator. (e.g., `@friends*`). It's there to remind you that the role should be treated as a collection, since group roles can cause runtime errors when they're not handled with care. For instance, if you want to deal individually with the bindings for a group role, you need to loop over them: `loop @friends* as _@friend`. That said, you can use the name directly as a `roles` entry in an action's `saliences` and `associations` field: `@friends*: #BORING`.\n\nThe group-role decorator is not allowed on scratch variables or local variables, though they may bind collections."
+  },
+  {
+    "trigger": ">",
+    "context": "plan_phase_name",
+    "tooltip": "The plan-phase sigil `>` introduces the name of a plan phase."
+  },
+  {
+    "trigger": "?",
+    "context": "eval_fail_safe_marker",
+    "tooltip": "The evaluation fail-safe marker `?` allows an expression to fail gracefully when an intermediate evaluation is `null` or undefined.\n\nFor instance, the expression `@person.partner?->loyalty > 50` will safely evaluate to `false` if `@person.partner` is `null` or undefined. Here are some more examples: `@person.partner?->name`, `@person?.boss?->department?->budget`, `@person.opinions[@stranger]?`.\n\nYou can even use it in assignments, on both the left-hand side (`@person.mentor?->reputation += #SMALL`) and the right-hand side (`$@nearest-tavern = ~findNearestLocation(@person, 'tavern')?`).\n\nThe one place it can't be used is at the front of an expression, for obvious reasons, and also at the end of the left-hand side of an assignment: `@person.mood? = #GOOD`. This is because the semantics don't make sense for a write target: 'Set this property, but also maybe it doesn't exist?'"
+  },
+  {
+    "trigger": "->",
+    "context": "reference_path_pointer",
+    "tooltip": "A pointer `->` dereferences an entity reference (the lead-up to the pointer) and accesses a property on that entity.\n\nFor example, `@person.boss->hometown` would read the hometown of whoever is stored in `@person.boss`. Multiple pointers can be used in a single reference—e.g., `@person.boss->boss->boss->hometown`."
+  },
+  {
+    "trigger": "%",
+    "context": "chance_expression",
+    "tooltip": "A chance expression is a probabilistic boolean test that can be used anywhere expressions are allowed.\n\nAs an example, `40%` evaluates to `true` 40% of the time. These can be used as standalone conditions, as conditions in conditionals (`if 25%`), and anywhere else an expression can appear."
+  },
+  {
+    "trigger": "character",
+    "context": "role_label",
+    "tooltip": "This role casts a character: an entity in the form of an agent who can initiate actions and form memories.\n\nCharacter roles must be prefixed with the entity sigil `@`."
+  },
+  {
+    "trigger": "item",
+    "context": "role_label",
+    "tooltip": "This role casts an item: an entity in the form of an inanimate object that can't initiate actions or form memories, but on which knowledge of actions may be inscribed.\n\nItem roles must be prefixed with the entity sigil `@`."
+  },
+  {
+    "trigger": "location",
+    "context": "role_label",
+    "tooltip": "This role casts a location: an entity in the form of a discrete place in the storyworld where characters and items can be situated.\n\nLocation roles must be prefixed with the entity sigil `@`."
+  },
+  {
+    "trigger": "action",
+    "context": "role_label",
+    "tooltip": "This role casts an action: an entity in the form of a collection of data about an action that has already been performed at some point in the history of the storyworld.\n\nWhen an action `A` casts an action role `R`, any action cast in `R` is marked as a cause of `A`, and furthermore `A` propagates knowledge of those actions. That is, any character who participates in, witnesses, or hears about `A` will form knowledge of all the actions cast in `R`.\n\nWhile not enforced, the initiator of this action should actually know about any actions cast here. A best practice is to use the results of a query search over the initiator's memories as the casting pool: (e.g., `from: search query embarrassing-moment: over: @initiator`).\n\nAction roles must be prefixed with the entity sigil `@`, and they always require a casting-pool directive (`is:` or `from:`)."
+  },
+  {
+    "trigger": "symbol",
+    "context": "role_label",
+    "tooltip": "This role casts a symbol: a literal value that doesn't correspond to a storyworld entity.\n\nSymbols are values like strings and numbers that are cast in roles for flavor or logic. Example: `&evidence: from: ['fingerprint', 'shoeprint', 'a strand of hair', 'their wallet', 'a monogrammed handkerchief', 'a crumpled receipt']`.\n\nSymbol roles must be prefixed with the symbol sigil `&`, and they always require a casting-pool directive (`is:` or `from:`)."
+  },
+  {
+    "trigger": "initiator",
+    "context": "role_label",
+    "tooltip": "This role casts the character who initiates the action.\n\nEvery action must have exactly one initiator role, which must have exactly one role slot. The initiator role cannot have a custom casting pool. It is always precast during action selection itself, when the initiator is treated as a given prior to an action being targeted on their behalf."
+  },
+  {
+    "trigger": "partner",
+    "context": "role_label",
+    "tooltip": "This role casts a character who helps to initiate the action alongside the `initiator`.\n\nFor various reasons, an action cannot have multiple `initiator` roles, but the `partner` role label allows an author to specify something is conceptually akin to multiple initiators. Queries have a `partners` field, which is used to filter on the characters in both the `initiator` and `partners` roles of an action.\n\nActions can have multiple `partner` roles, and `partner` roles can have multiple slots."
+  },
+  {
+    "trigger": "recipient",
+    "context": "role_label",
+    "tooltip": "This role casts a character at whom the action is directed.\n\nExamples: the target of a `hug`, `insult`, or `tell-story` action.\n\nActions can have multiple `recipient` roles, and `recipient` roles can have multiple slots."
+  },
+  {
+    "trigger": "bystander",
+    "context": "role_label",
+    "tooltip": "This role casts a character who physically witnesses the action but does not actively participate in it.\n\nA character cannot witness an action except by being cast in a `bystander` role, in which case they will form a memory of the witnessed action.\n\nActions can have multiple `bystander` roles, and `bystander` roles can have multiple slots."
+  },
+  {
+    "trigger": "anywhere",
+    "context": "role_label",
+    "tooltip": "This role casts an entity who is not required to be physically present at the action's location.\n\nExample: the subject of gossip conducted behind one's back.\n\nNote that a character who *is* physically present is not precluded from being cast in an `anywhere` role, though they will be considered to have not experienced the action, and will thus not form a memory of it.\n\nActions can have multiple `anywhere` roles, and `anywhere` roles can have multiple slots."
+  },
+  {
+    "trigger": "precast",
+    "context": "role_label",
+    "tooltip": "This role must be bound in advance (via the precast bindings in a reaction or selector).\n\nA `precast` role is never filled through the normal casting procedure."
+  },
+  {
+    "trigger": "spawn",
+    "context": "role_label",
+    "tooltip": "This role casts an entity that will be constructed as a result of the action.\n\nUsage of this role label must be paired with a spawn directive (`spawn:` field in the role definition) that specifies a custom-function call that will be executed immediately following successful targeting (i.e., all conditions passing). A spawn role cannot be referenced in the `conditions` field.\n\nActions can have multiple `spawn` roles, but a `spawn` role must have exactly one slot."
+  },
+  {
+    "trigger": "location:",
+    "context": "embargo_location",
+    "tooltip": "Controls where this embargo applies.\n\nThe options are `here` (holds only at the location where the action is performed) and `anywhere` (not constrained by location)."
+  },
+  {
+    "trigger": "here",
+    "context": "embargo_location",
+    "tooltip": "The embargo only applies at the location where the action is performed."
+  },
+  {
+    "trigger": "anywhere",
+    "context": "embargo_location",
+    "tooltip": "The embargo is not constrained by location."
+  },
+  {
+    "trigger": "time:",
+    "context": "embargo_time_period",
+    "tooltip": "Controls how long this embargo lasts.\n\nCan be a duration (e.g., `2 weeks`) or `forever`."
+  },
+  {
+    "trigger": "roles:",
+    "context": "embargo_roles",
+    "tooltip": "Specifies which role bindings the embargo tracks.\n\nThe syntax is a comma-separated list of role names. For example, `roles: @confessor, @confidant` would assert this embargo so as to prevent the same `@confessor` and `@confidant` characters from being cast in those same roles again. Note that both of them would have to be cast again in the same roles, in a single action instance, in order for the embargo to apply.\n\nBy specifying something like `roles: @initiator` alongside `location: anywhere` and `time: forever`, you can prohibit a character from ever performing this particular action twice.\n\nThe embargo system is optimized to prune embargoed bindings early in the search procedure undergirding role casting, so you do not need to shy away from elaborate specifications here."
+  },
+  {
+    "trigger": "default:",
+    "context": "saliences_default",
+    "tooltip": "The fallback salience value used for any character who isn't covered by a `roles:` entry or the custom `for` block.\n\nThe resolution order is: `roles` first, then `for`, then `default`. If a character is bound in a role that has an entry, that wins. Otherwise the custom `for` block is consulted. Otherwise the `default` applies."
+  },
+  {
+    "trigger": "roles:",
+    "context": "saliences_roles",
+    "tooltip": "Maps specific roles to salience values for characters cast in those roles.\n\nThe resolution order is: `roles` first, then `for`, then `default`. If a character is bound in a role that has an entry, that wins. Otherwise the custom `for` block is consulted. Otherwise the `default` applies.\n\nNote that the most typical case for forming a memory of an action will be learning about it after the fact, in which case the character is cast in the special `@hearer` role—which is not available for use here. As such, it's good practice to write a `for` block for characters who learn about this action later on."
+  },
+  {
+    "trigger": "for",
+    "context": [
+      "saliences_custom_field"
+    ],
+    "tooltip": "A custom computation block (potentially) yielding per-character salience values.\n\nThe `for` block binds a local variable to the character whose salience (for this action) is being computed, then evaluates its statements in order. The first statement that yields a numeric value becomes that character's salience increment.\n\nThe general pattern here is to refer to specifics of the character at hand when deciding how salient this action is to them—e.g., they'll care more about it if the `initiator` is someone they know.\n\nNote that the most typical case for forming a memory of an action will be learning about it after the fact, in which case the character is cast in the special `@hearer` role—which is not available for use in the saliences `roles` block. As such, it's good practice to always also write a `for` field for characters who learn about this action later on."
+  },
+  {
+    "trigger": "for",
+    "context": [
+      "associations_custom_field"
+    ],
+    "tooltip": "A custom computation block (potentially) yielding per-character associations.\n\nThe `for` block binds a local variable to the character whose associations (for this action) are being computed, then evaluates its statements in order. The first statement that yields a tag list becomes that character's associations.\n\nThe general pattern here is to refer to specifics of the character at hand when deciding what they associate with this action—e.g., they'll view a `bully` action differently depending on whether they like the victim (`cruel`) or dislike them (`just`).\n\nNote that the most typical case for forming a memory of an action will be learning about it after the fact, in which case the character is cast in the special `@hearer` role—which is not available for use in the associations `roles` block. As such, it's good practice to write a `for` block for characters who learn about this action later on."
+  },
+  {
+    "trigger": "default:",
+    "context": "associations_default",
+    "tooltip": "The fallback set of association tags used for any character who isn't covered by a `roles:` entry or the custom `for` block.\n\nThe resolution order is: `roles` first, then `for`, then `default`. If a character is bound in a role that has an entry, that wins. Otherwise the custom `for` block is consulted. Otherwise the `default` applies."
+  },
+  {
+    "trigger": "roles:",
+    "context": "associations_roles",
+    "tooltip": "Maps specific roles to association tags for characters cast in those roles.\n\nThe resolution order is: `roles` first, then `for`, then `default`. If a character is bound in a role that has an entry, that wins. Otherwise the custom `for` block is consulted. Otherwise the `default` applies.\n\nNote that the most typical case for forming a memory of an action will be learning about it after the fact, in which case the character is cast in the special `@hearer` role—which is not available for use here. As such, it's good practice to write a `for` block for characters who learn about this action later on."
+  },
+  {
+    "trigger": "any:",
+    "context": "set_predicate_operator",
+    "tooltip": "At least one of the specified values must appear in the actual set."
+  },
+  {
+    "trigger": "all:",
+    "context": "set_predicate_operator",
+    "tooltip": "Every one of the specified values must appear in the actual set."
+  },
+  {
+    "trigger": "none:",
+    "context": "set_predicate_operator",
+    "tooltip": "None of the specified values may appear in the actual set."
+  },
+  {
+    "trigger": "exactly:",
+    "context": "set_predicate_operator",
+    "tooltip": "The actual set must contain exactly the specified values, and nothing else."
+  },
+  {
+    "trigger": "search",
+    "context": "action_search",
+    "tooltip": "Executes a named `query` over a specified search domain.\n\nEvaluates to a collection containing the entity IDs for all matching past actions."
+  },
+  {
+    "trigger": "search:",
+    "context": "action_search",
+    "tooltip": "A search over a search domain without use of any specific query.\n\nEvaluates to a collection containing the entity IDs for all past actions in the domain."
+  },
+  {
+    "trigger": "over:",
+    "context": "search_domain",
+    "tooltip": "Specifies the search domain for a query search or sifting.\n\nUse `chronicle` to search the global chronicle, though this is usually advised for story sifting that happens outside the simulation. If you search over the chronicle to do something like cast an action that a character can tell someone else about, you get spooky action at a distance—they are telling someone about something they don't know, and both characters learn about it in the process.\n\nUse an expression to specify the character whose memories should be searched. This is the healthier option for a character recalling or telling about a past action, since you're limiting the candidates to actions they actually know about. If a sifting pattern invokes a query or another sifting pattern, the expression will be used to narrow the search domain of the outer search. For instance, if we run a sifting pattern over `@person`, and that sifting pattern runs a query over `@other`, the inner search domain will be narrowed to the actions that both `@person` and `@other` know about. Otherwise, it could lead to `@person` or `@other` performing knowledge that they do not actually have.\n\nFinally, use `inherit` to inherit the search domain of an enclosing context, without narrowing it.\n\nNote that an inner search domain can never be expanded. For example, specifying `over: chronicle` in an inner search won't expand the search domain to the chronicle, again because this could cause spooky action."
+  },
+  {
+    "trigger": "all:",
+    "context": "plan_instruction_reaction_window_operator",
+    "tooltip": "Opens a reaction window that that successfully closes only if all its enclosed reactions succeed.\n\nReaction success depends on the construct type: an action succeeds if it's performed, an action selector succeeds if its selected action is performed, a plan succeeds if its final phase completes (or a `succeed` instruction is executed), and a plan selector succeeds if its selected plan succeeds."
+  },
+  {
+    "trigger": "any:",
+    "context": "plan_instruction_reaction_window_operator",
+    "tooltip": "Opens a reaction window that successfully closes as soon as any one of its enclosed reactions succeeds.\n\nReaction success depends on the construct type: an action succeeds if it's performed, an action selector succeeds if its selected action is performed, a plan succeeds if its final phase completes (or a `succeed` instruction is executed), and a plan selector succeeds if its selected plan succeeds."
+  },
+  {
+    "trigger": "untracked:",
+    "context": "plan_instruction_reaction_window_operator",
+    "tooltip": "Opens an untracked reaction window that queues its enclosed reactions and then immediately closes successfully.\n\nAn untracked window does fire-and-forget with the queued reactions inside it, which is actually equivalent to placing a reaction on the top level of a phase, outside of any reaction window. This means that it's not necessary to use `untracked` to fire-and-forget a reaction, but you may want to do it for a few reasons nonetheless: explicitly mark reactions, or a group of reactions, as being untracked; or temporarily change a reaction window to be untracked, for debugging, without changing the structure significantly."
+  },
+  {
+    "trigger": "timeout:",
+    "context": "plan_instruction_wait_timeout",
+    "tooltip": "The maximum duration to hold on the `wait` instruction before the plan resumes.\n\nThis is a required subfield of `wait:`, since otherwise plans could get stuck indefinitely."
+  },
+  {
+    "trigger": "until:",
+    "context": "plan_instruction_wait_until",
+    "tooltip": "An optional block of early-exit conditions for the `wait` instruction.\n\nIf all the statements hold (evaluate to a truthy value), the wait will end before its `timeout` elapses."
+  },
+  {
+    "trigger": "from",
+    "context": "parent_action_declaration",
+    "tooltip": "Declares that this action inherits from a parent action.\n\nThe child duplicates the parent, then overrides specific fields or merges them via the `join` operator."
+  },
+  {
+    "trigger": "join",
+    "context": "child_join_operator",
+    "tooltip": "Merges this field with the parent action's version instead of replacing it.\n\nOnly valid on joinable fields: `tags:`, `roles:`, `conditions:`, `scratch:`, `effects:`, `reactions:`, `embargoes:`."
+  },
+  {
+    "trigger": "include",
+    "context": "include_statement",
+    "tooltip": "Imports constructs from the specified `.viv` file.\n\nPaths are resolved relative to this file. Circular dependencies are allowed, and each file is processed only once."
+  },
+  {
+    "trigger": "none",
+    "context": "bindings_sugared_none",
+    "tooltip": "Sugared empty precast bindings.\n\nNo roles are precast. Equivalent to `with none;` in the standard form. This is used to generally test whether some set of conditions holds for the storyworld at hand."
+  },
+  {
+    "trigger": "partial",
+    "context": "bindings_sugared_partial",
+    "tooltip": "Sugared partial precast bindings.\n\nOnly the listed roles are precast, while all other required role slots will be cast in the normal manner, as well as optional role slots. If an outstanding required slot cannot be filled, targeting will fail.\n\nThe bindings can be either mapped or positional. Mapped bindings explicitly name the target role (`<partial @rival1: @person> fits trope rivalry`), while positional bindings match expressions to roles in the order they are defined in the trope (`<partial @person> fits trope rivalry`). The two styles cannot be mixed within a single expression."
+  }
+]

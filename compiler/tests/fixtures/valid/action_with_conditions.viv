@@ -1,0 +1,11 @@
+// Action with conditions (membership test and comparison)
+
+action confide:
+    roles:
+        @speaker:
+            as: initiator
+        @listener:
+            as: recipient
+    conditions:
+        @listener in @speaker.friends
+        @speaker.mood > 0

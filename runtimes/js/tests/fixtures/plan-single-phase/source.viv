@@ -1,0 +1,22 @@
+// Plan with a single phase that queues an action
+
+plan scheme:
+    roles:
+        @plotter:
+            as: character
+        @target:
+            as: character
+    phases:
+        >plot:
+            queue action ambush:
+                with:
+                    @attacker: @plotter
+                    @victim: @target
+
+
+reserved action ambush:
+    roles:
+        @attacker:
+            as: initiator
+        @victim:
+            as: recipient

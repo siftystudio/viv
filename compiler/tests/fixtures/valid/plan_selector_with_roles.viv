@@ -1,0 +1,41 @@
+// Plan selector with explicit roles
+
+plan-selector choose-strategy:
+    roles:
+        @leader:
+            as: character
+    target in order:
+        plan-a;
+        plan-b;
+
+
+plan plan-a:
+    roles:
+        @leader:
+            as: character
+    phases:
+        >step-one:
+            queue action act-a:
+                with partial:
+                    @doer: @leader
+            succeed;
+plan plan-b:
+    roles:
+        @leader:
+            as: character
+    phases:
+        >step-one:
+            queue action act-b:
+                with partial:
+                    @doer: @leader
+            succeed;
+action act-a:
+    roles:
+        @doer:
+            as: initiator
+
+
+action act-b:
+    roles:
+        @doer:
+            as: initiator

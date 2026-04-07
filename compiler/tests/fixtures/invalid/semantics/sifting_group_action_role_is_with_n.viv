@@ -1,0 +1,16 @@
+// Group action role with is: and n: (is: requires max == 1)
+
+action foo:
+    roles:
+        @doer:
+            as: initiator
+
+
+pattern bad:
+    roles:
+        @p:
+            as: character
+    actions:
+        @acts*:
+            is: @p.last_action
+            n: 2-5

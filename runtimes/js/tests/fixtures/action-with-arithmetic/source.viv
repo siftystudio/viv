@@ -1,0 +1,11 @@
+// Action with standalone arithmetic expressions in effects
+
+action calculate:
+    roles:
+        @actor:
+            as: initiator
+    effects:
+        @actor.sum = @actor.a + @actor.b
+        @actor.diff = @actor.a - @actor.b
+        @actor.prod = @actor.a * @actor.b
+        @actor.quot = @actor.a / @actor.b

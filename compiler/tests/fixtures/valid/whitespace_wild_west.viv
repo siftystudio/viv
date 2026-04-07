@@ -1,0 +1,172 @@
+// Deliberately insane whitespace and indentation.  If this compiles, whitespace
+// is truly irrelevant to the parser.  Every construct here is formatted in a way
+// that no sane author would ever write.
+
+
+                                        trope           rivals:
+roles:
+@a:
+as: character
+@b:
+as: character
+conditions:
+@b in @a.enemies
+
+
+	template 		action 		base-social:
+		roles:
+	@actor:
+				as: initiator
+	@target:
+				as: 			recipient
+		importance: 	2.0
+	gloss: 		"@actor interacts with @target"
+	tags: social,     interpersonal
+
+
+action    	    	    	    	   threaten     from     base-social:
+roles:
+            @actor:
+as: initiator
+            @target:
+as: recipient
+@witness:
+                                                as: bystander
+                                                from: @actor.friends
+@crowd*:
+                        as: bystander
+                                    n: 2-10 [~5]
+    scratch:
+$@severity = 0
+$@escalated = 5
+    conditions:
+
+        @actor.anger    >    3
+
+                                @target    !=    @actor
+
+                    !(@actor in @target.allies)
+
+	<@actor, @target> fits trope rivals
+    effects:
+        $@severity            =           $@escalated      +       @actor.anger       *         2
+@target.fear   +=   #CHANGE_BIG
+                    if     @actor.rage     >     10:
+                        @target.mood    -=    #CHANGE_MEDIUM
+            else:
+@target.mood -= #NUDGE
+    end
+            loop @crowd* as _@w:
+_@w.anxiety += 1
+        end
+    embargoes:
+            embargo:
+    location: here
+                    time: 3 days
+                                    roles: @actor, @target
+    saliences:
+                default: #INTERESTING
+    roles:
+        @witness: #BORING
+    associations:
+                default:         intimidation
+        roles:
+                        @witness:         fear
+    reactions:
+        queue     action     cower:
+            with     partial:
+                @coward:     @target
+                        repeat:
+                            max: 2
+                            if:
+                    @target.fear > 5
+
+
+                reserved          action          cower:
+	roles:
+		@coward:
+			as: initiator
+
+
+action          inscribe-threat:
+                    roles:
+                                    @scribe:
+                                                    as: initiator
+                                    @tablet:
+                                                    as: item
+                    effects:
+                                    @tablet       inscribe       @this
+
+
+action-selector       social-response:
+                roles:
+        @responder:
+            as: initiator
+    target       with 			 	  weights:
+                    (  3  )   threaten  ;
+        (   1   )        cower       ;
+
+
+action-selector                fallback-response:
+            roles:
+                            @responder:
+    as: initiator
+        target      in 		 	    order:
+                        threaten   ;
+    cower          ;
+
+
+query     recent-threats:
+        roles:
+                @observer:
+                        as: character
+    action:
+                    any: threaten
+        time:
+    after:        1        day        ago
+            initiator:
+        none: @observer
+    bystanders:
+                any: @observer
+            importance:
+                        >=:          2
+
+
+                                pattern   threat-spree:
+roles:
+        @bully:
+                as: character
+        @victim:
+    as: character
+    actions:
+            @latest-threat:
+        from: @bully.memories
+    conditions:
+        @bully != @victim
+
+
+plan         intimidation-campaign:
+                roles:
+    @leader:
+                        as: character
+        phases:
+>opening-salvo:
+                            queue action threaten:
+                with partial:
+                                        @actor: @leader
+            advance;
+    >escalation:
+            queue action-selector social-response:
+with partial:
+                                @responder: @leader
+                        succeed;
+
+
+action     research:
+            roles:
+@scholar:
+                                        as: initiator
+    conditions:
+            ~hasSkill(@scholar,              "research")
+                effects:
+        @scholar.knowledge         =        ~computeGain(     @scholar.level      ,       2      )

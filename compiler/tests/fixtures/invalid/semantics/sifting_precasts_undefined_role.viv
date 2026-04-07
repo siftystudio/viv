@@ -1,0 +1,27 @@
+// Invalid: sifting precasts role not in pattern
+
+action betray:
+    roles:
+        @betrayer:
+            as: initiator
+
+pattern treachery:
+    roles:
+        @perpetrator:
+            as: character
+    actions:
+        @act1:
+            from: @perpetrator.memories
+    conditions:
+        true
+
+action detect:
+    roles:
+        @detective:
+            as: initiator
+    conditions:
+        sift pattern treachery:
+            with partial:
+                @perpetrator: @detective
+                @phantom: @detective
+            over: @detective

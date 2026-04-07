@@ -1,0 +1,17 @@
+// Invalid: reaction location has duplicate value
+
+reserved action respond:
+    roles:
+        @responder:
+            as: initiator
+
+action trigger:
+    roles:
+        @actor:
+            as: initiator
+    reactions:
+        queue action respond:
+            with:
+                @responder: @actor
+            location:
+                any: @actor.home, @actor.home

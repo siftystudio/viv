@@ -1,0 +1,8 @@
+// Parentheses overriding natural operator precedence
+
+action test-parens-override:
+    roles:
+        @a:
+            as: initiator
+    conditions:
+        (@a.x > 0 || @a.y > 0) && @a.z > 0

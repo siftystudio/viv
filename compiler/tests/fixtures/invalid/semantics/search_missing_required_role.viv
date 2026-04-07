@@ -1,0 +1,25 @@
+// Invalid: search fails to cast required role for query
+
+action fight:
+    roles:
+        @combatant:
+            as: initiator
+
+query recent-fights:
+    roles:
+        @witness:
+            as: character
+        @suspect:
+            as: character
+    action:
+        any: fight
+
+action searcher:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        search query recent-fights:
+            with:
+                @witness: @actor
+            over: @actor

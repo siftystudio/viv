@@ -1,0 +1,12 @@
+// Scratch variable with fail-safe marker on the anchor
+
+action test-scratch-failsafe:
+    roles:
+        @actor:
+            as: initiator
+    scratch:
+        $@counter = 0
+    effects:
+        if $@counter? > 0:
+            $@counter -= 1
+        end

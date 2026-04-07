@@ -1,0 +1,40 @@
+<list>
+  <!-- Viv-specific color additions for the IntelliJ Light scheme.
+       Uses the Viv Cool (Light) palette as a subtle enhancement. -->
+
+  <!-- Section keywords, plan instructions (purple) -->
+  <option name="VIV_SECTION_KEYWORD">
+    <value>
+      <option name="FOREGROUND" value="8b5e8b"/>
+    </value>
+  </option>
+
+  <!-- Keyword parameters: partial, none, randomly, etc. (purple italic) -->
+  <option name="VIV_KEYWORD_PARAMETER">
+    <value>
+      <option name="FOREGROUND" value="8b5e8b"/>
+      <option name="FONT_TYPE" value="2"/>
+    </value>
+  </option>
+
+  <!-- Phase names (teal) -->
+  <option name="VIV_PHASE_NAME">
+    <value>
+      <option name="FOREGROUND" value="367b7f"/>
+    </value>
+  </option>
+
+  <!-- Role labels and language constants (blue) -->
+  <option name="VIV_ROLE_LABEL">
+    <value>
+      <option name="FOREGROUND" value="1a7a9f"/>
+    </value>
+  </option>
+
+  <!-- Reserved internal identifiers (blue) -->
+  <option name="VIV_RESERVED_IDENT">
+    <value>
+      <option name="FOREGROUND" value="1a7a9f"/>
+    </value>
+  </option>
+</list>

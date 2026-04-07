@@ -1,0 +1,15 @@
+// Invalid: query exactly with multiple operands in singular field
+
+action fight:
+    roles:
+        @fighter:
+            as: initiator
+
+query bad-exactly:
+    roles:
+        @witness:
+            as: character
+    action:
+        any: fight
+    location:
+        exactly: @witness.home, @witness.work

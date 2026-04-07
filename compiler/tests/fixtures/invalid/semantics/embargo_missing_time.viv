@@ -1,0 +1,9 @@
+// Embargo with no time field — should be rejected
+
+action bad-embargo:
+    roles:
+        @actor:
+            as: initiator
+    embargoes:
+        embargo:
+            location: here

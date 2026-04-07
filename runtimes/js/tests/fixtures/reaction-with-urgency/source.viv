@@ -1,0 +1,18 @@
+// Action with a reaction that queues an urgent reserved action
+
+action provoke:
+    roles:
+        @aggressor:
+            as: initiator
+        @target:
+            as: partner
+    reactions:
+        queue action retaliate:
+            with:
+                @defender: @target
+            urgent: true
+
+reserved action retaliate:
+    roles:
+        @defender:
+            as: initiator

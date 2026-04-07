@@ -1,0 +1,10 @@
+// Action with fail-safe chaining in conditions
+
+action cautious-check:
+    roles:
+        @checker:
+            as: initiator
+        @target:
+            as: partner
+    conditions:
+        @target.profile?.active

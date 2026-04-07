@@ -1,0 +1,30 @@
+// Sifting pattern with group action roles
+
+action prank:
+    roles:
+        @prankster:
+            as: initiator
+        @victim:
+            as: recipient
+
+
+action apologize:
+    roles:
+        @apologizer:
+            as: initiator
+
+
+pattern prank-spree:
+    roles:
+        @prankster:
+            as: character
+    actions:
+        @pranks*:
+            from: @prankster.memories
+            n: 2-50
+        @apology:
+            from: @prankster.memories
+    conditions:
+        loop @pranks* as _@p:
+            _@p preceded @apology
+        end

@@ -1,0 +1,9 @@
+// Action with per-role salience referencing a special role
+
+action bad-salience:
+    roles:
+        @actor:
+            as: initiator
+    saliences:
+        roles:
+            @hearer: #HIGH

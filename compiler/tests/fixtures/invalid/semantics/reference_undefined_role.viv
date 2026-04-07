@@ -1,0 +1,8 @@
+// Invalid: references undefined role in effects
+
+action bad-ref:
+    roles:
+        @actor:
+            as: initiator
+    effects:
+        @ghost.mood = 5

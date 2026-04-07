@@ -1,0 +1,8 @@
+// Non-reserved action with a non-initiator precast role — should be rejected
+
+action bad-precast:
+    roles:
+        @actor:
+            as: initiator
+        @sidekick:
+            as: character, precast

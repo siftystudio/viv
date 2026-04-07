@@ -1,0 +1,21 @@
+// Action selector with ordered policy
+
+action primary-task:
+    roles:
+        @worker:
+            as: initiator
+
+
+action fallback-task:
+    roles:
+        @worker:
+            as: initiator
+
+
+action-selector task-priority:
+    roles:
+        @worker:
+            as: initiator
+    target in order:
+        primary-task;
+        fallback-task;

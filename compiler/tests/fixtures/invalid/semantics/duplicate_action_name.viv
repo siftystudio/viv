@@ -1,0 +1,11 @@
+// Invalid: Two actions with the same name
+
+action greet:
+    roles:
+        @greeter:
+            as: initiator
+
+action greet:
+    roles:
+        @waver:
+            as: initiator

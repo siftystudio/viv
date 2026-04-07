@@ -1,0 +1,204 @@
+<idea-plugin>
+    <id>studio.sifty.viv</id>
+    <name>Viv</name>
+    <vendor email="support@sifty.studio" url="https://sifty.studio">Sifty</vendor>
+
+    <description><![CDATA[
+    <p>Complete IDE support for <a href="https://github.com/siftystudio/viv">Viv</a> — a DSL for emergent narrative in games and simulations.</p>
+
+    <br/>
+
+    <p>The Viv JetBrains plugin is the recommended tool for Viv development, and it offers the following features:</p>
+
+    <br/>
+
+    <ul>
+        <li>Syntax highlighting (works in any theme)</li>
+        <li>Go to declaration, Find Usages, rename refactoring</li>
+        <li>Context-aware autocompletion</li>
+        <li>Rich hover documentation with clickable cross-references</li>
+        <li>150+ keyword tooltips covering the entire language (learn the language by hovering your way through example code)</li>
+        <li>Compiler integration with inline diagnostics</li>
+        <li>Block keyword matching, code folding, breadcrumbs</li>
+        <li>Structure view, inheritance gutter icons</li>
+        <li>50+ boilerplate snippets</li>
+        <li>Six bundled color themes</li>
+    </ul>
+
+    <br/>
+
+    <p>See the <a href="https://github.com/siftystudio/viv/blob/main/plugins/jetbrains/README.md">full documentation</a> for details.</p>
+    ]]></description>
+
+    <change-notes><![CDATA[
+    <p>Initial release. See the <a href="https://github.com/siftystudio/viv/blob/main/plugins/jetbrains/CHANGELOG.md">full changelog</a> for details.</p>
+    ]]></change-notes>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.plugins.textmate</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- File type registration -->
+        <fileType
+            name="Viv"
+            language="Viv"
+            implementationClass="studio.sifty.viv.VivFileType"
+            fieldName="INSTANCE"
+            extensions="viv"/>
+
+        <!-- Native syntax highlighting (lexer + PSI annotator) -->
+        <lang.syntaxHighlighterFactory
+            language="Viv"
+            implementationClass="studio.sifty.viv.VivSyntaxHighlighterFactory"/>
+        <annotator
+            language="Viv"
+            implementationClass="studio.sifty.viv.VivHighlightingAnnotator"/>
+
+        <!-- TextMate bundle provider (language-configuration.json for bracket/comment support) -->
+        <textmate.bundleProvider
+            implementation="studio.sifty.viv.VivTextMateBundleProvider"/>
+
+        <!-- Parser definition (ensures PSI files get VivLanguage, required for annotator) -->
+        <lang.parserDefinition
+            language="Viv"
+            implementationClass="studio.sifty.viv.VivParserDefinition"/>
+
+        <!-- Language configuration -->
+        <lang.commenter
+            language="Viv"
+            implementationClass="studio.sifty.viv.VivCommenter"/>
+        <lang.braceMatcher
+            language="Viv"
+            implementationClass="studio.sifty.viv.VivBraceMatcher"/>
+        <!-- Quote auto-closing and autocompletion triggers -->
+        <typedHandler implementation="studio.sifty.viv.VivTypedHandler"/>
+        <enterHandlerDelegate implementation="studio.sifty.viv.VivEnterHandler"/>
+
+        <!-- Viv intelligence: autocomplete -->
+        <completion.contributor language="Viv" implementationClass="studio.sifty.viv.VivCompletionContributor"/>
+
+        <!-- Find Usages (Alt+F7) — provider supplies metadata for the UI -->
+        <lang.findUsagesProvider language="Viv"
+            implementationClass="studio.sifty.viv.VivFindUsagesProvider"/>
+
+        <!-- Rename: RefactoringSupportProvider enables inline rename,
+             RenamePsiElementProcessor handles element substitution,
+             NamesValidator allows hyphens in identifiers -->
+        <lang.refactoringSupport language="Viv"
+            implementationClass="studio.sifty.viv.VivRefactoringSupportProvider"/>
+        <renamePsiElementProcessor
+            implementation="studio.sifty.viv.VivRenamePsiElementProcessor"/>
+        <lang.namesValidator language="Viv"
+            implementationClass="studio.sifty.viv.VivNamesValidator"/>
+
+        <!-- Structure view, code folding, breadcrumbs, documentation -->
+        <lang.psiStructureViewFactory language="Viv"
+            implementationClass="studio.sifty.viv.VivStructureViewFactory"/>
+        <lang.foldingBuilder language="Viv"
+            implementationClass="studio.sifty.viv.VivFoldingBuilder"/>
+        <breadcrumbsInfoProvider implementation="studio.sifty.viv.VivBreadcrumbsProvider"/>
+        <lang.documentationProvider language="Viv"
+            implementationClass="studio.sifty.viv.VivDocumentationProvider"/>
+
+        <!-- Block keyword matching (if/elif/else/end, loop/end, for/end, all/close) -->
+        <highlightUsagesHandlerFactory
+            implementation="studio.sifty.viv.VivBlockMatchHighlighter"/>
+
+        <!-- Inheritance gutter icons -->
+        <codeInsight.lineMarkerProvider language="Viv"
+            implementationClass="studio.sifty.viv.VivInheritanceLineMarkerProvider"/>
+
+        <!-- Index-based diagnostics (undefined references, duplicates) -->
+        <annotator language="Viv"
+            implementationClass="studio.sifty.viv.VivIndexDiagnosticAnnotator"/>
+
+        <!-- Compiler integration -->
+        <externalAnnotator
+            language="Viv"
+            implementationClass="studio.sifty.viv.VivExternalAnnotator"/>
+
+        <!-- File-based index -->
+        <fileBasedIndex implementation="studio.sifty.viv.VivFileBasedIndex"/>
+
+        <!-- Settings -->
+        <applicationService
+            serviceImplementation="studio.sifty.viv.VivSettings"/>
+        <projectService
+            serviceImplementation="studio.sifty.viv.VivProjectSettings"/>
+        <projectService
+            serviceImplementation="studio.sifty.viv.VivProjectIndex"/>
+        <applicationConfigurable
+            parentId="tools"
+            instance="studio.sifty.viv.VivSettingsConfigurable"
+            id="studio.sifty.viv.VivSettingsConfigurable"
+            displayName="Viv"/>
+
+        <!-- Status bar -->
+        <statusBarWidgetFactory
+            id="studio.sifty.viv.compilationStatus"
+            implementation="studio.sifty.viv.VivStatusBarWidgetFactory"/>
+
+        <!-- Tool window -->
+        <toolWindow
+            id="studio.sifty.viv.toolWindow"
+            anchor="bottom"
+            secondary="true"
+            factoryClass="studio.sifty.viv.VivToolWindowFactory"
+            icon="/icons/viv.svg"/>
+
+        <!-- Notification group -->
+        <notificationGroup
+            id="studio.sifty.viv.notifications"
+            displayType="STICKY_BALLOON"/>
+
+        <!-- Bundled Viv color schemes -->
+        <bundledColorScheme path="colorSchemes/VivWarmDark" id="Viv Warm (Dark)"/>
+        <bundledColorScheme path="colorSchemes/VivWarmLight" id="Viv Warm (Light)"/>
+        <bundledColorScheme path="colorSchemes/VivCoolDark" id="Viv Cool (Dark)"/>
+        <bundledColorScheme path="colorSchemes/VivCoolLight" id="Viv Cool (Light)"/>
+        <bundledColorScheme path="colorSchemes/VivElectricDark" id="Viv Electric (Dark)"/>
+        <bundledColorScheme path="colorSchemes/VivElectricLight" id="Viv Electric (Light)"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/VivDarculaAdditions.xml"/>
+        <additionalTextAttributes scheme="IntelliJ Light" file="colorSchemes/VivDefaultAdditions.xml"/>
+
+        <!-- Live Templates -->
+        <defaultLiveTemplates file="/liveTemplates/Viv"/>
+        <liveTemplateContext
+            implementation="studio.sifty.viv.VivLiveTemplateContext"
+            contextId="VIV"/>
+
+        <!-- Run configurations -->
+        <configurationType
+            implementation="studio.sifty.viv.VivRunConfigurationType"/>
+        <runConfigurationProducer
+            implementation="studio.sifty.viv.VivCompileCheckProducer"/>
+
+        <!-- Auto-create Save Content Bundle run config on project open -->
+        <postStartupActivity
+            implementation="studio.sifty.viv.VivStartupActivity"/>
+    </extensions>
+
+    <applicationListeners>
+        <listener
+            class="studio.sifty.viv.VivSaveListener"
+            topic="com.intellij.openapi.fileEditor.FileDocumentManagerListener"/>
+    </applicationListeners>
+
+    <actions>
+        <action
+            id="studio.sifty.viv.CompileVivFile"
+            class="studio.sifty.viv.VivCompileAction"
+            text="Compile Viv File"
+            description="Run the Viv compiler on the current file"
+            icon="/icons/viv.svg">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+        <action
+            id="studio.sifty.viv.SaveContentBundle"
+            class="studio.sifty.viv.VivSaveBundleAction"
+            text="Save Viv Content Bundle"
+            description="Compile the entry file and save the content bundle to disk">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+    </actions>
+</idea-plugin>

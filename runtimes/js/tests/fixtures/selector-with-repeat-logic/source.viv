@@ -1,0 +1,39 @@
+// Selector with repeat logic on the reaction that queues it
+
+reserved action trigger:
+    roles:
+        @greeter:
+            as: initiator
+    reactions:
+        queue action-selector choose-greeting:
+            with:
+                @performer: @greeter
+            repeat:
+                if:
+                    true
+                max: 1
+
+
+reserved action wave:
+    roles:
+        @actor:
+            as: initiator
+
+
+reserved action nod:
+    roles:
+        @actor:
+            as: initiator
+
+
+reserved action-selector choose-greeting:
+    roles:
+        @performer:
+            as: initiator
+    target randomly:
+        wave:
+            with partial:
+                @actor: @performer
+        nod:
+            with partial:
+                @actor: @performer

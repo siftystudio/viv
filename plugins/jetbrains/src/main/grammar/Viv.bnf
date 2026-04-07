@@ -1,0 +1,1048 @@
+// Viv language grammar for GrammarKit
+// Translates the PEG grammar at compiler/src/viv_compiler/grammar/viv.peg
+
+{
+  parserClass="studio.sifty.viv.parser.VivParser"
+  parserUtilClass="studio.sifty.viv.parser.VivParserUtil"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+  implements="studio.sifty.viv.psi.VivElement"
+
+  elementTypeHolderClass="studio.sifty.viv.psi.VivTypes"
+  elementTypeClass="studio.sifty.viv.psi.VivElementType"
+  tokenTypeClass="studio.sifty.viv.psi.VivTokenType"
+
+  psiClassPrefix="Viv"
+  psiImplClassSuffix="Impl"
+  psiPackage="studio.sifty.viv.psi"
+  psiImplPackage="studio.sifty.viv.psi.impl"
+
+  tokens = [
+    // Reserved keywords (lexer produces distinct tokens)
+    INCLUDE_KW    = 'include'
+    IF_KW         = 'if'
+    ELIF_KW       = 'elif'
+    ELSE_KW       = 'else'
+    END_KW        = 'end'
+    LOOP_KW       = 'loop'
+
+    // Sigils and operators
+    AT            = '@'
+    AMP           = '&'
+    DOLLAR        = '$'
+    UNDERSCORE    = '_'
+    HASH          = '#'
+    TILDE         = '~'
+    GT            = '>'
+    LT            = '<'
+    STAR          = '*'
+    QUESTION      = '?'
+    DOT           = '.'
+    COMMA         = ','
+    COLON         = ':'
+    SEMICOLON     = ';'
+    EXCL          = '!'
+    LPAREN        = '('
+    RPAREN        = ')'
+    LBRACKET      = '['
+    RBRACKET      = ']'
+    LBRACE        = '{'
+    RBRACE        = '}'
+    PLUS          = '+'
+    MINUS         = '-'
+    SLASH         = '/'
+    PERCENT       = '%'
+    EQ            = '='
+
+    // Multi-character operators
+    ARROW         = '->'
+    EQ_EQ         = '=='
+    EXCL_EQ       = '!='
+    LT_EQ         = '<='
+    GT_EQ         = '>='
+    PLUS_EQ       = '+='
+    MINUS_EQ      = '-='
+    STAR_EQ       = '*='
+    SLASH_EQ      = '/='
+    OR_OR         = '||'
+    AND_AND       = '&&'
+
+    // Literals
+    NUMBER        = 'regexp:[0-9]+(\.[0-9]+)?'
+    IDENTIFIER    = 'regexp:[A-Za-z_]([A-Za-z0-9_]*-[A-Za-z0-9_]+)*[A-Za-z0-9_]*'
+
+    // Strings
+    STRING_LITERAL       = 'string_literal'
+    TEMPLATE_STRING_START = 'template_string_start'
+    TEMPLATE_STRING_PART  = 'template_string_part'
+    TEMPLATE_STRING_END   = 'template_string_end'
+    TEMPLATE_EXPR_START   = 'template_expr_start'
+    TEMPLATE_EXPR_END     = 'template_expr_end'
+
+    // Other
+    LINE_COMMENT  = 'regexp://[^\n]*'
+    FILE_PATH_LIT = 'file_path_literal'
+  ]
+}
+
+// ============================================================================
+// Root
+// ============================================================================
+
+file ::= item_* {pin=1}
+
+private item_ ::= include_statement
+                 | action
+                 | selector
+                 | plan
+                 | query
+                 | sifting_pattern
+                 | trope
+                 {recoverWhile=item_recover_}
+
+private item_recover_ ::= !('include' | IDENTIFIER | INCLUDE_KW | IF_KW | END_KW)
+
+
+// ============================================================================
+// Includes
+// ============================================================================
+
+include_statement ::= 'include' file_path {pin=1}
+file_path ::= FILE_PATH_LIT | STRING_LITERAL | string
+  {mixin="studio.sifty.viv.psi.impl.VivIncludeReferenceMixin"}
+
+
+// ============================================================================
+// Actions
+// ============================================================================
+
+action ::= action_header (':' action_body | ';') {pin=1}
+
+action_header ::= reserved_construct_marker? template_action_marker? 'action' identifier parent_action_declaration?
+  {pin=3
+   mixin="studio.sifty.viv.psi.impl.VivNamedElementMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+template_action_marker ::= 'template'
+
+parent_action_declaration ::= 'from' identifier
+  {pin=1
+   mixin="studio.sifty.viv.psi.impl.VivConstructReferenceMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+action_body ::= action_body_item_*
+
+private action_body_item_ ::= action_gloss
+                             | action_report
+                             | action_importance
+                             | action_saliences
+                             | action_associations
+                             | action_tags
+                             | action_roles
+                             | action_conditions
+                             | action_scratch
+                             | action_effects
+                             | action_reactions
+                             | action_embargoes
+                             {recoverWhile=action_body_recover_}
+
+private action_body_recover_ ::= !(
+    'gloss' | 'report' | 'importance' | 'saliences' | 'associations'
+  | 'tags' | 'roles' | 'conditions' | 'scratch' | 'effects' | 'reactions' | 'embargoes'
+  | 'join'
+  | 'action' | 'plan' | 'query' | 'pattern' | 'trope' | 'reserved' | 'template'
+  | 'action-selector' | 'plan-selector'
+  | INCLUDE_KW
+)
+
+action_gloss ::= 'gloss' ':' string {pin=1}
+
+action_report ::= 'report' ':' string {pin=1}
+
+action_importance ::= 'importance' ':' (enum | number_literal) {pin=1}
+
+action_saliences ::= 'saliences' ':' saliences_body {pin=1}
+
+action_associations ::= 'associations' ':' associations_body {pin=1}
+
+action_tags ::= child_join_operator? 'tags' ':' tags {pin=2}
+
+action_roles ::= child_join_operator? 'roles' ':' role+ {pin=2}
+
+action_conditions ::= child_join_operator? 'conditions' ':' statements {pin=2}
+
+action_scratch ::= child_join_operator? 'scratch' ':' statements {pin=2}
+
+action_effects ::= child_join_operator? 'effects' ':' statements {pin=2}
+
+action_reactions ::= child_join_operator? 'reactions' ':' (conditional | loop | reaction)+ {pin=2}
+
+action_embargoes ::= child_join_operator? 'embargoes' ':' embargo+ {pin=2}
+
+child_join_operator ::= 'join'
+
+
+// ============================================================================
+// Roles
+// ============================================================================
+
+role ::= role_reference ':' role_body {pin=1}
+
+role_reference ::= binding_type identifier group_role_decorator?
+  {mixin="studio.sifty.viv.psi.impl.VivRoleRefContextMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+binding_type ::= '@' | '&'
+
+role_body ::= role_body_item_*
+
+private role_body_item_ ::= role_labels
+                           | role_slots
+                           | role_casting_pool_is
+                           | role_casting_pool_from
+                           | role_spawn_directive
+                           | role_renaming
+                           {recoverWhile=role_body_recover_}
+
+private role_body_recover_ ::= !(
+    'as' | 'n' | 'is' | 'from' | 'spawn' | 'renames'
+  | '@' | '&'
+  | 'gloss' | 'report' | 'importance' | 'saliences' | 'associations'
+  | 'tags' | 'roles' | 'conditions' | 'scratch' | 'effects' | 'reactions' | 'embargoes'
+  | 'join'
+  | 'action' | 'plan' | 'query' | 'pattern' | 'trope' | 'reserved' | 'template'
+  | 'action-selector' | 'plan-selector'
+  | 'phases' | 'actions' | 'target'
+  | INCLUDE_KW
+)
+
+role_labels ::= 'as' ':' role_label (',' role_label)* {pin=1}
+
+role_label ::= 'character' | 'item' | 'action' | 'location' | 'symbol'
+             | 'initiator' | 'partner' | 'recipient' | 'bystander'
+             | 'anywhere' | 'precast' | 'spawn'
+
+role_slots ::= 'n' ':' role_slots_range (role_slots_mean | role_slots_optional_slot_casting_probability)? {pin=1}
+
+role_slots_range ::= NUMBER ('-' NUMBER)?
+
+role_slots_mean ::= '[' '~' NUMBER ']'
+
+role_slots_optional_slot_casting_probability ::= '[' NUMBER '%' ']'
+
+role_casting_pool_is ::= 'is' ':' expression {pin=1}
+
+role_casting_pool_from ::= 'from' ':' expression {pin=1}
+
+role_spawn_directive ::= 'spawn' ':' custom_function_call {pin=1}
+
+role_renaming ::= 'renames' ':' role_reference {pin=1}
+
+group_role_decorator ::= '*'
+
+
+// ============================================================================
+// Reactions
+// ============================================================================
+
+reaction ::= reaction_header ':' reaction_body {pin=1}
+
+reaction_header ::= 'queue' reaction_target {pin=1}
+
+reaction_target ::= reaction_target_type identifier
+  {mixin="studio.sifty.viv.psi.impl.VivConstructReferenceMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+reaction_target_type ::= 'action-selector' | 'plan-selector' | 'action' | 'plan'
+
+reaction_body ::= reaction_body_item_*
+
+private reaction_body_item_ ::= bindings
+                               | reaction_urgency
+                               | reaction_priority
+                               | reaction_location
+                               | reaction_time
+                               | reaction_abandonment_conditions
+                               | reaction_repeat_logic
+                               {recoverWhile=reaction_body_recover_}
+
+private reaction_body_recover_ ::= !(
+    'with' | 'urgent' | 'priority' | 'location' | 'time' | 'abandon' | 'repeat'
+  | 'queue'
+  | '@' | '&'
+  | 'gloss' | 'report' | 'importance' | 'saliences' | 'associations'
+  | 'tags' | 'roles' | 'conditions' | 'scratch' | 'effects' | 'reactions' | 'embargoes'
+  | 'join'
+  | 'action' | 'plan' | 'query' | 'pattern' | 'trope' | 'reserved' | 'template'
+  | 'action-selector' | 'plan-selector'
+  | INCLUDE_KW
+  | 'advance' | 'succeed' | 'fail' | 'close' | 'wait'
+  | 'all' | 'any' | 'untracked'
+  | IF_KW | ELIF_KW | ELSE_KW | END_KW | LOOP_KW
+  | 'embargo'
+)
+
+reaction_urgency ::= 'urgent' ':' expression {pin=1}
+
+reaction_priority ::= 'priority' ':' expression {pin=1}
+
+reaction_location ::= 'location' ':' set_predicate+ {pin=1}
+
+reaction_time ::= 'time' ':' temporal_constraint+ {pin=1}
+
+reaction_abandonment_conditions ::= 'abandon' ':' statements {pin=1}
+
+reaction_repeat_logic ::= 'repeat' ':' reaction_repeat_logic_item+ {pin=1}
+
+private reaction_repeat_logic_item ::= reaction_repeat_logic_if | reaction_repeat_logic_max
+
+reaction_repeat_logic_if ::= 'if' ':' statements {pin=1}
+
+reaction_repeat_logic_max ::= 'max' ':' NUMBER {pin=1}
+
+
+// ============================================================================
+// Temporal constraints
+// ============================================================================
+
+temporal_constraint ::= time_frame_statement | time_of_day_statement
+
+time_frame_statement ::= time_frame_statement_before
+                       | time_frame_statement_after
+                       | time_frame_statement_between
+
+time_frame_statement_before ::= 'before' ':' time_period time_frame_anchor
+
+time_frame_statement_after ::= 'after' ':' time_period time_frame_anchor
+
+time_frame_statement_between ::= 'between' ':' time_period 'and' time_period time_frame_anchor
+
+time_period ::= number_literal time_unit
+
+time_unit ::= 'minutes' | 'hours' | 'days' | 'weeks' | 'months' | 'years'
+            | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'
+
+time_frame_anchor ::= time_frame_anchor_from_action
+                    | time_frame_anchor_from_hearing
+                    | time_frame_anchor_from_now
+                    | time_frame_anchor_ago
+
+time_frame_anchor_from_action ::= 'from' 'action'
+time_frame_anchor_from_hearing ::= 'from' 'hearing'
+time_frame_anchor_from_now ::= 'from' 'now'
+time_frame_anchor_ago ::= 'ago'
+
+time_of_day_statement ::= time_of_day_statement_before
+                        | time_of_day_statement_after
+                        | time_of_day_statement_between
+
+time_of_day_statement_before ::= 'before' ':' time_of_day
+
+time_of_day_statement_after ::= 'after' ':' time_of_day
+
+time_of_day_statement_between ::= 'between' ':' time_of_day 'and' time_of_day
+
+time_of_day ::= NUMBER (':' NUMBER)? ('pm' | 'am')?
+
+
+// ============================================================================
+// Precast bindings
+// ============================================================================
+
+bindings ::= 'with' (bindings_none_tail | bindings_partial_tail | bindings_complete_tail) {pin=1}
+
+private bindings_none_tail ::= 'none' ';'
+
+private bindings_partial_tail ::= 'partial' ':' binding+ {pin=1}
+
+private bindings_complete_tail ::= ':' binding+
+
+bindings_sugared ::= bindings_sugared_none
+                   | bindings_sugared_partial
+                   | bindings_sugared_complete
+
+bindings_sugared_none ::= '<' 'none' '>'
+
+bindings_sugared_partial ::= '<' 'partial' bindings_sugared_actual_bindings '>'
+
+bindings_sugared_complete ::= '<' bindings_sugared_actual_bindings '>'
+
+bindings_sugared_actual_bindings ::= binding (',' binding)*
+                                   | positional_binding (',' positional_binding)*
+
+binding ::= role_reference ':' expression {pin=2}
+
+positional_binding ::= expression
+
+
+// ============================================================================
+// Saliences
+// ============================================================================
+
+saliences_body ::= saliences_body_item_*
+
+private saliences_body_item_ ::= saliences_default
+                                | saliences_roles
+                                | saliences_custom_field
+                                {recoverWhile=saliences_body_recover_}
+
+private saliences_body_recover_ ::= !(
+    'default' | 'roles' | 'for'
+  | 'gloss' | 'report' | 'importance' | 'saliences' | 'associations'
+  | 'tags' | 'conditions' | 'scratch' | 'effects' | 'reactions' | 'embargoes'
+  | 'join'
+  | 'action' | 'plan' | 'query' | 'pattern' | 'trope' | 'reserved' | 'template'
+  | 'action-selector' | 'plan-selector'
+  | INCLUDE_KW
+)
+
+saliences_default ::= 'default' ':' (enum | number_literal) {pin=1}
+
+saliences_roles ::= 'roles' ':' saliences_roles_entry+ {pin=1}
+
+saliences_roles_entry ::= '@' identifier '*'? ':' (enum | number_literal)
+  {mixin="studio.sifty.viv.psi.impl.VivSalienceRoleReferenceMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+saliences_custom_field ::= 'for' local_variable ':' statement+ 'end' {pin=1}
+
+
+// ============================================================================
+// Associations
+// ============================================================================
+
+associations_body ::= associations_body_item_*
+
+private associations_body_item_ ::= associations_default
+                                   | associations_roles
+                                   | associations_custom_field
+                                   {recoverWhile=associations_body_recover_}
+
+private associations_body_recover_ ::= !(
+    'default' | 'roles' | 'for'
+  | 'gloss' | 'report' | 'importance' | 'saliences' | 'associations'
+  | 'tags' | 'conditions' | 'scratch' | 'effects' | 'reactions' | 'embargoes'
+  | 'join'
+  | 'action' | 'plan' | 'query' | 'pattern' | 'trope' | 'reserved' | 'template'
+  | 'action-selector' | 'plan-selector'
+  | INCLUDE_KW
+)
+
+associations_default ::= 'default' ':' tags {pin=1}
+
+associations_roles ::= 'roles' ':' associations_roles_entry+ {pin=1}
+
+associations_roles_entry ::= '@' identifier '*'? ':' tags
+  {mixin="studio.sifty.viv.psi.impl.VivSalienceRoleReferenceMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+associations_custom_field ::= 'for' local_variable ':' associations_statement+ 'end' {pin=1}
+
+associations_statement ::= associations_conditional | associations_loop | tags
+
+associations_loop ::= 'loop' unary_expression 'as' local_variable ':' associations_scoped_statements 'end'
+  {pin=1}
+
+associations_conditional ::= associations_conditional_branches ('else' ':' associations_conditional_alternative)? 'end'
+
+associations_conditional_branches ::= 'if' associations_conditional_branch ('elif' associations_conditional_branch)*
+
+associations_conditional_branch ::= condition ':' associations_conditional_consequent
+
+associations_conditional_consequent ::= associations_scoped_statements
+
+associations_conditional_alternative ::= associations_scoped_statements
+
+associations_scoped_statements ::= associations_statement+
+
+
+// ============================================================================
+// Embargoes
+// ============================================================================
+
+embargo ::= 'embargo' ':' embargo_body {pin=1}
+
+embargo_body ::= embargo_body_item_*
+
+private embargo_body_item_ ::= embargo_location
+                              | embargo_time_period
+                              | embargo_roles
+                              {recoverWhile=embargo_body_recover_}
+
+private embargo_body_recover_ ::= !(
+    'location' | 'time' | 'roles'
+  | 'embargo'
+  | 'gloss' | 'report' | 'importance' | 'saliences' | 'associations'
+  | 'tags' | 'conditions' | 'scratch' | 'effects' | 'reactions' | 'embargoes'
+  | 'join'
+  | 'action' | 'plan' | 'query' | 'pattern' | 'trope' | 'reserved' | 'template'
+  | 'action-selector' | 'plan-selector'
+  | INCLUDE_KW
+)
+
+embargo_location ::= 'location' ':' ('here' | 'anywhere') {pin=1}
+
+embargo_time_period ::= 'time' ':' ('forever' | time_period) {pin=1}
+
+embargo_roles ::= 'roles' ':' role_reference (',' role_reference)* {pin=1}
+
+
+// ============================================================================
+// Selectors
+// ============================================================================
+
+selector ::= selector_header ':' selector_body {pin=1}
+
+selector_header ::= reserved_construct_marker? selector_type identifier
+  {pin=2
+   mixin="studio.sifty.viv.psi.impl.VivNamedElementMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+selector_type ::= 'action-selector' | 'plan-selector'
+
+selector_body ::= selector_body_item_*
+
+private selector_body_item_ ::= selector_roles
+                               | selector_conditions
+                               | selector_target_group
+                               {recoverWhile=selector_body_recover_}
+
+private selector_body_recover_ ::= !(
+    'roles' | 'conditions' | 'target'
+  | 'action' | 'plan' | 'query' | 'pattern' | 'trope' | 'reserved' | 'template'
+  | 'action-selector' | 'plan-selector'
+  | INCLUDE_KW
+)
+
+selector_roles ::= 'roles' ':' role+ {pin=1}
+
+selector_conditions ::= 'conditions' ':' statements {pin=1}
+
+selector_target_group ::= 'target' selector_policy ':' selector_candidate+ {pin=1}
+
+selector_policy ::= 'randomly' | 'with' 'weights' | 'in' 'order'
+
+selector_candidate ::= selector_candidate_weight? selector_candidate_name ';'
+                      | selector_candidate_weight? selector_candidate_name ':' bindings
+
+selector_candidate_name ::= 'selector'? identifier
+  {mixin="studio.sifty.viv.psi.impl.VivSelectorCandidateReferenceMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+selector_candidate_weight ::= '(' expression ')'
+
+
+// ============================================================================
+// Plans
+// ============================================================================
+
+plan ::= plan_header ':' plan_body {pin=1}
+
+plan_header ::= 'plan' identifier
+  {pin=1
+   mixin="studio.sifty.viv.psi.impl.VivNamedElementMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+plan_body ::= plan_body_item_*
+
+private plan_body_item_ ::= plan_roles
+                           | plan_conditions
+                           | plan_phases
+                           {recoverWhile=plan_body_recover_}
+
+private plan_body_recover_ ::= !(
+    'roles' | 'conditions' | 'phases'
+  | 'action' | 'plan' | 'query' | 'pattern' | 'trope' | 'reserved' | 'template'
+  | 'action-selector' | 'plan-selector'
+  | INCLUDE_KW
+)
+
+plan_roles ::= 'roles' ':' role+ {pin=1}
+
+plan_conditions ::= 'conditions' ':' statements {pin=1}
+
+plan_phases ::= 'phases' ':' plan_phase+ {pin=1}
+
+plan_phase ::= plan_phase_name ':' plan_instructions {pin=1}
+
+plan_phase_name ::= '>' identifier
+  {mixin="studio.sifty.viv.psi.impl.VivPlanPhaseNameMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+plan_instructions ::= plan_instruction+
+
+plan_instruction ::= plan_conditional
+                   | plan_loop
+                   | plan_instruction_reaction
+                   | plan_instruction_reaction_window
+                   | plan_instruction_wait
+                   | plan_instruction_advance
+                   | plan_instruction_succeed
+                   | plan_instruction_fail
+
+plan_loop ::= 'loop' unary_expression 'as' local_variable ':' plan_scoped_statements 'end' {pin=1}
+
+plan_conditional ::= plan_conditional_branches ('else' ':' plan_conditional_alternative)? 'end'
+
+plan_conditional_branches ::= 'if' plan_conditional_branch ('elif' plan_conditional_branch)*
+
+plan_conditional_branch ::= condition ':' plan_conditional_consequent
+
+plan_conditional_consequent ::= plan_scoped_statements
+
+plan_conditional_alternative ::= plan_scoped_statements
+
+plan_scoped_statements ::= plan_instruction+
+
+plan_instruction_reaction ::= reaction
+
+plan_instruction_reaction_window ::= plan_instruction_reaction_window_operator ':' plan_instruction+ 'close'
+  {pin=1}
+
+plan_instruction_reaction_window_operator ::= 'all' | 'any' | 'untracked'
+
+plan_instruction_wait ::= 'wait' ':' plan_instruction_wait_item+ {pin=1}
+
+private plan_instruction_wait_item ::= plan_instruction_wait_timeout | plan_instruction_wait_until
+
+plan_instruction_wait_timeout ::= 'timeout' ':' time_period {pin=1}
+
+plan_instruction_wait_until ::= 'until' ':' statements {pin=1}
+
+plan_instruction_advance ::= 'advance' ';' {pin=1}
+
+plan_instruction_succeed ::= 'succeed' ';' {pin=1}
+
+plan_instruction_fail ::= 'fail' ';' {pin=1}
+
+
+// ============================================================================
+// Queries
+// ============================================================================
+
+query ::= query_header ':' query_body {pin=1}
+
+query_header ::= 'query' identifier
+  {pin=1
+   mixin="studio.sifty.viv.psi.impl.VivNamedElementMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+query_body ::= query_body_item_*
+
+private query_body_item_ ::= query_roles
+                            | query_conditions
+                            | query_action_name
+                            | query_ancestors
+                            | query_descendants
+                            | query_importance
+                            | query_tags
+                            | query_salience
+                            | query_associations
+                            | query_location
+                            | query_time
+                            | query_initiator
+                            | query_partners
+                            | query_recipients
+                            | query_bystanders
+                            | query_active
+                            | query_present
+                            {recoverWhile=query_body_recover_}
+
+private query_body_recover_ ::= !(
+    'roles' | 'conditions' | 'action' | 'ancestors' | 'descendants'
+  | 'importance' | 'tags' | 'salience' | 'associations' | 'location' | 'time'
+  | 'initiator' | 'partners' | 'recipients' | 'bystanders' | 'active' | 'present'
+  | 'plan' | 'query' | 'pattern' | 'trope' | 'reserved' | 'template'
+  | 'action-selector' | 'plan-selector'
+  | INCLUDE_KW
+)
+
+query_roles ::= 'roles' ':' role+ {pin=1}
+
+query_conditions ::= 'conditions' ':' statements {pin=1}
+
+query_action_name ::= 'action' ':' set_predicate_tags+ {pin=1}
+
+query_ancestors ::= 'ancestors' ':' set_predicate+ {pin=1}
+
+query_descendants ::= 'descendants' ':' set_predicate+ {pin=1}
+
+query_importance ::= 'importance' ':' query_numeric_criteria {pin=1}
+
+query_tags ::= 'tags' ':' set_predicate_tags+ {pin=1}
+
+query_salience ::= 'salience' ':' query_numeric_criteria {pin=1}
+
+query_associations ::= 'associations' ':' set_predicate_tags+ {pin=1}
+
+query_location ::= 'location' ':' set_predicate+ {pin=1}
+
+query_time ::= 'time' ':' temporal_constraint+ {pin=1}
+
+query_initiator ::= 'initiator' ':' set_predicate+ {pin=1}
+
+query_partners ::= 'partners' ':' set_predicate+ {pin=1}
+
+query_recipients ::= 'recipients' ':' set_predicate+ {pin=1}
+
+query_bystanders ::= 'bystanders' ':' set_predicate+ {pin=1}
+
+query_active ::= 'active' ':' set_predicate+ {pin=1}
+
+query_present ::= 'present' ':' set_predicate+ {pin=1}
+
+query_numeric_criteria ::= query_numeric_criterion+
+
+query_numeric_criterion ::= query_numeric_criterion_operator ':' (enum | number_literal) {pin=1}
+
+query_numeric_criterion_operator ::= '==' | '<=' | '>=' | '<' | '>'
+
+set_predicate ::= set_predicate_operator ':' expression (',' expression)* {pin=1}
+
+set_predicate_tags ::= set_predicate_operator ':' tag (',' tag)* {pin=1}
+
+set_predicate_operator ::= 'none' | 'any' | 'all' | 'exactly'
+
+
+// ============================================================================
+// Sifting patterns
+// ============================================================================
+
+sifting_pattern ::= sifting_pattern_header ':' sifting_pattern_body {pin=1}
+
+sifting_pattern_header ::= 'pattern' identifier
+  {pin=1
+   mixin="studio.sifty.viv.psi.impl.VivNamedElementMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+sifting_pattern_body ::= sifting_pattern_body_item_*
+
+private sifting_pattern_body_item_ ::= sifting_pattern_roles
+                                     | sifting_pattern_actions
+                                     | sifting_pattern_conditions
+                                     {recoverWhile=sifting_pattern_body_recover_}
+
+private sifting_pattern_body_recover_ ::= !(
+    'roles' | 'actions' | 'conditions'
+  | 'action' | 'plan' | 'query' | 'pattern' | 'trope' | 'reserved' | 'template'
+  | 'action-selector' | 'plan-selector'
+  | INCLUDE_KW
+)
+
+sifting_pattern_roles ::= 'roles' ':' role+ {pin=1}
+
+sifting_pattern_actions ::= 'actions' ':' sifting_pattern_action+ {pin=1}
+
+sifting_pattern_action ::= role_reference ':' sifting_pattern_action_body {pin=1}
+
+sifting_pattern_action_body ::= sifting_pattern_action_body_item_*
+
+private sifting_pattern_action_body_item_ ::= role_labels
+                                            | role_slots
+                                            | role_casting_pool_is
+                                            | role_casting_pool_from
+                                            {recoverWhile=sifting_pattern_action_body_recover_}
+
+private sifting_pattern_action_body_recover_ ::= !(
+    'as' | 'n' | 'is' | 'from'
+  | '@' | '&'
+  | 'roles' | 'actions' | 'conditions'
+  | 'action' | 'plan' | 'query' | 'pattern' | 'trope' | 'reserved' | 'template'
+  | 'action-selector' | 'plan-selector'
+  | INCLUDE_KW
+)
+
+sifting_pattern_conditions ::= 'conditions' ':' statements {pin=1}
+
+
+// ============================================================================
+// Tropes
+// ============================================================================
+
+trope ::= trope_header ':' trope_body {pin=1}
+
+trope_header ::= 'trope' identifier
+  {pin=1
+   mixin="studio.sifty.viv.psi.impl.VivNamedElementMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+trope_body ::= trope_body_item_*
+
+private trope_body_item_ ::= trope_roles
+                            | trope_conditions
+                            {recoverWhile=trope_body_recover_}
+
+private trope_body_recover_ ::= !(
+    'roles' | 'conditions'
+  | 'action' | 'plan' | 'query' | 'pattern' | 'trope' | 'reserved' | 'template'
+  | 'action-selector' | 'plan-selector'
+  | INCLUDE_KW
+)
+
+trope_roles ::= 'roles' ':' role+ {pin=1}
+
+trope_conditions ::= 'conditions' ':' statements {pin=1}
+
+
+// ============================================================================
+// Statements and control flow
+// ============================================================================
+
+statements ::= statement+
+
+scoped_statements ::= statement+
+
+statement ::= conditional | loop | reaction | expression
+
+conditional ::= conditional_branches ('else' ':' alternative)? 'end'
+
+conditional_branches ::= 'if' conditional_branch ('elif' conditional_branch)*
+
+conditional_branch ::= condition ':' consequent
+
+condition ::= expression
+
+consequent ::= scoped_statements
+
+alternative ::= scoped_statements
+
+loop ::= 'loop' unary_expression 'as' local_variable ':' scoped_statements 'end' {pin=1}
+
+local_variable ::= '_' binding_type identifier
+  {mixin="studio.sifty.viv.psi.impl.VivLocalVariableMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+
+// ============================================================================
+// Expressions
+// ============================================================================
+
+expression ::= assignment
+             | inscription
+             | inspection
+             | precedence_governed_expression
+
+precedence_governed_expression ::= disjunction
+
+
+// ============================================================================
+// Assignments
+// ============================================================================
+
+assignment ::= assignment_lvalue assignment_operator precedence_governed_expression
+
+assignment_lvalue ::= viv_reference
+
+assignment_operator ::= '+=' | '-=' | '*=' | '/=' | '=' | 'append' | 'remove'
+
+
+// ============================================================================
+// Logical expressions
+// ============================================================================
+
+disjunction ::= conjunction ('||' conjunction)*
+
+conjunction ::= relational_expression ('&&' relational_expression)*
+
+relational_expression ::= additive_expression (relational_operator additive_expression)?
+
+relational_operator ::= '==' | '!=' | '<=' | '>=' | '>' | <<ltNotSugared>>
+                       | 'in' | 'knows' | 'caused' | 'triggered' | 'preceded'
+
+
+// ============================================================================
+// Arithmetic expressions
+// ============================================================================
+
+additive_expression ::= multiplicative_expression (additive_operator multiplicative_expression)*
+
+additive_operator ::= '+' | '-'
+
+multiplicative_expression ::= unary_expression (multiplicative_operator unary_expression)*
+
+multiplicative_operator ::= '*' | '/'
+
+
+// ============================================================================
+// Unary expressions
+// ============================================================================
+
+unary_expression ::= negation? '(' expression ')' | negation? simple_unary_expression
+
+simple_unary_expression ::= object_literal
+                           | list_literal
+                           | custom_function_call
+                           | viv_reference
+                           | chance_expression
+                           | literal
+                           | trope_fit
+                           | trope_fit_sugared
+                           | action_search
+                           | sifting
+
+negation ::= '!'
+
+
+// ============================================================================
+// Domain-specific expressions
+// ============================================================================
+
+inscription ::= unary_expression 'inscribe' unary_expression
+
+inspection ::= unary_expression 'inspect' unary_expression
+
+trope_fit ::= 'fit' 'trope' identifier ':' bindings
+  {pin=1
+   mixin="studio.sifty.viv.psi.impl.VivConstructReferenceMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+trope_fit_sugared ::= bindings_sugared 'fits' 'trope' identifier
+  {mixin="studio.sifty.viv.psi.impl.VivConstructReferenceMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+action_search ::= 'search' (action_search_query_tail | action_search_bare_tail)
+  {pin=1
+   mixin="studio.sifty.viv.psi.impl.VivConstructReferenceMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+private action_search_query_tail ::= 'query' identifier ':' action_search_body
+
+private action_search_bare_tail ::= ':' action_search_bare_body
+
+action_search_body ::= action_search_body_item_*
+
+private action_search_body_item_ ::= search_domain | bindings
+
+action_search_bare_body ::= search_domain
+
+search_domain ::= 'over' ':' (search_domain_inherit | search_domain_chronicle | search_domain_expression) {pin=1}
+
+search_domain_inherit ::= 'inherit'
+
+search_domain_chronicle ::= 'chronicle'
+
+search_domain_expression ::= expression
+
+sifting ::= sifting_header sifting_body
+
+sifting_header ::= 'sift' 'pattern' identifier ':'
+  {pin=1
+   mixin="studio.sifty.viv.psi.impl.VivConstructReferenceMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+sifting_body ::= sifting_body_item_*
+
+private sifting_body_item_ ::= search_domain | bindings
+
+custom_function_call ::= '~' identifier '(' args? ')' eval_fail_safe_marker?
+  {pin=1
+   mixin="studio.sifty.viv.psi.impl.VivFunctionReferenceMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+args ::= expression (',' expression)*
+
+chance_expression ::= number_literal '%'
+
+
+// ============================================================================
+// References
+// ============================================================================
+
+viv_reference ::= (scratch_variable_sigil | local_variable_sigil)? binding_type identifier group_role_decorator?
+              eval_fail_safe_marker? reference_path?
+  {mixin="studio.sifty.viv.psi.impl.VivVivReferenceMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+reference_path ::= reference_path_segment+
+
+private reference_path_segment ::= reference_path_property_name
+                                 | reference_path_pointer
+                                 | reference_path_lookup
+
+reference_path_property_name ::= '.' property_name eval_fail_safe_marker?
+
+reference_path_pointer ::= '->' property_name eval_fail_safe_marker?
+
+reference_path_lookup ::= '[' expression ']' eval_fail_safe_marker?
+
+property_name ::= IDENTIFIER
+  {mixin="studio.sifty.viv.psi.impl.VivPropertyNameMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+eval_fail_safe_marker ::= '?'
+
+
+// ============================================================================
+// Objects
+// ============================================================================
+
+object_literal ::= '{' (key_value_pair (',' key_value_pair)*)? '}' {pin=1}
+
+key_value_pair ::= key ':' value
+
+key ::= string | bare_key
+
+bare_key ::= IDENTIFIER
+
+value ::= expression
+
+
+// ============================================================================
+// Strings
+// ============================================================================
+
+string ::= template_string | string_literal_expr
+
+string_literal_expr ::= STRING_LITERAL
+
+template_string ::= TEMPLATE_STRING_START template_string_content* TEMPLATE_STRING_END
+
+private template_string_content ::= TEMPLATE_STRING_PART | template_gap
+
+template_gap ::= TEMPLATE_EXPR_START expression TEMPLATE_EXPR_END | template_gap_ref
+
+template_gap_ref ::= viv_reference
+
+
+// ============================================================================
+// Other literals
+// ============================================================================
+
+enum ::= ('-' | '+')? '#' identifier
+  {mixin="studio.sifty.viv.psi.impl.VivEnumMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+list_literal ::= '[' (expression (',' expression)*)? ']'
+
+number_literal ::= ('-' | '+')? NUMBER
+
+boolean_literal ::= 'true' | 'false'
+
+null_literal ::= 'null'
+
+literal ::= enum | string | number_literal | boolean_literal | null_literal
+
+
+// ============================================================================
+// Identifiers, tags, markers
+// ============================================================================
+
+// identifier is private to avoid colliding with the IDENTIFIER token type in VivTypes
+private identifier ::= IDENTIFIER
+
+tags ::= tag (',' tag)*
+
+tag ::= IDENTIFIER
+  {mixin="studio.sifty.viv.psi.impl.VivTagReferenceMixin"
+   implements="studio.sifty.viv.psi.VivNamedElement"}
+
+reserved_construct_marker ::= 'reserved'
+
+
+// ============================================================================
+// Sigils
+// ============================================================================
+
+scratch_variable_sigil ::= '$'
+
+local_variable_sigil ::= '_'

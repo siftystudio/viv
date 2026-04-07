@@ -1,0 +1,9 @@
+// Role with chance on fixed slots (min==max) — should be rejected
+
+action bad-chance:
+    roles:
+        @actor:
+            as: initiator
+        @partner:
+            as: partner
+            n: 2-2 [50%]

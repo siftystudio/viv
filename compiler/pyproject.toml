@@ -1,0 +1,61 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "viv-compiler"
+version = "0.10.5"
+description = "Compiler for Viv, a DSL for emergent narrative in games and simulations."
+license = "LicenseRef-Viv"
+license-files = ["LICENSE.txt"]
+authors = [{name = "James Ryan", email = "james@sifty.studio"}]
+readme = "README.md"
+requires-python = ">=3.11"
+keywords = [
+    "viv",
+    "dsl",
+    "compiler",
+    "games",
+    "simulation",
+    "emergent-narrative",
+    "story-sifting",
+    "procedural-generation",
+    "npc",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Software Development :: Compilers",
+    "Topic :: Games/Entertainment :: Simulation",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "arpeggio>=2.0,<3.0",
+]
+
+[project.scripts]
+vivc = "viv_compiler.cli:main"
+viv-compiler = "viv_compiler.cli:main"
+
+[project.urls]
+Homepage = "https://viv.sifty.studio"
+Repository = "https://github.com/siftystudio/viv/tree/main/compiler"
+"Bug Tracker" = "https://github.com/siftystudio/viv/issues"
+Changelog = "https://github.com/siftystudio/viv/blob/main/compiler/CHANGELOG.md"
+
+[tool.poetry]
+packages = [{include = "viv_compiler", from = "src"}]
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0"
+jsonschema = "^4.0"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.black]
+line-length = 120

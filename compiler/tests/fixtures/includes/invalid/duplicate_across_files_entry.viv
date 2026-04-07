@@ -1,0 +1,9 @@
+// Entry point whose action name collides with the included file
+
+include "duplicate_across_files_included.viv"
+
+
+action greet:
+    roles:
+        @greeter:
+            as: initiator

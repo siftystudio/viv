@@ -1,0 +1,12 @@
+// Invalid: pool directive references a spawn role
+
+action bad-spawn-ref:
+    roles:
+        @actor:
+            as: initiator
+        @created:
+            as: item, spawn
+            spawn: ~createItem("widget")
+        @related:
+            as: item
+            from: @created.parts

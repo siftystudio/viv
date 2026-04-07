@@ -1,0 +1,42 @@
+// Negation of every expression type that should be negatable
+
+trope enemies:
+    roles:
+        @a:
+            as: character
+        @b:
+            as: character
+    conditions:
+        @b in @a.enemies
+
+
+action test-negation:
+    roles:
+        @actor:
+            as: initiator
+        @target:
+            as: character
+        &marker:
+            as: symbol
+            from: @actor.markers
+    conditions:
+        // Negated entity reference
+        !(@actor.ready)
+        // Negated symbol reference
+        !(&marker.active)
+        // Negated comparison
+        !(@actor.mood > 0)
+        // Negated conjunction
+        !(@actor.x > 0 && @actor.y > 0)
+        // Negated disjunction
+        !(@actor.x > 0 || @actor.y > 0)
+        // Negated membership test
+        !(@actor in @target.enemies)
+        // Negated custom function call
+        !~isHostile(@actor)
+        // Negated trope fit
+        !(<@actor, @target> fits trope enemies)
+        // Negated memory check (knows operator)
+        !(@actor knows @target)
+        // Negated action relation (caused operator)
+        !(@actor caused @target)

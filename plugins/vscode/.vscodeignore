@@ -1,0 +1,8 @@
+.vscode/
+.claude/
+.gitignore
+*.ts
+tsconfig.json
+*.vsix
+.DS_Store
+package-lock.json

@@ -1,0 +1,15 @@
+// Actions with deterministic chance expressions in conditions
+
+action certain:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        100%
+
+action impossible:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        0%

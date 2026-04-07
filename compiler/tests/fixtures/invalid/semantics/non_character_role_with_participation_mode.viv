@@ -1,0 +1,8 @@
+// Invalid: non-character role with participation mode
+
+action bad-mode:
+    roles:
+        @actor:
+            as: initiator
+        @place:
+            as: location, observe

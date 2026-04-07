@@ -1,0 +1,9 @@
+// Action with explicit tags
+
+action trade:
+    roles:
+        @buyer:
+            as: initiator
+        @seller:
+            as: partner
+    tags: commerce, exchange, social

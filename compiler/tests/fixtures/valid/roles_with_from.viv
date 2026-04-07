@@ -1,0 +1,12 @@
+// Roles specifying casting pools via 'from'
+
+action give-gift:
+    roles:
+        @giver:
+            as: initiator
+        @receiver:
+            as: recipient
+            from: @giver.friends
+        @gift:
+            as: item
+            from: @giver.inventory

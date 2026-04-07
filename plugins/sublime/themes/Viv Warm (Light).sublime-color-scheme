@@ -1,0 +1,136 @@
+{
+  "name": "Viv Warm (Light)",
+  "author": "Sifty",
+  "variables": {},
+  "globals": {
+    "background": "#FDF6E3",
+    "foreground": "#3B4048",
+    "caret": "#C75F00",
+    "line_highlight": "#F5EDDA",
+    "selection": "#E8DFC8",
+    "gutter": "#FDF6E3",
+    "gutter_foreground": "#A0A0A0"
+  },
+  "rules": [
+    {
+      "scope": "keyword.operator.viv, keyword.operator.word.viv",
+      "foreground": "#C75F00"
+    },
+    {
+      "scope": "keyword.other.viv",
+      "foreground": "#9B59B6"
+    },
+    {
+      "scope": "keyword.other.parameter.viv",
+      "foreground": "#9B59B6",
+      "font_style": "italic"
+    },
+    {
+      "scope": "entity.name.function.viv, entity.name.function.action.viv, entity.name.function.selector.viv, entity.name.function.plan.viv, entity.name.function.query.viv, entity.name.function.pattern.viv, entity.name.function.trope.viv, entity.name.label.viv",
+      "foreground": "#2A8C82"
+    },
+    {
+      "scope": "support.constant.viv",
+      "foreground": "#2E6BBD"
+    },
+    {
+      "scope": "support.variable.reserved.viv",
+      "foreground": "#2E6BBD"
+    },
+    {
+      "scope": "constant.language.viv",
+      "foreground": "#D03E3E"
+    },
+    {
+      "scope": "string.quoted.double.viv, string.quoted.single.viv",
+      "foreground": "#3A8C2E"
+    },
+    {
+      "scope": "entity.name.variable.viv, entity.name.variable.global.viv, entity.name.variable.local.viv",
+      "foreground": "#B68D00"
+    },
+    {
+      "scope": "punctuation.accessor.viv, punctuation.separator.key-value.viv, punctuation.separator.sequence.viv, punctuation.separator.viv, punctuation.terminator.statement.viv",
+      "foreground": "#7A7A7A"
+    },
+    {
+      "scope": "comment.line.double-slash.viv, punctuation.definition.comment.viv",
+      "foreground": "#A0A0A0"
+    },
+    {
+      "scope": "meta.external-name.viv",
+      "foreground": "#3B4048"
+    },
+    {
+      "scope": "invalid.illegal.viv",
+      "foreground": "#D03E3E",
+      "font_style": "underline"
+    },
+
+    {
+      "scope": "keyword, keyword.control, keyword.operator, keyword.operator.expression, keyword.operator.logical, keyword.operator.assignment, keyword.operator.comparison",
+      "foreground": "#C75F00"
+    },
+    {
+      "scope": "keyword.other, storage.type, storage.modifier",
+      "foreground": "#9B59B6"
+    },
+    {
+      "scope": "entity.name.function, meta.function-call, support.function",
+      "foreground": "#2A8C82"
+    },
+    {
+      "scope": "entity.name.type, entity.name.class, support.type, support.class",
+      "foreground": "#3B4048"
+    },
+    {
+      "scope": "support.constant, constant.language, constant.numeric, constant.character, constant.other",
+      "foreground": "#D03E3E"
+    },
+    {
+      "scope": "variable, variable.other, variable.parameter, variable.language",
+      "foreground": "#B68D00"
+    },
+    {
+      "scope": "string, string.quoted, string.quoted.double, string.quoted.single, string.template, string.interpolated",
+      "foreground": "#3A8C2E"
+    },
+    {
+      "scope": "comment, comment.line, comment.block, punctuation.definition.comment",
+      "foreground": "#A0A0A0"
+    },
+    {
+      "scope": "punctuation, punctuation.definition.tag, punctuation.separator, punctuation.terminator, punctuation.accessor, meta.brace, punctuation.section",
+      "foreground": "#7A7A7A"
+    },
+    {
+      "scope": "entity.name.tag",
+      "foreground": "#D03E3E"
+    },
+    {
+      "scope": "entity.other.attribute-name",
+      "foreground": "#B68D00"
+    },
+    {
+      "scope": "support.type.property-name.css, support.type.property-name",
+      "foreground": "#2E6BBD"
+    },
+    {
+      "scope": "support.constant.property-value, constant.numeric.css, keyword.other.unit",
+      "foreground": "#D03E3E"
+    },
+    {
+      "scope": "string.regexp",
+      "foreground": "#2A8C82"
+    },
+    {
+      "scope": "constant.character.escape",
+      "foreground": "#2E6BBD"
+    },
+    {
+      "scope": "invalid, invalid.illegal",
+      "foreground": "#D03E3E",
+      "font_style": "underline"
+    }
+  ]
+}

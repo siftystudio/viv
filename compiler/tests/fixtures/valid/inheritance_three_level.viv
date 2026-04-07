@@ -1,0 +1,16 @@
+// Three-level inheritance chain: grandparent -> parent -> child
+
+template action grandparent-act:
+    roles:
+        @actor:
+            as: initiator
+    importance: 5.0
+    tags: base-tag
+
+
+template action parent-act from grandparent-act:
+    gloss: "a parent action"
+
+
+action child-act from parent-act:
+    gloss: "a child action"

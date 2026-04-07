@@ -1,0 +1,13 @@
+// Action with a loop over a group role
+
+action announce:
+    roles:
+        @speaker:
+            as: initiator
+        @audience*:
+            as: character
+            n: 1-5
+    effects:
+        loop @audience* as _@listener:
+            _@listener.trust += 1
+        end

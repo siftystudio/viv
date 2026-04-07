@@ -1,0 +1,22 @@
+// Two actions and a query filtering by action name
+
+action greet:
+    roles:
+        @greeter:
+            as: initiator
+        @target:
+            as: partner
+
+action insult:
+    roles:
+        @bully:
+            as: initiator
+        @victim:
+            as: partner
+
+query greet-memories:
+    roles:
+        @viewer:
+            as: character
+    action:
+        any: greet

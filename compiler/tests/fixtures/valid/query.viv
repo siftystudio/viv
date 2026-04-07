@@ -1,0 +1,11 @@
+// Query matching memories by association
+
+query happy-memory:
+    associations:
+        all: happy
+
+// Query matching memories by importance threshold
+
+query important-memory:
+    importance:
+        >=: 3

@@ -1,0 +1,20 @@
+// Plan with a loop instruction
+
+action visit:
+    roles:
+        @visitor:
+            as: initiator
+
+
+plan tour:
+    roles:
+        @traveler:
+            as: character
+    phases:
+        >visiting:
+            loop @traveler.destinations as _@place:
+                queue action visit:
+                    with partial:
+                        @visitor: @traveler
+            end
+            succeed;

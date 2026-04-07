@@ -1,0 +1,27 @@
+// Action with a reaction that has conditional repeat logic
+
+reserved action provoke:
+    roles:
+        @provoker:
+            as: initiator
+        @target:
+            as: recipient
+    reactions:
+        queue action retaliate:
+            with:
+                @aggressor: @target
+                @victim: @provoker
+            repeat:
+                if:
+                    @target.anger > 0
+                max: 5
+
+
+reserved action retaliate:
+    roles:
+        @aggressor:
+            as: initiator
+        @victim:
+            as: recipient
+    effects:
+        @aggressor.anger -= 1

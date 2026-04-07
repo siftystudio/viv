@@ -1,0 +1,20 @@
+// Invalid: duplicate action-selector name
+
+action wave:
+    roles:
+        @waver:
+            as: initiator
+
+action-selector greet:
+    roles:
+        @greeter:
+            as: initiator
+    target randomly:
+        wave;
+
+action-selector greet:
+    roles:
+        @greeter:
+            as: initiator
+    target randomly:
+        wave;

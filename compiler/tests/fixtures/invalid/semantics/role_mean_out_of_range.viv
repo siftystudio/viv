@@ -1,0 +1,9 @@
+// Invalid: role with mean outside min-max range
+
+action bad-mean:
+    roles:
+        @actor:
+            as: initiator
+        @crowd*:
+            as: bystander
+            n: 2-5 [~10]

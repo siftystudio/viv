@@ -1,0 +1,18 @@
+// Invalid: reaction with multiple from-action temporal constraints
+
+reserved action respond:
+    roles:
+        @responder:
+            as: initiator
+
+action trigger:
+    roles:
+        @actor:
+            as: initiator
+    reactions:
+        queue action respond:
+            with:
+                @responder: @actor
+            time:
+                after: 1 hour from action
+                before: 2 hours from action

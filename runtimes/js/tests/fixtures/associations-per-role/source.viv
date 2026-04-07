@@ -1,0 +1,13 @@
+// Action with per-role association overrides
+
+action trade:
+    roles:
+        @seller:
+            as: initiator
+        @buyer:
+            as: partner
+    associations:
+        default: commercial
+        roles:
+            @seller: profitable
+            @buyer: expensive

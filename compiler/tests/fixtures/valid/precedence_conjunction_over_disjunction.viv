@@ -1,0 +1,8 @@
+// Conjunction binding tighter than disjunction
+
+action test-conj-disj:
+    roles:
+        @a:
+            as: initiator
+    conditions:
+        @a.x > 0 || @a.y > 0 && @a.z > 0

@@ -1,0 +1,20 @@
+// Plan with a wait instruction that blocks on a deadline
+
+reserved action recover:
+    roles:
+        @patient:
+            as: initiator
+
+
+plan rest-plan:
+    roles:
+        @patient:
+            as: character
+    phases:
+        >resting:
+            wait:
+                timeout: 3 days
+            queue action recover:
+                with:
+                    @patient: @patient
+            succeed;

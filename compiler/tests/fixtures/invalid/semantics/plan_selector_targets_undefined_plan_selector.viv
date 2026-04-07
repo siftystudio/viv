@@ -1,0 +1,25 @@
+// Invalid: plan selector targets undefined plan selector
+
+action step:
+    roles:
+        @doer:
+            as: initiator
+
+plan real-plan:
+    roles:
+        @actor:
+            as: character
+    phases:
+        >do-it:
+            queue action step:
+                with partial:
+                    @doer: @actor
+            succeed;
+
+plan-selector pick:
+    roles:
+        @actor:
+            as: character
+    target in order:
+        selector nonexistent;
+        real-plan;

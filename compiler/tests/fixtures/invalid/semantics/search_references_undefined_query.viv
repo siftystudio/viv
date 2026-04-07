@@ -1,0 +1,9 @@
+// Invalid: search references undefined query
+
+action searcher:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        search query nonexistent:
+            over: @actor

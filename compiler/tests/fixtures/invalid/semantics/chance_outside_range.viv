@@ -1,0 +1,8 @@
+// Invalid: chance expression outside valid range
+
+action bad-chance:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        150%

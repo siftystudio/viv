@@ -1,0 +1,10 @@
+// Entry point that includes multiple files
+
+include "basic_included.viv"
+include "chain_leaf.viv"
+
+
+action greet:
+    roles:
+        @greeter:
+            as: initiator

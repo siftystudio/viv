@@ -1,0 +1,8 @@
+// Leaf file in a transitive include chain
+
+trope rivals:
+    roles:
+        @a:
+            as: character
+        @b:
+            as: character

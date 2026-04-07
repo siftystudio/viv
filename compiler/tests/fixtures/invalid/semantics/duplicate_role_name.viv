@@ -1,0 +1,8 @@
+// Invalid: Two roles with the same name in one action
+
+action greet:
+    roles:
+        @person:
+            as: initiator
+        @person:
+            as: recipient

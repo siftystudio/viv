@@ -1,0 +1,6 @@
+// Invalid: Missing colon after action name
+
+action broken
+    roles:
+        @x:
+            as: initiator

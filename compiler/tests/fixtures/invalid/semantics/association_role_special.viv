@@ -1,0 +1,9 @@
+// Action with per-role association referencing a special role
+
+action bad-association:
+    roles:
+        @actor:
+            as: initiator
+    associations:
+        roles:
+            @hearer: guilt

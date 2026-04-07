@@ -1,0 +1,15 @@
+// Fixture exercising all four debugging-watchlist categories.
+//
+// This action always fails targeting, making all counts deterministic. The
+// global condition `true` guarantees a condition success; the role condition
+// fails for all candidates, exercising casting attempts and backtracking.
+
+action recruit:
+    roles:
+        @captain:
+            as: initiator
+        @recruit:
+            as: partner
+    conditions:
+        true
+        @recruit.eligible == true

@@ -1,0 +1,8 @@
+// Invalid: action renames a role but has no parent
+
+action no-parent:
+    roles:
+        @actor:
+            as: initiator
+        @buddy:
+            renames: @friend

@@ -1,0 +1,9 @@
+// Action with a custom casting pool
+
+action confide:
+    roles:
+        @speaker:
+            as: initiator
+        @listener:
+            as: partner
+            from: @speaker.friends

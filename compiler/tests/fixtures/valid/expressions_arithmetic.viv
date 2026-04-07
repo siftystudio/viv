@@ -1,0 +1,10 @@
+// Arithmetic expressions in effects
+
+action calculate:
+    roles:
+        @math-whiz:
+            as: initiator
+    effects:
+        @math-whiz.result = @math-whiz.x + @math-whiz.y * 2
+        @math-whiz.ratio = @math-whiz.a / @math-whiz.b
+        @math-whiz.diff = @math-whiz.a - @math-whiz.b

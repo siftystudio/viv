@@ -1,0 +1,23 @@
+// Invalid: selector candidate precasts role not in target
+
+reserved action respond:
+    roles:
+        @responder:
+            as: initiator
+
+action wave:
+    roles:
+        @waver:
+            as: initiator
+
+action-selector pick:
+    roles:
+        @actor:
+            as: initiator
+    target randomly:
+        respond:
+            with:
+                @responder: @actor
+                @phantom: @actor
+        ;
+        wave;

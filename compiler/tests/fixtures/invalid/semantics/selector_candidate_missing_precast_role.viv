@@ -1,0 +1,24 @@
+// Invalid: selector candidate fails to precast target's precast role
+
+reserved action ceremony:
+    roles:
+        @leader:
+            as: initiator
+        @guest:
+            as: character, precast
+
+action wave:
+    roles:
+        @waver:
+            as: initiator
+
+action-selector pick:
+    roles:
+        @actor:
+            as: initiator
+    target randomly:
+        ceremony:
+            with partial:
+                @leader: @actor
+        ;
+        wave;

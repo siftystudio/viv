@@ -1,0 +1,9 @@
+// Circular include: A includes B
+
+include "circular_b.viv"
+
+
+action greet:
+    roles:
+        @greeter:
+            as: initiator

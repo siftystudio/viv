@@ -1,0 +1,17 @@
+// Action plus a reserved action with a 'knows' condition
+
+action witness:
+    roles:
+        @observer:
+            as: initiator
+        @subject:
+            as: partner
+
+reserved action reminisce:
+    roles:
+        @thinker:
+            as: initiator
+        @past-event:
+            as: action, precast
+    conditions:
+        @thinker knows @past-event

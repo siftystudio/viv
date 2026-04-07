@@ -1,0 +1,14 @@
+// Invalid: condition references multiple optional roles
+
+action risky-cond:
+    roles:
+        @actor:
+            as: initiator
+        @maybe-a*:
+            as: partner
+            n: 0-1
+        @maybe-b*:
+            as: bystander
+            n: 0-1
+    conditions:
+        @maybe-a.mood > @maybe-b.mood

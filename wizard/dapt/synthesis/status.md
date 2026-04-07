@@ -1,0 +1,2839 @@
+# Pipeline Status
+
+## Competency Coverage
+
+| Competency | Tokens |
+|------------|--------|
+| `ideation_to_code` | 2647.0K |
+| `code_to_compiler_output` | 795.5K |
+| `broken_code_to_repaired_code` | 257.0K |
+| `error_message_to_diagnosis` | 274.6K |
+| `working_code_to_ideation` | 1160.5K |
+| `code_to_explanation` | 1004.6K |
+| `code_to_revised_code` | 1486.0K |
+| `code_to_critique` | 296.6K |
+| `partial_code_to_completed_code` | 299.9K |
+| `ideation_to_ideation` | 206.9K |
+| `schema_to_construct_ideation` | 180.5K |
+| `schema_and_code_to_runtime_prediction` | 272.7K |
+
+## Domain Coverage
+
+| Domain | Schemas | Assignments |
+|--------|---------|-------------|
+| `heist-crew` | 1 | 6 |
+| `cooking-competition` | 1 | 7 |
+| `political-intrigue` | 1 | 6 |
+| `haunted-mansion` | 1 | 6 |
+| `summer-camp` | 1 | 6 |
+| `pirate-ship` | 1 | 6 |
+| `space-station` | 1 | 7 |
+| `wilderness-survival` | 1 | 5 |
+| `boarding-school` | 1 | 6 |
+| `detective-agency` | 1 | 6 |
+| `medieval-guild` | 1 | 6 |
+| `hospital-drama` | 1 | 6 |
+| `spy-network` | 1 | 5 |
+| `traveling-circus` | 1 | 6 |
+| `frontier-town` | 1 | 5 |
+| `auction-house` | 1 | 5 |
+| `submarine-crew` | 1 | 4 |
+
+## Schema Rotation
+
+| Schema | Assignments | Themes |
+|--------|-------------|--------|
+| `heist-crew-01` | 6 | trust/paranoia dynamics, recon planning, specialist roles; botched job aftermath, plan selector cascading, re-infiltration vs. smash-and-grab; wheelman double-cross, improvised escape, corrupt cop negotiation, trust collapse; vault contents moved mid-operation, inside leak investigation, improvised plan, cover blown at gala; dual-crew museum heist, rival crew collision, wrong vault combination, informant hunt, driver extraction window; empty vault aftermath, inside man suspicion, hacker surveillance gap, muscle ultimatum, spawn-to-inspection chain, template inheritance |
+| `cooking-competition-01` | 6 | sabotage, backstage scheming, mystery box pressure, fragile alliances; team round dynamics, judge manipulation, plan selectors; bribery scandal during elimination, real-time investigation, alliance reshuffling; mystery box allergy crisis, ingredient substitution, hostile judge, station boundary violations; TV finale, equipment malfunction, peer review scoring, mentor coaching scandal, tampered mise en place; secret dish tasting, blind taste test twist, mentor contradictions, judge backstage coaching, inscribe/inspect evidence chains |
+| `political-intrigue-01` | 6 | succession crisis, factional defection, secret leverage, denouncement; espionage/counter-espionage, Shadow vs. Crown, plan selectors; assassination plot discovery, courtier disclosure dilemma, faction repositioning; regency crisis, five-faction regent appointment, clergy legitimation, Shadow bastard candidate; ambassador poisoning, Crown-Shadow blame crisis, Church inquisition, minor noble third-party theory; sealed decree succession challenge, unknown signet, Clergy conclave, parchment provenance, spymaster informant list, scratch variables |
+| `haunted-mansion-01` | 6 | séance gone wrong, escalating dread, cursed objects, skeptic vs. believer; possession chain via cursed objects, skeptic trust collapse, ward imperfection; hidden passage to sealed crypt, binding ward disruption, spirit communication, cursed object escalation; fragmented consciousness, room-specific personality aspects, medium-caretaker trust crisis, cursed counter-ritual, relic theft weakening wards; contradictory spirit messages, caretaker ancestor murder claim, walled-off room journal, binding ritual vs cleansing, targeted manifestations; imposter spirits, contradictory ward markings, voice pattern matching living person, caretaker ritual feeding, scratch-variable evidence tracking |
+| `summer-camp-01` | 5 | cabin loyalty/betrayal, contraband smuggling, CIT dilemma, homesickness spirals; wilderness challenge sabotage, CIT duty-vs-loyalty, letter information economy, homesickness exploitation; talent show preparation, dare chain escalation, specialist favoritism, CIT covering for counselor; Color War escalation, cabin sabotage, counselor secret relationship, campfire dare, contraband stash discovery, director investigation; unsanctioned night swim, near-drowning, cover story chains, director investigation plan, counselor sleeping pills, specialist AWOL |
+| `pirate-ship-01` | 6 | uneven plunder, cursed relic, heading dispute, mutiny escalation; becalmed seas, rationing crisis, navigator credibility, map discovery, mutiny build-up; prize ship capture, prisoner tribunal, sinking salvage, cursed relic spawn, captain judgment proxy war; volcanic island stranding, hull repair vs launch window, native warnings, relic superstition, water spring in forbidden territory; ghost ship encounter, smashed mirrors, humming jars, affected deckhand, legendary shipwreck route, crew response split; captured diplomatic pouch, governor pirate hunters, ransom vs leverage debate, forged letter scheme, hidden gold compartment |
+| `space-station-01` | 6 | cascading integrity failure, command vs. science conflict, authority-competence divergence; alien artifact discovery, science vs. security, proximity exposure effects, quarantine protocol fracture; supply shuttle depressurization, priority rationing, reactor hoarding, journalist documentation; solar storm blackout, shuttle docking dilemma, unauthorized power depletion, journalist satellite uplink, falsified hull repair; EVA pathogen quarantine, uncertain diagnosis, sealed module air crisis, journalist broadcast leak, specialist experiment deadline; cargo shuttle docking collision, power drain misdiagnosis, crystal growth experiment deadline, unresponsive pilot, communications bandwidth rationing |
+| `wilderness-survival-01` | 5 | rescue signal vs. trek faction split, resource competition, leadership disputes; competing foraging factions, poisonous plant incident, trap-setting territorial disputes, weather alliances; flash flood shelter destruction, medical supply triage, cave relocation split, signal device construction; predator stalking perimeter, water contamination, signal tower race, smoke plume disagreement, outsider suspicious trail; river crossing dilemma, abandoned expedition camp, damaged raft, gorge route map, outsider terrain knowledge, food cache rationing, spawn roles |
+| `boarding-school-01` | 6 | secret society recruitment during exam week, prefect enforcement dilemmas, action selectors; disciplinary tribunal, planted contraband defense, cross-house alliances, groundskeeper leverage; house cup final tie, coaching scandal, exam note black market, tunnel key discovery; cheating ring exposed, leaked history final, cross-house distribution chain, faculty grudge investigation, cascading accusation reactions; school fire arson investigation, Selwyn displaced to Draycott, hidden lighter evidence, amnesty deadline, unexposable alibi; Selwyn art vandalism, hidden chapel compartment, secret society letters, headmaster founder, Lyndhurst grip evidence, Draycott Fund mystery, information propagation tracing |
+| `detective-agency-01` | 6 | cold case reopened, evidence reliability/planted items, competing theories, plan selectors; rival PI firms, informant double-dealing, planted evidence chains, surveillance stakeout rivalry; witness recantation, frame job unraveling, informant extraction, forensic re-examination; missing heiress, rival PI firms competing motives, recanting doorman, forged blood evidence, multi-file organization; client-as-perpetrator frame job, corrupted informant, parallel rival investigation, shared-printer forensic link, mentor loyalty crisis; informant selective disclosure, dead handler's notebook, estate lawyer conflict, inscribe/inspect evidence chains, knows-based knowledge tracking |
+| `medieval-guild-01` | 6 | contested grandmaster election, guild alliances, commission competition, campaign plans; apprentice rebellion, commission undercutting, journeyman front, master investigation; foreign trade delegation, silk import vs. weavers, secret apprentice commissions, apothecary tonic leverage; poisoned feast, Apothecary suspicion, forged contract, investigation plan, political maneuvering selector; plague quarantine, mercury poisoning discovery, Apothecary monopoly, apprentice smuggler folk hero, economic pressure; Weavers' warehouse fire, Smiths accused, Merchants counter-accusation, Apothecaries inflated remediation, Masons reconstruction proposal, secret off-guild commissions |
+| `hospital-drama-01` | 6 | mass-casualty surge, triage ethics, treatment protocol selectors, code blue plans; night shift power vacuum, resident autonomous decisions, charge nurse protocols, medication authorization loop; transplant dispute, dosage error near-miss, ICU capacity crunch, authority override dynamics; obstetric emergency, NICU transfer dispute, board member family bypass, OR access conflict, night shift authorization crisis; clinical trial data manipulation, IRB audit, pharma funding threat, medication error coverup, whistleblowing; appendectomy death, chart copy-paste error, charge nurse silenced, malpractice attorney family, ICU surge, attending suspension dilemma |
+| `spy-network-01` | 5 | double agent unraveling, counterintelligence surveillance, disinformation dead drops, cascading cover blows; burned safe house fallout, courier border crossing failure, emergency relocations, mole investigation; handler psychological manipulation, wavering asset dead drop, counterintel dead-drop timing pattern, analyst disinformation pipeline discovery; defection crisis, dangle operation, barium meal test, silent courier, asset cover dependency; converging operations on dead-drop, cipher fragment third party, counterintelligence collision dilemma, courier loyalty, multi-phase investigation plans |
+| `traveling-circus-01` | 6 | star acrobat injury, understudy spotlight crisis, fortune teller superstition, sabotage investigation; circus vs hostile mayor, performer charm offensive, fortune teller discovers mayor's secret; competing carnival showdown, dangerous aerial stunt, fire/strongman feud, clown format-breaking ambition; stranded in hostile town, revoked permit, mayor's daughter runaway, fortune teller private readings, prop feud, blacksmith leverage; storm collapses big top, acrobat trapped, bolted horses, fortune teller prophecy, lantern feud, roustabout hazard pay; handler unconscious, bear missing, picked lock, fortune teller foresight, strongman-fire feud, town bounty, roustabout work stoppage |
+| `frontier-town-01` | 5 | contested gold strike, legal vs. extralegal dispute resolution, posse/ambush dynamics; water rights dispute, dam sabotage, rancher escalation, gambler speculation; railroad survey crew, factional land bribery, prospector murder investigation, drifter marshal; stagecoach robbery, scattered gang, gambler double-dealing, drifter false suspect, deputy leak, barium meal investigation; cattle drive blockade, rival rancher pass dispute, doctor's suspicious knowledge, saloon betting, gambler cattle futures, spawn roles |
+| `auction-house-01` | 4 |
+| `submarine-crew-01` | 3 | hostile contact during cooling-pipe fracture, captain-XO depth dispute, chief engineer coverup, sonar watchstander breakdown, template inheritance confrontation hierarchy; sealed orders opened, cabin breach investigation, mid-watch witness, department head suspicion, inscribe/inspect knowledge chains; mirrored sonar contacts, decoy theory, test depth with untested hull patch, CO2 scrubber shortage, torpedo maintenance fraud, paranoia vs genuine safety report | Renaissance painting authentication crisis, auctioneer dilemma, collector withdrawal threat, dealer forgery accusation, backdoor deals, smuggling operation; wartime collection restitution claims, 48-hour provenance deadline, shared forger style, new-money market cornering, vault keycard breach; charity gala forgery laundering, vulnerable appraiser, collector scandal exposure, dealer blackmail scheme, restorer varnish discovery; estate liquidation, uncatalogued Renaissance sketch pentimento, heir valuation dispute, deathbed purchase claim, inscribe/inspect knowledge dynamics |
+
+## Language Feature Coverage
+
+Tracks which areas of the Viv DSL have been exercised across all training examples. Each row names a feature area (defined in `docs/feature-areas.md`) and counts the number of training examples that exercise it with depth. The orchestrator uses this table to identify underrepresented feature areas and assign mechanical targets accordingly.
+
+When a reviewer reports a mechanical target verdict of "fully exercised," add 1.0 to the count. When "partially exercised," add 0.5.
+
+| # | Feature Area | Examples |
+|---|---|---|
+| 1 | Role definition syntax | 20.0 |
+| 2 | Conditions and effects syntax | 21.0 |
+| 3 | Scratch variable syntax | 7.0 |
+| 4 | Reaction syntax | 16.5 |
+| 5 | Embargo syntax | 19.0 |
+| 6 | Temporal constraint syntax | 11.0 |
+| 7 | Template inheritance syntax | 8.5 |
+| 8 | Saliences and associations syntax | 21.0 |
+| 9 | Gloss, report, importance, and tags syntax | 15.0 |
+| 10 | Plan phase structure | 13.5 |
+| 11 | Selector composition syntax | 15.0 |
+| 12 | Query filter syntax | 14.5 |
+| 13 | Sifting pattern syntax | 14.0 |
+| 14 | Trope syntax | 20.0 |
+| 15 | Inscribe and inspect syntax | 8.5 |
+| 16 | Spawn role syntax | 5.0 |
+| 17 | Action search and sift expressions | 10.5 |
+| 18 | Expression operators | 14.0 |
+| 19 | Custom function call syntax | 12.5 |
+| 20 | Literal forms | 11.0 |
+| 21 | Include and multi-file syntax | 14.0 |
+
+## Working Notes
+
+- Intermediate expertise produces errors around syntax details (role type names, operator syntax, embargo values), not construct design. Good for `error_message_to_diagnosis` and `broken_code_to_repaired_code`, but at lower volume than novice would produce.
+- Rich schemas with many entity types and enum values naturally provoke multi-file projects and `include` usage.
+- Schema properties that encode interpersonal dynamics (rivalry, trust, loyalty) prompt authors to build interconnected reaction chains, exercising reactions, reserved actions, and custom function calls without commission nudging.
+- `partial_code_to_completed_code` responds well to explicit activity emphasis ("sketch stubs first, compile, then fill in"). Novice + stub emphasis produced 10.4K tokens of this competency in a single session.
+- Runtime prediction signal emerges voluntarily at intermediate+ level when the author has built enough constructs to narrate expected behavior. Novice also produces it at lower volume (~2.2K) when constructs are schema-grounded enough to invite behavioral narration.
+- Novice expertise produces ~3x the error volume of intermediate (15 vs 5 errors), with errors spanning syntax discovery (negation operators, infix syntax, keyword names, casting constraints) rather than just misremembered details. Mandatory consultant protocol generates substantial `error_message_to_diagnosis` and `broken_code_to_repaired_code` signal.
+- Novice authors may consolidate from multi-file to single-file when cross-file references cause errors they can't diagnose. This is organic and produces useful error/repair signal, but reduces `include` usage in final constructs.
+- Expert expertise produces the strongest `code_to_critique` signal (up to ~11.6K in one session). Critique emphasis at expert level yields unprompted casting pool tightening, role consolidation analysis, and template refactoring — qualitatively richer than intermediate/novice critique. Even without explicit critique emphasis, expert sessions with enough constructs to reveal systemic weaknesses (missing selectors, argument type mismatches, group role workarounds) produce high critique volume.
+- Expert authors voluntarily explore advanced mechanics (template inheritance, scratch variables, tags, plan reaction windows) without commission nudging, producing broad construct-type coverage.
+- Brainstorming emphasis ("think through ideas before coding") at expert level boosts `ideation_to_ideation` and `schema_to_construct_ideation` modestly but not dramatically — experts tend to interleave ideation with code regardless.
+- Intermediate authors with critique emphasis and rich schemas produce strong `code_to_revised_code` signal (~16K) through organic revision cycles, but generate minimal error signal (1 error in 25 compiles). The revision is design-driven, not error-driven.
+- Explicit runtime prediction emphasis in commissions ("trace through multi-turn scenarios") at expert level produces ~8.4K `schema_and_code_to_runtime_prediction` tokens — substantially more than brainstorming emphasis alone (~5.1K). This is the most effective lever for this competency.
+- Critique and runtime prediction may compete for expert attention. When both are emphasized, one tends to dominate — asmt-0006 produced 8.4K runtime prediction but only 2.2K critique, while asmt-0003 produced 8.0K critique but only 5.1K runtime prediction.
+- Novice error volume depends heavily on what constructs the author attempts. Without activity emphasis pushing toward complex syntax (plans, action selectors, stubs), a novice may stay in comfortable territory and produce fewer errors (3 vs 15). Stub emphasis or explicit nudges toward advanced constructs are necessary to reliably generate high error volume at novice level.
+- Stub emphasis at intermediate level produces less `partial_code_to_completed_code` (4.1K) than at novice level (10.4K). Intermediates fill stubs more quickly with less scaffolding prose. For maximizing this competency, novice + stubs remains the best lever.
+- `broken_code_to_repaired_code` can be absent even when the author encounters many errors, if their prose style describes the fix without re-showing the corrected code block before the success message. This is a reviewer segmentation artifact — the repair reasoning is present but the code modality transition isn't captured.
+- Stub emphasis at intermediate level produces strong `ideation_to_ideation` signal (7.2K) — the stub phase naturally involves extended brainstorming before code. This is more effective for `ideation_to_ideation` than brainstorming emphasis at expert level.
+- Commission emphasis on complex constructs (plans, queries) at novice level produces error volume comparable to stub emphasis (~15 errors). Plan syntax discovery is an especially rich error source — phase sigils, role labels, wait/until, complete bindings each produce distinct error→diagnosis→repair arcs.
+- Novice `code_to_critique` can reach ~4.7K when the author builds enough constructs to self-assess. Complex construct emphasis produces more self-assessment targets than stub emphasis.
+- Intermediate + action selector emphasis produces exceptionally high `broken_code_to_repaired_code` (7.7K). Selectors, plans, and plan selectors generate novel error types the language reference doesn't fully cover, forcing productive consultant interactions. This is the most effective lever for this competency at intermediate level.
+- `partial_code_to_completed_code` requires explicit stub emphasis regardless of expertise level. Without it, even ambitious sessions produce zero of this competency.
+- Plan selector emphasis at novice level works — novices can discover and build plan selectors after iterating through plan syntax first. The prerequisite plan syntax discovery produces substantial error signal en route.
+- Novice + plan emphasis produces strong `ideation_to_ideation` (~7.7K) because planning multi-phase constructs requires extended prose-only brainstorming before code.
+- Plan/selector emphasis at novice level can produce all 12 competencies without stub emphasis. Plans naturally generate `partial_code_to_completed_code` when the author writes phase structure before actions, and complex constructs drive higher `code_to_critique` (up to 8.5K) than simple action-focused sessions.
+- Mechanical targets are highly effective for closing language feature coverage gaps at both expert and intermediate levels. Authors can build constructs that naturally exercise unfamiliar feature areas with depth and variety in a single session. Expert level benefits from direct documentation access; intermediate level benefits from consultant-mediated discovery.
+- Expert authors sometimes resolve compiler errors inline in prose without fencing the error output separately. This produces zero `broken_code_to_repaired_code` and `error_message_to_diagnosis` signal despite the error-handling competency being demonstrated. Affected 2 of 5 expert sessions in the asmt-0033–0047 batch. Author instructions should require fencing every compiler invocation output before prose discussion.
+- `schema_and_code_to_runtime_prediction` can register zero even when substantial runtime prediction content exists (up to ~4.7K tokens) if all runtime traces follow `compiler_success_message` segments rather than `viv_code` segments. This is a recurring segmentation artifact, not an absence of prediction content.
+- Department-structured or faction-structured schemas naturally produce selector chaining hierarchies — the organizational structure invites factional sub-selectors without commission nudging.
+- Intermediate + critique emphasis can produce zero `broken_code_to_repaired_code` when the author's repair style is full-rewrite rather than minimal-fix — the modality sequence is `error → prose → new code` rather than `error → prose → corrected code`, which the reviewer classifies differently.
+- New domains with unfamiliar schemas drive stronger `schema_and_code_to_runtime_prediction` at expert level (10.2K on submarine-crew-01 vs. typical 2-5K on well-explored schemas). The expert spends more time reasoning through how unfamiliar properties interact, producing detailed runtime traces. For maximizing this competency, pair expert + runtime prediction emphasis with a fresh schema.
+- Intermediate + stub emphasis produces all 12 competencies and strong `schema_and_code_to_runtime_prediction` (5.9K on heist-crew-01). The stub phase creates space for runtime prediction that non-stub intermediate sessions don't, because the author narrates expected behavior of stubs before fleshing them out.
+- Commissions about information propagation/distortion at expert level produce exceptional `ideation_to_ideation` (19.3K on boarding-school-01). The topic requires extended prose reasoning about how information flows between characters before any code is written. 11 runtime scenario traces also contribute heavily.
+- Expert + scratch-variable-focused commissions produce strong `ideation_to_ideation` (9.5K on haunted-mansion-01). Scratch variables require upfront reasoning about computed intermediate state, generating pure ideation tokens before code.
+
+## Activity Log
+
+- `2026-03-12` `asmt-0001`
+  - Schema: `heist-crew-01`
+  - Author expertise level: `intermediate`
+  - Directions: trust/paranoia dynamics, recon-phase planning, specialist role actions
+  - Emphasis: none
+  - Result: ~32K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 25.4K
+    - `code_to_revised_code`: 17.6K
+    - `working_code_to_ideation`: 11.6K
+    - `code_to_explanation`: 8.0K
+    - `code_to_compiler_output`: 7.7K
+    - `schema_and_code_to_runtime_prediction`: 3.6K
+    - `error_message_to_diagnosis`: 2.3K
+    - `ideation_to_ideation`: 2.0K
+    - `code_to_critique`: 1.5K
+    - `schema_to_construct_ideation`: 1.5K
+    - `broken_code_to_repaired_code`: 1.4K
+    - `partial_code_to_completed_code`: 0
+  - Notes:
+    - 5 compiler errors (invalid role types `object`/`subject`, incorrect `remove` syntax, numeric embargo duration)
+    - Errors were genuine intermediate-level mistakes: author had the language reference but misremembered role type names and guessed at embargo syntax
+    - Mechanics: tropes, actions with conditional effects, reactions, reserved actions, embargoes, custom function calls, includes, associations, queries, sifting patterns, plans with phases and partial bindings
+    - 3 files (`recon.viv`, `specialists.viv`, `plans.viv`), 25+ constructs total
+    - Author self-critiqued casting pool breadth, rivalry asymmetry, and embargo design — produced `code_to_critique` and `code_to_revised_code` signal organically
+
+- `2026-03-12` `asmt-0002`
+  - Schema: `cooking-competition-01`
+  - Author expertise level: `novice`
+  - Directions: sabotage and backstage scheming during mystery box round, fragile alliances, ingredient competition
+  - Emphasis: sketch construct stubs before filling them in (stub-then-complete rhythm)
+  - Result: ~31.4K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 24.0K
+    - `working_code_to_ideation`: 13.5K
+    - `code_to_compiler_output`: 12.6K
+    - `partial_code_to_completed_code`: 10.4K
+    - `code_to_explanation`: 9.5K
+    - `broken_code_to_repaired_code`: 5.3K
+    - `error_message_to_diagnosis`: 5.3K
+    - `code_to_revised_code`: 3.5K
+    - `code_to_critique`: 2.5K
+    - `schema_and_code_to_runtime_prediction`: 2.2K
+    - `schema_to_construct_ideation`: 1.5K
+    - `ideation_to_ideation`: 1.5K
+  - Notes:
+    - 15 compiler errors — genuine novice mistakes: `!()` negation syntax, infix `append`/`remove`, `action-selector` keyword, `>` plan phase sigil, `with partial:` casting, initiator `from:` constraint
+    - Mandatory consultant protocol produced rich error→diagnosis→repair arcs
+    - Author consolidated from multi-file to single-file after cross-file reference errors
+    - Mechanics: tropes, actions (sabotage, cooking pipeline, social, reserved/reactions), action selector, queries, sifting patterns, conditional effects, partial casting
+    - 34 constructs in final `competition.viv`, plus superseded multi-file attempts
+    - Stub-then-complete emphasis worked well — all 12 competencies represented
+
+- `2026-03-12` `asmt-0003`
+  - Schema: `political-intrigue-01`
+  - Author expertise level: `expert`
+  - Directions: succession crisis and factional defection, secret leverage with forged/genuine fork, reputation vs. suspicion tension
+  - Emphasis: extended brainstorming before coding, critique and revision after compiling
+  - Result: ~34.2K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 27.3K
+    - `code_to_explanation`: 16.7K
+    - `working_code_to_ideation`: 12.9K
+    - `code_to_revised_code`: 12.8K
+    - `code_to_compiler_output`: 11.0K
+    - `code_to_critique`: 8.0K
+    - `schema_and_code_to_runtime_prediction`: 5.1K
+    - `schema_to_construct_ideation`: 2.7K
+    - `partial_code_to_completed_code`: 1.4K
+    - `ideation_to_ideation`: 1.4K
+    - `broken_code_to_repaired_code`: 1.2K
+    - `error_message_to_diagnosis`: 0.7K
+  - Notes:
+    - 1 compiler error (6 compiler bugs encountered and worked around)
+    - Expert author explored advanced mechanics voluntarily: template inheritance, scratch variables, tags, plan reaction windows (`all:`), `wait` with `until` clause
+    - Extensive critique cycles: tightened casting pools, refactored conspire into template-derived action, added counter-reactions to denouncement
+    - Mechanics: 26 actions (including reserved, templates), 4 tropes, 8 queries, 3 sifting patterns, 1 action selector, 1 plan across 15 files
+    - Strong `code_to_critique` (8.0K) and `code_to_explanation` (16.7K) — both expert-level strengths
+
+- `2026-03-12` `asmt-0004`
+  - Schema: `haunted-mansion-01`
+  - Author expertise level: `intermediate`
+  - Directions: séance gone wrong in nexus room, escalating dread, cursed object activation, skeptic belief shift, sanity-fear interaction
+  - Emphasis: critique and revision after compiling
+  - Result: ~35.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 28.1K
+    - `working_code_to_ideation`: 16.6K
+    - `code_to_revised_code`: 16.2K
+    - `code_to_compiler_output`: 7.1K
+    - `code_to_explanation`: 5.5K
+    - `ideation_to_ideation`: 4.5K
+    - `code_to_critique`: 2.7K
+    - `schema_and_code_to_runtime_prediction`: 2.5K
+    - `schema_to_construct_ideation`: 1.6K
+    - `error_message_to_diagnosis`: 0.5K
+  - Notes:
+    - 1 compiler error (missing role binding in plan, fixed with `with partial:`)
+    - Minimal error signal — intermediate with critique emphasis produces design revision, not error-driven repair
+    - Mechanics: 34 actions, 2 action selectors, 1 plan, 9 queries, 5 sifting patterns, 7 tropes (58 total constructs)
+    - Strong `code_to_revised_code` (16.2K) and `ideation_to_ideation` (4.5K) from organic revision and brainstorming cycles
+    - Two detailed runtime prediction walkthroughs tracing multi-turn scenarios
+    - `broken_code_to_repaired_code` and `partial_code_to_completed_code` absent — confirms intermediate + critique emphasis doesn't produce these
+
+- `2026-03-13` `asmt-0005`
+  - Schema: `summer-camp-01`
+  - Author expertise level: `novice`
+  - Directions: cabin loyalty and betrayal, contraband smuggling via CIT dilemma, homesickness spirals vs. capture-the-flag rivalry
+  - Emphasis: none
+  - Result: ~31.4K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.2K
+    - `code_to_revised_code`: 18.0K
+    - `working_code_to_ideation`: 14.1K
+    - `code_to_explanation`: 7.5K
+    - `code_to_compiler_output`: 5.8K
+    - `ideation_to_ideation`: 3.0K
+    - `schema_to_construct_ideation`: 1.6K
+    - `partial_code_to_completed_code`: 1.6K
+    - `code_to_critique`: 0.8K
+    - `error_message_to_diagnosis`: 0.6K
+    - `broken_code_to_repaired_code`: 0.5K
+    - `schema_and_code_to_runtime_prediction`: 0.2K
+  - Notes:
+    - 3 compiler errors (append syntax, action selector syntax, plan syntax) — lower error count than expected for novice
+    - 73 constructs across 9 files (10 tropes, 53 actions, 3 queries, 7 sifting patterns) — highest construct count in any session
+    - Author discovered `loop` syntax for collection iteration and `tags` for categorization
+    - Could not figure out action selector or plan syntax — failed attempts produced some error signal but less than expected
+    - Multiple revision passes adding associations, reactions, importance values, `||` disjunction
+    - Detailed runtime prediction walkthrough and self-critique identifying unused schema properties
+
+- `2026-03-13` `asmt-0006`
+  - Schema: `space-station-01`
+  - Author expertise level: `expert`
+  - Directions: cascading integrity failure in engineering, command-science conflict over sealing vs. repair, authority-competence divergence under stress
+  - Emphasis: critique and revision, runtime prediction
+  - Result: ~31.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.6K
+    - `code_to_revised_code`: 16.1K
+    - `working_code_to_ideation`: 13.9K
+    - `schema_and_code_to_runtime_prediction`: 8.4K
+    - `code_to_explanation`: 7.9K
+    - `code_to_compiler_output`: 6.3K
+    - `ideation_to_ideation`: 2.9K
+    - `code_to_critique`: 2.2K
+    - `schema_to_construct_ideation`: 1.6K
+    - `broken_code_to_repaired_code`: 1.3K
+    - `error_message_to_diagnosis`: 0.9K
+  - Notes:
+    - 2 compiler errors (embargo `roles:` field bug worked around, missing precast initiator in reaction fixed with relay pattern)
+    - 6 .viv files: tropes (3), emergency actions (7), crew dynamics (8), crisis response (15), queries (13), sifting patterns (4) — 50 constructs total
+    - All 6 custom functions used, all department/rank enums covered
+    - Two explicit critique rounds examining casting pool breadth, condition plausibility, effect directionality (caught reversed `trustedBy` append)
+    - Two multi-turn runtime scenario traces predicting cascade unfold
+    - Strong `schema_and_code_to_runtime_prediction` (8.4K) — highest single-session volume for this competency
+
+- `2026-03-13` `asmt-0007`
+  - Schema: `pirate-ship-01`
+  - Author expertise level: `intermediate`
+  - Directions: uneven plunder distribution, cursed relic blame, navigator vs. quartermaster heading dispute, mutiny escalation
+  - Emphasis: stub-then-complete rhythm
+  - Result: ~31.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 19.7K
+    - `working_code_to_ideation`: 14.8K
+    - `code_to_revised_code`: 11.5K
+    - `code_to_explanation`: 10.5K
+    - `code_to_compiler_output`: 8.7K
+    - `ideation_to_ideation`: 7.2K
+    - `partial_code_to_completed_code`: 4.1K
+    - `code_to_critique`: 3.0K
+    - `schema_and_code_to_runtime_prediction`: 2.3K
+    - `schema_to_construct_ideation`: 1.5K
+    - `error_message_to_diagnosis`: 1.4K
+  - Notes:
+    - 9 compiler errors — embargo time period (`FOREVER` only), embargo role references (compiler bug), missing precast bindings, incompatible role labels, group-role loop restrictions, salience `for`-block type error
+    - 55 constructs: 28 actions (3 reserved, 3 inherited, 1 template), 2 action selectors, 12 queries, 6 sifting patterns, 7 tropes
+    - Template-based action inheritance with `join effects:` and `join conditions:`, action selectors (weighted and ordered), scratch variables
+    - `broken_code_to_repaired_code` absent — author described fixes in prose without re-showing repaired code before success message
+    - Stub-then-complete produced 4.1K `partial_code_to_completed_code` — moderate but less than novice + stubs (10.4K in asmt-0002)
+    - Strong `ideation_to_ideation` (7.2K) — highest single-session volume for this competency
+
+- `2026-03-13` `asmt-0008`
+  - Schema: `wilderness-survival-01`
+  - Author expertise level: `novice`
+  - Directions: rescue signal faction vs. trek-to-river faction, resource competition, leadership disputes under dwindling supplies
+  - Emphasis: multi-phase plans, complex queries
+  - Result: ~31.5K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 24.2K
+    - `working_code_to_ideation`: 12.3K
+    - `code_to_compiler_output`: 10.4K
+    - `code_to_explanation`: 9.0K
+    - `code_to_revised_code`: 8.4K
+    - `code_to_critique`: 4.7K
+    - `error_message_to_diagnosis`: 4.0K
+    - `ideation_to_ideation`: 3.2K
+    - `broken_code_to_repaired_code`: 2.6K
+    - `schema_and_code_to_runtime_prediction`: 2.0K
+    - `schema_to_construct_ideation`: 1.7K
+    - `partial_code_to_completed_code`: 1.1K
+  - Notes:
+    - 15 compiler errors — `||` not `or`, `+=`/`-=` for arrays, `[...]` for array literals, `!()` for negation, `FOREVER` embargo only, reaction body restrictions, plan role syntax (`>` sigil, entity type labels, complete bindings)
+    - 60 constructs: 28 actions, 4 plans, 14 queries, 7 sifting patterns, 7 tropes — single file `survival.viv`
+    - Successfully built 4 multi-phase plans (rescue-signal-operation, trek-to-river, emergency-treatment, establish-camp) after significant syntax discovery
+    - Could not discover action selector keyword
+    - Extended runtime prediction and schema coverage analysis at session end
+    - Critique emerged organically — 4.7K `code_to_critique` is highest novice-level critique signal yet
+
+- `2026-03-13` `asmt-0009`
+  - Schema: `boarding-school-01`
+  - Author expertise level: `intermediate`
+  - Directions: secret society recruitment during exam week, prefect enforcement dilemmas, action selector behavioral branching
+  - Emphasis: action selectors, complex queries
+  - Result: ~39.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 36.2K
+    - `code_to_compiler_output`: 21.1K
+    - `working_code_to_ideation`: 12.9K
+    - `code_to_explanation`: 11.5K
+    - `broken_code_to_repaired_code`: 7.7K
+    - `code_to_revised_code`: 5.6K
+    - `schema_and_code_to_runtime_prediction`: 5.1K
+    - `error_message_to_diagnosis`: 4.7K
+    - `code_to_critique`: 2.4K
+    - `schema_to_construct_ideation`: 1.7K
+    - `ideation_to_ideation`: 0.7K
+  - Notes:
+    - 6 compiler errors — PEG ordered-choice ambiguity with `queue action-selector`, embargo time period constraints, group role loop syntax, plan selector compiler bug
+    - 84 constructs across 22 files: 6 tropes, ~50 actions (templates, reserved), 8 action selectors, 3 plans, 1 plan selector (compiler bug), 15 queries, 6 sifting patterns
+    - All three selector policies exercised (with weights, in order, randomly), selector chaining, template inheritance with join fields
+    - Group roles with loops, scratch/local variables, inscribe/inspect, fail-safe `?` operator, reaction modifiers (priority, abandon, repeat, time, urgent)
+    - Queries used complex filter combinations: any/all/none set predicates, time constraints, multi-criteria filtering
+    - Sifting patterns used preceded/caused operators
+    - Highest `broken_code_to_repaired_code` in any single session (7.7K) and highest `code_to_compiler_output` (21.1K)
+    - Largest single-session token count (~39.6K)
+
+- `2026-03-13` `asmt-0010`
+  - Schema: `political-intrigue-01`
+  - Author expertise level: `novice`
+  - Directions: espionage and counter-espionage, Shadow faction intelligence operations, Crown loyalist surveillance, multi-phase infiltration plans
+  - Emphasis: plan selectors, multi-phase plans
+  - Result: ~33.5K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 23.6K
+    - `working_code_to_ideation`: 16.1K
+    - `code_to_revised_code`: 12.1K
+    - `ideation_to_ideation`: 7.7K
+    - `code_to_compiler_output`: 7.3K
+    - `code_to_explanation`: 7.1K
+    - `error_message_to_diagnosis`: 4.0K
+    - `broken_code_to_repaired_code`: 3.2K
+    - `code_to_critique`: 1.6K
+    - `schema_to_construct_ideation`: 1.6K
+    - `schema_and_code_to_runtime_prediction`: 0.8K
+  - Notes:
+    - 11 compiler errors — embargo FOREVER only, plan phase `>` sigil, entity type labels in plans, ALL CAPS flow control (ADVANCE/FAIL/SUCCEED), wait block syntax, loop block syntax (`loop 3 as _@var:`)
+    - 68 constructs across 5 files: 26 actions, 10 plans, 2 plan selectors, 1 action selector, 14 queries, 5 sifting patterns, 10 tropes
+    - Successfully built 2 plan selectors (covert-operations with 7 candidates, political-maneuvers)
+    - Discovered loop blocks, any:/all: parallel blocks, wait blocks with until:/timeout:
+    - Strong `ideation_to_ideation` (7.7K) — highest novice-level ideation signal, driven by multi-plan brainstorming before code
+    - Critique included casting pool analysis and missing condition identification
+
+- `2026-03-13` `asmt-0011`
+  - Schema: `detective-agency-01`
+  - Author expertise level: `intermediate`
+  - Directions: cold case reopened with new forensic evidence, competing investigative threads, evidence reliability and planted items, personal bias (grudgeWith)
+  - Emphasis: complex queries, plan selectors
+  - Result: ~34.5K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 29.7K
+    - `code_to_explanation`: 22.1K
+    - `code_to_revised_code`: 21.0K
+    - `schema_and_code_to_runtime_prediction`: 9.9K
+    - `code_to_compiler_output`: 8.3K
+    - `working_code_to_ideation`: 7.6K
+    - `code_to_critique`: 2.8K
+    - `schema_to_construct_ideation`: 1.7K
+    - `error_message_to_diagnosis`: 1.2K
+    - `broken_code_to_repaired_code`: 0.7K
+    - `partial_code_to_completed_code`: 0.6K
+    - `ideation_to_ideation`: 0.2K
+  - Notes:
+    - 3 compiler errors + 4 compiler bugs worked around (embargo roles/time, plan selector roles, query salience criteria)
+    - 62 constructs: 27 actions (1 template, 5 reserved, 2 inherited), 18 queries, 5 tropes, 5 sifting patterns, 4 action selectors, 2 plans, 1 plan selector
+    - All 12 competencies represented
+    - Evidence reliability as unifying design mechanic — reliability flows through nearly every evidence action
+    - Template inheritance for interview actions (interview-base → formal-interrogation, informal-interview)
+    - Strong `schema_and_code_to_runtime_prediction` (9.9K) — highest single-session volume for this competency
+    - Strong `code_to_explanation` (22.1K) — highest single-session volume for this competency
+    - Deep query cross-referencing analysis and selector weight mechanic walkthroughs
+
+- `2026-03-13` `asmt-0012`
+  - Schema: `cooking-competition-01`
+  - Author expertise level: `novice`
+  - Directions: team round dynamics, forced rival pairings, judge manipulation, ingredient competition strategy
+  - Emphasis: plans, action selectors
+  - Result: ~31.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 24.2K
+    - `code_to_revised_code`: 13.2K
+    - `working_code_to_ideation`: 12.2K
+    - `code_to_explanation`: 9.8K
+    - `code_to_compiler_output`: 7.8K
+    - `code_to_critique`: 4.4K
+    - `schema_and_code_to_runtime_prediction`: 3.6K
+    - `error_message_to_diagnosis`: 2.8K
+    - `ideation_to_ideation`: 2.8K
+    - `schema_to_construct_ideation`: 1.4K
+  - Notes:
+    - 14 compiler errors — plan syntax (6 consecutive: gloss in plans, `>` sigil, entity type role labels, complete bindings), action selector keyword/policy syntax, negation operator, embargo time period
+    - 50 constructs: 25 actions (9 reserved), 4 action selectors (randomly, in order), 2 plans (team-round 4 phases, solo-round 2 phases), 1 plan selector, 4 queries, 6 sifting patterns, 8 tropes
+    - Reaction chains: steal-ingredient → confront-rival, present-dish → judge-dish → confront-judge
+    - Could not resolve `target with weights:` syntax — settled for randomly/in order policies
+    - `broken_code_to_repaired_code` absent — novice described fixes in prose without re-showing corrected code
+    - `partial_code_to_completed_code` absent — no stub emphasis
+
+- `2026-03-13` `asmt-0013`
+  - Schema: `medieval-guild-01`
+  - Author expertise level: `expert`
+  - Directions: contested grandmaster election, guild alliance politics, commission competition, apprentice operatives, campaign strategy
+  - Emphasis: complex queries, runtime prediction
+  - Result: ~48.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 40.0K
+    - `working_code_to_ideation`: 27.1K
+    - `code_to_compiler_output`: 16.0K
+    - `code_to_revised_code`: 11.0K
+    - `code_to_explanation`: 9.6K
+    - `schema_and_code_to_runtime_prediction`: 4.4K
+    - `code_to_critique`: 3.7K
+    - `ideation_to_ideation`: 3.6K
+    - `schema_to_construct_ideation`: 1.6K
+    - `error_message_to_diagnosis`: 1.1K
+    - `broken_code_to_repaired_code`: 0.8K
+  - Notes:
+    - 2 compiler errors (`is:` role directive misuse, `or` vs `||`) — minimal error signal at expert level
+    - 58 constructs across 11 files: 20 actions, 8 tropes, 17 queries, 8 sifting patterns, 3 plans (including guarded failure conditions), 3 action selectors
+    - Largest single-session token count (~48.6K) and character count (197K)
+    - Extensive system-wide critique: include graph architecture, role label coverage, condition complexity spectrum, effects patterns, reaction chains, salience architecture, query coverage matrix
+    - Detailed multi-turn runtime scenario traces with specific character instances
+    - Degenerate state analysis and emergent narrative predictions over 50-100 turns
+    - Guarded plan phases with FAIL conditions — first expert session to explore plan failure semantics
+
+- `2026-03-13` `asmt-0014`
+  - Schema: `hospital-drama-01`
+  - Author expertise level: `novice`
+  - Directions: mass-casualty ER surge, triage ethics, treatment protocol selection, code blue response, admin authorization politics
+  - Emphasis: plan selectors, multi-phase plans
+  - Result: ~31.9K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 24.3K
+    - `code_to_revised_code`: 17.5K
+    - `code_to_explanation`: 13.4K
+    - `working_code_to_ideation`: 11.6K
+    - `code_to_critique`: 8.5K
+    - `code_to_compiler_output`: 6.5K
+    - `ideation_to_ideation`: 5.1K
+    - `schema_and_code_to_runtime_prediction`: 4.1K
+    - `error_message_to_diagnosis`: 2.8K
+    - `partial_code_to_completed_code`: 2.7K
+    - `schema_to_construct_ideation`: 1.8K
+    - `broken_code_to_repaired_code`: 1.7K
+  - Notes:
+    - 10 compiler errors — plan syntax (phases/sigil/roles), selector keywords, PEG ordering bug, plan selector role validation bug
+    - 74 constructs across 6 files: 33 actions, 5 action selectors, 5 plans, 2 plan selectors, 17 queries, 5 sifting patterns, 7 tropes
+    - All 12 competencies represented — first novice session to achieve this without stub emphasis
+    - `code_to_critique` (8.5K) — highest novice-level critique signal, driven by system-level analysis
+    - `partial_code_to_completed_code` (2.7K) emerged organically from iterative plan construction — plans naturally involve stub-like scaffolding
+    - Plans with `all:`/`any:` reaction windows, `wait:` with timeout/until, conditional SUCCEED/FAIL
+    - Sifting patterns with `caused`/`preceded` temporal operators
+
+- `2026-03-13` `asmt-0015`
+  - Schema: `heist-crew-01`
+  - Author expertise level: `intermediate`
+  - Directions: botched job aftermath, improvised re-infiltration vs. smash-and-grab, trust fractures, plan selector cascading
+  - Emphasis: plan selectors, complex queries
+  - Result: ~33.9K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.4K
+    - `code_to_revised_code`: 16.0K
+    - `working_code_to_ideation`: 12.8K
+    - `code_to_explanation`: 12.3K
+    - `code_to_compiler_output`: 8.4K
+    - `error_message_to_diagnosis`: 4.0K
+    - `broken_code_to_repaired_code`: 3.9K
+    - `ideation_to_ideation`: 3.5K
+    - `schema_and_code_to_runtime_prediction`: 2.6K
+    - `code_to_critique`: 1.9K
+    - `schema_to_construct_ideation`: 1.4K
+  - Notes:
+    - 12 compiler errors — `queue plan-selector` parsing failure, embargo time/roles bugs, group role loop validation, plan selector role validation bug
+    - 54 constructs across 7 files: 23 actions, 7 tropes, 10 queries, 4 plans, 7 plan selectors, 1 action selector, 2 sifting patterns
+    - 7 plan selectors — highest count in any session; graceful degradation chain (re-infiltration → hybrid → smash-and-grab → emergency-escape) with `in order` cascading
+    - Plan selector roles bug forced redesign from role-based weight expressions to static weights with condition gating
+    - Action inheritance (armed-intimidate, silent-intimidate from intimidate base)
+    - Strong `broken_code_to_repaired_code` (3.9K) — plan selector errors produce rich repair arcs
+
+- `2026-03-13` `asmt-0016`
+  - Schema: `frontier-town-01`
+  - Author expertise level: `expert`
+  - Directions: contested gold strike, legal vs. extralegal dispute resolution, posse formation, ambush dynamics, gambler schemes
+  - Emphasis: plan selectors, complex queries, runtime prediction
+  - Result: ~39.1K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 32.9K
+    - `code_to_revised_code`: 21.2K
+    - `working_code_to_ideation`: 17.1K
+    - `code_to_explanation`: 12.5K
+    - `code_to_compiler_output`: 6.3K
+    - `schema_and_code_to_runtime_prediction`: 5.8K
+    - `code_to_critique`: 5.3K
+    - `ideation_to_ideation`: 3.6K
+    - `error_message_to_diagnosis`: 1.8K
+    - `broken_code_to_repaired_code`: 1.7K
+    - `schema_to_construct_ideation`: 1.6K
+  - Notes:
+    - 9 compiler errors — `or` vs `||`, loop syntax (`over` vs `as`), self-referencing casting pools, initiator `is:` restrictions, partial vs complete bindings, role name collisions in plans
+    - 67 constructs across multiple files: 27 actions + 1 template, 11 tropes, 11 queries, 9 sifting patterns, 4 plans (legal-resolution, extralegal-resolution, dispute-arc, gambler-scheme), 3 action selectors, 1 plan selector
+    - Template inheritance for confrontation-type actions
+    - 8 detailed multi-turn runtime scenario traces — highest runtime prediction depth in any session
+    - Full schema property coverage audit ensuring every property referenced
+    - System critique: casting pool breadth, trope redundancy, embargo role limitations, gambler loss asymmetry
+    - Sifting patterns detecting multi-event narrative arcs (gold-rush-conflict, escalating-violence, justice-served, outlaw-downfall)
+
+- `2026-03-14` `asmt-0017`
+  - Schema: `pirate-ship-01`
+  - Author expertise level: `novice`
+  - Directions: becalmed seas, dwindling provisions, rationing disputes along rank lines, navigator credibility crisis, secret map discovery, mutiny build-up
+  - Emphasis: stub-then-complete rhythm
+  - Result: ~30.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 27.5K
+    - `working_code_to_ideation`: 11.2K
+    - `code_to_compiler_output`: 10.8K
+    - `code_to_revised_code`: 9.4K
+    - `partial_code_to_completed_code`: 6.4K
+    - `broken_code_to_repaired_code`: 6.2K
+    - `error_message_to_diagnosis`: 5.2K
+    - `code_to_explanation`: 4.3K
+    - `code_to_critique`: 1.6K
+    - `schema_to_construct_ideation`: 1.6K
+    - `schema_and_code_to_runtime_prediction`: 0.9K
+    - `ideation_to_ideation`: 0.4K
+  - Notes:
+    - 8 compiler errors out of 40 invocations — plan body structure (no `gloss`, `phases` not `steps`), plan role labels (entity types not casting keywords), cross-file reference consolidation, embargo time period (FOREVER only), negation operator (`!` not `not`), `append`/`remove` infix syntax
+    - 55 constructs in single `main.viv`: 32 actions (7 reserved), 9 tropes, 4 plans (rationing-crisis 5 phases, mutiny-buildup 3 phases, map-discovery 3 phases, desperation-arc 2 phases), 5 queries, 5 sifting patterns
+    - Continuation session — previous session had built initial constructs across 3 files; continuation consolidated into `main.viv` and expanded substantially
+    - Stub-then-complete rhythm followed as commissioned — structural skeletons compiled first, then fleshed out
+    - Embargo `time:` with time period syntax and `roles:` subfield both triggered compiler bugs (parser rejection and `KeyError: 'name'` respectively) — author worked around with `FOREVER` and omitting `roles:`
+    - Strong `partial_code_to_completed_code` (6.4K) — stub emphasis at novice level continues to be the best lever for this competency
+    - Runtime prediction and schema coverage audit at session end
+
+- `2026-03-14` `asmt-0018`
+  - Schema: `summer-camp-01`
+  - Author expertise level: `expert`
+  - Directions: overnight wilderness challenge sabotage, CIT loyalty dilemma, letters from home as social ammunition, homesickness as vulnerability
+  - Emphasis: runtime prediction
+  - Mechanical targets: temporal constraint syntax (fully), inscribe and inspect syntax (fully)
+  - Result: ~32.7K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 28.6K
+    - `code_to_revised_code`: 25.8K
+    - `code_to_explanation`: 20.9K
+    - `code_to_critique`: 11.6K
+    - `working_code_to_ideation`: 9.3K
+    - `schema_and_code_to_runtime_prediction`: 5.4K
+    - `code_to_compiler_output`: 4.2K
+    - `ideation_to_ideation`: 2.5K
+    - `schema_to_construct_ideation`: 1.7K
+    - `broken_code_to_repaired_code`: 1.7K
+    - `error_message_to_diagnosis`: 1.3K
+  - Notes:
+    - 2 compiler errors (group role loop rejection, undefined action reference) — minimal error signal at expert level
+    - 25 actions (1 template, 5 reserved), 5 tropes, 7 queries, 3 sifting patterns across 8 files
+    - Full inscribe/inspect pipeline: receive-letter → read-stolen-letter → share-letter-secret → use-letter-as-leverage, plus write-mean-note with inscribe
+    - Temporal constraints exercised extensively: before/after/between time-frame forms, time-of-day constraints, combined constraints in reactions, embargo time periods
+    - 3 multi-turn runtime predictions tracing 10-20 turn scenarios
+    - Strong `code_to_critique` (11.6K) — highest expert-level critique signal, driven by design review of missing selectors, incorrect function args, group role limitations
+    - `partial_code_to_completed_code` absent — no stub emphasis
+
+- `2026-03-14` `asmt-0019`
+  - Schema: `detective-agency-01`
+  - Author expertise level: `novice`
+  - Directions: rival PI firms on same missing-person case, informant double-dealing, planted evidence chains, surveillance stakeout rivalry
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~30.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.3K
+    - `partial_code_to_completed_code`: 21.7K
+    - `code_to_revised_code`: 13.0K
+    - `working_code_to_ideation`: 12.2K
+    - `code_to_compiler_output`: 6.7K
+    - `code_to_explanation`: 4.3K
+    - `error_message_to_diagnosis`: 3.5K
+    - `broken_code_to_repaired_code`: 3.4K
+    - `ideation_to_ideation`: 2.3K
+    - `schema_to_construct_ideation`: 1.8K
+    - `schema_and_code_to_runtime_prediction`: 1.1K
+    - `code_to_critique`: 0.2K
+  - Notes:
+    - 9 compiler errors — embargo time units, infix append syntax, cross-file trope references, action-selector keyword, missing initiator on selectors, plan gloss requirement, `with partial:` syntax
+    - 42 constructs: 24 actions, 2 action selectors (in order), 3 plans (conditional phases, ADVANCE/SUCCEED/FAIL), 3 queries, 5 sifting patterns (caused/preceded), 5 tropes
+    - Stub-then-complete rhythm followed as commissioned — all 12 competencies represented
+    - `partial_code_to_completed_code` (21.7K) — highest single-session volume for this competency, driven by systematic stub→fill workflow
+    - Branching effects (if/elif/else/end), per-participant association tagging (for _@c: blocks), multiple embargoes per action
+    - Consolidated from multi-file to single `detective.viv` after cross-file reference errors
+
+- `2026-03-14` `asmt-0020`
+  - Schema: `space-station-01`
+  - Author expertise level: `intermediate`
+  - Directions: alien artifact discovery, science vs. security jettison dispute, proximity exposure behavioral changes, quarantine protocol fracture
+  - Emphasis: complex queries
+  - Mechanical targets: spawn role syntax (fully), gloss, report, importance, and tags syntax (fully)
+  - Result: ~32.0K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 28.8K
+    - `code_to_revised_code`: 19.5K
+    - `working_code_to_ideation`: 10.8K
+    - `code_to_explanation`: 9.9K
+    - `code_to_compiler_output`: 5.1K
+    - `partial_code_to_completed_code`: 2.9K
+    - `code_to_critique`: 1.8K
+    - `schema_to_construct_ideation`: 1.8K
+    - `error_message_to_diagnosis`: 1.6K
+    - `schema_and_code_to_runtime_prediction`: 1.2K
+    - `broken_code_to_repaired_code`: 0.9K
+  - Notes:
+    - 7 compiler errors — initiator casting pool, recipient/anywhere incompatibility, reaction initiator precasting, group role loop bug, CHRONICLE in sifting patterns
+    - 31 actions (1 template with 3 children), 2 action selectors, 14 queries, 3 sifting patterns, 5 tropes across 6 files
+    - All action metadata fields exercised: gloss, report, importance, tags (with join), saliences (default + roles), associations (default + roles + for block), embargoes (roles/time/location), scratch
+    - 4 spawn roles across different actions, spawn-to-inspection chain
+    - 14 queries with varied filter combinations
+    - Query salience/importance numeric criteria trigger compiler bug — new blocked capability
+    - `ideation_to_ideation` absent — code-heavy session with minimal prose-only segments
+    - `partial_code_to_completed_code` (2.9K) emerged without explicit stub emphasis — revision-driven scaffolding
+
+- `2026-03-14` `asmt-0021`
+  - Schema: `haunted-mansion-01`
+  - Author expertise level: `novice`
+  - Directions: possession chain via cursed objects, failed séance aftermath, skeptic trust collapse, ward imperfection
+  - Emphasis: stub-then-complete rhythm, multi-phase plans
+  - Mechanical targets: none
+  - Result: ~31.4K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 27.9K
+    - `partial_code_to_completed_code`: 15.1K
+    - `code_to_compiler_output`: 12.6K
+    - `working_code_to_ideation`: 12.5K
+    - `broken_code_to_repaired_code`: 6.0K
+    - `error_message_to_diagnosis`: 5.0K
+    - `code_to_revised_code`: 4.5K
+    - `code_to_explanation`: 2.1K
+    - `schema_to_construct_ideation`: 1.7K
+    - `ideation_to_ideation`: 1.4K
+    - `code_to_critique`: 0.5K
+    - `schema_and_code_to_runtime_prediction`: 0.3K
+  - Notes:
+    - 13 compiler errors out of 53 invocations — embargo time units, partial vs complete bindings, plan syntax (no gloss, SUCCEED not COMPLETE), cross-file references, action-selector keyword, initiator requirements, weight syntax, list operator syntax
+    - 73 constructs: 42 actions (1 template), 3 action selectors, 2 plans, 1 plan selector, 16 tropes, 5 sifting patterns, 4 queries across 9 files
+    - Stubs-first rhythm followed — strong `partial_code_to_completed_code` (15.1K)
+    - 5 consultant dispatches — highest consultation count in any session
+    - Strong error signal: `broken_code_to_repaired_code` (6.0K), `error_message_to_diagnosis` (5.0K)
+    - All 7 Viv construct types represented including plan selector
+    - Plan-selector roles bug encountered (KeyError on ConstructDiscriminator.PLAN_SELECTOR)
+
+- `2026-03-14` `asmt-0022`
+  - Schema: `medieval-guild-01`
+  - Author expertise level: `expert`
+  - Directions: apprentice rebellion, secret commission undercutting via journeyman front, master investigation and political retaliation, apothecaries as neutral brokers
+  - Emphasis: critique and revision
+  - Mechanical targets: role definition syntax (fully), template inheritance syntax (fully)
+  - Result: ~31.5K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 28.3K
+    - `code_to_revised_code`: 20.4K
+    - `code_to_explanation`: 13.4K
+    - `working_code_to_ideation`: 9.6K
+    - `code_to_critique`: 7.6K
+    - `code_to_compiler_output`: 5.8K
+    - `schema_and_code_to_runtime_prediction`: 3.1K
+    - `broken_code_to_repaired_code`: 2.8K
+    - `error_message_to_diagnosis`: 2.3K
+    - `ideation_to_ideation`: 1.9K
+    - `schema_to_construct_ideation`: 1.9K
+  - Notes:
+    - 4 compiler errors — reaction precast binding, group role loop bug, duplicate temporal constraint form, query importance enum bug
+    - 26 actions (3 templates), 7 tropes, 6 queries, 4 sifting patterns across 9 files
+    - 3 template actions with multiple child actions using join fields and overrides, semicolon-terminated child
+    - Advanced role notation: group roles with slot ranges/means/probabilities, optional roles, anywhere, precast, renames
+    - Substantial critique pass: template analysis, casting pool breadth, embargo coverage, tag consistency, runtime prediction
+    - `partial_code_to_completed_code` absent — no stub emphasis
+    - Multiple temporal constraint with same anchor is a new compiler limitation
+
+- `2026-03-14` `asmt-0023`
+  - Schema: `wilderness-survival-01`
+  - Author expertise level: `intermediate`
+  - Directions: competing foraging factions, poisonous plant incident, trap-setting territorial disputes, weather-forced temporary alliances
+  - Emphasis: complex queries, sifting patterns
+  - Mechanical targets: query filter syntax (fully), sifting pattern syntax (fully)
+  - Result: ~31.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 29.0K
+    - `code_to_revised_code`: 26.9K
+    - `code_to_explanation`: 14.3K
+    - `working_code_to_ideation`: 7.7K
+    - `code_to_compiler_output`: 5.1K
+    - `broken_code_to_repaired_code`: 2.9K
+    - `error_message_to_diagnosis`: 2.8K
+    - `code_to_critique`: 2.5K
+    - `partial_code_to_completed_code`: 2.0K
+    - `schema_to_construct_ideation`: 1.8K
+    - `schema_and_code_to_runtime_prediction`: 1.5K
+  - Notes:
+    - 8 compiler errors — group role loop bug, salience/importance numeric criteria bug, saliences for-block bug, action-typed query roles
+    - 79 constructs: 22 actions (1 template), 37 queries, 12 sifting patterns, 8 tropes across 5 files
+    - 37 queries covering nearly all filter types and all four set predicate operators (any/all/none/exactly)
+    - 12 sifting patterns with preceded/caused/triggered, linear/four-step/diverging structures, INHERIT search domain
+    - `ideation_to_ideation` absent — dense code-interleaving style
+    - 4 compiler bugs encountered and worked around
+    - `partial_code_to_completed_code` (2.0K) emerged without stub emphasis from revision scaffolding
+
+- `2026-03-14` `asmt-0024`
+  - Schema: `hospital-drama-01`
+  - Author expertise level: `intermediate`
+  - Directions: night shift power vacuum, resident autonomous decisions, charge nurse unofficial protocols, restricted medication authorization loop
+  - Emphasis: reactions with varied modifiers
+  - Mechanical targets: reaction syntax (fully), selector composition syntax (fully)
+  - Result: ~31.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 27.2K
+    - `code_to_revised_code`: 25.2K
+    - `working_code_to_ideation`: 10.6K
+    - `code_to_explanation`: 4.4K
+    - `ideation_to_ideation`: 2.9K
+    - `code_to_compiler_output`: 2.5K
+    - `schema_to_construct_ideation`: 1.9K
+    - `error_message_to_diagnosis`: 1.2K
+    - `schema_and_code_to_runtime_prediction`: 0.4K
+  - Notes:
+    - 3 compiler errors + 4 compiler bugs — PEG ordered-choice shadowing, virtual initiator role incompatibility, saliences for-block conditional rejection, query salience schema error
+    - 36 actions (1 template, 4 children), 5 action selectors, 10 queries, 6 sifting patterns, 4 tropes across 8 files
+    - All seven reaction modifier fields exercised with varied combinations
+    - All three selector target policies, selector chaining, weighted candidates
+    - `broken_code_to_repaired_code` absent — duplicate error sequences break the modality signature
+    - `partial_code_to_completed_code` and `code_to_critique` absent
+    - Strong `code_to_revised_code` (25.2K) from iterative reaction chain refinement
+
+- `2026-03-14` `asmt-0025`
+  - Schema: `boarding-school-01`
+  - Author expertise level: `expert`
+  - Directions: end-of-term disciplinary tribunal, planted contraband defense, cross-house alliances, groundskeeper leverage
+  - Emphasis: runtime prediction
+  - Mechanical targets: plan phase structure (fully), expression operators (fully)
+  - Result: ~32.1K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 28.5K
+    - `working_code_to_ideation`: 12.4K
+    - `code_to_explanation`: 12.4K
+    - `code_to_compiler_output`: 11.3K
+    - `code_to_revised_code`: 9.5K
+    - `broken_code_to_repaired_code`: 8.0K
+    - `error_message_to_diagnosis`: 6.1K
+    - `schema_and_code_to_runtime_prediction`: 2.0K
+    - `schema_to_construct_ideation`: 1.9K
+    - `ideation_to_ideation`: 0.1K
+  - Notes:
+    - 7 compiler errors — recipient+anywhere incompatibility, initiator-precast requirements, plan-selector roles bug, saliences for-block conditional bug
+    - 24 actions (1 template, 3 inherited, 5 reserved), 4 plans, 4 queries, 3 sifting patterns, 5 tropes, 2 action selectors across 11 files
+    - 4 multi-phase plans with all three reaction window types (all/any/untracked), wait/until/timeout, conditional branching
+    - Rich expression coverage: arithmetic, comparisons, logical ops, in/append/remove, scratch variables, nested if/elif/else
+    - Two 20-turn runtime scenario traces (prosecution-dominant vs defense-dominant)
+    - Strong `broken_code_to_repaired_code` (8.0K) — highest expert-level error signal, driven by role-casting complexity
+    - `partial_code_to_completed_code` and `code_to_critique` absent
+
+- `2026-03-14` `asmt-0026`
+  - Schema: `traveling-circus-01`
+  - Author expertise level: `novice`
+  - Directions: star acrobat injury, understudy spotlight crisis, fortune teller superstition contagion, sabotage investigation
+  - Emphasis: complex constructs early (plans, selectors)
+  - Mechanical targets: none
+  - Result: ~31.5K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 25.4K
+    - `code_to_revised_code`: 11.7K
+    - `working_code_to_ideation`: 9.7K
+    - `code_to_compiler_output`: 9.6K
+    - `code_to_explanation`: 9.1K
+    - `error_message_to_diagnosis`: 5.9K
+    - `broken_code_to_repaired_code`: 5.2K
+    - `schema_and_code_to_runtime_prediction`: 3.7K
+    - `partial_code_to_completed_code`: 2.0K
+    - `ideation_to_ideation`: 1.8K
+    - `schema_to_construct_ideation`: 1.8K
+    - `code_to_critique`: 1.4K
+  - Notes:
+    - 11 compiler errors — embargo time units, plan structure (phases not steps, no gloss), plan role labels, initiator precast in reactions, initiator from: clauses, action-selector keyword, negation operator, plan-targeting reaction priority bug
+    - 45 constructs: 31 actions, 2 action selectors, 3 plans, 1 plan selector, 4 queries, 4 sifting patterns, 5 tropes across 9 files
+    - All 12 competencies represented — all 7 construct types built
+    - 4 consultant dispatches — good error signal volume
+    - New domain (traveling-circus) with fresh schema produced all expected error types
+    - `partial_code_to_completed_code` (2.0K) emerged without stub emphasis from plan construction scaffolding
+
+- `2026-03-14` `asmt-0027`
+  - Schema: `frontier-town-01`
+  - Author expertise level: `intermediate`
+  - Directions: water rights dispute, dam sabotage investigation, rancher escalation, gambler land speculation
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: none
+  - Result: ~32.0K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 23.5K
+    - `working_code_to_ideation`: 14.0K
+    - `code_to_compiler_output`: 9.5K
+    - `code_to_revised_code`: 8.4K
+    - `ideation_to_ideation`: 5.6K
+    - `code_to_explanation`: 4.6K
+    - `error_message_to_diagnosis`: 4.1K
+    - `schema_and_code_to_runtime_prediction`: 3.0K
+    - `code_to_critique`: 2.7K
+    - `schema_to_construct_ideation`: 1.8K
+    - `broken_code_to_repaired_code`: 0.8K
+  - Notes:
+    - 13 compiler errors — missing include, group-role decorator, recipient+anywhere incompatibility, group role loop bug, queue plan priority bug, importance numeric criteria bug, saliences for-block bug
+    - 44 actions (1 template, 4 children), 1 action selector, 1 plan, 4 tropes, 5 queries, 3 sifting patterns across 8 files
+    - Very broad feature coverage: inscribe/inspect, template inheritance (override/join/bodyless-child), all role labels, temporal constraints, chance expressions, scratch variables
+    - Strong `ideation_to_ideation` (5.6K) from extensive schema analysis, critique, and runtime prediction
+    - Multiple runtime scenario traces with different character configurations
+    - `partial_code_to_completed_code` absent — no stub emphasis
+
+- `2026-03-14` `asmt-0028`
+  - Schema: `cooking-competition-01`
+  - Author expertise level: `expert`
+  - Directions: elimination round bribery scandal, real-time investigation during cook-off, alliance reshuffling, mentor silence dilemma
+  - Emphasis: runtime prediction, critique
+  - Mechanical targets: none
+  - Result: ~31.2K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 27.3K
+    - `working_code_to_ideation`: 13.0K
+    - `code_to_revised_code`: 10.5K
+    - `code_to_compiler_output`: 9.8K
+    - `code_to_explanation`: 8.1K
+    - `schema_and_code_to_runtime_prediction`: 4.8K
+    - `broken_code_to_repaired_code`: 3.8K
+    - `error_message_to_diagnosis`: 3.2K
+    - `code_to_critique`: 2.0K
+    - `schema_to_construct_ideation`: 1.5K
+  - Notes:
+    - 3 compiler errors — embargo time unit, remove operator syntax, PEG action-selector ordering bug
+    - 30 actions (1 template, 1 inherited, 8 reserved), 3 action selectors (including meta-selector chaining), 2 plans (5-phase investigation with conditional branching), 12 queries, 5 sifting patterns, 3 tropes across 8 files
+    - Strong runtime prediction (4.8K) from multi-turn scandal arc traces
+    - `partial_code_to_completed_code` and `ideation_to_ideation` absent
+
+- `2026-03-14` `asmt-0029`
+  - Schema: `heist-crew-01`
+  - Author expertise level: `novice`
+  - Directions: wheelman double-cross during getaway, improvised escape, corrupt cop negotiation, trust collapse accusations
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~31.4K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 25.3K
+    - `code_to_revised_code`: 12.0K
+    - `working_code_to_ideation`: 11.6K
+    - `code_to_compiler_output`: 9.1K
+    - `code_to_explanation`: 7.0K
+    - `partial_code_to_completed_code`: 6.6K
+    - `broken_code_to_repaired_code`: 5.9K
+    - `error_message_to_diagnosis`: 5.1K
+    - `ideation_to_ideation`: 3.1K
+    - `schema_and_code_to_runtime_prediction`: 1.6K
+    - `schema_to_construct_ideation`: 1.5K
+    - `code_to_critique`: 0.7K
+  - Notes:
+    - 7 compiler errors, 6 consultations — highest consultation count in any session
+    - 43 constructs: 26 actions (2 reserved), 4 tropes, 2 plans, 3 action selectors, 3 queries, 5 sifting patterns across 9 files
+    - All 12 competencies represented — stub-then-complete + complex constructs produces broad coverage
+    - Strong error signal: `broken_code_to_repaired_code` (5.9K), `error_message_to_diagnosis` (5.1K)
+    - Plan selector attempted but removed due to compiler KeyError bug
+    - Stub emphasis produced 6.6K `partial_code_to_completed_code`
+
+- `2026-03-14` `asmt-0030`
+  - Schema: `spy-network-01`
+  - Author expertise level: `expert`
+  - Directions: double agent unraveling, counterintelligence surveillance, disinformation dead drops, courier border crossing, cascading cover blows
+  - Emphasis: runtime prediction, critique
+  - Mechanical targets: none
+  - Result: ~31.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 25.3K
+    - `code_to_revised_code`: 14.6K
+    - `working_code_to_ideation`: 12.8K
+    - `code_to_explanation`: 12.7K
+    - `code_to_compiler_output`: 6.9K
+    - `code_to_critique`: 4.1K
+    - `error_message_to_diagnosis`: 2.8K
+    - `ideation_to_ideation`: 2.3K
+    - `schema_and_code_to_runtime_prediction`: 2.3K
+    - `schema_to_construct_ideation`: 2.0K
+  - Notes:
+    - 8 compiler errors — append operator syntax, embargo time units, is: vs from: directives, with partial: for plans, over: INHERIT in sifting, plan-selector KeyError bug
+    - 52 constructs: 26 actions (3 reserved), 5 action selectors, 3 plans, 7 queries, 4 sifting patterns, 8 tropes across 8 files
+    - Strong `code_to_explanation` (12.7K) and `code_to_critique` (4.1K) from extensive system analysis
+    - `broken_code_to_repaired_code` absent — author describes fixes in prose without re-showing code before success message
+    - `partial_code_to_completed_code` absent — no stub emphasis
+    - New domain (spy-network) with information-asymmetry focus produced rich relationship-driven constructs
+
+- `2026-03-14` `asmt-0031`
+  - Schema: `political-intrigue-01`
+  - Author expertise level: `intermediate`
+  - Directions: assassination plot discovery, courtier disclosure dilemma, faction repositioning, Shadow surveillance, poisoned letter provenance
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~31.2K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 28.4K
+    - `code_to_revised_code`: 19.6K
+    - `partial_code_to_completed_code`: 13.8K
+    - `code_to_explanation`: 13.2K
+    - `working_code_to_ideation`: 9.8K
+    - `code_to_compiler_output`: 7.3K
+    - `error_message_to_diagnosis`: 4.1K
+    - `code_to_critique`: 3.9K
+    - `broken_code_to_repaired_code`: 3.4K
+    - `schema_to_construct_ideation`: 1.6K
+    - `schema_and_code_to_runtime_prediction`: 1.0K
+    - `ideation_to_ideation`: 0.5K
+  - Notes:
+    - 9 compiler errors — group role loop bug, PEG action-selector ordering bug, plan reaction priority bug, saliences for-block bug, `end`-prefixed identifier parser bug (new)
+    - 34 actions (1 template, 3 children, 8 reserved), 1 action selector, 1 plan, 6 queries, 4 sifting patterns, 7 tropes across 9 files
+    - All 12 competencies represented — stub emphasis + rich schema produces broad coverage
+    - Strong `partial_code_to_completed_code` (13.8K) from stub-then-complete workflow
+    - Template inheritance with join semantics, chance expressions, scratch variables, fail-safe `?` operator
+    - Parser bug with `end`-prefixed identifiers (e.g., `endangered`) is a new finding
+
+- `2026-03-14` `asmt-0032`
+  - Schema: `traveling-circus-01`
+  - Author expertise level: `novice`
+  - Directions: circus vs hostile mayor, performer charm offensive, fortune teller discovers mayor's secret, ban negotiation
+  - Emphasis: plans, action selectors
+  - Mechanical targets: none
+  - Result: ~31.9K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 29.6K
+    - `code_to_revised_code`: 25.3K
+    - `code_to_explanation`: 12.9K
+    - `working_code_to_ideation`: 6.7K
+    - `code_to_compiler_output`: 5.4K
+    - `broken_code_to_repaired_code`: 4.4K
+    - `code_to_critique`: 4.2K
+    - `error_message_to_diagnosis`: 3.8K
+    - `partial_code_to_completed_code`: 2.8K
+    - `schema_to_construct_ideation`: 1.9K
+    - `schema_and_code_to_runtime_prediction`: 0.6K
+    - `ideation_to_ideation`: 0.2K
+  - Notes:
+    - 6 compiler errors — plan syntax (phases not steps, wrong role types), selector initiator requirements, partial casting, weighted selector parenthesization, negation syntax, plan-selector KeyError bug
+    - 73 constructs: 44 actions (4 reserved), 6 action selectors (hierarchical with chaining), 6 plans, 3 queries, 8 sifting patterns, 6 tropes — highest construct count in any session
+    - All 12 competencies represented — all 7 construct types built (minus plan selector due to bug)
+    - Hierarchical selector chain (master dispatching to sub-selectors) built organically
+    - Strong `code_to_critique` (4.2K) and `code_to_explanation` (12.9K) — high for a novice session
+
+- `2026-03-15` `asmt-0033`
+  - Schema: `spy-network-01`
+  - Author expertise level: `intermediate`
+  - Directions: burned safe house cascading fallout, courier failed border crossing, emergency relocations, mole investigation, extraction under surveillance
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: trope syntax (fully exercised), include and multi-file syntax (fully exercised)
+  - Result: ~31.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.8K
+    - `code_to_explanation`: 12.3K
+    - `working_code_to_ideation`: 11.4K
+    - `code_to_compiler_output`: 11.1K
+    - `code_to_revised_code`: 8.1K
+    - `schema_and_code_to_runtime_prediction`: 7.5K
+    - `code_to_critique`: 5.9K
+    - `schema_to_construct_ideation`: 2.1K
+    - `error_message_to_diagnosis`: 1.7K
+    - `broken_code_to_repaired_code`: 1.2K
+    - `partial_code_to_completed_code`: 0.8K
+  - Notes:
+    - 4 compiler errors — `recipient, anywhere` incompatibility, `remove` operator syntax, `with partial:` vs `with:` bindings
+    - 50 constructs across 10 source files + 1 entry point: 33 actions, 5 queries, 2 sifting patterns, 10 tropes
+    - All 10 tropes used both sugared and standard trope-fit forms, including negated fits and partial bindings
+    - 10-file project with `main.viv` entry point, transitive includes, cross-file construct references
+    - Stub-first approach followed — structural skeletons compiled first, then fleshed out
+    - 2 consultant dispatches
+    - Associations `for` block parsing bug and saliences `for` block conditional bug both encountered and documented
+    - Strong `schema_and_code_to_runtime_prediction` (7.5K) and `code_to_critique` (5.9K)
+    - `ideation_to_ideation` absent — code-interleaved style
+
+- `2026-03-15` `asmt-0034`
+  - Schema: `summer-camp-01`
+  - Author expertise level: `novice`
+  - Directions: talent show preparation pressure, dare chain escalation, CIT covering for absent counselor, specialist favoritism
+  - Emphasis: none
+  - Mechanical targets: none
+  - Result: ~31.5K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.7K
+    - `code_to_revised_code`: 22.2K
+    - `working_code_to_ideation`: 10.8K
+    - `code_to_explanation`: 9.4K
+    - `code_to_compiler_output`: 5.1K
+    - `code_to_critique`: 2.7K
+    - `ideation_to_ideation`: 2.5K
+    - `partial_code_to_completed_code`: 2.3K
+    - `schema_and_code_to_runtime_prediction`: 1.7K
+    - `schema_to_construct_ideation`: 1.6K
+    - `error_message_to_diagnosis`: 1.2K
+    - `broken_code_to_repaired_code`: 0.8K
+  - Notes:
+    - 6 compiler errors — embargo time units, `append`/`remove` infix syntax, `with partial:` binding, `for _@c:` associations block parse failure
+    - 72 constructs in single `camp.viv`: 55 actions (4 reserved), 7 tropes, 3 queries, 7 sifting patterns
+    - No action selectors, plans, or plan selectors — novice without emphasis toward complex constructs stayed in comfortable territory
+    - All 12 competencies represented despite limited construct-type variety
+    - Heavy reaction usage chaining actions into emergent arcs (dare→theft, sabotage→confrontation, gossip→confrontation, letter→confession)
+    - `for _@c:` associations block failed to compile — known compiler bug family (works in example project but rejected by vivc 0.4.0)
+    - 3 consultant dispatches
+
+- `2026-03-15` `asmt-0035`
+  - Schema: `medieval-guild-01`
+  - Author expertise level: `expert`
+  - Directions: foreign trade delegation, silk import vs. domestic weavers, apprentice secret commissions, apothecary tonic leverage
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: action search and sift expressions (fully exercised), literal forms (partially exercised)
+  - Result: ~31.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 28.9K
+    - `code_to_revised_code`: 23.6K
+    - `code_to_explanation`: 13.0K
+    - `code_to_critique`: 11.1K
+    - `code_to_compiler_output`: 7.8K
+    - `schema_and_code_to_runtime_prediction`: 7.5K
+    - `working_code_to_ideation`: 6.4K
+    - `broken_code_to_repaired_code`: 5.4K
+    - `error_message_to_diagnosis`: 4.8K
+    - `schema_to_construct_ideation`: 1.8K
+    - `ideation_to_ideation`: 0.4K
+  - Notes:
+    - 6 compiler errors — initiator precast requirements in reactions, temporal constraint syntax, selector role labels, sifting pattern search domains, `recipient, anywhere` incompatibility
+    - 30 actions (1 template, 3 reserved, 2 inherited), 5 action selectors, 12 queries, 7 sifting patterns, 4 tropes across 11 files
+    - Hierarchical faction selector system (weaver-strategy, merchant-strategy, apothecary-strategy, general-politics)
+    - All five search/sift sub-features exercised: named query search, bare search, three search domains (INHERIT, CHRONICLE, @entity), sift pattern expression, search bindings
+    - 11 of 12 literal sub-features exercised — object literals blocked by compiler (grammar defines production but parser rejects `{` as expression start)
+    - Extended critique of casting pools, condition plausibility, and template inheritance
+    - 3 multi-turn runtime scenario traces
+    - `partial_code_to_completed_code` absent — no stub emphasis
+
+- `2026-03-15` `asmt-0036`
+  - Schema: `hospital-drama-01`
+  - Author expertise level: `intermediate`
+  - Directions: transplant organ eligibility dispute, resident dosage error near-miss, ICU capacity crunch, authority override dynamics
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: custom function call syntax (fully exercised)
+  - Result: ~31.7K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 25.9K
+    - `code_to_revised_code`: 12.5K
+    - `working_code_to_ideation`: 11.2K
+    - `code_to_explanation`: 8.2K
+    - `code_to_compiler_output`: 7.4K
+    - `partial_code_to_completed_code`: 6.5K
+    - `code_to_critique`: 4.7K
+    - `schema_and_code_to_runtime_prediction`: 3.9K
+    - `error_message_to_diagnosis`: 3.5K
+    - `broken_code_to_repaired_code`: 2.9K
+    - `schema_to_construct_ideation`: 2.1K
+    - `ideation_to_ideation`: 1.3K
+  - Notes:
+    - 9 compiler errors — initiator casting pool restriction, initiator precast requirement, incompatible role labels, saliences `for` block conditional bug
+    - 28 actions (+ 1 template), 2 action selectors, 5 queries, 2 sifting patterns, 5 tropes across 12 files
+    - All 6 custom functions exercised with varied argument patterns (single-arg to three-arg, mixing role refs and enums)
+    - Template inheritance with `join` fields, inscribe/inspect, action search in casting pools, weighted/ordered selectors, scratch variables, group roles with loops, `knows` operator
+    - Stub-then-complete rhythm followed — strong `partial_code_to_completed_code` (6.5K)
+    - All 12 competencies represented
+    - 1 consultant dispatch
+
+- `2026-03-15` `asmt-0037`
+  - Schema: `space-station-01`
+  - Author expertise level: `novice`
+  - Directions: supply shuttle depressurization, priority rationing dispute, reactor concerns, civilian journalist documenting crisis
+  - Emphasis: plans, action selectors
+  - Mechanical targets: none
+  - Result: ~31.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 25.0K
+    - `code_to_revised_code`: 14.3K
+    - `working_code_to_ideation`: 11.9K
+    - `code_to_compiler_output`: 6.8K
+    - `code_to_explanation`: 5.1K
+    - `broken_code_to_repaired_code`: 4.2K
+    - `error_message_to_diagnosis`: 3.2K
+    - `schema_to_construct_ideation`: 1.7K
+    - `code_to_critique`: 1.4K
+  - Notes:
+    - 8 compiler errors — selector `target` keyword, plan role labels (entity types not casting keywords), `phases:` keyword, initiator precasting, partial vs full cast, query filter syntax, associations `for` block bug
+    - 54 constructs: 27 actions (2 reserved), 5 tropes, 6 action selectors (chained hierarchy), 3 plans (reaction windows, wait, conditionals), 1 plan selector, 7 queries, 6 sifting patterns
+    - All 7 construct types built — novice with plan/selector emphasis successfully discovered all types
+    - 5 consultant dispatches — good error signal volume
+    - Selector chaining hierarchy (department-specific sub-selectors) built organically
+    - `partial_code_to_completed_code`, `ideation_to_ideation`, `schema_and_code_to_runtime_prediction` absent — reviewer notes runtime prediction content (~4.7K) structurally attributed to `working_code_to_ideation` due to segmentation patterns
+
+- `2026-03-15` `asmt-0038`
+  - Schema: `detective-agency-01`
+  - Author expertise level: `expert`
+  - Directions: witness recantation unraveling closed case, frame job discovery, parallel investigation, informant extraction, forensic re-examination
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: embargo syntax (fully exercised), temporal constraint syntax (fully exercised)
+  - Result: ~30.7K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 27.8K
+    - `code_to_compiler_output`: 14.0K
+    - `working_code_to_ideation`: 13.0K
+    - `code_to_explanation`: 7.1K
+    - `error_message_to_diagnosis`: 4.7K
+    - `broken_code_to_repaired_code`: 4.1K
+    - `code_to_revised_code`: 3.1K
+    - `schema_to_construct_ideation`: 1.7K
+    - `schema_and_code_to_runtime_prediction`: 1.0K
+    - `ideation_to_ideation`: 0.6K
+  - Notes:
+    - 7 compiler errors — undefined action references, duplicate temporal anchors, initiator precast requirements, missing initiator in selectors, incompatible role labels, reversed `append`
+    - ~44 actions (1 template), 5 tropes, 3 plans, 1 action selector, 1 plan selector, 7 queries, 2 sifting patterns across 10 files
+    - All embargo sub-features exercised: HERE/ANYWHERE location scopes, FOREVER/time period time scopes, single/multiple/no role scopes, multiple embargoes per action, `join embargoes:` via template inheritance
+    - All temporal constraint sub-features: before/after/between time-frames, all four anchors (ACTION/HEARING/NOW/AGO), time-of-day constraints, combined constraints
+    - Template inheritance for confrontation actions with join fields
+    - `partial_code_to_completed_code` and `code_to_critique` absent — reviewer notes critique content subsumed by `working_code_to_ideation` due to segmentation patterns
+    - `schema_and_code_to_runtime_prediction` lower than expected — runtime traces followed compiler success messages rather than code blocks
+
+- `2026-03-15` `asmt-0039`
+  - Schema: `frontier-town-01`
+  - Author expertise level: `novice`
+  - Directions: railroad survey crew, factional land bribery, prospector murder investigation, drifter claiming to be federal marshal
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~31.1K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.0K
+    - `code_to_revised_code`: 16.3K
+    - `working_code_to_ideation`: 12.9K
+    - `code_to_explanation`: 7.8K
+    - `code_to_compiler_output`: 6.3K
+    - `partial_code_to_completed_code`: 6.1K
+    - `schema_and_code_to_runtime_prediction`: 3.5K
+    - `ideation_to_ideation`: 2.8K
+    - `broken_code_to_repaired_code`: 2.2K
+    - `schema_to_construct_ideation`: 2.0K
+    - `error_message_to_diagnosis`: 1.9K
+    - `code_to_critique`: 1.9K
+  - Notes:
+    - 2 compiler errors — plan syntax (gloss/steps/casting keywords wrong), action-selector hyphenated keyword
+    - 75 constructs across 14 files: 46 actions, 5 action selectors, 5 plans, 1 plan selector, 5 queries, 5 sifting patterns, 8 tropes — all 7 construct types
+    - All 12 competencies represented
+    - Stub-then-complete rhythm followed — strong `partial_code_to_completed_code` (6.1K)
+    - 3 consultant dispatches
+    - Associations `for _@c:` parser ordering bug encountered and diagnosed
+    - Multi-file project with `all.viv` include entry point
+
+- `2026-03-15` `asmt-0040`
+  - Schema: `pirate-ship-01`
+  - Author expertise level: `expert`
+  - Directions: prize ship capture, prisoner tribunal, sinking salvage, cursed relic, captain judgment proxy war
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: role definition syntax (fully exercised), spawn role syntax (partially exercised)
+  - Result: ~31.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 27.7K
+    - `code_to_revised_code`: 14.0K
+    - `working_code_to_ideation`: 12.8K
+    - `code_to_compiler_output`: 8.0K
+    - `code_to_explanation`: 4.7K
+    - `error_message_to_diagnosis`: 4.2K
+    - `schema_and_code_to_runtime_prediction`: 3.1K
+    - `code_to_critique`: 2.0K
+    - `schema_to_construct_ideation`: 1.8K
+    - `ideation_to_ideation`: 1.5K
+    - `broken_code_to_repaired_code`: 1.1K
+  - Notes:
+    - 12 compiler errors — initiator casting pools, precast requirements, label compatibility, joinable vs non-joinable fields, plan constraints
+    - 36 actions + 2 templates, 1 action selector (11 weighted candidates), 2 plans, 1 plan selector, 6 queries, 3 sifting patterns, 5 tropes across 13 files
+    - All 11 role definition sub-features exercised: type/participation/modifier labels, slot ranges/mean/probability, is:/from: casting pools, spawn directive, renames, group decorator
+    - 3 spawn roles (character + item spawns), spawn in template-inherited context; spawn-to-inspection chain not exercised
+    - Template inheritance with renames for tribunal argument variants
+    - 11-candidate weighted action selector for crew prisoner responses
+    - `partial_code_to_completed_code` absent — no stub emphasis
+
+- `2026-03-15` `asmt-0041`
+  - Schema: `haunted-mansion-01`
+  - Author expertise level: `intermediate`
+  - Directions: hidden passage to sealed crypt, caretaker complicity, binding ward disruption, desperate spirit communication, cursed object escalation
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: gloss, report, importance, and tags syntax (fully exercised)
+  - Result: ~31.4K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.6K
+    - `code_to_revised_code`: 19.0K
+    - `working_code_to_ideation`: 10.9K
+    - `code_to_explanation`: 10.0K
+    - `code_to_compiler_output`: 7.4K
+    - `partial_code_to_completed_code`: 4.7K
+    - `ideation_to_ideation`: 2.2K
+    - `schema_to_construct_ideation`: 1.7K
+    - `broken_code_to_repaired_code`: 1.6K
+    - `error_message_to_diagnosis`: 1.4K
+    - `schema_and_code_to_runtime_prediction`: 1.0K
+    - `code_to_critique`: 0.8K
+  - Notes:
+    - 6 compiler errors — `for` block parser bug (associations/saliences), saliences conditional bug, temporal constraint anchor combination
+    - 46 constructs: 31 actions (1 template, 3 children, 3 reserved), 2 action selectors, 5 queries, 3 sifting patterns, 5 tropes across 6 files
+    - All 5 gloss/report/importance/tags sub-features exercised: template strings with @-refs and {expression} gaps, report with multiple interpolations, importance with both enums and numbers, tag lists on all actions, `join tags:` in template children
+    - Template inheritance (`supernatural-encounter` base with 3 children), inscribe/inspect, scratch variables, group roles with loops
+    - Stub-then-complete rhythm followed — good `partial_code_to_completed_code` (4.7K)
+    - All 12 competencies represented
+    - No plans or plan selectors built
+    - 1 consultant dispatch
+
+- `2026-03-15` `asmt-0042`
+  - Schema: `wilderness-survival-01`
+  - Author expertise level: `expert`
+  - Directions: flash flood shelter destruction, medical supply triage, cave relocation split, signal device construction, outsider trust dynamics
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: none
+  - Result: ~30.7K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 29.4K
+    - `code_to_revised_code`: 21.9K
+    - `code_to_explanation`: 12.4K
+    - `working_code_to_ideation`: 10.0K
+    - `code_to_compiler_output`: 5.7K
+    - `schema_to_construct_ideation`: 1.8K
+    - `schema_and_code_to_runtime_prediction`: 0.8K
+    - `code_to_critique`: 0.4K
+  - Notes:
+    - 0 compiler errors in log — expert resolved all errors inline before log snapshots
+    - 86 constructs across 17 files: 42 actions (1 template, 3 inherited), 2 action selectors, 2 plans, 1 plan selector, 23 queries, 10 sifting patterns, 5 tropes — highest construct count this session
+    - 23 queries covering most filter types, 10 sifting patterns tracking narrative arcs
+    - Template inheritance, scratch variables, multiple embargoes, nested conditionals
+    - `broken_code_to_repaired_code`, `error_message_to_diagnosis`, `partial_code_to_completed_code`, `ideation_to_ideation` all absent
+    - Runtime prediction and critique content present but attributed to `working_code_to_ideation` due to segmentation patterns
+
+- `2026-03-15` `asmt-0043`
+  - Schema: `boarding-school-01`
+  - Author expertise level: `novice`
+  - Directions: house cup final tie, coaching scandal leverage, headmaster office key discovery, exam note black market, groundskeeper complicity
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~31.5K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 28.2K
+    - `code_to_revised_code`: 14.2K
+    - `working_code_to_ideation`: 10.7K
+    - `code_to_explanation`: 10.4K
+    - `partial_code_to_completed_code`: 9.0K
+    - `code_to_compiler_output`: 8.3K
+    - `broken_code_to_repaired_code`: 3.8K
+    - `schema_and_code_to_runtime_prediction`: 3.8K
+    - `error_message_to_diagnosis`: 3.2K
+    - `code_to_critique`: 2.3K
+    - `schema_to_construct_ideation`: 1.8K
+    - `ideation_to_ideation`: 0.4K
+  - Notes:
+    - 6 compiler errors — negation syntax, plan syntax, action-selector keyword, collection operators, initiator precasting, associations `for` block bug
+    - 51 constructs across 7 files: 30 actions, 4 action selectors, 3 plans, 1 plan selector, 3 queries, 4 sifting patterns, 6 tropes — all 7 construct types
+    - All 12 competencies represented
+    - Stub-first methodology followed — strong `partial_code_to_completed_code` (9.0K)
+    - 5 consultant dispatches
+    - Three intertwined storylines (coaching scandal, exam notes, tunnel discovery) connected by cross-storyline actions
+    - All 6 custom functions exercised
+
+- `2026-03-15` `asmt-0044`
+  - Schema: `traveling-circus-01`
+  - Author expertise level: `intermediate`
+  - Directions: competing carnival showdown, dangerous aerial debut without safety net, animal handler horse trouble, fire performer/strongman sabotage feud, clown dramatic ambition, ominous fortune
+  - Emphasis: critique and revision
+  - Mechanical targets: none
+  - Result: ~30.1K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 25.4K
+    - `code_to_revised_code`: 13.8K
+    - `working_code_to_ideation`: 11.1K
+    - `code_to_explanation`: 10.8K
+    - `code_to_compiler_output`: 7.6K
+    - `partial_code_to_completed_code`: 5.1K
+    - `error_message_to_diagnosis`: 2.7K
+    - `ideation_to_ideation`: 2.0K
+    - `schema_to_construct_ideation`: 1.7K
+    - `code_to_critique`: 1.0K
+  - Notes:
+    - 6 compiler errors — group-role decorator, initiator on selectors, chronicle search, `for` block conditional bug, temporal constraint syntax, precast binding
+    - 48 actions + 2 templates, 7 action selectors (all 3 policies + chaining), 2 plans, 1 plan selector, 6 queries, 4 sifting patterns, 4 tropes across 22 files
+    - Multi-level inheritance chains, inscribe/inspect, repeat/abandon reaction logic
+    - `broken_code_to_repaired_code` absent — author rewrites fully rather than showing minimal fixes
+    - `schema_and_code_to_runtime_prediction` absent — runtime prediction follows compiler success not code blocks
+    - 2 consultant dispatches
+
+- `2026-03-15` `asmt-0045`
+  - Schema: `cooking-competition-01`
+  - Author expertise level: `novice`
+  - Directions: mystery box allergy crisis, ingredient substitution discovery, station boundary violations, hostile judge, alliance pressure
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~30.2K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 25.3K
+    - `code_to_explanation`: 13.0K
+    - `code_to_revised_code`: 12.6K
+    - `code_to_compiler_output`: 9.0K
+    - `working_code_to_ideation`: 8.8K
+    - `broken_code_to_repaired_code`: 5.4K
+    - `partial_code_to_completed_code`: 5.3K
+    - `error_message_to_diagnosis`: 5.0K
+    - `code_to_critique`: 4.0K
+    - `schema_and_code_to_runtime_prediction`: 2.1K
+    - `schema_to_construct_ideation`: 1.6K
+    - `ideation_to_ideation`: 1.3K
+  - Notes:
+    - 11 compiler errors — plan syntax (phases/sigil/flow control), action-selector syntax (hyphenation/target policy/weights), negation syntax, `for` block parser bug, precast requirements
+    - 43 constructs across 6 files: 23 actions, 5 action selectors, 3 plans, 1 plan selector, 3 queries, 3 sifting patterns, 5 tropes — all 7 construct types
+    - All 12 competencies represented
+    - All 5 custom functions exercised
+    - 4 consultant dispatches
+    - Strong error signal: `broken_code_to_repaired_code` (5.4K), `error_message_to_diagnosis` (5.0K)
+    - Stub-then-complete followed — good `partial_code_to_completed_code` (5.3K)
+
+- `2026-03-15` `asmt-0046`
+  - Schema: `heist-crew-01`
+  - Author expertise level: `intermediate`
+  - Directions: vault contents moved mid-operation, inside leak investigation, improvised plan, cover blown at gala, trust fracture in real time
+  - Emphasis: critique and revision
+  - Mechanical targets: none
+  - Result: ~30.7K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.3K
+    - `code_to_revised_code`: 18.6K
+    - `code_to_explanation`: 12.7K
+    - `code_to_compiler_output`: 8.4K
+    - `working_code_to_ideation`: 7.8K
+    - `code_to_critique`: 3.8K
+    - `error_message_to_diagnosis`: 3.4K
+    - `schema_to_construct_ideation`: 1.5K
+    - `broken_code_to_repaired_code`: 1.3K
+  - Notes:
+    - 8 compiler errors — associations `for` block parser bug, initiator precast requirements, various syntax issues
+    - 55 constructs across 6 files: 26 actions + 1 template, 2 plans (5-phase heist collapse + abort fallback), 1 action selector, 1 plan selector, 13 queries, 8 sifting patterns, 5 tropes
+    - 13 queries and 8 sifting patterns — heavy information-tracking layer for trust breakdown and accusation spirals
+    - Template inheritance, group/optional/symbol roles, scratch variables, loops in effects
+    - `partial_code_to_completed_code`, `ideation_to_ideation`, `schema_and_code_to_runtime_prediction` absent
+    - 1 consultant dispatch
+
+- `2026-03-15` `asmt-0047`
+  - Schema: `political-intrigue-01`
+  - Author expertise level: `expert`
+  - Directions: regency crisis, three-faction regent appointment, clergy legitimation holdout, Shadow faction bastard candidate, sealed decree authenticity question
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: none
+  - Result: ~31.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 24.5K
+    - `code_to_revised_code`: 16.0K
+    - `working_code_to_ideation`: 12.4K
+    - `code_to_compiler_output`: 10.6K
+    - `code_to_explanation`: 9.4K
+    - `schema_and_code_to_runtime_prediction`: 3.2K
+    - `ideation_to_ideation`: 1.9K
+    - `schema_to_construct_ideation`: 1.6K
+    - `code_to_critique`: 0.7K
+  - Notes:
+    - 0 logged compiler errors — expert resolved all errors in prose without fencing error messages separately
+    - 70 constructs across 7 files: 24 actions (1 template, 2 inherited), 3 action selectors, 6 plans (parallel `all:` windows, wait/until, conditionals), 1 plan selector, 19 queries, 6 sifting patterns, 9 tropes — all 7 construct types
+    - 6 faction campaign plans with diverse phase structures
+    - Template inheritance, scratch variables, inscribe/inspect, reaction abandonment
+    - `broken_code_to_repaired_code`, `error_message_to_diagnosis`, `partial_code_to_completed_code` absent — reviewer notes error content present in prose but not separately tagged
+    - Detailed runtime scenario tracing and design critique
+
+- `2026-03-16` `asmt-0048`
+  - Schema: `spy-network-01`
+  - Author expertise level: `intermediate`
+  - Directions: handler psychological manipulation of wavering asset, counterintelligence dead-drop timing pattern, analyst disinformation pipeline suspicion, compartmentalization vs. information sharing under threat
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: literal forms (fully exercised)
+  - Result: ~31.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 24.4K
+    - `code_to_revised_code`: 16.3K
+    - `code_to_explanation`: 13.0K
+    - `working_code_to_ideation`: 11.2K
+    - `code_to_compiler_output`: 8.7K
+    - `partial_code_to_completed_code`: 3.9K
+    - `ideation_to_ideation`: 2.9K
+    - `code_to_critique`: 2.3K
+    - `schema_to_construct_ideation`: 2.1K
+    - `error_message_to_diagnosis`: 1.9K
+    - `schema_and_code_to_runtime_prediction`: 1.3K
+  - Notes:
+    - 7 compiler errors (duplicate temporal constraints, cross-file reaction references, missing initiator in inherited roles, casting pool on initiator, CHRONICLE search in sifting patterns)
+    - 34 constructs across 5 files: 23 actions (2 reserved, 1 template), 1 action selector, 4 tropes, 3 queries, 2 sifting patterns
+    - Stub-then-complete rhythm followed — good `partial_code_to_completed_code` (3.9K)
+    - All literal forms sub-features exercised: integers, floats, signed numbers, single/double-quoted strings, template strings with @-ref and {expr} gaps, enums, signed enums, booleans, null, empty/populated list literals, object literals
+    - Object literal successfully compiled — first session to exercise this feature (previously blocked by compiler bug)
+    - `broken_code_to_repaired_code` absent — author's error-repair cycles pass through compiler_success_message before revised code, breaking contiguous pattern
+    - No plans or plan selectors — didn't fit the espionage scenario naturally
+
+- `2026-03-16` `asmt-0049`
+  - Schema: `hospital-drama-01`
+  - Author expertise level: `novice`
+  - Directions: obstetric emergency, NICU transfer turf war, board member family bypass, OR access conflict, hallway delivery, night shift authorization crisis
+  - Emphasis: none
+  - Mechanical targets: saliences and associations syntax (fully exercised)
+  - Result: ~31.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 24.7K
+    - `code_to_revised_code`: 12.7K
+    - `code_to_compiler_output`: 9.5K
+    - `working_code_to_ideation`: 9.0K
+    - `code_to_explanation`: 8.0K
+    - `broken_code_to_repaired_code`: 6.6K
+    - `error_message_to_diagnosis`: 4.8K
+    - `ideation_to_ideation`: 2.5K
+    - `schema_to_construct_ideation`: 2.0K
+    - `schema_and_code_to_runtime_prediction`: 1.7K
+    - `code_to_critique`: 1.0K
+  - Notes:
+    - 8 compiler errors — casting pool restrictions, elif grammar bug in association for-blocks, plan syntax (phases/sigil/role labels), action-selector syntax
+    - 55 constructs across 12 files: 40 actions, 1 action selector (12 candidates), 2 plans, 1 plan selector, 5 queries, 3 sifting patterns, 3 tropes — all 7 construct types
+    - All saliences/associations sub-features exercised: default/roles/for-blocks with conditional logic, multi-tag yields, nested if/else/end
+    - elif grammar bug in association for-blocks discovered and documented (PEG whitespace-skipping defeats reserved_keyword word-boundary check)
+    - Strong error signal: `broken_code_to_repaired_code` (6.6K), `error_message_to_diagnosis` (4.8K)
+    - `partial_code_to_completed_code` absent — no stub emphasis
+    - 3 consultant dispatches
+
+- `2026-03-16` `asmt-0050`
+  - Schema: `wilderness-survival-01`
+  - Author expertise level: `expert`
+  - Directions: predator stalking perimeter, water contamination crisis, signal tower construction race, smoke plume disagreement, outsider with suspicious trail claim
+  - Emphasis: critique and revision
+  - Mechanical targets: trope syntax (fully exercised)
+  - Result: ~32.0K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 28.3K
+    - `code_to_revised_code`: 15.3K
+    - `code_to_explanation`: 14.6K
+    - `working_code_to_ideation`: 11.8K
+    - `code_to_compiler_output`: 8.3K
+    - `partial_code_to_completed_code`: 4.2K
+    - `code_to_critique`: 4.0K
+    - `schema_and_code_to_runtime_prediction`: 2.7K
+    - `schema_to_construct_ideation`: 1.9K
+    - `broken_code_to_repaired_code`: 1.4K
+    - `error_message_to_diagnosis`: 1.3K
+    - `ideation_to_ideation`: 0.8K
+  - Notes:
+    - 1 compiler error (elif inside associations for-block — PEG grammar bug)
+    - 40 constructs across 4 files: 29 actions (1 template, 2 children, 4 reserved), 1 action selector, 7 tropes, 1 query, 2 sifting patterns
+    - All 12 competencies represented
+    - Trope syntax thoroughly covered: 7 trope definitions, sugared and standard fit forms, positional/named/partial/none bindings, trope fits in conditions/effects/reactions/saliences for-blocks/selector conditions/loops/negation/conjunction
+    - Substantial critique-and-revision phase: tightened casting pools, fixed dead trope branch, refactored templates
+    - Extended runtime prediction tracing full simulation day
+    - `partial_code_to_completed_code` (4.2K) emerged without stub emphasis — revision-driven scaffolding
+
+- `2026-03-16` `asmt-0051`
+  - Schema: `summer-camp-01`
+  - Author expertise level: `intermediate`
+  - Directions: Color War escalation, cabin sabotage, stolen strategy notebooks, counselor secret relationship loyalty crisis, campfire dare to closed maintenance shed, hidden contraband stash discovery, CIT report-vs-conceal dilemma, director investigation selector
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: action search and sift expressions (fully exercised)
+  - Result: ~31.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.9K
+    - `code_to_revised_code`: 13.5K
+    - `code_to_compiler_output`: 12.5K
+    - `code_to_explanation`: 10.7K
+    - `working_code_to_ideation`: 9.3K
+    - `partial_code_to_completed_code`: 8.7K
+    - `broken_code_to_repaired_code`: 4.1K
+    - `error_message_to_diagnosis`: 3.4K
+    - `code_to_critique`: 2.0K
+    - `schema_to_construct_ideation`: 1.8K
+    - `ideation_to_ideation`: 1.8K
+    - `schema_and_code_to_runtime_prediction`: 1.3K
+  - Notes:
+    - 6 compiler errors — selector initiator requirement, reaction precast requirement, recipient/anywhere incompatibility, associations filter domain restriction
+    - 71 constructs across 8 files: 47 actions, 1 action selector (14 candidates with dynamic weights), 13 queries, 5 sifting patterns, 5 tropes
+    - All 12 competencies represented
+    - All action search/sift sub-features exercised: named query search (13+ uses), bare search (4 uses), all 3 search domains (INHERIT/CHRONICLE/@entity), sift expressions (5 uses), with/with partial bindings
+    - Stub-then-complete rhythm followed — strong `partial_code_to_completed_code` (8.7K)
+    - Director investigation selector with 14 weighted candidates including 3 with dynamic expression weights based on trust level
+
+- `2026-03-16` `asmt-0052`
+  - Schema: `detective-agency-01`
+  - Author expertise level: `novice`
+  - Directions: missing heiress case, rival PI firms, competing family motives, recanting doorman witness, suspicious client, unknown blood at scene, multi-file project organization
+  - Emphasis: none
+  - Mechanical targets: include and multi-file syntax (fully exercised)
+  - Result: ~31.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.0K
+    - `code_to_revised_code`: 14.1K
+    - `working_code_to_ideation`: 12.6K
+    - `code_to_compiler_output`: 6.6K
+    - `code_to_explanation`: 6.5K
+    - `broken_code_to_repaired_code`: 5.0K
+    - `error_message_to_diagnosis`: 4.3K
+    - `ideation_to_ideation`: 3.6K
+    - `code_to_critique`: 1.8K
+    - `schema_to_construct_ideation`: 1.8K
+    - `schema_and_code_to_runtime_prediction`: 0.2K
+  - Notes:
+    - 6 compiler errors — cross-file reference resolution, plan phases keyword, action selector target syntax, initiator requirements, query numeric criterion syntax, elif in association for-blocks
+    - 53 constructs across 7 files: 29 actions, 4 action selectors, 3 plans, 1 plan selector, 5 queries, 5 sifting patterns, 6 tropes — all 7 construct types
+    - 6 include directives with cross-file construct references, selector chaining across files
+    - Strong error signal: `broken_code_to_repaired_code` (5.0K), `error_message_to_diagnosis` (4.3K)
+    - `partial_code_to_completed_code` absent — no stub emphasis
+    - `schema_and_code_to_runtime_prediction` low (0.2K) — substantial runtime prediction content (~4.7K) follows compiler_success_message rather than viv_code, captured under working_code_to_ideation instead
+    - 3 consultant dispatches
+
+- `2026-03-16` `asmt-0053`
+  - Schema: `medieval-guild-01`
+  - Author expertise level: `novice`
+  - Directions: poisoned feast at Merchants' guildhall, Apothecary suspicion, journeyman smith motive, Weavers' political opportunism, unauthorized contract with grandmaster's seal, investigation plan, council vote maneuvering selector
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: spawn role syntax (partially exercised)
+  - Result: ~11.0K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 8.2K
+    - `broken_code_to_repaired_code`: 5.1K
+    - `error_message_to_diagnosis`: 4.3K
+    - `working_code_to_ideation`: 3.7K
+    - `code_to_compiler_output`: 3.2K
+    - `schema_to_construct_ideation`: 1.8K
+    - `ideation_to_ideation`: 1.4K
+    - `partial_code_to_completed_code`: 0.6K
+    - `code_to_revised_code`: 0.2K
+  - Notes:
+    - 8 compiler errors — plan syntax (no gloss, phases block, type labels), selector syntax (target policy, header vs body, initiator requirement), spawn syntax (comma-separated labels, self-reference)
+    - 22 constructs across 7 files: 14 actions, 1 action selector, 1 plan, 2 queries, 1 sifting pattern, 3 tropes
+    - Shorter session (~11K tokens vs typical ~31K) — likely hit rate limit
+    - Strong error signal despite short session: `broken_code_to_repaired_code` (5.1K), `error_message_to_diagnosis` (4.3K)
+    - Spawn role: `spawn` label and `spawn:` directive exercised; template-inherited spawn and spawn-to-inspection chain not attempted
+    - `code_to_explanation`, `code_to_critique`, `schema_and_code_to_runtime_prediction` absent — session ended before revision/critique phase
+    - 3 consultant dispatches
+
+- `2026-03-16` `asmt-0054`
+  - Schema: `pirate-ship-01`
+  - Author expertise level: `expert`
+  - Directions: stranded crew on volcanic island, hull breach repair, native warnings, launch window pressure, relic superstition, water spring in forbidden territory, crew vote to abandon ship
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: custom function call syntax (fully exercised)
+  - Result: ~31.2K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.2K
+    - `code_to_revised_code`: 16.6K
+    - `code_to_explanation`: 15.6K
+    - `working_code_to_ideation`: 11.5K
+    - `code_to_compiler_output`: 6.8K
+    - `code_to_critique`: 5.6K
+    - `schema_and_code_to_runtime_prediction`: 4.2K
+    - `error_message_to_diagnosis`: 2.9K
+    - `broken_code_to_repaired_code`: 2.6K
+    - `ideation_to_ideation`: 1.7K
+    - `schema_to_construct_ideation`: 1.6K
+  - Notes:
+    - 5 compiler errors — negation syntax, partial bindings, sifting pattern is: directive, initiator-precast, number word limits, associations elif restriction
+    - 45 constructs across 4 files: 28 actions (1 template, 2 children, 2 reserved), 1 action selector, 1 plan (3 phases), 6 queries, 3 sifting patterns, 6 tropes
+    - All 5 custom functions exercised with varied argument forms: single-arg, multi-arg, UID[], local vars in loops, fail-safe `?`, calls in conditionals/loops, calls in template-inherited actions
+    - Two detailed runtime scenario traces and thorough design critique
+    - `partial_code_to_completed_code` absent — no stub emphasis
+
+- `2026-03-16` `asmt-0055`
+  - Schema: `boarding-school-01`
+  - Author expertise level: `intermediate`
+  - Directions: cheating ring exposed mid-term, leaked history final, cross-house distribution chain, Selwyn thief/Draycott middleman, Lyndhurst opportunism, faculty grudge-based investigation, cascading accusation-denial-investigation reaction chains
+  - Emphasis: critique and revision (reaction chain focus)
+  - Mechanical targets: reaction syntax (partially exercised)
+  - Result: ~18.9K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 16.9K
+    - `code_to_revised_code`: 15.6K
+    - `code_to_explanation`: 11.8K
+    - `schema_and_code_to_runtime_prediction`: 4.1K
+    - `code_to_compiler_output`: 3.7K
+    - `working_code_to_ideation`: 2.9K
+    - `error_message_to_diagnosis`: 2.3K
+    - `schema_to_construct_ideation`: 1.8K
+    - `code_to_critique`: 1.8K
+    - `broken_code_to_repaired_code`: 0.9K
+  - Notes:
+    - 8 compiler errors — recipient/anywhere incompatibility (3x), remove operator syntax, temporal constraint dedup, precast binding requirements
+    - 26 constructs across 5 files: 16 actions, 4 tropes, 3 queries, 2 sifting patterns, 1 action selector
+    - Shorter session (~19K tokens) — hit rate limit mid-revision phase
+    - 8 of 12 reaction sub-features exercised: queue action, queue action-selector, with/with partial, urgent, priority, time (before/after/between), abandon, repeat (with if/max)
+    - Missing: queue plan, queue plan-selector, with none, location constraints
+    - Two full critique-and-revision cycles with loyalty threshold adjustments and else branches
+    - `partial_code_to_completed_code` and `ideation_to_ideation` absent
+
+- `2026-03-16` `asmt-0056`
+  - Schema: `haunted-mansion-01`
+  - Author expertise level: `expert`
+  - Directions: fragmented consciousness of original owner, room-specific personality aspects, medium-caretaker trust crisis, cursed counter-ritual text, thrill-seeker relic theft weakening wards, simultaneous nexus room counter-ritual
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: query filter syntax (fully exercised)
+  - Result: ~32.0K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 29.8K
+    - `code_to_revised_code`: 19.1K
+    - `working_code_to_ideation`: 11.1K
+    - `code_to_explanation`: 10.2K
+    - `code_to_compiler_output`: 5.9K
+    - `code_to_critique`: 5.7K
+    - `schema_and_code_to_runtime_prediction`: 3.4K
+    - `broken_code_to_repaired_code`: 2.1K
+    - `error_message_to_diagnosis`: 2.0K
+    - `schema_to_construct_ideation`: 1.6K
+    - `partial_code_to_completed_code`: 1.4K
+    - `ideation_to_ideation`: 0.3K
+  - Notes:
+    - 6 compiler errors — elif in association for-blocks, ancestors/descendants query filter, various syntax issues
+    - 55 constructs across 8 files: 25 actions (2 templates), 1 action selector, 20 queries, 5 sifting patterns, 4 tropes
+    - All 12 competencies represented
+    - 20 queries exercising 13 of 15 filter fields, all 4 set predicate operators, all 5 numeric criteria operators, plus roles: and conditions:
+    - Only ancestors/descendants filters not exercised (require action-typed roles with pool declarations)
+    - Template inheritance with body-less child
+    - Multiple runtime scenario traces and thorough design critique
+    - No plans built — commission emphasized reactive dynamics
+
+- `2026-03-16` `asmt-0057`
+  - Schema: `frontier-town-01`
+  - Author expertise level: `novice`
+  - Directions: stagecoach robbery gone wrong, bank gold recovery, scattered gang members hiding with sympathizers, prospector witness/water rights leverage, gambler double-dealing, drifter false suspect, deputy as real leak, sheriff investigation plan, gambler selector
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: sifting pattern syntax (partially exercised)
+  - Result: ~31.4K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.9K
+    - `code_to_revised_code`: 17.3K
+    - `working_code_to_ideation`: 11.6K
+    - `code_to_explanation`: 10.5K
+    - `code_to_compiler_output`: 7.3K
+    - `partial_code_to_completed_code`: 4.2K
+    - `broken_code_to_repaired_code`: 2.9K
+    - `error_message_to_diagnosis`: 2.5K
+    - `code_to_critique`: 2.4K
+    - `schema_to_construct_ideation`: 1.7K
+    - `ideation_to_ideation`: 1.4K
+    - `schema_and_code_to_runtime_prediction`: 0.5K
+  - Notes:
+    - 4 compiler errors — plan syntax, sifting is: directive, query numeric filter, selector weight placement
+    - 56 constructs across 7 files: 29 actions (2 reserved), 2 action selectors, 2 plans, 1 plan selector, 8 queries, 9 sifting patterns, 5 tropes — all 7 construct types
+    - All 12 competencies represented
+    - 9 sifting patterns using all 3 relational operators (preceded/caused/triggered), from: with character memories and search query forms
+    - Stub-then-complete followed — good `partial_code_to_completed_code` (4.2K)
+    - Sifting is: directive attempted but failed (bare identifier not valid expression), INHERIT/CHRONICLE domains not used
+    - 3 consultant dispatches
+
+- `2026-03-16` `asmt-0058`
+  - Schema: `traveling-circus-01`
+  - Author expertise level: `expert`
+  - Directions: stranded in hostile town, revoked permit, mayor's daughter runaway backstory, fortune teller's private readings, strongman/fire performer prop feud, blacksmith leverage, complex boolean conditions and branching effects
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: conditions and effects syntax (fully exercised)
+  - Result: ~31.5K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 28.3K
+    - `code_to_revised_code`: 21.5K
+    - `code_to_explanation`: 16.7K
+    - `schema_and_code_to_runtime_prediction`: 7.9K
+    - `working_code_to_ideation`: 7.2K
+    - `code_to_compiler_output`: 6.7K
+    - `code_to_critique`: 4.9K
+    - `schema_to_construct_ideation`: 2.5K
+    - `broken_code_to_repaired_code`: 2.4K
+    - `error_message_to_diagnosis`: 2.4K
+    - `ideation_to_ideation`: 1.0K
+  - Notes:
+    - 5 compiler errors — initiator casting-pool restriction, self-referential casting pool, group role decorator, reaction initiator precasting, associations elif parser quirk
+    - 32 constructs across 8 files: 22 actions (1 reserved), 4 tropes, 4 queries, 2 sifting patterns
+    - All conditions/effects sub-features exercised: if/elif/else/end (up to 3 nesting levels), loop with local vars (7 actions), all 6 assignment operators, chance expressions, pointer access, negation, complex boolean logic
+    - Three 5-13 turn runtime scenario traces with numeric state tracking
+    - Strong `schema_and_code_to_runtime_prediction` (7.9K) — highest expert-level this session
+    - `partial_code_to_completed_code` absent — no stub emphasis
+
+- `2026-03-16` `asmt-0059`
+  - Schema: `space-station-01`
+  - Author expertise level: `intermediate`
+  - Directions: solar storm communications blackout, shuttle docking dilemma, unauthorized backup power depletion, journalist satellite uplink leak, falsified hull repair, medication resupply crisis
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~31.4K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 24.2K
+    - `code_to_revised_code`: 22.8K
+    - `code_to_explanation`: 13.9K
+    - `working_code_to_ideation`: 10.8K
+    - `code_to_compiler_output`: 5.2K
+    - `partial_code_to_completed_code`: 3.4K
+    - `schema_and_code_to_runtime_prediction`: 3.3K
+    - `error_message_to_diagnosis`: 1.9K
+    - `schema_to_construct_ideation`: 1.7K
+    - `code_to_critique`: 0.3K
+  - Notes:
+    - 6 compiler errors — reaction initiator precasting, inherited role name after renaming, append operator syntax
+    - 54 constructs across 12 files: 30 actions (3 reserved, 1 template), 1 action selector, 10 queries, 5 sifting patterns, 8 tropes
+    - Stub-then-complete rhythm followed — good `partial_code_to_completed_code` (3.4K)
+    - Strong `code_to_revised_code` (22.8K) from extensive flesh-out phase
+    - Template inheritance with join, scratch variables, group roles with loops, all 6 custom functions
+    - `broken_code_to_repaired_code` absent — author describes fixes in prose without re-showing code before success
+    - `ideation_to_ideation` absent — every prose segment adjacent to code/compiler output
+    - No plans or plan selectors — crisis scenario emphasized reactive dynamics
+
+- `2026-03-16` `asmt-0061`
+  - Schema: `spy-network-01`
+  - Author expertise level: `novice`
+  - Directions: defection crisis, dangle operation suspicion, corroborated disinformation pattern, silent courier, barium meal counterintelligence test, asset cover dependency, handler defection response selector, barium meal plan
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~31.4K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.6K
+    - `code_to_revised_code`: 13.5K
+    - `working_code_to_ideation`: 12.7K
+    - `partial_code_to_completed_code`: 10.1K
+    - `code_to_compiler_output`: 8.9K
+    - `code_to_explanation`: 5.0K
+    - `broken_code_to_repaired_code`: 3.1K
+    - `error_message_to_diagnosis`: 2.6K
+    - `schema_to_construct_ideation`: 2.0K
+    - `code_to_critique`: 1.0K
+    - `schema_and_code_to_runtime_prediction`: 0.6K
+  - Notes:
+    - 7 compiler errors — plan syntax (steps/phases, sigils, no gloss), action-selector keyword, restricted role labels, append infix syntax, missing include for cross-file references
+    - 58 constructs across 10 files: 39 actions, 5 action selectors, 3 plans, 1 plan selector, 2 queries, 2 sifting patterns, 6 tropes — all 7 construct types
+    - Stub-then-complete followed — strong `partial_code_to_completed_code` (10.1K)
+    - All selectors use `target randomly:` — did not explore weight or order policies
+    - `ideation_to_ideation` absent — every prose segment adjacent to code/compiler
+    - 3 consultant dispatches
+
+- `2026-03-16` `asmt-0060`
+  - Schema: `auction-house-01`
+  - Author expertise level: `novice`
+  - Directions: Renaissance painting authentication failure mid-auction, auctioneer halt-vs-push dilemma, collector pre-bid withdrawal threat, dealer forgery accusation, restorer competence dispute, backdoor deals during chaos, investigation plan, damage-control selector
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~29.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 25.3K
+    - `working_code_to_ideation`: 11.4K
+    - `code_to_compiler_output`: 10.6K
+    - `code_to_explanation`: 9.9K
+    - `code_to_revised_code`: 8.2K
+    - `partial_code_to_completed_code`: 7.5K
+    - `broken_code_to_repaired_code`: 2.9K
+    - `error_message_to_diagnosis`: 2.6K
+    - `schema_and_code_to_runtime_prediction`: 2.2K
+    - `schema_to_construct_ideation`: 2.0K
+    - `code_to_critique`: 1.8K
+    - `ideation_to_ideation`: 0.7K
+  - Notes:
+    - 8 compiler errors — selector weight syntax, plan gloss restriction, plan role labels, remove infix operator, binding completeness issues
+    - 50 constructs across 11 files: 31 actions, 4 action selectors (all 3 policies), 2 plans (4 and 3 phases), 5 queries, 3 sifting patterns, 5 tropes
+    - All 12 competencies represented — first assignment on new auction-house domain
+    - Stub-then-complete followed — strong `partial_code_to_completed_code` (7.5K)
+    - New domain produced expected novice error patterns plus fresh thematic material
+    - 1 consultant dispatch
+
+- `2026-03-16` `asmt-0063`
+  - Schema: `auction-house-01`
+  - Author expertise level: `expert`
+  - Directions: silent auction wartime collection, restitution claims, 48-hour provenance deadline, shared forger restoration style, new-money market cornering, curator loyalty conflict, cloned vault keycard breach
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: none
+  - Result: ~31.7K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 28.2K
+    - `working_code_to_ideation`: 16.5K
+    - `code_to_compiler_output`: 9.9K
+    - `code_to_revised_code`: 6.4K
+    - `code_to_explanation`: 4.2K
+    - `code_to_critique`: 1.9K
+    - `broken_code_to_repaired_code`: 1.9K
+    - `schema_to_construct_ideation`: 1.8K
+    - `ideation_to_ideation`: 1.6K
+    - `schema_and_code_to_runtime_prediction`: 1.4K
+    - `error_message_to_diagnosis`: 1.2K
+  - Notes:
+    - 2 compiler errors — casting pool on initiator, selector initiator requirement
+    - 51 constructs across 8 files: 31 actions (1 template), 2 action selectors, 5 queries, 6 sifting patterns, 6 tropes
+    - Three runtime scenario traces and three critique/revision passes
+    - Advanced features: template inheritance with join, group roles with slot distributions, dynamic selector weights, sifting with query-backed sources, chance expressions
+    - `partial_code_to_completed_code` absent — no stub emphasis
+    - Second assignment on auction-house domain — strong thematic variety from first
+
+- `2026-03-16` `asmt-0074`
+  - Schema: `pirate-ship-01`
+  - Author expertise level: `novice`
+  - Directions: ghost ship encounter, smashed mirrors, unknown language logs, humming sealed jars, affected deckhand, legendary shipwreck route, crew response split (sink/tow/abandon), boarding investigation plan, crew response selector
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~32.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 29.3K
+    - `code_to_revised_code`: 20.0K
+    - `code_to_explanation`: 13.7K
+    - `working_code_to_ideation`: 9.3K
+    - `code_to_compiler_output`: 7.0K
+    - `partial_code_to_completed_code`: 6.7K
+    - `error_message_to_diagnosis`: 3.0K
+    - `broken_code_to_repaired_code`: 2.9K
+    - `schema_and_code_to_runtime_prediction`: 2.5K
+    - `schema_to_construct_ideation`: 1.5K
+    - `code_to_critique`: 1.5K
+    - `ideation_to_ideation`: 0.6K
+  - Notes:
+    - 7 compiler errors — plan syntax, action-selector keyword, append infix, embargo time field, elif in association for-blocks
+    - 52 constructs: 33 actions, 1 action selector (18 candidates), 2 plans, 1 plan selector, 5 queries, 3 sifting patterns, 7 tropes — all 7 construct types
+    - All 12 competencies represented
+    - Stub-then-complete followed — good `partial_code_to_completed_code` (6.7K)
+    - Consolidated from multi-file to single ghost-ship.viv
+    - 3 consultant dispatches
+
+- `2026-03-16` `asmt-0075`
+  - Schema: `traveling-circus-01`
+  - Author expertise level: `intermediate`
+  - Directions: storm collapses big top mid-performance, acrobat trapped, horses bolted, fortune teller prophecy, lantern feud, roustabout hazard pay dispute, recovery plan
+  - Emphasis: critique and revision
+  - Mechanical targets: none
+  - Result: ~31.4K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 27.1K
+    - `code_to_revised_code`: 18.3K
+    - `working_code_to_ideation`: 13.6K
+    - `code_to_explanation`: 10.1K
+    - `code_to_compiler_output`: 5.9K
+    - `schema_and_code_to_runtime_prediction`: 3.0K
+    - `schema_to_construct_ideation`: 1.6K
+    - `ideation_to_ideation`: 0.8K
+    - `code_to_critique`: 0.4K
+  - Notes:
+    - 0 logged compiler errors — author narrates errors in prose but log shows only corrected code
+    - 47 constructs across 7 files: 33 actions, 1 action selector, 1 plan, 6 queries, 2 sifting patterns, 4 tropes
+    - First assignment reviewed under new all-21-feature-areas protocol
+    - 6 feature areas fully exercised, 9 partially — 10.5 total coverage points from a single assignment
+    - `broken_code_to_repaired_code` and `error_message_to_diagnosis` absent — error content in prose not compiler fences
+    - `partial_code_to_completed_code` absent
+
+- `2026-03-16` `asmt-0073`
+  - Schema: `boarding-school-01`
+  - Author expertise level: `novice`
+  - Directions: school fire arson suspicion, Selwyn displaced to Draycott, hidden lighter evidence, secret society loyalty, headmaster amnesty, groundskeeper witness with secret, prime suspect with unexposable alibi, investigation plan, shared common room selector
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~31.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.2K
+    - `code_to_explanation`: 14.0K
+    - `working_code_to_ideation`: 12.2K
+    - `code_to_compiler_output`: 11.2K
+    - `code_to_revised_code`: 10.7K
+    - `partial_code_to_completed_code`: 5.9K
+    - `broken_code_to_repaired_code`: 4.5K
+    - `error_message_to_diagnosis`: 3.8K
+    - `schema_to_construct_ideation`: 1.8K
+    - `ideation_to_ideation`: 1.1K
+    - `code_to_critique`: 0.4K
+    - `schema_and_code_to_runtime_prediction`: 0.2K
+  - Notes:
+    - 6 compiler errors — plan syntax (no gloss, phases/steps, sigil), append infix, selector keyword, weighted selector parentheses
+    - 57 constructs across 6 files: 36 actions, 2 action selectors (23 and 9 candidates), 2 plans, 1 plan selector, 5 queries, 5 sifting patterns, 6 tropes — all 7 construct types
+    - All 12 competencies represented
+    - Stub-then-complete followed — good `partial_code_to_completed_code` (5.9K)
+    - 4 consultant dispatches
+
+- `2026-03-16` `asmt-0072`
+  - Schema: `medieval-guild-01`
+  - Author expertise level: `intermediate`
+  - Directions: plague quarantine, mercury poisoning vs contagion, Apothecary monopoly pricing, Smiths' trapped inventory, Mason's mercury secret, apprentice folk hero smuggler, Merchant trade bypass, economic pressure dynamics
+  - Emphasis: critique and revision
+  - Mechanical targets: none
+  - Result: ~31.2K tokens
+  - Competencies (token volume):
+    - `code_to_revised_code`: 27.2K
+    - `ideation_to_code`: 26.6K
+    - `code_to_explanation`: 15.6K
+    - `working_code_to_ideation`: 9.6K
+    - `schema_and_code_to_runtime_prediction`: 5.4K
+    - `code_to_compiler_output`: 4.1K
+    - `code_to_critique`: 2.9K
+    - `ideation_to_ideation`: 2.8K
+    - `schema_to_construct_ideation`: 1.9K
+  - Notes:
+    - 0 compiler errors — every compilation succeeded first try (unusual for intermediate)
+    - 62 constructs across 8 files: 42 actions (1 template, 13 reserved), 2 action selectors, 3 plans, 6 queries, 4 sifting patterns, 5 tropes
+    - Strongest `code_to_revised_code` this session (27.2K) and strong runtime prediction (5.4K)
+    - Template inheritance, inscribe/inspect, scratch variables, group roles, loops, chance expressions, all embargo variants
+    - `broken_code_to_repaired_code`, `error_message_to_diagnosis`, `partial_code_to_completed_code` all absent — zero-error session with no stub emphasis
+    - Mercury leak timing design flaw identified in runtime trace but not fixed
+
+- `2026-03-16` `asmt-0071`
+  - Schema: `space-station-01`
+  - Author expertise level: `novice`
+  - Directions: quarantine from EVA pathogen scare, uncertain diagnosis, sealed science module dwindling air, engineer crawlspace proposal, journalist broadcast leak, specialist experiment deadline, coolant allergy alternative, quarantine response plan, competing priorities selector
+  - Emphasis: none
+  - Mechanical targets: none
+  - Result: ~31.7K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 28.2K
+    - `code_to_revised_code`: 20.6K
+    - `code_to_explanation`: 15.1K
+    - `ideation_to_ideation`: 11.8K
+    - `working_code_to_ideation`: 8.3K
+    - `broken_code_to_repaired_code`: 6.9K
+    - `code_to_compiler_output`: 6.5K
+    - `error_message_to_diagnosis`: 5.7K
+    - `code_to_critique`: 5.3K
+    - `schema_and_code_to_runtime_prediction`: 3.0K
+    - `schema_to_construct_ideation`: 1.6K
+  - Notes:
+    - 10 compiler errors — invalid role type, cross-file trope refs, plan syntax (gloss/steps/phases/labels), reaction precast, elif parsing bug, not-in syntax, append/remove syntax
+    - 59 constructs: 39 actions (6 reserved), 4 action selectors (all 3 policies + chaining), 2 plans, 1 plan selector, 3 queries, 4 sifting patterns, 6 tropes — all 7 construct types
+    - Highest `ideation_to_ideation` in any session (11.8K)
+    - Strong error signal: `broken_code_to_repaired_code` (6.9K), `error_message_to_diagnosis` (5.7K)
+    - Consolidated from multi-file to single station.viv after cross-file reference errors
+    - 3 consultant dispatches
+
+- `2026-03-16` `asmt-0070`
+  - Schema: `detective-agency-01`
+  - Author expertise level: `expert`
+  - Directions: client is perpetrator, convenient leads, planted evidence, paid-off informant, rival agency parallel investigation, shared-printer forensic discovery, mentor loyalty crisis
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: none
+  - Result: ~31.9K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 25.3K
+    - `working_code_to_ideation`: 15.7K
+    - `code_to_compiler_output`: 5.8K
+    - `code_to_revised_code`: 5.2K
+    - `code_to_explanation`: 2.9K
+    - `schema_and_code_to_runtime_prediction`: 2.9K
+    - `broken_code_to_repaired_code`: 2.6K
+    - `schema_to_construct_ideation`: 1.9K
+    - `error_message_to_diagnosis`: 1.8K
+    - `code_to_critique`: 1.5K
+    - `ideation_to_ideation`: 1.4K
+  - Notes:
+    - 4 compiler errors — casting pool on initiator, elif in association for-blocks, bare search expression, missing initiator on selector
+    - 48 constructs across 11 files: 29 actions (1 template, 3 children, 4 reserved), 2 action selectors, 6 queries, 5 sifting patterns, 6 tropes
+    - Template inheritance for evidence examination actions, weighted and ordered selectors
+    - Two multi-turn runtime scenario traces (13-turn, informant thread)
+    - Design flaw discovered and fixed: confronting client severs hired-by trope, blocking downstream actions
+    - `partial_code_to_completed_code` absent — no stub emphasis
+
+- `2026-03-16` `asmt-0069`
+  - Schema: `summer-camp-01`
+  - Author expertise level: `novice`
+  - Directions: unsanctioned night swim, near-drowning, CIT dilemma, chain of lies, silent witness, director investigation threatening dance cancellation, specialist AWOL, counselor sleeping pills, investigation plan, cover story selector
+  - Emphasis: none
+  - Mechanical targets: none
+  - Result: ~32.0K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 25.8K
+    - `code_to_explanation`: 13.5K
+    - `working_code_to_ideation`: 12.7K
+    - `code_to_compiler_output`: 11.8K
+    - `code_to_revised_code`: 8.7K
+    - `partial_code_to_completed_code`: 6.2K
+    - `broken_code_to_repaired_code`: 4.5K
+    - `ideation_to_ideation`: 3.7K
+    - `error_message_to_diagnosis`: 3.2K
+    - `code_to_critique`: 3.0K
+    - `schema_to_construct_ideation`: 1.7K
+    - `schema_and_code_to_runtime_prediction`: 0.7K
+  - Notes:
+    - 5 compiler errors — plan phase syntax, action-selector keyword, with vs with partial
+    - 57 constructs across 7 files: 40 actions, 7 tropes, 2 action selectors, 1 plan (4 phases with reaction windows), 3 queries, 4 sifting patterns
+    - All 12 competencies represented
+    - Cover strategy selector with 7 candidates, 4-phase investigation plan with all: reaction windows
+    - 2 consultant dispatches
+
+- `2026-03-16` `asmt-0068`
+  - Schema: `haunted-mansion-01`
+  - Author expertise level: `novice`
+  - Directions: medium receives contradictory history messages, caretaker ancestor murder claim, walled-off room discovery, binding ritual journal, thrill-seeker takes journal, targeted manifestations prosecuting caretaker, ritual containment plan, manifestation strategy selector
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~31.5K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 29.0K
+    - `code_to_revised_code`: 19.8K
+    - `partial_code_to_completed_code`: 14.7K
+    - `working_code_to_ideation`: 12.3K
+    - `code_to_compiler_output`: 5.6K
+    - `code_to_explanation`: 4.1K
+    - `broken_code_to_repaired_code`: 2.6K
+    - `error_message_to_diagnosis`: 2.6K
+    - `schema_to_construct_ideation`: 1.8K
+    - `schema_and_code_to_runtime_prediction`: 1.0K
+    - `code_to_critique`: 0.7K
+  - Notes:
+    - 4 compiler errors — action selector syntax (candidate format, role labels, initiator alignment), plan syntax (phases keyword, flow-control terminals)
+    - 69 constructs across 11 files: 49 actions (11 reserved), 3 action selectors (all 3 policies with chaining), 2 plans (5 and 4 phases), 1 plan selector, 3 queries, 3 sifting patterns, 8 tropes — all 7 construct types
+    - Stub-then-complete followed — strongest `partial_code_to_completed_code` this session (14.7K)
+    - Three-tier action selector hierarchy and plan selector choosing between binding/cleansing rituals
+    - `ideation_to_ideation` absent — every prose segment adjacent to code/compiler
+    - 3 consultant dispatches
+
+- `2026-03-16` `asmt-0067`
+  - Schema: `auction-house-01`
+  - Author expertise level: `intermediate`
+  - Directions: charity gala auction, donated forgery for tax laundering, vulnerable new appraiser, collector recognizes forgery from past scandal, dealer bidding alliance + blackmail scheme, restorer varnish discovery, security chief gala-vs-wait decision
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~30.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.0K
+    - `code_to_revised_code`: 24.3K
+    - `code_to_explanation`: 14.7K
+    - `working_code_to_ideation`: 9.1K
+    - `code_to_critique`: 9.0K
+    - `partial_code_to_completed_code`: 5.0K
+    - `code_to_compiler_output`: 4.8K
+    - `schema_and_code_to_runtime_prediction`: 3.5K
+    - `ideation_to_ideation`: 3.5K
+    - `schema_to_construct_ideation`: 2.2K
+    - `broken_code_to_repaired_code`: 1.4K
+    - `error_message_to_diagnosis`: 0.8K
+  - Notes:
+    - 2 compiler errors — action-type role casting pools, inscribe syntax
+    - 42 constructs across 6 files: 26 actions (4 reserved, 1 template, 2 children), 1 action selector (22 candidates with dynamic weights), 7 queries, 3 sifting patterns, 5 tropes
+    - All 12 competencies represented
+    - Stub-then-complete followed — good `partial_code_to_completed_code` (5.0K)
+    - 22-candidate selector — largest in any session
+    - Template inheritance, inscribe/inspect, action-type roles with search casting, scratch variables, group roles with probability casting
+    - Strong `code_to_critique` (9.0K) and `code_to_revised_code` (24.3K)
+    - 1 consultant dispatch
+
+- `2026-03-16` `asmt-0066`
+  - Schema: `hospital-drama-01`
+  - Author expertise level: `expert`
+  - Directions: clinical trial data manipulation, experimental cancer drug, IRB audit vs patient access, pharma funding threat, unenrolled patient medication error cover-up, surgeon-pharma lobbying, ethical fault lines
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: none
+  - Result: ~30.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 27.5K
+    - `code_to_revised_code`: 20.0K
+    - `code_to_explanation`: 9.4K
+    - `working_code_to_ideation`: 9.4K
+    - `code_to_compiler_output`: 6.0K
+    - `code_to_critique`: 2.9K
+    - `schema_to_construct_ideation`: 2.2K
+    - `error_message_to_diagnosis`: 2.1K
+    - `broken_code_to_repaired_code`: 1.7K
+    - `schema_and_code_to_runtime_prediction`: 1.7K
+    - `ideation_to_ideation`: 1.2K
+  - Notes:
+    - 3 compiler errors — initiator/anywhere incompatibility, with vs with partial, missing end in salience for block
+    - 38 constructs across 7 files: 22 actions (1 template), 1 action selector, 5 queries, 3 sifting patterns, 6 tropes
+    - First expert session for hospital-drama domain
+    - Template inheritance with join effects, group roles with loops, weighted selector, custom for blocks
+    - Compiler bug: KeyError 'bindings' in _reactions.py when reaction has urgent: false but no with: clause
+    - `partial_code_to_completed_code` absent — no stub emphasis
+    - Two extended runtime scenario traces
+
+- `2026-03-16` `asmt-0065`
+  - Schema: `political-intrigue-01`
+  - Author expertise level: `novice`
+  - Directions: ambassador poisoning, Crown vs Shadow blame, Church inquisition with compromised inquisitor, minor noble's third-party invasion theory, illicit trade exposure risk, inquisition plan, faction response selectors
+  - Emphasis: none
+  - Mechanical targets: none
+  - Result: ~30.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 27.9K
+    - `working_code_to_ideation`: 12.6K
+    - `code_to_compiler_output`: 10.5K
+    - `code_to_revised_code`: 6.6K
+    - `broken_code_to_repaired_code`: 5.7K
+    - `code_to_explanation`: 5.6K
+    - `error_message_to_diagnosis`: 4.2K
+    - `schema_to_construct_ideation`: 1.6K
+    - `schema_and_code_to_runtime_prediction`: 1.3K
+    - `ideation_to_ideation`: 0.6K
+    - `code_to_critique`: 0.2K
+  - Notes:
+    - 7 compiler errors — plan syntax (no gloss, phases sigil, entity type roles), action-selector keyword, append/remove infix, elif in associations
+    - 66 constructs across 10 files: 38 actions, 3 action selectors, 6 plans (3 with conditional branching), 2 plan selectors, 6 queries, 6 sifting patterns, 5 tropes — all 7 construct types
+    - Strong error signal: `broken_code_to_repaired_code` (5.7K), `error_message_to_diagnosis` (4.2K)
+    - 6 multi-phase plans covering all 4 factions plus cross-faction conspiracy and diplomacy
+    - `partial_code_to_completed_code` absent — no stub emphasis
+    - 3 consultant dispatches
+
+- `2026-03-16` `asmt-0064`
+  - Schema: `heist-crew-01`
+  - Author expertise level: `expert`
+  - Directions: dual-crew museum heist setup, rival crew collision, wrong vault combination, early police arrival/informant, driver extraction window, prison grudge between muscles, fence goes dark
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: none
+  - Result: ~30.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 27.3K
+    - `code_to_revised_code`: 20.6K
+    - `code_to_explanation`: 13.6K
+    - `working_code_to_ideation`: 10.8K
+    - `code_to_compiler_output`: 5.3K
+    - `code_to_critique`: 3.8K
+    - `partial_code_to_completed_code`: 3.5K
+    - `schema_and_code_to_runtime_prediction`: 3.1K
+    - `error_message_to_diagnosis`: 1.7K
+    - `schema_to_construct_ideation`: 1.5K
+    - `ideation_to_ideation`: 0.1K
+  - Notes:
+    - 5 compiler errors — duplicate as: fields, misplaced assignments in reactions, missing initiator on selectors, action-typed role casting pools, CHRONICLE in sifting patterns
+    - 61 constructs across 7 files: 43 actions (1 template), 1 action selector, 8 queries, 5 sifting patterns, 4 tropes
+    - Template inheritance (violent-confrontation base), group roles, inscribe/inspect for dead drops, action searches
+    - Three runtime scenario traces driving design fixes (recognize-rival, driver anywhere, interrogation threshold)
+    - `broken_code_to_repaired_code` absent — author fixes in-file and recompiles without showing revised code inline
+    - No plans — commission emphasized improvised collision over structured sequences
+
+- `2026-03-16` `asmt-0062`
+  - Schema: `cooking-competition-01`
+  - Author expertise level: `intermediate`
+  - Directions: live TV finale, seven-course meal, equipment malfunction, peer review scoring by eliminated contestants, mentor hand-signal coaching scandal, tampered mise en place, alliance management parallel game
+  - Emphasis: critique and revision
+  - Mechanical targets: none
+  - Result: ~31.7K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 27.2K
+    - `code_to_revised_code`: 14.5K
+    - `code_to_compiler_output`: 10.2K
+    - `working_code_to_ideation`: 10.1K
+    - `code_to_explanation`: 9.5K
+    - `code_to_critique`: 9.0K
+    - `broken_code_to_repaired_code`: 4.9K
+    - `error_message_to_diagnosis`: 4.4K
+    - `schema_to_construct_ideation`: 1.4K
+    - `schema_and_code_to_runtime_prediction`: 0.3K
+  - Notes:
+    - 5 compiler errors — reaction initiator precasting, CHRONICLE in sifting patterns, elif in association for-blocks, with vs with partial bindings
+    - 49 constructs across 7 files: 27 actions (1 template), 3 action selectors (dynamic weights, chaining), 10 queries, 3 sifting patterns, 6 tropes
+    - Strong `code_to_critique` (9.0K) from extensive revision cycles — tightening conditions, adding effect branching, equipment degradation
+    - Template inheritance for equipment-dependent courses
+    - `partial_code_to_completed_code` and `ideation_to_ideation` absent
+    - No plans built — commission emphasized reactive drama over phased structure
+
+- `2026-03-16` `asmt-0078`
+  - Schema: `auction-house-01`
+  - Author expertise level: `intermediate`
+  - Directions: estate liquidation, uncatalogued Renaissance sketch, heir vs dealer verbal agreement, restorer pentimento discovery, old-money vs new-money dynamics
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: inscribe and inspect syntax (fully exercised)
+  - Result: ~10K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 7.1K
+    - `code_to_explanation`: 4.7K
+    - `schema_and_code_to_runtime_prediction`: 3.4K
+    - `working_code_to_ideation`: 3.1K
+    - `code_to_revised_code`: 2.7K
+    - `partial_code_to_completed_code`: 2.3K
+    - `schema_to_construct_ideation`: 2.0K
+    - `ideation_to_ideation`: 1.5K
+    - `code_to_compiler_output`: 1.4K
+  - Notes:
+    - 0 logged compiler errors — author mentions resolving errors off-screen without including broken code/error messages in log
+    - 8 actions, 4 tropes, 3 queries across 4 files
+    - Shorter session (~10K tokens vs typical ~31K) — likely hit rate limit
+    - Inscribe/inspect syntax fully exercised: `inscribe` expression, `inspect` expression, downstream knowledge checks via query-based scratch and `@hearer` reactions
+    - Stub-then-complete rhythm followed — good `partial_code_to_completed_code` (2.3K)
+    - `broken_code_to_repaired_code`, `error_message_to_diagnosis`, `code_to_critique` absent
+    - 1 consultant dispatch (inscribe/@this mechanics)
+    - 12 of 21 feature areas fully exercised, 4 partially — broad coverage despite short session
+
+- `2026-03-16` `asmt-0079`
+  - Schema: `wilderness-survival-01`
+  - Author expertise level: `novice`
+  - Directions: river crossing dilemma, abandoned expedition camp, damaged raft, gorge route map, outsider terrain knowledge, food cache rationing standoff
+  - Emphasis: plans, action selectors
+  - Mechanical targets: spawn role syntax (fully exercised)
+  - Result: ~31.5K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.5K
+    - `working_code_to_ideation`: 11.3K
+    - `code_to_revised_code`: 10.8K
+    - `code_to_explanation`: 9.4K
+    - `code_to_compiler_output`: 9.2K
+    - `broken_code_to_repaired_code`: 5.9K
+    - `error_message_to_diagnosis`: 4.7K
+    - `schema_to_construct_ideation`: 2.0K
+    - `ideation_to_ideation`: 2.0K
+    - `code_to_critique`: 1.1K
+  - Notes:
+    - 7 compiler errors — append infix syntax, action-selector target/weight syntax, plan phases wrapper, plan role labels, partial bindings
+    - ~34 actions, 1 action selector (11 weighted candidates), 3 plans, 1 plan selector, 9 queries, 4 sifting patterns, 4 tropes across 12 files — all 7 construct types
+    - Spawn role syntax fully exercised: spawn label, spawn directive with custom function, 3 spawn roles across 2 actions
+    - All 3 sifting relational operators (caused, preceded, triggered) exercised
+    - Strong error signal: `broken_code_to_repaired_code` (5.9K), `error_message_to_diagnosis` (4.7K)
+    - `partial_code_to_completed_code` absent — plan/selector emphasis rather than stub emphasis
+    - `schema_and_code_to_runtime_prediction` zero — runtime prediction content (~800 tokens) follows compiler_success_message, captured under working_code_to_ideation
+    - 5 consultant dispatches
+
+- `2026-03-16` `asmt-0080`
+  - Schema: `spy-network-01`
+  - Author expertise level: `expert`
+  - Directions: converging operations on same dead-drop, cipher fragment third party, counterintelligence collision dilemma, courier loyalty crisis, barium meal exposure test
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: plan phase structure (fully exercised)
+  - Result: ~31.9K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.7K
+    - `working_code_to_ideation`: 13.7K
+    - `code_to_revised_code`: 12.8K
+    - `code_to_explanation`: 9.6K
+    - `code_to_compiler_output`: 7.8K
+    - `schema_and_code_to_runtime_prediction`: 2.9K
+    - `error_message_to_diagnosis`: 2.6K
+    - `schema_to_construct_ideation`: 2.2K
+    - `code_to_critique`: 2.2K
+    - `broken_code_to_repaired_code`: 1.2K
+  - Notes:
+    - 4 compiler errors — incorrect `append` syntax, `CHRONICLE` in sifting patterns, duplicate temporal constraints
+    - 35 constructs across 9 files: 19 actions (9 reserved), 1 action selector, 3 plans (10 total phases), 5 queries, 2 sifting patterns, 5 tropes
+    - Plan phase structure thoroughly exercised: all three reaction window types (`all:`, `any:`, `untracked:`), `wait:` with `timeout:`/`until:`, all three flow-control terminals, conditionals/loops over plan instructions, `queue plan` within phases
+    - Multi-phase counterintelligence investigation plan revised twice with increasing complexity
+    - 4 detailed runtime scenario traces, bug caught via tracing (cipher vs intel-doc category mismatch)
+    - `partial_code_to_completed_code` and `ideation_to_ideation` absent — no stub emphasis, every prose segment adjacent to code/compiler
+
+- `2026-03-16` `asmt-0081`
+  - Schema: `frontier-town-01`
+  - Author expertise level: `novice`
+  - Directions: cattle drive blockade, rival rancher pass dispute, doctor's suspicious knowledge, saloon betting, gambler cattle futures, drive boss dilemma
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: spawn role syntax (fully exercised)
+  - Result: ~31.5K tokens
+
+- `2026-03-16` `asmt-0084`
+  - Schema: `political-intrigue-01`
+  - Author expertise level: `novice`
+  - Directions: sealed decree succession challenge, unknown signet seal, Clergy conclave delay, Reform parchment discovery, Crown spymaster informant list, factional positioning
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: scratch variable syntax (fully exercised)
+  - Result: ~31.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.7K
+    - `code_to_revised_code`: 19.3K
+    - `code_to_explanation`: 11.4K
+    - `working_code_to_ideation`: 10.1K
+    - `code_to_compiler_output`: 6.9K
+    - `partial_code_to_completed_code`: 4.6K
+    - `broken_code_to_repaired_code`: 2.6K
+    - `ideation_to_ideation`: 2.4K
+    - `error_message_to_diagnosis`: 2.3K
+    - `schema_to_construct_ideation`: 2.0K
+    - `code_to_critique`: 1.9K
+    - `schema_and_code_to_runtime_prediction`: 0.9K
+  - Notes:
+    - 4 compiler errors — scratch variable assignment syntax (: vs =), selector header syntax, plan phases wrapper
+    - 57 constructs across 9 files: 36 actions (3 reserved), 1 action selector (12 candidates), 2 plans, 1 plan selector, 7 queries, 4 sifting patterns, 6 tropes — all 7 construct types
+    - All 12 competencies represented
+    - Scratch variable syntax fully exercised: $& references in conditions/effects/saliences/associations, scratch-to-scratch references, multi-term expressions
+    - Strong `code_to_revised_code` (19.3K) from stub-then-complete rhythm
+    - 4 consultant dispatches
+    - `code_to_revised_code`: 11.4K
+    - `working_code_to_ideation`: 10.8K
+    - `code_to_compiler_output`: 10.7K
+    - `code_to_explanation`: 8.1K
+    - `error_message_to_diagnosis`: 3.9K
+    - `broken_code_to_repaired_code`: 3.9K
+    - `partial_code_to_completed_code`: 2.2K
+    - `code_to_critique`: 2.1K
+    - `schema_to_construct_ideation`: 1.9K
+  - Notes:
+    - 5 compiler errors — plan gloss field, plan phase structure, selector header syntax, selector initiator precasting, comma-separated embargo roles
+    - 24 actions, 1 action selector (11 candidates), 2 plans, 1 plan selector, 3 queries, 2 sifting patterns, 3 tropes across 7 files — all 7 construct types
+    - Spawn role syntax fully exercised: spawn label, spawn directive with `~issueWarrant` and `~fileClaim`, 3 spawn roles across 3 actions
+    - Stub-then-complete followed — `partial_code_to_completed_code` (2.2K) emerged from stub rhythm
+    - `ideation_to_ideation` and `schema_and_code_to_runtime_prediction` absent — runtime prediction content follows compiler_success_message
+    - 3 consultant dispatches
+
+- `2026-03-16` `asmt-0083`
+  - Schema: `submarine-crew-01`
+  - Author expertise level: `expert`
+  - Directions: hostile submarine contact during cooling-pipe fracture, captain vs XO depth dispute, chief engineer cover-up, sonar watchstander stress breakdown, template inheritance confrontation types
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: template inheritance syntax (fully exercised)
+  - Result: ~31.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 28.0K
+    - `code_to_revised_code`: 12.4K
+    - `code_to_explanation`: 12.3K
+    - `working_code_to_ideation`: 11.0K
+    - `schema_and_code_to_runtime_prediction`: 10.2K
+    - `code_to_compiler_output`: 9.0K
+    - `code_to_critique`: 8.1K
+    - `error_message_to_diagnosis`: 5.5K
+    - `broken_code_to_repaired_code`: 3.9K
+    - `schema_to_construct_ideation`: 2.3K
+    - `ideation_to_ideation`: 0.8K
+  - Notes:
+    - 8 compiler errors — inheritance-specific (join field types, role compatibility, reserved on children) plus general syntax errors
+    - 19 actions (1 template, 4 reserved), 1 action selector, 4 queries, 3 sifting patterns, 3 tropes across 8 files
+    - Template inheritance thoroughly exercised: template marker, from keyword, body-less child, all joinable fields (roles, conditions, effects, reactions, embargoes, tags), non-joinable overrides, reserved on inherited actions, role renaming, 3-level inheritance chain
+    - Strongest `schema_and_code_to_runtime_prediction` (10.2K) and `code_to_critique` (8.1K) this batch
+    - New domain (submarine-crew) produced rich thematic material and organic conflict dynamics
+    - `partial_code_to_completed_code` absent — no stub emphasis
+
+- `2026-03-16` `asmt-0100`
+  - Schema: `political-intrigue-01`
+  - Author expertise level: `intermediate`
+  - Directions: diplomat caught with Pretender token, planted token accusation, Clergy compelled oaths, Reform refusal, Shadow forged oaths, Old Guard sealed-oath compromise, unsealed prior results
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~31.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 29.0K
+    - `code_to_revised_code`: 18.3K
+    - `working_code_to_ideation`: 14.3K
+    - `partial_code_to_completed_code`: 6.8K
+    - `code_to_explanation`: 6.0K
+    - `code_to_compiler_output`: 5.9K
+    - `schema_to_construct_ideation`: 2.1K
+    - `schema_and_code_to_runtime_prediction`: 1.5K
+    - `ideation_to_ideation`: 1.1K
+    - `code_to_critique`: 0.4K
+    - `error_message_to_diagnosis`: 0.2K
+  - Notes:
+    - 1 compiler error — query referencing out-of-scope action name
+    - 60 constructs across 10 files: 31 actions (1 template, 3 children, 9 reserved), 7 tropes, 12 queries, 6 sifting patterns, 2 plans, 1 action selector, 1 plan selector
+    - Template inheritance with join conditions and non-joinable overrides
+    - Stub-then-complete followed — good `partial_code_to_completed_code` (6.8K)
+    - `broken_code_to_repaired_code` absent — single error fixed by removal
+
+- `2026-03-16` `asmt-0101`
+  - Schema: `space-station-01`
+  - Author expertise level: `novice`
+  - Directions: communications array firmware rollback, journalist elevated access, operations lieutenant cover story, lost experiment data, rationed communication access, sabotage investigation
+  - Emphasis: plans, action selectors
+  - Mechanical targets: none
+  - Result: ~31.4K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 27.2K
+    - `code_to_revised_code`: 18.8K
+    - `working_code_to_ideation`: 9.8K
+    - `code_to_explanation`: 7.9K
+    - `code_to_compiler_output`: 6.9K
+    - `broken_code_to_repaired_code`: 5.1K
+    - `error_message_to_diagnosis`: 4.2K
+    - `schema_to_construct_ideation`: 1.9K
+    - `schema_and_code_to_runtime_prediction`: 1.4K
+    - `ideation_to_ideation`: 1.2K
+    - `code_to_critique`: 1.2K
+  - Notes:
+    - 5 compiler errors — plan phase syntax, plan role labels, selector candidates keyword, selector initiator precasting, remove infix syntax
+    - 71 constructs across 10 files: 53 actions (12 reserved), 2 action selectors, 2 plans, 1 plan selector, 4 queries, 3 sifting patterns, 6 tropes — all 7 construct types
+    - Strong error signal: `broken_code_to_repaired_code` (5.1K), `error_message_to_diagnosis` (4.2K)
+    - 4 consultant dispatches
+    - `partial_code_to_completed_code` absent — plan/selector emphasis rather than stub
+
+- `2026-03-16` `asmt-0102`
+  - Schema: `submarine-crew-01`
+  - Author expertise level: `expert`
+  - Directions: unverified emergency action message, authentication code mismatch, adversary deception theory, secondary cipher matching sealed orders, crew loyalty verification, trust layers
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: none
+  - Result: ~31.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 25.6K
+    - `working_code_to_ideation`: 14.3K
+    - `code_to_revised_code`: 13.6K
+    - `code_to_explanation`: 8.7K
+    - `code_to_compiler_output`: 7.3K
+    - `ideation_to_ideation`: 4.5K
+    - `schema_and_code_to_runtime_prediction`: 4.1K
+    - `code_to_critique`: 2.2K
+    - `schema_to_construct_ideation`: 1.9K
+    - `broken_code_to_repaired_code`: 0.8K
+    - `error_message_to_diagnosis`: 0.5K
+  - Notes:
+    - 1 compiler error — partial vs complete reaction bindings
+    - 62 constructs across 13 files: 36 actions, 2 action selectors, 1 plan, 8 queries, 7 sifting patterns, 8 tropes
+    - 6 detailed runtime scenario traces exploring loyalty configurations
+    - Strong `ideation_to_ideation` (4.5K) from extended system analysis
+    - `partial_code_to_completed_code` absent — no stub emphasis
+
+- `2026-03-16` `asmt-0099`
+  - Schema: `cooking-competition-01`
+  - Author expertise level: `expert`
+  - Directions: anaphylaxis collapse, pantry ingredient switch, judge walkoff threat, contradictory mentor coaching, camera footage with only hands, sabotage suspicion web
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: none
+  - Result: ~31.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 27.4K
+    - `code_to_revised_code`: 18.5K
+    - `working_code_to_ideation`: 14.9K
+    - `code_to_explanation`: 6.8K
+    - `code_to_compiler_output`: 4.9K
+    - `schema_to_construct_ideation`: 1.7K
+    - `schema_and_code_to_runtime_prediction`: 1.3K
+    - `partial_code_to_completed_code`: 1.1K
+    - `ideation_to_ideation`: 0.9K
+    - `code_to_critique`: 0.8K
+  - Notes:
+    - 0 compiler errors — expert resolved all issues before compilation
+    - 52 constructs across 9 files: 27 actions, 2 action selectors, 2 plans, 12 queries, 5 sifting patterns, 4 tropes
+    - 3 runtime scenario traces with different character configurations
+    - `broken_code_to_repaired_code` and `error_message_to_diagnosis` absent — zero-error session
+
+- `2026-03-16` `asmt-0098`
+  - Schema: `heist-crew-01`
+  - Author expertise level: `novice`
+  - Directions: diamond exchange heist, mastermind's former mentor as security consultant, compromised playbook, blackmailed consultant, grifter's expensive contact, new surveillance system, empty war chest
+  - Emphasis: plans, action selectors
+  - Mechanical targets: none
+  - Result: ~31.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 28.0K
+    - `code_to_revised_code`: 16.1K
+    - `working_code_to_ideation`: 10.8K
+    - `code_to_compiler_output`: 9.8K
+    - `broken_code_to_repaired_code`: 5.7K
+    - `code_to_explanation`: 5.6K
+    - `error_message_to_diagnosis`: 4.4K
+    - `code_to_critique`: 1.8K
+    - `schema_to_construct_ideation`: 1.6K
+    - `schema_and_code_to_runtime_prediction`: 0.7K
+    - `ideation_to_ideation`: 0.2K
+  - Notes:
+    - 7 compiler errors — plan syntax, selector syntax, embargo syntax, append/remove infix
+    - 66 constructs across 4 files: 46 actions, 4 action selectors, 3 plans, 1 plan selector, 5 queries, 3 sifting patterns, 4 tropes
+    - 4-phase plan with embedded adaptation selector, plan selector degrading through 3 approaches
+    - Strong error signal: `broken_code_to_repaired_code` (5.7K), `error_message_to_diagnosis` (4.4K)
+    - 3 consultant dispatches
+
+- `2026-03-16` `asmt-0097`
+  - Schema: `auction-house-01`
+  - Author expertise level: `expert`
+  - Directions: collector poisoning at preview, restoration solvent compound, rival dealer insurance policy, secret will change, security footage timestamp mismatch, overlapping suspicion webs
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: none
+  - Result: ~31.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 27.5K
+    - `code_to_revised_code`: 21.6K
+    - `code_to_explanation`: 15.3K
+    - `working_code_to_ideation`: 9.1K
+    - `code_to_critique`: 6.8K
+    - `code_to_compiler_output`: 5.3K
+    - `schema_and_code_to_runtime_prediction`: 3.7K
+    - `partial_code_to_completed_code`: 2.7K
+    - `error_message_to_diagnosis`: 1.9K
+    - `schema_to_construct_ideation`: 1.8K
+    - `broken_code_to_repaired_code`: 1.3K
+    - `ideation_to_ideation`: 1.2K
+  - Notes:
+    - 4 compiler errors — bare numbers in embargo time, incompatible labels, cross-file visibility, incomplete plan bindings
+    - 48 constructs across 6 files: 23 actions, 7 tropes, 9 queries, 4 sifting patterns, 2 action selectors, 2 plans, 1 plan selector
+    - All 12 competencies represented
+    - 8 runtime scenario traces with specific character configurations
+    - Strong `code_to_revised_code` (21.6K) and `code_to_explanation` (15.3K)
+
+- `2026-03-16` `asmt-0096`
+  - Schema: `submarine-crew-01`
+  - Author expertise level: `intermediate`
+  - Directions: mirrored sonar contacts, decoy theory, test depth with untested hull patch, CO2 scrubber shortage, torpedo tube maintenance fraud, paranoia vs genuine safety report
+  - Emphasis: critique and revision
+  - Mechanical targets: none
+  - Result: ~31.7K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.5K
+    - `code_to_revised_code`: 18.3K
+    - `code_to_explanation`: 14.5K
+    - `working_code_to_ideation`: 12.3K
+    - `code_to_critique`: 6.8K
+    - `schema_and_code_to_runtime_prediction`: 6.7K
+    - `code_to_compiler_output`: 6.3K
+    - `schema_to_construct_ideation`: 2.5K
+    - `ideation_to_ideation`: 2.4K
+    - `error_message_to_diagnosis`: 0.9K
+  - Notes:
+    - 2 compiler errors — incompatible role labels, missing casting pool on action-typed role
+    - 62 constructs across 13 files: 41 actions, 5 tropes, 1 action selector, 2 plans, 1 plan selector, 8 queries, 4 sifting patterns
+    - Inscribe/inspect exercised organically (inscribe in write-sealed-orders, inspect in discover-sealed-orders)
+    - Strong `code_to_critique` (6.8K) and `schema_and_code_to_runtime_prediction` (6.7K) from critique emphasis
+    - `broken_code_to_repaired_code` and `partial_code_to_completed_code` absent
+    - 0 consultant dispatches — all errors resolved from language reference
+
+- `2026-03-16` `asmt-0095`
+  - Schema: `summer-camp-01`
+  - Author expertise level: `novice`
+  - Directions: specialist contraband operation, CIT loyalty dilemma, counselor covering shifts, surprise cabin inspection, head counselor ex-partner interference, parent complaint cascade
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~31.4K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.4K
+    - `working_code_to_ideation`: 15.8K
+    - `code_to_revised_code`: 8.7K
+    - `code_to_compiler_output`: 7.1K
+    - `partial_code_to_completed_code`: 6.6K
+    - `code_to_explanation`: 3.6K
+    - `broken_code_to_repaired_code`: 2.4K
+    - `ideation_to_ideation`: 2.4K
+    - `error_message_to_diagnosis`: 2.4K
+    - `schema_to_construct_ideation`: 1.8K
+  - Notes:
+    - 7 compiler errors — invalid role type, plan gloss/phase syntax, selector candidates keyword, include mechanism, reaction precasting
+    - 46 constructs across 7 files: 23 actions, 9 tropes, 3 plans, 1 plan selector, 1 action selector (21 candidates), 4 queries, 5 sifting patterns
+    - 21-candidate selector — one of the largest this session
+    - Stub-then-complete followed — good `partial_code_to_completed_code` (6.6K)
+    - 3 consultant dispatches
+
+- `2026-03-16` `asmt-0094`
+  - Schema: `traveling-circus-01`
+  - Author expertise level: `expert`
+  - Directions: handler unconscious, bear missing, fortune teller foresight, strongman-fire performer feud, picked lock, clown suspicion, town bounty, acrobat retrieval forbidden, roustabout work stoppage
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: none
+  - Result: ~31.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 29.1K
+    - `working_code_to_ideation`: 20.0K
+    - `code_to_compiler_output`: 9.3K
+    - `error_message_to_diagnosis`: 3.4K
+    - `schema_to_construct_ideation`: 1.8K
+    - `ideation_to_ideation`: 1.4K
+    - `code_to_revised_code`: 0.6K
+    - `code_to_explanation`: 0.6K
+  - Notes:
+    - 4 compiler errors — initiator casting pool, missing group decorator, incompatible role labels, CHRONICLE in sifting
+    - 46 constructs across 7 files: 25 actions, 1 action selector, 2 plans, 9 queries, 4 sifting patterns, 5 tropes
+    - 9 multi-turn runtime scenario traces — strongest scenario coverage this session
+    - Analytical depth (20.0K working_code_to_ideation) captured critique and runtime prediction content due to segmentation patterns
+    - `broken_code_to_repaired_code`, `partial_code_to_completed_code`, `code_to_critique`, `schema_and_code_to_runtime_prediction` absent despite substantial content — author describes fixes without re-showing code
+
+- `2026-03-16` `asmt-0093`
+  - Schema: `pirate-ship-01`
+  - Author expertise level: `intermediate`
+  - Directions: captured diplomatic pouch, governor funding pirate hunters, first mate ransom, navigator leverage, grifter forgery, hidden gold compartment, trap suspicion
+  - Emphasis: critique and revision
+  - Mechanical targets: none
+  - Result: ~31.2K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.0K
+    - `code_to_revised_code`: 18.5K
+    - `code_to_explanation`: 17.2K
+    - `working_code_to_ideation`: 9.1K
+    - `code_to_compiler_output`: 8.4K
+    - `schema_and_code_to_runtime_prediction`: 4.1K
+    - `code_to_critique`: 2.3K
+    - `schema_to_construct_ideation`: 1.7K
+    - `error_message_to_diagnosis`: 1.6K
+    - `ideation_to_ideation`: 1.3K
+    - `broken_code_to_repaired_code`: 0.7K
+  - Notes:
+    - 6 compiler errors — invalid role syntax, missing embargo time units, reaction precasting, missing group-role decorators, temporal constraint syntax, trope-binding ordering
+    - 35 actions (1 template, 3 children, 6 reserved), 2 action selectors, 2 plans, 1 plan selector, 10 queries, 6 sifting patterns, 6 tropes across 12 files
+    - Template inheritance with officer-to-captain variant actions
+    - Strong `code_to_explanation` (17.2K) and `code_to_revised_code` (18.5K) from critique emphasis
+    - `partial_code_to_completed_code` absent — critique emphasis rather than stub emphasis
+
+- `2026-03-16` `asmt-0092`
+  - Schema: `hospital-drama-01`
+  - Author expertise level: `novice`
+  - Directions: appendectomy death, medication interaction, chart copy-paste error, charge nurse silenced, risk management containment, malpractice attorney family, ICU surge, attending suspension dilemma
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~31.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.3K
+    - `partial_code_to_completed_code`: 18.6K
+    - `working_code_to_ideation`: 12.5K
+    - `code_to_revised_code`: 12.4K
+    - `code_to_compiler_output`: 10.0K
+    - `code_to_explanation`: 5.6K
+    - `broken_code_to_repaired_code`: 4.4K
+    - `schema_and_code_to_runtime_prediction`: 4.1K
+    - `error_message_to_diagnosis`: 3.3K
+    - `code_to_critique`: 3.1K
+    - `schema_to_construct_ideation`: 2.0K
+    - `ideation_to_ideation`: 1.8K
+  - Notes:
+    - 5 compiler errors — plan phase syntax, plan role labels, action-selector structure
+    - 43 constructs across 5 files: 28 actions, 5 tropes, 2 plans, 1 plan selector, 1 action selector (11 candidates), 3 queries, 3 sifting patterns
+    - All 12 competencies represented
+    - Record `partial_code_to_completed_code` (18.6K) from stub-then-complete rhythm
+    - 2 consultant dispatches
+
+- `2026-03-16` `asmt-0090`
+  - Schema: `medieval-guild-01`
+  - Author expertise level: `novice`
+  - Directions: Weavers' warehouse fire, Smiths' journeyman accused, Merchants' price manipulation counter-accusation, Apothecaries' inflated remediation, Masons' reconstruction proposal, secret off-guild commissions
+  - Emphasis: plans, action selectors
+  - Mechanical targets: none
+  - Result: ~31.5K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.4K
+    - `code_to_revised_code`: 20.0K
+    - `code_to_explanation`: 14.2K
+    - `working_code_to_ideation`: 7.6K
+    - `code_to_compiler_output`: 6.5K
+    - `schema_and_code_to_runtime_prediction`: 4.3K
+    - `error_message_to_diagnosis`: 2.3K
+    - `ideation_to_ideation`: 2.1K
+    - `schema_to_construct_ideation`: 1.8K
+    - `broken_code_to_repaired_code`: 1.3K
+    - `code_to_critique`: 0.5K
+  - Notes:
+    - 5 compiler errors — incorrect role type, plan phase syntax, action-selector keyword/structure
+    - 50 actions (12 reserved), 1 action selector (12 candidates), 2 plans, 1 plan selector, 3 queries, 4 sifting patterns, 6 tropes in single file
+    - All construct types built except no template inheritance or multi-file
+    - Strong `code_to_revised_code` (20.0K) and `code_to_explanation` (14.2K)
+    - `partial_code_to_completed_code` absent — plan/selector emphasis rather than stub emphasis
+    - 2 consultant dispatches
+
+- `2026-03-16` `asmt-0091`
+  - Schema: `boarding-school-01`
+  - Author expertise level: `expert`
+  - Directions: Selwyn art vandalism, hidden chapel compartment, decades-old secret society letters, headmaster founder revelation, Lyndhurst lacrosse grip evidence, Draycott Fund mystery, groundskeeper employment discrepancy
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: none
+  - Result: ~31.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 24.0K
+    - `ideation_to_ideation`: 19.3K
+    - `working_code_to_ideation`: 18.7K
+    - `code_to_revised_code`: 12.3K
+    - `code_to_explanation`: 6.5K
+    - `code_to_compiler_output`: 4.4K
+    - `code_to_critique`: 3.0K
+    - `schema_and_code_to_runtime_prediction`: 2.3K
+    - `schema_to_construct_ideation`: 2.0K
+  - Notes:
+    - 0 compiler errors — expert resolved all issues before compilation
+    - 44 constructs across 9 files: 27 actions (5 reserved), 6 tropes, 3 queries, 2 sifting patterns, 2 plans, 1 plan selector, 3 action selectors
+    - Record `ideation_to_ideation` (19.3K) — information propagation commission drove extensive pure ideation
+    - 11 runtime scenario traces exploring different loyalty/ambition configurations
+    - Authority-over trope required 5 iterations to correctly model hierarchy despite enum ordering
+    - `broken_code_to_repaired_code`, `error_message_to_diagnosis`, `partial_code_to_completed_code` absent — zero-error expert session
+
+- `2026-03-16` `asmt-0089`
+  - Schema: `space-station-01`
+  - Author expertise level: `intermediate`
+  - Directions: cargo shuttle docking collision, slow power drain, stranded journalist, crystal growth experiment deadline, unresponsive shuttle pilot, communications bandwidth rationing
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: none
+  - Result: ~31.7K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.5K
+    - `code_to_revised_code`: 17.1K
+    - `working_code_to_ideation`: 13.3K
+    - `code_to_explanation`: 10.9K
+    - `code_to_compiler_output`: 6.8K
+    - `partial_code_to_completed_code`: 5.4K
+    - `code_to_critique`: 3.2K
+    - `ideation_to_ideation`: 2.5K
+    - `schema_to_construct_ideation`: 2.0K
+    - `error_message_to_diagnosis`: 1.3K
+    - `broken_code_to_repaired_code`: 1.0K
+  - Notes:
+    - 3 compiler errors — recipient+anywhere incompatibility, initiator precast in reaction, selector initiator precast
+    - 51 constructs across 15 files: 32 actions (5 reserved), 6 tropes, 7 queries, 4 sifting patterns, 1 plan (3 phases), 1 action selector
+    - Stub-then-complete followed — good `partial_code_to_completed_code` (5.4K)
+    - 0 consultant dispatches — all errors resolved from language reference
+    - `schema_and_code_to_runtime_prediction` zero — substantial runtime prediction content (~3K tokens) follows compiler_success_message, captured under working_code_to_ideation
+
+- `2026-03-16` `asmt-0088`
+  - Schema: `detective-agency-01`
+  - Author expertise level: `expert`
+  - Directions: informant selective disclosure, dead handler's coded notebook, rival PI firm, estate lawyer conflict of interest, inscribe/inspect evidence chains, custody verification
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: inscribe and inspect syntax (fully exercised)
+  - Result: ~32.0K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 29.4K
+    - `code_to_revised_code`: 21.5K
+    - `code_to_explanation`: 18.1K
+    - `code_to_critique`: 12.9K
+    - `working_code_to_ideation`: 9.6K
+    - `schema_and_code_to_runtime_prediction`: 8.0K
+    - `code_to_compiler_output`: 5.7K
+    - `schema_to_construct_ideation`: 1.8K
+    - `error_message_to_diagnosis`: 1.1K
+    - `ideation_to_ideation`: 0.8K
+  - Notes:
+    - 5 compiler errors — missing include, illegal `knows` negation, initiator precast, duplicate temporal constraints, missing `end` on `for` block
+    - 23 actions (1 template), 7 queries, 3 sifting patterns, 5 tropes across 9 files
+    - Inscribe/inspect thoroughly exercised: 13 inscriptions, 4 inspections, 3 `knows` checks — dominant feature of session
+    - Strongest `code_to_critique` in session (12.9K) from casting pool analysis, embargo auditing, effect reachability
+    - Strong `schema_and_code_to_runtime_prediction` (8.0K) from 9-turn scenario trace
+    - `knows` negation limitation discovered — compiler rejects `!(... knows ...)`
+    - `broken_code_to_repaired_code` and `partial_code_to_completed_code` absent
+
+- `2026-03-16` `asmt-0087`
+  - Schema: `cooking-competition-01`
+  - Author expertise level: `intermediate`
+  - Directions: secret dish tasting, blind taste test twist, eliminated contestants collusion, contradictory mentor advice, judge backstage coaching, inscribe/inspect evidence chains
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: inscribe and inspect syntax (fully exercised)
+  - Result: ~31.6K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 25.6K
+    - `code_to_explanation`: 15.1K
+    - `code_to_revised_code`: 13.2K
+    - `working_code_to_ideation`: 11.7K
+    - `code_to_compiler_output`: 9.1K
+    - `code_to_critique`: 6.0K
+    - `schema_and_code_to_runtime_prediction`: 5.3K
+    - `partial_code_to_completed_code`: 4.3K
+    - `error_message_to_diagnosis`: 2.9K
+    - `schema_to_construct_ideation`: 1.8K
+    - `ideation_to_ideation`: 1.5K
+    - `broken_code_to_repaired_code`: 1.5K
+  - Notes:
+    - 8 compiler errors — inscribe @this syntax, plan phases wrapper, selector weight syntax, initiator precast, append infix, include path resolution
+    - ~33 constructs across 7 files: ~22 actions (1 template), 3 tropes, 5 queries, 3 sifting patterns, 1 action selector, 1 plan
+    - All 12 competencies represented
+    - Inscribe/inspect thoroughly exercised: 9 inscriptions, 6+ inspections, `knows` checks, template-inherited inscription, multiple parallel inscribe/inspect chains
+    - 14-step runtime scenario trace
+    - 1 consultant dispatch
+
+- `2026-03-16` `asmt-0086`
+  - Schema: `submarine-crew-01`
+  - Author expertise level: `novice`
+  - Directions: sealed orders opened, cabin breach investigation, mid-watch witness, department head suspicion, mission-changing contents, all-hands muster response
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: inscribe and inspect syntax (fully exercised)
+  - Result: ~31.4K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.1K
+    - `partial_code_to_completed_code`: 13.6K
+    - `code_to_revised_code`: 11.2K
+    - `working_code_to_ideation`: 10.3K
+    - `code_to_compiler_output`: 8.3K
+    - `broken_code_to_repaired_code`: 7.1K
+    - `error_message_to_diagnosis`: 6.2K
+    - `code_to_explanation`: 5.4K
+    - `ideation_to_ideation`: 2.6K
+    - `schema_to_construct_ideation`: 2.6K
+    - `code_to_critique`: 0.4K
+    - `schema_and_code_to_runtime_prediction`: 0.3K
+  - Notes:
+    - 9 compiler errors — inscribe syntax (@this), plan phases wrapper, plan role labels, selector header syntax, selector initiator precast, append infix, salience query filter
+    - 32 actions, 1 action selector (11 candidates), 1 plan (7 phases), 11 queries, 3 sifting patterns, 4 tropes across 8 files
+    - All 12 competencies represented
+    - Inscribe/inspect fully exercised: 3 inscriptions, 2 inspections, 3 `knows` checks
+    - Strongest `partial_code_to_completed_code` this batch (13.6K) from stub-then-complete rhythm
+    - Strong error signal: `broken_code_to_repaired_code` (7.1K), `error_message_to_diagnosis` (6.2K)
+    - 4 consultant dispatches
+    - Salience query filter syntax issue unresolved — author removed query rather than consulting
+
+- `2026-03-16` `asmt-0085`
+  - Schema: `haunted-mansion-01`
+  - Author expertise level: `expert`
+  - Directions: imposter spirits, caretaker ritual feeding, skeptic voice pattern match, contradictory ward markings, medium credibility crisis, scratch-variable evidence tracking
+  - Emphasis: critique and revision, runtime prediction
+  - Mechanical targets: scratch variable syntax (fully exercised)
+  - Result: ~31.7K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 22.6K
+    - `code_to_explanation`: 13.8K
+    - `code_to_compiler_output`: 12.2K
+    - `working_code_to_ideation`: 11.9K
+    - `ideation_to_ideation`: 9.5K
+    - `code_to_revised_code`: 8.0K
+    - `code_to_critique`: 7.1K
+    - `broken_code_to_repaired_code`: 4.9K
+    - `schema_and_code_to_runtime_prediction`: 3.6K
+    - `error_message_to_diagnosis`: 3.4K
+    - `schema_to_construct_ideation`: 1.5K
+  - Notes:
+    - 5 compiler errors — reaction binding issues, parse errors from missing `end`, gloss referencing undefined roles
+    - 16 actions, 2 tropes, 4 queries, 2 sifting patterns across 3 files
+    - Scratch variable syntax thoroughly exercised: every action uses `$&` variables for threshold gating, cascading computation, multi-way branching, cross-field usage in saliences/associations/reactions
+    - Strongest `ideation_to_ideation` this batch (9.5K) — expert + scratch-variable focus drove extended brainstorming
+    - Strong `code_to_critique` (7.1K) from casting pool analysis, embargo tradeoffs, feedback loop analysis
+    - `partial_code_to_completed_code` absent — no stub emphasis
+    - No plans, selectors, or template inheritance — commission focused on scratch-variable-heavy actions
+
+- `2026-03-16` `asmt-0082`
+  - Schema: `heist-crew-01`
+  - Author expertise level: `intermediate`
+  - Directions: empty vault aftermath, inside man suspicion, rival crew theory, hacker surveillance gap, muscle ultimatum, fence lead investigation
+  - Emphasis: stub-then-complete rhythm
+  - Mechanical targets: spawn role syntax (fully exercised)
+  - Result: ~31.8K tokens
+  - Competencies (token volume):
+    - `ideation_to_code`: 26.2K
+    - `working_code_to_ideation`: 12.3K
+    - `code_to_compiler_output`: 11.3K
+    - `partial_code_to_completed_code`: 10.7K
+    - `code_to_revised_code`: 10.1K
+    - `code_to_explanation`: 8.1K
+    - `schema_and_code_to_runtime_prediction`: 5.9K
+    - `error_message_to_diagnosis`: 4.9K
+    - `broken_code_to_repaired_code`: 3.2K
+    - `code_to_critique`: 2.1K
+    - `schema_to_construct_ideation`: 1.8K
+    - `ideation_to_ideation`: 1.4K
+  - Notes:
+    - 6 compiler errors — selector initiator precasting, reaction initiator precasting, recipient+anywhere incompatibility, duplicate temporal constraints, CHRONICLE in sifting, for-block parse error
+    - 29 actions (1 template), 2 tropes, 2 plans, 1 plan selector, 1 action selector (11 candidates), 7 queries, 2 sifting patterns across 4 files
+    - All 12 competencies represented — best all-around session this batch
+    - Spawn role syntax fully exercised: direct spawning, template-inherited spawning, spawn-to-inspection chain
+    - Template inheritance with join conditions/effects, group roles with loops, scratch variables, abandon/repeat reactions
+    - Strong `partial_code_to_completed_code` (10.7K) from stub-then-complete rhythm
+    - Strong `schema_and_code_to_runtime_prediction` (5.9K) — highest this batch
+    - 1 consultant dispatch

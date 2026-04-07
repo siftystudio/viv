@@ -1,0 +1,23 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "viv-wizard-dapt"
+package-mode = false
+description = "Domain-adaptive pretraining pipeline for the Viv wizard."
+authors = ["James Ryan <james@sifty.studio>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+torch = "^2.5"
+transformers = "^4.49"
+wandb = "^0.25.0"
+pydantic = "^2.0"
+peft = "^0.15"
+flash-attn = "^2.7"
+accelerate = "^1.0"
+viv-compiler = "^0.10"
+
+[tool.black]
+line-length = 120

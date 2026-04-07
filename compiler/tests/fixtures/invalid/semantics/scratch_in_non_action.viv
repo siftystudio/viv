@@ -1,0 +1,19 @@
+// Invalid: scratch variable in non-action construct (plan phase)
+
+action step:
+    roles:
+        @doer:
+            as: initiator
+
+plan bad-scratch:
+    roles:
+        @planner:
+            as: character
+    phases:
+        >do-it:
+            if $@temp > 0:
+                queue action step:
+                    with partial:
+                        @doer: @planner
+            end
+            succeed;

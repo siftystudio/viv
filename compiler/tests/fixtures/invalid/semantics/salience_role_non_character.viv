@@ -1,0 +1,12 @@
+// Action with per-role salience referencing a non-character role
+
+action bad-salience:
+    roles:
+        @actor:
+            as: initiator
+        @place:
+            as: location
+            from: @actor.location
+    saliences:
+        roles:
+            @place: #HIGH

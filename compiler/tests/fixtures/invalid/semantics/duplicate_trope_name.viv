@@ -1,0 +1,19 @@
+// Invalid: duplicate trope name
+
+trope pals:
+    roles:
+        @a:
+            as: character
+        @b:
+            as: character
+    conditions:
+        @b in @a.friends
+
+trope pals:
+    roles:
+        @x:
+            as: character
+        @y:
+            as: character
+    conditions:
+        @y in @x.friends

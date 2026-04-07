@@ -1,0 +1,36 @@
+// Sifting pattern with group action roles and shared entity across roles and actions
+
+action deed:
+    roles:
+        @doer:
+            as: initiator
+        @witness:
+            as: recipient
+    associations:
+        default: notable
+    saliences:
+        default: 5.0
+
+
+query notable-memory:
+    associations:
+        all: notable
+
+
+pattern overlapping-roles:
+    roles:
+        @person:
+            as: character
+        @shared:
+            as: action
+            from: search query notable-memory:
+                over: @person
+    actions:
+        @group-a*:
+            from: search query notable-memory:
+                over: @person
+            n: 1-10
+        @group-b*:
+            from: search query notable-memory:
+                over: @person
+            n: 1-10

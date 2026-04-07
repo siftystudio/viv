@@ -1,0 +1,67 @@
+name: CD — Viv Sublime Text Package
+
+on:
+  push:
+    tags:
+      - "sublime-v*"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#sublime-v}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify tag is on main
+        run: |
+          git fetch origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Tag must be on main"
+            exit 1
+          fi
+
+      - name: Wait for CI to pass
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.sha }}
+          check-name: ci
+          repo-token: ${{ github.token }}
+          wait-interval: 15
+
+      - name: Verify version matches repository.json
+        run: |
+          pkg_version=$(python3 -c "import json; print(json.load(open('plugins/sublime/repository.json'))['packages'][0]['releases'][0]['version'])")
+          if [ "$pkg_version" != "${{ steps.version.outputs.version }}" ]; then
+            echo "::error::Tag version ${{ steps.version.outputs.version }} does not match repository.json version $pkg_version"
+            exit 1
+          fi
+
+      - name: Build .sublime-package
+        run: |
+          cd plugins/sublime
+          zip -r ../../Viv.sublime-package \
+            Viv.sublime-build \
+            Viv.sublime-syntax \
+            Viv.sublime-completions \
+            "Indentation Rules.tmPreferences" \
+            compiler_bridge.py \
+            repository.json \
+            themes/ \
+            LICENSE.txt \
+            README.md \
+            CHANGELOG.md
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Viv.sublime-package
+          generate_release_notes: true

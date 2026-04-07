@@ -1,0 +1,16 @@
+// Invalid: reaction priority with non-numeric expression
+
+reserved action respond:
+    roles:
+        @responder:
+            as: initiator
+
+action trigger:
+    roles:
+        @actor:
+            as: initiator
+    reactions:
+        queue action respond:
+            with:
+                @responder: @actor
+            priority: true

@@ -1,0 +1,10 @@
+// Template action defined in an included file, to be inherited cross-file
+
+template action imported-base:
+    roles:
+        @actor:
+            as: initiator
+        @target:
+            as: recipient
+    importance: 3.0
+    tags: imported

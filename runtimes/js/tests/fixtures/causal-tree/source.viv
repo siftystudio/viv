@@ -1,0 +1,48 @@
+// Named actions for constructing controlled causal topologies
+
+action alpha:
+    roles:
+        @agent:
+            as: initiator
+
+
+action bravo:
+    roles:
+        @agent:
+            as: initiator
+
+
+action charlie:
+    roles:
+        @agent:
+            as: initiator
+
+
+action delta:
+    roles:
+        @agent:
+            as: initiator
+
+
+action echo:
+    roles:
+        @agent:
+            as: initiator
+
+
+action foxtrot:
+    roles:
+        @agent:
+            as: initiator
+
+
+action golf:
+    roles:
+        @agent:
+            as: initiator
+
+
+action hotel:
+    roles:
+        @agent:
+            as: initiator

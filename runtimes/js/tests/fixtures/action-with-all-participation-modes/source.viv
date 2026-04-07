@@ -1,0 +1,12 @@
+// Action with all four participation modes: initiator, partner, recipient, bystander
+
+action ceremony:
+    roles:
+        @officiant:
+            as: initiator
+        @assistant:
+            as: partner
+        @honoree:
+            as: recipient
+        @witness:
+            as: bystander

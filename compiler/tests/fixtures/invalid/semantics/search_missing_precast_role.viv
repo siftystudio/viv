@@ -1,0 +1,25 @@
+// Invalid: search fails to precast query's precast role
+
+action fight:
+    roles:
+        @combatant:
+            as: initiator
+
+query tracked-fights:
+    roles:
+        @witness:
+            as: character
+        @known-fighter:
+            as: character, precast
+    action:
+        any: fight
+
+action searcher:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        search query tracked-fights:
+            with partial:
+                @witness: @actor
+            over: @actor

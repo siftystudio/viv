@@ -1,0 +1,22 @@
+// Plan with a wait instruction
+
+action rest:
+    roles:
+        @rester:
+            as: initiator
+
+
+plan recover:
+    roles:
+        @patient:
+            as: character
+    phases:
+        >resting:
+            wait:
+                timeout: 3 days
+                until:
+                    @patient.health > 80
+            queue action rest:
+                with partial:
+                    @rester: @patient
+            succeed;

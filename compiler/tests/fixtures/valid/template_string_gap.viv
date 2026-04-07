@@ -1,0 +1,9 @@
+// Template string with a reference gap adjacent to punctuation
+
+action greet-formally:
+    roles:
+        @greeter:
+            as: initiator
+        @guest:
+            as: recipient
+    gloss: "Welcome, @guest!"

@@ -1,0 +1,25 @@
+// Invalid: search uses chronicle domain for query that needs character memories
+
+action fight:
+    roles:
+        @combatant:
+            as: initiator
+
+query recent-fights:
+    roles:
+        @witness:
+            as: character
+    action:
+        any: fight
+    salience:
+        >: 1
+
+action searcher:
+    roles:
+        @actor:
+            as: initiator
+    conditions:
+        search query recent-fights:
+            with partial:
+                @witness: @actor
+            over: chronicle

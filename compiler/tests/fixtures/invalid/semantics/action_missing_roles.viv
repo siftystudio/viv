@@ -1,0 +1,5 @@
+// Action with no roles — should be rejected
+
+action roleless:
+    gloss: "something happens"
+    importance: 5

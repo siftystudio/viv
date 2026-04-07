@@ -1,0 +1,20 @@
+// Group action role used as operand in an action-relation expression
+
+action prank:
+    roles:
+        @prankster:
+            as: initiator
+
+
+pattern bad:
+    roles:
+        @person:
+            as: character
+    actions:
+        @steps*:
+            from: @person.memories
+            n: 1-10
+        @finale:
+            from: @person.memories
+    conditions:
+        @steps* preceded @finale

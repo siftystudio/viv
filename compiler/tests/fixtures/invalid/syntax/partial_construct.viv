@@ -1,0 +1,4 @@
+// Invalid: Action with keyword but no body
+
+action greet:
+    roles:
