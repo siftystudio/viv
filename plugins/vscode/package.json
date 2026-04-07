@@ -134,7 +134,7 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "tsc && cp ../../syntax/viv.tmLanguage.json ./viv.tmLanguage.json && cp ../../assets/viv-icon-dark-256.png ./icon.png"
+    "vscode:prepublish": "tsc && cp ../../syntax/viv.tmLanguage.json ./viv.tmLanguage.json && cp ../../assets/viv-icon-light-256.png ./icon.png"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
