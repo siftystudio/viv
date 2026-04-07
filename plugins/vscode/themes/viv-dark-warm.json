@@ -2,7 +2,7 @@
   "name": "Viv Warm (Dark)",
   "type": "dark",
   "colors": {
-    "editor.background": "#3a3530",
+    "editor.background": "#3c3630",
     "editor.foreground": "#D4D4D4"
   },
   "tokenColors": [
