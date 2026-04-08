@@ -1,7 +1,7 @@
 {
   "name": "viv",
   "version": "0.9.0",
-  "description": "Author and developer support for the Viv engine for emergent narrative",
+  "description": "A Viv expert in your terminal.",
   "author": {
     "name": "James Ryan",
     "email": "james@sifty.studio",

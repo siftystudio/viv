@@ -16,12 +16,13 @@ The Viv plugin for [Claude Code](https://code.claude.com) (`viv`) turns Claude i
 ## Requirements
 
 * Claude Code 1.0.33 or later.
+* Git 2.25 or later (required by Claude Code's plugin installer).
 
 ## Getting Started
 
 * Install [Claude Code](https://code.claude.com/docs/en/quickstart).
 * In your terminal, boot up Claude Code: `claude`.
-* In the Claude Code session, install the Viv Claude Code plugin:
+* Within the Claude Code session, paste in these commands to install the Viv Claude Code plugin:
   * `/plugin marketplace add siftystudio/claude-plugins`
   * `/plugin install viv@siftystudio`
 * Start using the plugin:
