@@ -28,7 +28,7 @@ npm start
 
 ## Requirements
 
-* Node 22 or newer.
+* Node 18 or newer.
 
 ## License
 

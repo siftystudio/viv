@@ -15,7 +15,7 @@ Alright, let's get started. First, make sure you're up to date with the [require
 ## Requirements
 
 * Python 3.11+ (for the Viv compiler)
-* Node.js 16+ (for the Viv JavaScript runtime)
+* Node.js 18+ (for the Viv JavaScript runtime)
 
 ## I do not use LLMs
 

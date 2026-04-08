@@ -30,7 +30,7 @@ Below, you'll find a barebones overview of the project, mostly taking the form o
 ## Requirements
 
 * Python 3.11+ (for the Viv compiler)
-* Node.js 16+ (for the Viv JavaScript runtime)
+* Node.js 18+ (for the Viv JavaScript runtime)
 
 
 ## Quickstart

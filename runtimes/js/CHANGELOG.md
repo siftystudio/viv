@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 
+* Raise minimum Node version (from 16 to 18).
 * Update link to Viv homepage.
 
 ## [0.10.0] – 2026-03-30

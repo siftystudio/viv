@@ -7,7 +7,7 @@
   "license": "SEE LICENSE IN LICENSE.txt",
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=18"
   },
   "dependencies": {
     "lodash": "^4.17.21",
