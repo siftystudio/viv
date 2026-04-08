@@ -79,11 +79,12 @@ jobs:
       - name: Generate API docs
         run: npm --workspace runtimes/js run docs
 
-      - name: Cache API docs for CI use
-        uses: actions/cache/save@v4
+      - name: Upload API docs for CI use
+        uses: actions/upload-artifact@v4
         with:
+          name: js-runtime-api-docs
           path: docs/reference/runtimes/js
-          key: api-docs-${{ github.sha }}
+          retention-days: 400
 
       - name: Build language reference
         run: cd docs && npm run build

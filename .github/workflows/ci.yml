@@ -172,11 +172,12 @@ jobs:
         run: cd docs && npm run build
 
       - name: Restore API docs from last runtime release
-        uses: actions/cache/restore@v4
+        uses: dawidd6/action-download-artifact@v20
         with:
+          workflow: cd-runtime.yml
+          name: js-runtime-api-docs
           path: docs/reference/runtimes/js
-          key: api-docs-
-          restore-keys: api-docs-
+          if_no_artifact_found: warn
 
       - name: Assemble site
         run: |
