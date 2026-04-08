@@ -24,7 +24,7 @@
   "homepage": "https://viv.sifty.studio",
   "repository": {
     "type": "git",
-    "url": "https://github.com/siftystudio/viv.git",
+    "url": "git+https://github.com/siftystudio/viv.git",
     "directory": "runtimes/js"
   },
   "bugs": {
