@@ -75,8 +75,9 @@ It works in all IntelliJ-based IDEs: [WebStorm](https://www.jetbrains.com/websto
 * Install the **Viv JetBrains plugin**.
   * In your JetBrains IDE, navigate to `Settings > Plugins`, search for `Viv`, and click `Install`.
   * Alternatively, you can install it from ZIP:
-    * Download the plugin's `.zip` file from the [latest GitHub release](https://github.com/siftystudio/viv/releases). In your JetBrains IDE, go to `Settings > Plugins`, click the gear icon, choose `Install Plugin from Disk...`, select the downloaded `.zip` file, and restart when prompted.
-
+    * Download the plugin's `.zip` file from the [latest GitHub release](https://github.com/siftystudio/viv/releases).
+    * In your JetBrains IDE, go to `Settings > Plugins`, click the gear icon, choose `Install Plugin from Disk...`, select the downloaded `.zip` file, and restart when prompted.
+  
 * Install the [Viv compiler](https://pypi.org/project/viv-compiler): `pip install viv-compiler`, or **let the plugin do it for you**:
   * If the compiler is not detected, the plugin will offer to install it for you automatically via a notification prompt.
 
