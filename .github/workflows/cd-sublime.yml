@@ -58,6 +58,7 @@ jobs:
         run: |
           cd plugins/sublime
           zip -r ../../Viv.sublime-package \
+            .no-sublime-package \
             Viv.sublime-build \
             Viv.sublime-syntax \
             Viv.sublime-completions \
