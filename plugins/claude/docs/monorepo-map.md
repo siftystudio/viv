@@ -124,7 +124,7 @@ The authoritative specification for the Viv language. When you need to understan
 | JetBrains hover docs | `plugins/jetbrains/src/main/kotlin/studio/sifty/viv/VivDocumentationProvider.kt` | Hover documentation provider. Keywords: hover, documentation, JetBrains |
 | JetBrains snippets | `plugins/jetbrains/src/main/resources/liveTemplates/Viv.xml` | Live templates (code snippets). Keywords: snippets, live templates, JetBrains |
 | Sublime package | `plugins/sublime/` | Sublime Text package — syntax, snippets, build system, themes. Keywords: Sublime, package, editor |
-| Sublime compiler bridge | `plugins/sublime/compiler_bridge.py` | Python bridge invoking the compiler from Sublime. Keywords: bridge, compiler, Sublime, Python |
+| Sublime compiler bridge | `plugins/sublime/bridge/compiler_bridge.py` | Python bridge invoking the compiler from Sublime. Keywords: bridge, compiler, Sublime, Python |
 | Sublime syntax | `plugins/sublime/Viv.sublime-syntax` | Native Sublime syntax definition. Keywords: syntax, Sublime, highlighting |
 
 

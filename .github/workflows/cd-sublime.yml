@@ -62,7 +62,7 @@ jobs:
             Viv.sublime-syntax \
             Viv.sublime-completions \
             "Indentation Rules.tmPreferences" \
-            compiler_bridge.py \
+            bridge/ \
             repository.json \
             themes/ \
             LICENSE.txt \
