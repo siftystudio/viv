@@ -4,7 +4,7 @@ All notable changes to the Viv Claude Code plugin (`viv`) will be documented in 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.9.0] – 2026-03-31
+## [0.9.0] – 2026-04-08
 
 ### Initial Release
 
