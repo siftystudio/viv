@@ -30,7 +30,7 @@ def main():
     # Issue a warning if the compiler version is unexpected
     try:
         package_metadata = json.loads(
-            (Path(__file__).parent / "repository.json").read_text(encoding="utf-8")
+            (Path(__file__).parent.parent / "repository.json").read_text(encoding="utf-8")
         )["packages"][0]
         expected_compiler_version_major_minor = ".".join(package_metadata["compilerVersion"].split(".")[:2])
         actual_compiler_version_major_minor = ".".join(__version__.split(".")[:2])
