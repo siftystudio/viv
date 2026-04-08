@@ -9,9 +9,14 @@ When you need to find something, search this file for relevant terms. Each entry
 
 | What | Where | Description |
 |------|-------|-------------|
-| Monorepo README | `README.md` | Project overview with a complete revenge-story walkthrough of the Viv language, showing actions, roles, conditions, effects, reactions, plans, selectors, sifting patterns, and knowledge propagation in a single extended example. Keywords: overview, tutorial, example, revenge, walkthrough |
+| Monorepo README | `README.md` | Project overview with quickstart, package links, example projects, and monorepo layout. Keywords: overview, project, packages, layout |
+| Introduction: Overview | `docs/introduction/overview.md` | Features, design philosophy, and licensing. The "what is Viv and why should I care" document. Keywords: introduction, overview, features, design philosophy, what is Viv, feature tour |
+| Introduction: Example | `docs/introduction/example.md` | Extensive revenge-story walkthrough of the Viv language, showing actions, roles, conditions, effects, reactions, plans, selectors, sifting patterns, knowledge propagation, and item inscription in a single extended example. Keywords: example, walkthrough, revenge story, tutorial, end-to-end, runtime API |
+| Quickstart | `docs/quickstart/quickstart.md` | Getting started guide covering requirements, installation, and both LLM and non-LLM workflows. Keywords: quickstart, getting started, installation, requirements, setup, new project |
 | History of Viv | `docs/background/history-of-viv.md` | Background and motivation for the project. Keywords: history, background, motivation, origins |
 | PhD thesis | `docs/.llm/curating_simulated_storyworlds.md` | James Ryan's thesis on emergent narrative introducing story sifting and causal bookkeeping as concepts. Keywords: thesis, emergent narrative, curation, theory, academic, story sifting origins |
+| License | `LICENSE.txt` | Project license terms. Freely available for non-commercial use; commercial use requires a license from Sifty. Keywords: license, pricing, cost, free, open source, commercial |
+| Citation | `CITATION.cff` | Standard citation metadata: author, repository, license, release date. Keywords: citation, cite, author, credits, academic, reference |
 
 
 ## Language reference
@@ -21,7 +26,7 @@ The authoritative specification for the Viv language. When you need to understan
 | What | Where | Description |
 |------|-------|-------------|
 | Preamble | `docs/reference/language/00-preamble.md` | Overview of the language reference itself. Keywords: preamble, introduction, conventions |
-| Introduction | `docs/reference/language/01-introduction.md` | What Viv is, the authoring workflow, core philosophy. Keywords: introduction, overview, philosophy |
+| Introduction | `docs/reference/language/01-introduction.md` | Scope of the language reference, normative language conventions (MUST/SHOULD/MAY), notation, and grammar overview. Keywords: introduction, scope, normative language, conventions, notation, grammar |
 | Lexical elements | `docs/reference/language/02-lexical-elements.md` | Tokens, comments, literals, sigils (`@`, `&`, `$`, `_`, `>`), whitespace rules. Keywords: tokens, comments, literals, sigils, syntax, whitespace, lexer |
 | File structure | `docs/reference/language/03-file-structure.md` | How `.viv` files are structured, top-level declarations. Keywords: file, structure, declarations, top-level |
 | Includes | `docs/reference/language/04-includes.md` | The `include` directive for splitting code across files. Keywords: include, import, files, modules, splitting |
@@ -65,6 +70,10 @@ The authoritative specification for the Viv language. When you need to understan
 | Expression type definitions | `compiler/src/viv_compiler/external_types/dsl_types.py` | Python types for expressions, reference paths, temporal statements. Keywords: types, expressions, DSL, reference paths |
 | Error test cases | `compiler/tests/fixtures/invalid/` | Invalid `.viv` programs and their expected errors — shows what the compiler catches. Keywords: errors, invalid, test cases, validation failures |
 | Valid test fixtures | `compiler/tests/fixtures/valid/` | Correct `.viv` programs demonstrating every language feature. Keywords: examples, valid, fixtures, idiomatic, patterns |
+| Version resolution | `compiler/src/viv_compiler/_versions.py` | Resolves three version numbers: `__version__` (compiler package, from pyproject.toml), `__grammar_version__` (from the PEG grammar), `__schema_version__` (from the content-bundle schema). Authoritative source for how versions are determined at runtime. Keywords: versions, compiler version, grammar version, schema version, version resolution |
+| Include resolution | `compiler/src/viv_compiler/includes/includes.py` | Handles `include` declarations, recursively parsing and merging included files into a single CombinedAST. Keywords: includes, imports, file resolution, multi-file, CombinedAST |
+| Internal types | `compiler/src/viv_compiler/internal_types/internal_types.py` | TypedDict definitions for all intermediate AST shapes used during compilation — `CombinedAST`, `IntermediateActionDefinition`, `IntermediateRoleDefinition`, etc. Keywords: internal types, intermediate AST, TypedDict, CombinedAST, compilation internals |
+| Compiler package config | `compiler/pyproject.toml` | Poetry project configuration: version, dependencies (only `arpeggio`), CLI entry points (`vivc` and `viv-compiler`). Keywords: pyproject, poetry, dependencies, version, arpeggio, vivc |
 | Compiler tests | `compiler/tests/` | Full test suite. Keywords: tests, pytest |
 
 
@@ -92,8 +101,16 @@ The authoritative specification for the Viv language. When you need to understan
 | Debugger | `runtimes/js/src/debugger/debugger.ts` | Watchlists, targeting events, condition test results. Keywords: debugger, watchlists, targeting, debugging, diagnostics |
 | Tree diagrams | `runtimes/js/src/analysis/tree-diagrams.ts` | Causal tree visualization — renders DAGs of action relationships. Keywords: tree diagram, causal tree, visualization, DAG, storyline |
 | Sifting match diagrams | `runtimes/js/src/analysis/sifting-match-diagrams.ts` | Visualizes sifting pattern matches with role annotations and elision. Keywords: sifting match, diagram, visualization, roles, elision |
+| Gateway | `runtimes/js/src/gateway/gateway.ts` | Bridge between runtime and host adapter. Creates optimized paths using adapter fast paths, handles config defaults. The `GATEWAY` singleton is imported throughout the runtime. Keywords: gateway, adapter bridge, fast paths, config defaults, GATEWAY singleton |
+| Selector runner | `runtimes/js/src/selector-runner/selector-runner.ts` | Executes action selectors and plan selectors — sorts candidates by policy (random, weighted, ordered), targets each in turn. Keywords: selector runner, targeting, sort policy, candidate selection |
+| DSL types | `runtimes/js/src/dsl/types.ts` | TypeScript types for the compiled expression language — ActionRelation, Assignment, Comparison, temporal constraints, and all expression node shapes. Keywords: DSL types, expressions, operators, compiled expressions, temporal constraints |
+| DSL constants | `runtimes/js/src/dsl/constants.ts` | Operator enums (ActionRelationOperator, ArithmeticOperator, Comparator, etc.) and DSL-level discriminators. Keywords: DSL constants, operators, enums, comparators, action relations, discriminators |
+| Schema validators | `runtimes/js/src/schemas/validators.ts` | Ajv validators for content bundles and API call arguments. Includes custom `isFunction` keyword handler bridging JSON Schema and the adapter interface. Keywords: validators, Ajv, schema validation, isFunction, content bundle validation |
+| Schema version | `runtimes/js/src/schemas/version.ts` | Exports `getSchemaVersion()` — the content-bundle schema version supported by the runtime. Used for compatibility checking. Keywords: schema version, compatibility, getSchemaVersion |
+| API surface report | `runtimes/js/etc/viv-runtime.api.md` | API Extractor report listing every public type, function, enum, and interface. Checked-in API surface contract — changes must be committed explicitly. Keywords: API surface, api-extractor, public API, exports, types |
 | Error classes | `runtimes/js/src/errors/index.ts` | `VivError`, `VivValidationError`, `VivNotInitializedError`, etc. Keywords: errors, exceptions, error classes |
 | Runtime schemas | `runtimes/js/src/schemas/` | JSON schemas for API validation. Keywords: schemas, validation, JSON Schema |
+| Runtime utilities | `runtimes/js/src/utils/` | `general-utils.ts` (type guards, deep clone, shuffle, weighted shuffle) and `viv-utils.ts` (entity lookups, construct definition getters, time delta calculations). Keywords: utilities, helpers, type guards, entity lookup, shuffle |
 | Runtime test fixtures | `runtimes/js/tests/fixtures/` | Reusable test setups with content bundles and adapters. Keywords: fixtures, test setup, adapters, examples |
 | Runtime tests | `runtimes/js/tests/` | Full test suite. Keywords: tests, vitest |
 
@@ -114,6 +131,8 @@ The authoritative specification for the Viv language. When you need to understan
 | What | Where | Description |
 |------|-------|-------------|
 | TextMate grammar | `syntax/viv.tmLanguage.json` | Syntax highlighting grammar used by VS Code and other editors. Keywords: TextMate, grammar, syntax highlighting, scopes |
+| Syntax README | `syntax/README.md` | How to use the TextMate grammar in your own docs (via Shiki), relationships between the three syntax definitions (TextMate, Sublime, JetBrains). Keywords: syntax highlighting, TextMate, Shiki, documentation, code blocks, custom language |
+| Syntax tests | `syntax/tests/syntax_test_viv.viv` | 43K test file with inline assertions checking every token receives the correct TextMate scope. Keywords: syntax tests, TextMate, scopes, assertions, grammar tests |
 | Syntax examples | `syntax/examples/` | Example `.viv` files showcasing language features and color themes. Keywords: examples, showcase, syntax, color themes |
 | VS Code extension | `plugins/vscode/` | Full VS Code extension — syntax, diagnostics, compile on save, snippets, themes. Keywords: VS Code, extension, editor |
 | VS Code entry point | `plugins/vscode/extension.ts` | Extension activation, compiler integration, diagnostics provider. Keywords: VS Code, extension, TypeScript, activation |
@@ -128,8 +147,24 @@ The authoritative specification for the Viv language. When you need to understan
 | Sublime syntax | `plugins/sublime/Viv.sublime-syntax` | Native Sublime syntax definition. Keywords: syntax, Sublime, highlighting |
 
 
-## Build
+## Build and CI
 
 | What | Where | Description |
 |------|-------|-------------|
 | Makefile | `Makefile` | Schema generation, preflight checks, clean targets. Keywords: make, build, schemas, preflight |
+| Sync checks | `scripts/run_sync_checks.py` | CI script enforcing cross-component invariants: schema identity between compiler and runtime, compiler version agreement across plugins, keyword completeness across syntax definitions, example project compatibility, language reference version parity. Keywords: sync checks, invariants, CI, cross-component, keywords, schema, version, compatibility |
+| Changelog extractor | `scripts/extract-changelog.sh` | Extracts a version's entry from a Keep a Changelog file. Used by all CD workflows. Keywords: changelog, extraction, release, CD |
+| Semver bumper | `scripts/bump-semver-string.sh` | Bumps a semver string by patch/minor/major. Used by Makefile. Keywords: semver, bump, version, release |
+| Runtime build config | `runtimes/js/rollup.config.js` | Rollup bundle configuration: ESM and CJS bundles, externalized dependencies. Keywords: rollup, build, bundle, ESM, CJS, configuration |
+| TypeDoc config | `runtimes/js/typedoc.json` | API docs configuration: category ordering, intentionally not-exported types, custom CSS. Keywords: TypeDoc, API docs, categories, configuration |
+| API Extractor config | `runtimes/js/api-extractor.json` | Generates d.ts rollup, tracks API surface in `etc/viv-runtime.api.md`. Keywords: api-extractor, d.ts rollup, API surface |
+| Docs site config | `docs/astro.config.mjs` | Starlight/Astro configuration: sidebar structure, Viv syntax highlighting via TextMate grammar, color themes, custom plugins. Keywords: docs site, Starlight, Astro, sidebar, configuration, site structure |
+
+## Wizard (fine-tuned LLM)
+
+| What | Where | Description |
+|------|-------|-------------|
+| Wizard README | `wizard/README.md` | Overview of the Viv wizard: a fine-tuned LLM (Qwen2.5-Coder-7B) trained via DAPT, SFT, and RLXF to serve as a Viv authoring partner. Describes the multi-agent synthesis pipeline, competencies, training approach, and project structure. Keywords: wizard, LLM, fine-tuning, LoRA, DAPT, SFT, RLXF, training, synthesis, authoring tool, Qwen |
+| Synthesis pipeline | `wizard/dapt/synthesis/` | Multi-agent pipeline for generating training data: orchestrator, author, reviewer, and consultant agents. Keywords: synthesis, training data, orchestrator, author, reviewer, consultant |
+| Aggregation | `wizard/dapt/aggregation/` | Packages reference material into training examples. Keywords: aggregation, reference material, training data |
+| Training loop | `wizard/dapt/pipeline/` | PyTorch training loop with checkpointing and validation. Keywords: training loop, PyTorch, checkpointing, validation |

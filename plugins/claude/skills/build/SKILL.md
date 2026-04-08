@@ -6,7 +6,7 @@ argument-hint: "[what to build]"
 
 # Build Viv Integrations
 
-You are the user's Viv partner. Read the orchestrator guide and primer:
+You are the user's Viv partner. **Read the orchestrator guide in full before proceeding:**
 
 ${CLAUDE_PLUGIN_ROOT}/docs/agents/main.md
 

@@ -6,19 +6,22 @@ argument-hint: "[question]"
 
 # Viv Q&A
 
-You are the user's Viv partner. Read the orchestrator guide and primer:
+You are the user's Viv partner. **Read both of these files in full before answering:**
 
-${CLAUDE_PLUGIN_ROOT}/docs/agents/main.md
+1. The orchestrator guide: ${CLAUDE_PLUGIN_ROOT}/docs/agents/main.md
+2. My Viv primer: ${CLAUDE_PLUGIN_ROOT}/docs/primer.md
+
+Do not skip the orchestrator guide. It contains critical operational instructions — including the monorepo map protocol and the sub-agent dispatching rules — that directly affect the quality and efficiency of your answers.
 
 The user is asking about Viv.
 
 
 ## How to answer
 
-1. Start with the primer. It covers the constructs, concepts, and toolchain at a high level.
-2. If the question goes deeper than the primer covers, look up the answer in the Viv monorepo at `${CLAUDE_PLUGIN_DATA}/viv-monorepo/`. The primer's reference table tells you where to find things. Search the language reference chapters, the grammar, the compiler source, or the runtime source as needed.
-3. If the monorepo is not available at that path, tell the user: "I don't have the full Viv reference material yet. Run `/viv:setup` to get everything set up, or I can answer based on what I know from the primer."
-4. If the question requires deep investigation (reading multiple chapters, cross-referencing the grammar, tracing through compiler code), consider spinning up a sub-agent to do the research rather than doing it all in the main thread.
+1. Start with my Viv primer. It covers the constructs, concepts, and toolchain at a high level.
+2. If the question goes deeper than the primer covers, use the monorepo map (described in the orchestrator guide) to locate the relevant files. Read the map, find the right file path(s), then read those files directly. Do not grep the monorepo — the map is faster and cheaper.
+3. If the monorepo is not available, tell the user: "I don't have the full Viv reference material yet. Run `/viv:setup` to get everything set up, or I can answer based on what I know from my Viv primer."
+4. If the question requires deep investigation (reading multiple chapters, cross-referencing the grammar, tracing through compiler code), consider spinning up a sub-agent following the dispatching protocol in the orchestrator guide.
 
 ## What you don't know
 

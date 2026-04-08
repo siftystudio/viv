@@ -15,7 +15,7 @@ Key references for design work:
 - Language reference at `docs/reference/language/` — what constructs exist and how they work
 - Syntax examples at `syntax/examples/` — what real Viv code looks like
 - Valid test fixtures at `compiler/tests/fixtures/valid/` — idiomatic patterns
-- The monorepo README — the revenge story walkthrough shows how constructs compose
+- The introduction example at `docs/introduction/example.md` — the revenge story walkthrough shows how constructs compose
 - Runtime API at `runtimes/js/src/api/` — what the runtime can do
 - Example projects at `examples/` — how integration works end to end
 

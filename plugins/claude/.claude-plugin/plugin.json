@@ -1,14 +1,14 @@
 {
   "name": "viv",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "A Viv expert in your terminal.",
   "author": {
     "name": "James Ryan",
     "email": "james@sifty.studio",
     "url": "https://jamesryan.ai"
   },
-  "homepage": "https://github.com/siftystudio/viv/blob/main/plugins/claude",
-  "repository": "https://github.com/siftystudio/viv",
+  "homepage": "https://viv.sifty.studio",
+  "repository": "https://github.com/siftystudio/viv/tree/main/plugins/claude",
   "license": "SEE LICENSE IN LICENSE.txt",
   "keywords": ["viv", "dsl", "emergent-narrative", "games", "simulation"],
   "skills": "./skills/"

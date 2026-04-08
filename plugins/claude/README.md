@@ -1,6 +1,6 @@
 # Viv Claude Code Plugin
 
-The Viv plugin for [Claude Code](https://code.claude.com) (`viv`) turns Claude into a Viv expert—for authoring, building runtime integrations, debugging compiler errors, designing storyworlds, and more.
+The Viv plugin for [Claude Code](https://code.claude.com) (`viv`) turns Claude into a [Viv](https://viv.sifty.studio) expert—for authoring, building runtime integrations, debugging compiler errors, designing storyworlds, and more.
 
 ## Table of Contents
 
@@ -46,28 +46,30 @@ When you ask Claude to carry out a Viv-centric task like writing code, fixing an
 
 ## Skills
 
-After installing the plugin, the following Viv skills will be globally available to use when using Claude Code (and should appear in the autocomplete dropdown any time you type `/viv`). To use a skill, simply type it in. Most of them allow a kind of argument in the form of surrounding prose, but a skill will work however invoked, as long as your message includes it.
+After installing the plugin, the following Viv skills will be globally available to use when using Claude Code.
 
-*You can also just talk about Viv with Claude naturally, assuming you're in a project where `/viv:setup` has been run. It will use the right skill based on what you're doing.*
+To list all the skills, type `/viv` in a Claude Code session, which will bring up a scrollable autocomplete dropdown. To use a skill, simply type it in—either in its full form, like `/viv:ask`, or in its abbreviated form, like `/ask`. Most of the Viv skills allow a kind of argument in the form of surrounding prose, but a skill will work however invoked, as long as your message includes it.
 
-* **`/viv:ask`**
-  - Ask anything about Viv: language constructs, authoring workflows, the compiler, the runtime, emergent narrative in general. Claude will look up the answer in the language reference.
-* **`/viv:write`**
-  - Tell Claude what to make and it will write the Viv code—actions, plans, sifting patterns, tropes, queries, selectors, and more. In most cases, the code will be compiled and verified before being presented to you.
-* **`/viv:fix`**
-  - Paste a compiler error, point at a broken file, or describe an unexpected runtime behavior. Claude will diagnose the issue, trace through the compiler and/or runtime source if needed, and propose a fix.
-* **`/viv:design`**
-  - Describe what you want to build—a storyworld, an entity schema, an adapter architecture, a test strategy—and Claude will produce a design document that can be handed off to `/viv:write` and/or `/viv:build`.
-* **`/viv:study`**
-  - Point Claude at a topic and it will carry out a deep dive into the Viv internals, your project's structure, or a specific language feature, returning a detailed briefing.
-* **`/viv:build`**
-  - Claude will write your host adapter, test harness, simulation runner, or other integration code. Just tell it what you're after.
-* **`/viv:critique`**
-  - Hand Claude your working code and it will review it for optimization opportunities, narrative potential, clarity, completeness, robustness, and style. In lieu of making changes, this skill typically produces a report (which can be handed off to `/viv:write`, `/viv:build`, or `/viv:fix`).
-* **`/viv:feedback`**
-  - Report issues or suggestions to the Viv team, directly from Claude Code. Claude will draft the feedback, search for similar existing issues, and file it on GitHub on your behalf (with your approval).
-* **`/viv:setup`**
+You can also just talk about Viv with Claude naturally, assuming you're in a project where `/viv:setup` has been run. It will use the right skill based on what you're doing.
+
+* **`/viv:setup`** (alias `/setup`)
   - Set up Viv in your project. Walks you through installing the compiler and runtime, choosing an editor plugin, and configuring your environment. Run this first.
+* **`/viv:ask`** (alias `/ask`)
+  - Ask anything about Viv: language constructs, authoring workflows, the compiler, the runtime, emergent narrative in general. Claude will look up the answer using the Viv materials copied into its plugin data.
+* **`/viv:write`** (alias `/write`)
+  - Tell Claude what to make and it will write the Viv code—actions, plans, sifting patterns, tropes, queries, selectors, and more. In most cases, the code will be compiled and verified before being presented to you.
+* **`/viv:fix`** (alias `/fix`)
+  - Paste a compiler error, point at a broken file, or describe an unexpected runtime behavior. Claude will diagnose the issue, trace through the compiler and/or runtime source if needed, and propose a fix. If the fix is big, you can use `/viv:write` and/or `/viv:build` to carry it out.
+* **`/viv:design`** (alias `/design`)
+  - Describe what you want to build—a storyworld, an entity schema, an adapter architecture, a test strategy—and Claude will produce a design document that can be handed off to `/viv:write` and/or `/viv:build`.
+* **`/viv:study`** (alias `/study`)
+  - Point Claude at a topic and it will carry out a deep dive into the Viv internals, your project's structure, or a specific language feature, returning a detailed briefing.
+* **`/viv:build`** (alias `/build`)
+  - Claude will write your host adapter, test harness, simulation runner, or other integration code. Just tell it what you're after.
+* **`/viv:critique`** (alias `/critique`)
+  - Hand Claude your working code and it will review it for optimization opportunities, narrative potential, clarity, completeness, robustness, and style. In lieu of making changes, this skill typically produces a report (which can be handed off to `/viv:write`, `/viv:build`, or `/viv:fix`).
+* **`/viv:feedback`** (alias `/feedback`)
+  - Report issues or suggestions to the Viv team, directly from Claude Code. Claude will draft the feedback, search for similar existing issues, and file it on GitHub on your behalf (pending your approval).
 
 ## Compatibility
 

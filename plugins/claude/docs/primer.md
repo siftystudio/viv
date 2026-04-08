@@ -29,14 +29,14 @@ Viv code is composed of seven construct types:
 
 **Tropes** — Reusable bundles of conditions with a name. A trope defines a relational pattern (e.g., `is-unhinged`, `mutual-trust`) that can be tested anywhere via `fits trope`.
 
-**Queries** — Rich search criteria for finding past actions in the chronicle or a character's memories. Queries filter by tags, associations, roles, time, location, and causal relationships.
+**Queries** — Rich search criteria for finding past actions in the chronicle or a character's memories. Queries filter by action name, tags, associations, roles, time, location, importance, salience, and causal relationships.
 
 **Sifting patterns** — The crown jewel. A sifting pattern matches a *sequence* of causally related actions — an emergent storyline. Patterns can reference other patterns, enabling detection of meta-narratives like "revenge for an act of revenge." Patterns can be applied to the chronicle or to a character's memories, enabling characters to *understand* and *act on* the storylines unfolding around them.
 
 
 ## Key concepts
 
-**Host application** — The game, simulation, or other software that Viv plugs into. The host owns all simulation state (characters, locations, items, their properties) and is responsible for persistence. Viv is stateless.
+**Host application** — The game, simulation, or other software that Viv plugs into. The host owns all simulation state (characters, locations, items, their properties) and is responsible for persistence. Viv itself manages no data store — the host persists everything, including a small internal state object that Viv uses to track queued constructs between invocations.
 
 **Viv adapter** — A host-application-provided interface giving the runtime read/write access to simulation state. Viv code can reference arbitrary entity properties (e.g., `@person.personality.impulsive`) and call application-defined enums (`#MODERATE`) and custom functions (`~createItem("note")`), all resolved by the host at runtime.
 
@@ -94,25 +94,32 @@ action write-gossip-note:
         end
 ```
 
-This shows the basic shape: a construct keyword (`action`), a name, then indented fields (`roles`, `conditions`, `effects`, `reactions`). Roles use the `@` sigil. Conditions are boolean expressions. Effects mutate state. Reactions queue follow-up constructs. The `@hearer` is a special role automatically cast when a character learns about this action after the fact.
+This shows the basic shape: a construct keyword (`action`), a name, then indented fields (`roles`, `conditions`, `effects`, `reactions`). Roles use the `@` sigil. Conditions are boolean expressions. Effects mutate state. Reactions queue follow-up constructs. The `@hearer` is a special reference automatically bound when a character learns about this action after the fact.
 
 Do NOT attempt to write Viv code from this example alone. Always consult the language reference for the full syntax and semantics of any construct.
 
 
+## Version semantics
+
+The Viv ecosystem has several independent version numbers: the compiler, the runtime, the schema, each editor plugin, and this Claude Code plugin all version independently. Compatible compiler and runtime versions ship from the same monorepo commit and share the same schema version. The plugin's `/viv:sync` skill handles keeping everything in harmony — you don't need to manage version compatibility yourself.
+
+
 ## Reference material
 
-A local copy of the Viv monorepo should be available at `${CLAUDE_PLUGIN_DATA}/viv-monorepo/`. If it is not, suggest the user run `/viv:setup` to clone it.
+A local copy of the Viv monorepo is available in the plugin's data directory. If it is not there, suggest the user run `/viv:setup` to download it. The orchestrator guide (which you should have already read) tells you exactly where to find it and how to use the monorepo map to locate files efficiently.
 
-**When you need to find anything in the monorepo, start with the monorepo map** at `${CLAUDE_PLUGIN_ROOT}/docs/monorepo-map.md`. It is a searchable index of every important file, with prose descriptions and keywords. Search it for the topic you need.
-
-Key starting points:
+Key starting points within the monorepo:
 
 - **Language reference** — `docs/reference/language/` (23 chapters, one per topic). This is the authoritative source for how any construct works. When you need to understand actions, read chapter 10. Sifting patterns, chapter 16. Plans, chapter 17. Etc.
 - **Glossary** — `docs/reference/language/22-glossary.md` — alphabetized definitions of all Viv terminology, with links to where each term is introduced.
-- **Monorepo README** — `README.md` — a complete revenge-story walkthrough of the language
+- **Monorepo README** — `README.md` — project overview with quickstart, package links, and monorepo layout
+- **Introduction: Overview** — `docs/introduction/overview.md` — features, design philosophy, and licensing
+- **Introduction: Example** — `docs/introduction/example.md` — extensive revenge-story walkthrough of the language
+- **Quickstart** — `docs/quickstart/quickstart.md` — getting started guide for LLM and non-LLM workflows
 - **Compiler README** — `compiler/README.md` — CLI usage and installation
 - **Runtime README** — `runtimes/js/README.md` — integration guide and adapter setup
 - **Hello Viv example** — `examples/hello-viv-ts/src/main.ts` — canonical TypeScript integration
+- **License** — `LICENSE.txt` — freely available for non-commercial use; commercial use requires a license from Sifty
 
 
 ## What Viv is not
