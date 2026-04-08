@@ -9,10 +9,13 @@
       "homepage": "https://viv.sifty.studio",
       "readme": "https://raw.githubusercontent.com/siftystudio/viv/main/plugins/sublime/README.md",
       "issues": "https://github.com/siftystudio/viv/issues",
+      "donate": "https://ko-fi.com/siftystudio",
+      "labels": ["language", "syntax", "dsl", "narrative", "simulation", "gamedev"],
       "compilerVersion": "0.10.0",
       "releases": [
         {
           "version": "0.9.0",
+          "date": "2026-04-07",
           "url": "https://github.com/siftystudio/viv/releases/download/sublime-v0.9.0/Viv.sublime-package",
           "sublime_text": ">=3149"
         }
