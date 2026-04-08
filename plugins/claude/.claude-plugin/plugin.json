@@ -11,6 +11,5 @@
   "repository": "https://github.com/siftystudio/viv",
   "license": "SEE LICENSE IN LICENSE.txt",
   "keywords": ["viv", "dsl", "emergent-narrative", "games", "simulation"],
-  "skills": "./skills/",
-  "hooks": "./hooks/hooks.json"
+  "skills": "./skills/"
 }
