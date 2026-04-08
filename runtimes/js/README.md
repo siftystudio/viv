@@ -6,12 +6,18 @@ At a high level, the runtime combines an **interpreter** for the [Viv DSL](https
 
 ## Table of Contents
 
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
 - [API](#api)
 - [Example Projects](#example-projects)
 - [Changelog](https://github.com/siftystudio/viv/blob/main/runtimes/js/CHANGELOG.md)
 - [License](#license)
+
+## Requirements
+
+* Node.js 18+.
+* The [Viv compiler](https://pypi.org/project/viv-compiler) is needed to produce the content bundles that the runtime consumes.
 
 ## Installation
 
@@ -28,7 +34,7 @@ Your installation will include all three of the package's published build artifa
 
 * **ESM build** (`dist/index.js`): An ECMAScript-module version, for projects using `import ... from "@siftystudio/viv-runtime"`.
 
-* **CJS build** (`dist/index.cjs`): A CommonJS version, for projects that need to use `require("@siftystudio/viv-runtime")`.
+* **CJS build** (`dist/index.cjs`): A CommonJS version, for projects using `require()` imports.
 
 * **Type declarations** (`dist/index.d.ts`): TypeScript definitions for all types associated with the runtime API, enabling full typing support for TypeScript projects.
 
@@ -60,13 +66,13 @@ To use this version of the JavaScript runtime, you must supply a **compatible** 
 
 * **Major versions must match.** A content bundle compiled against a different major schema version is always rejected.
 
-* **Minor versions may be required to match, depending on the runtime version.** While the runtime is itself pre–1.0, minor schema versions will have to match exactly, since no stability guarantees hold yet. Once the runtime is at 1.0+, the content bundle's minor schema version will be prohibited from exceeding the runtime's respective minor version. This is because a bundle compiled with a newer minor version may reference features the runtime does not yet support.
+* **Minor versions may be required to match, depending on the runtime version.** While the runtime itself remains pre–`1.0`, minor schema versions will have to match exactly, since no stability guarantees hold at this time. Once the runtime is at `1.0`+, the content bundle's minor schema version will be prohibited from exceeding the runtime's respective minor version. This is because a bundle compiled with a newer minor version may reference features the runtime does not yet support.
 
-* **Patch versions are always compatible.**
+* **Patch versions do not affect compatibility.**
 
 If the content bundle is incompatible, the runtime will throw an error during initialization, with a message explaining the mismatch.
 
-The schema version supported by this version of the runtime can be retrieved via the API, as documented [here](https://viv.sifty.studio/reference/runtimes/js/functions/getSchemaVersion.html). To get the schema version associated with your compiler, follow the relevant instructions in the [compiler docs](https://pypi.org/project/viv-compiler). Note that the respective latest versions of the Viv compiler and runtime will always be associated with the same schema version.
+The schema version supported by your runtime installation can be retrieved via the API, as documented [here](https://viv.sifty.studio/reference/runtimes/js/functions/getSchemaVersion.html). To get the schema version associated with your compiler, follow the relevant instructions in the [compiler docs](https://pypi.org/project/viv-compiler). Note that the respective latest versions of the Viv compiler and runtime will always be associated with the same schema version.
 
 ### Creating a Viv Adapter
 
