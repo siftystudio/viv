@@ -39,6 +39,7 @@ The Viv project centers on a rich domain-specific language (DSL) that authors us
 ## Getting Started
 
 * Install [this extension](https://marketplace.visualstudio.com/items?itemName=siftystudio.viv).
+  * Alternatively, you can directly install a pre-built `.vsix` file from our [GitHub releases page](https://github.com/siftystudio/viv/releases), then run `code --install-extension <file>.vsix`.
 * Install the [Viv compiler](https://pypi.org/project/viv-compiler): `pip install viv-compiler`.
   * If the compiler is not detected, because VS Code is using a different Python interpreter, the extension will offer to install it for you automatically (in its associated Python).
 

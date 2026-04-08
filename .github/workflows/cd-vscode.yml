@@ -68,12 +68,12 @@ jobs:
         run: |
           cd plugins/vscode
           npm run vscode:prepublish
-          vsce package -o viv.vsix
+          vsce package -o "viv-v${{ steps.version.outputs.version }}.vsix"
 
       - name: Publish to VS Code Marketplace
         run: |
           cd plugins/vscode
-          vsce publish --packagePath viv.vsix
+          vsce publish --packagePath "viv-v${{ steps.version.outputs.version }}.vsix"
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
@@ -82,4 +82,4 @@ jobs:
         with:
           name: Viv VS Code Extension v${{ steps.version.outputs.version }}
           body: ${{ steps.changelog.outputs.body }}
-          files: plugins/vscode/viv.vsix
+          files: plugins/vscode/viv-v${{ steps.version.outputs.version }}.vsix
