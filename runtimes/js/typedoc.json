@@ -28,6 +28,8 @@
     "SetPredicate"
   ],
   "customCss": "assets/typedoc-overrides.css",
+  "titleLink": "https://viv.sifty.studio",
+  "customFooterHtml": "<script>document.head.insertAdjacentHTML('beforeend','<link rel=\"icon\" href=\"https://viv.sifty.studio/viv-icon.png\" type=\"image/png\">')</script>",
   "navigation": {
     "includeCategories": true,
     "includeGroups": true
