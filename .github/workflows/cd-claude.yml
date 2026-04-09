@@ -49,13 +49,27 @@ jobs:
       - name: Extract changelog for this version
         id: changelog
         run: |
-          body=$(scripts/extract-changelog.sh "${{ steps.version.outputs.version }}" plugins/claude/CHANGELOG.md)
+          version="${{ steps.version.outputs.version }}"
+          body=$(scripts/extract-changelog.sh "$version" plugins/claude/CHANGELOG.md)
           echo "body<<CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
           echo "$body" >> "$GITHUB_OUTPUT"
           echo "CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
+
+      - name: Build plugin zip
+        run: |
+          cd plugins/claude
+          zip -r "../../viv-claude-v${{ steps.version.outputs.version }}.zip" \
+            .claude-plugin/ \
+            docs/ \
+            hooks/ \
+            skills/ \
+            LICENSE.txt \
+            README.md \
+            CHANGELOG.md
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
           name: Viv Claude Code Plugin v${{ steps.version.outputs.version }}
           body: ${{ steps.changelog.outputs.body }}
+          files: viv-claude-v${{ steps.version.outputs.version }}.zip
