@@ -37,6 +37,22 @@ Below, you'll find a barebones overview of the project, mostly taking the form o
 
 *Note that currently there is a single Viv runtime, aimed at JavaScript (and TypeScript) codebases. If you can’t run JavaScript in your project, you likely won’t be able to use Viv right now. A C# runtime tailored for Unity projects is planned.*
 
+### I use LLMs
+
+* Install [Claude Code](https://code.claude.com/).
+
+* Within a Claude Code session, install the Viv plugin for Claude Code:
+
+  ```
+  /plugin marketplace add siftystudio/claude-plugins
+  /plugin install viv@siftystudio
+  ```
+
+* Now simply run the `/viv:setup` skill, and Claude takes it from there, installing Viv components, setting up your project, and answering your questions.
+
+
+### I do not use LLMs
+
 * Install the compiler, and verify it works:
 
   ```sh
