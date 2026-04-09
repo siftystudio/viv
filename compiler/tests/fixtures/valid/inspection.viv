@@ -1,0 +1,10 @@
+// Character inspection of an item
+
+action read-note:
+    roles:
+        @reader:
+            as: initiator
+        @note:
+            as: item
+    effects:
+        @reader inspect @note

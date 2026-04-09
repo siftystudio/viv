@@ -65,9 +65,21 @@ def test_error_message_duplicate_salience_role() -> None:
 
 
 def test_error_message_bare_character_role_in_action() -> None:
-    """Check the error message for a bare character role in an action names the role and mentions participation mode."""
+    """Check the error message for a bare character role in an action."""
     with pytest.raises(VivCompileError, match="(?si)animal.*participation mode"):
         compile_from_path(source_file_path=INVALID_FIXTURES_SEMANTICS_SUBDIR / "bare_character_role_in_action.viv")
+
+
+def test_error_message_inscription_wrong_operand_types() -> None:
+    """Check the error message for an inscription with wrong operand types."""
+    with pytest.raises(VivCompileError, match="(?si)inscribe.*confidant"):
+        compile_from_path(source_file_path=INVALID_FIXTURES_SEMANTICS_SUBDIR / "inscription_wrong_operand_types.viv")
+
+
+def test_error_message_inspection_wrong_operand_types() -> None:
+    """Check the error message for an inspection with wrong operand types."""
+    with pytest.raises(VivCompileError, match="(?si)inspect.*journal"):
+        compile_from_path(source_file_path=INVALID_FIXTURES_SEMANTICS_SUBDIR / "inspection_wrong_operand_types.viv")
 
 
 def test_error_message_precast_on_non_reserved() -> None:

@@ -1,0 +1,12 @@
+// Invalid: inspection with item and character roles in swapped positions
+
+action read-journal:
+    roles:
+        @reader:
+            as: initiator
+        @journal:
+            as: item
+        @subject:
+            as: recipient
+    effects:
+        @journal inspect @subject

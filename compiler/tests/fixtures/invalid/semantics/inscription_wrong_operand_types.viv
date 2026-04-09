@@ -1,0 +1,10 @@
+// Invalid: inscription with character roles in both operand positions
+
+action write-secret:
+    roles:
+        @writer:
+            as: initiator
+        @confidant:
+            as: partner
+    effects:
+        @confidant inscribe @writer

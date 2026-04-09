@@ -56,6 +56,10 @@ def validate_common_concerns(
     _validate_negated_expressions(construct_definition=construct_definition)
     # Validate chance expressions
     _validate_chance_expressions(construct_definition=construct_definition)
+    # Validate inscription operand types
+    _validate_inscriptions(construct_definition=construct_definition)
+    # Validate inspection operand types
+    _validate_inspections(construct_definition=construct_definition)
 
 
 def _validate_conditions(*, construct_definition: external_types.ConstructDefinition) -> None:
@@ -1014,3 +1018,113 @@ def _validate_chance_expressions(*, construct_definition: external_types.Constru
                 f"the range [0, 100]: '{chance_value * 100}%'",
                 source=chance_source
             )
+
+
+def _validate_inscriptions(*, construct_definition: external_types.ConstructDefinition) -> None:
+    """Validate that inscription operands have the correct entity types.
+
+    An inscription has the form `item inscribe action`. When an operand is a bare role reference
+    (an entity reference with an empty path anchored in a known role), the entity type of the
+    role can be checked statically: the LHS must be an item role and the RHS must be an action role.
+
+    Args:
+        construct_definition: A construct definition in a compiled content bundle.
+
+    Returns:
+        None. Only returns if no issue is encountered.
+
+    Raises:
+        VivCompileError: An inscription has a bare role reference of the wrong entity type.
+    """
+    all_inscriptions: list[external_types.Inscription] = utils.get_all_expressions_of_type(
+        expression_type=external_types.ExpressionDiscriminator.INSCRIPTION,
+        ast_chunk=construct_definition
+    )
+    for inscription in all_inscriptions:
+        # Check that the item operand (LHS) is an item role
+        item_operand = inscription['value']['item']
+        if item_operand['type'] == external_types.ExpressionDiscriminator.ENTITY_REFERENCE:
+            if not item_operand['value']['local'] and not item_operand['value']['path']:
+                anchor = item_operand['value']['anchor']
+                if anchor in construct_definition['roles']:
+                    role_definition = construct_definition['roles'][anchor]
+                    if role_definition['entityType'] != external_types.RoleEntityType.ITEM:
+                        raise errors.VivCompileError(
+                            f"{utils.CONSTRUCT_LABEL[construct_definition['type']]} "
+                            f"'{construct_definition['name']}' uses 'inscribe' with role "
+                            f"'@{anchor}' in item position, but '@{anchor}' has entity type "
+                            f"'{role_definition['entityType']}' "
+                            f"(expected '{external_types.RoleEntityType.ITEM}')",
+                            source=inscription['source']
+                        )
+        # Check that the action operand (RHS) is an action role
+        action_operand = inscription['value']['action']
+        if action_operand['type'] == external_types.ExpressionDiscriminator.ENTITY_REFERENCE:
+            if not action_operand['value']['local'] and not action_operand['value']['path']:
+                anchor = action_operand['value']['anchor']
+                if anchor in construct_definition['roles']:
+                    role_definition = construct_definition['roles'][anchor]
+                    if role_definition['entityType'] != external_types.RoleEntityType.ACTION:
+                        raise errors.VivCompileError(
+                            f"{utils.CONSTRUCT_LABEL[construct_definition['type']]} "
+                            f"'{construct_definition['name']}' uses 'inscribe' with role "
+                            f"'@{anchor}' in action position, but '@{anchor}' has entity type "
+                            f"'{role_definition['entityType']}' "
+                            f"(expected '{external_types.RoleEntityType.ACTION}')",
+                            source=inscription['source']
+                        )
+
+
+def _validate_inspections(*, construct_definition: external_types.ConstructDefinition) -> None:
+    """Validate that inspection operands have the correct entity types.
+
+    An inspection has the form `character inspect item`. When an operand is a bare role reference
+    (an entity reference with an empty path anchored in a known role), the entity type of the
+    role can be checked statically: the LHS must be a character role and the RHS must be an item role.
+
+    Args:
+        construct_definition: A construct definition in a compiled content bundle.
+
+    Returns:
+        None. Only returns if no issue is encountered.
+
+    Raises:
+        VivCompileError: An inspection has a bare role reference of the wrong entity type.
+    """
+    all_inspections: list[external_types.Inspection] = utils.get_all_expressions_of_type(
+        expression_type=external_types.ExpressionDiscriminator.INSPECTION,
+        ast_chunk=construct_definition
+    )
+    for inspection in all_inspections:
+        # Check that the character operand (LHS) is a character role
+        character_operand = inspection['value']['character']
+        if character_operand['type'] == external_types.ExpressionDiscriminator.ENTITY_REFERENCE:
+            if not character_operand['value']['local'] and not character_operand['value']['path']:
+                anchor = character_operand['value']['anchor']
+                if anchor in construct_definition['roles']:
+                    role_definition = construct_definition['roles'][anchor]
+                    if role_definition['entityType'] != external_types.RoleEntityType.CHARACTER:
+                        raise errors.VivCompileError(
+                            f"{utils.CONSTRUCT_LABEL[construct_definition['type']]} "
+                            f"'{construct_definition['name']}' uses 'inspect' with role "
+                            f"'@{anchor}' in character position, but '@{anchor}' has entity type "
+                            f"'{role_definition['entityType']}' "
+                            f"(expected '{external_types.RoleEntityType.CHARACTER}')",
+                            source=inspection['source']
+                        )
+        # Check that the item operand (RHS) is an item role
+        item_operand = inspection['value']['item']
+        if item_operand['type'] == external_types.ExpressionDiscriminator.ENTITY_REFERENCE:
+            if not item_operand['value']['local'] and not item_operand['value']['path']:
+                anchor = item_operand['value']['anchor']
+                if anchor in construct_definition['roles']:
+                    role_definition = construct_definition['roles'][anchor]
+                    if role_definition['entityType'] != external_types.RoleEntityType.ITEM:
+                        raise errors.VivCompileError(
+                            f"{utils.CONSTRUCT_LABEL[construct_definition['type']]} "
+                            f"'{construct_definition['name']}' uses 'inspect' with role "
+                            f"'@{anchor}' in item position, but '@{anchor}' has entity type "
+                            f"'{role_definition['entityType']}' "
+                            f"(expected '{external_types.RoleEntityType.ITEM}')",
+                            source=inspection['source']
+                        )
