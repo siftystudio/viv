@@ -39,6 +39,7 @@ def _validate_role_labels(*, construct_definition: external_types.ConstructDefin
     Raises:
         VivCompileError: A role has a label not permitted for this construct type.
         VivCompileError: A non-character role has a participation mode label.
+        VivCompileError: A character role in an action/selector has no participation mode or modifier.
         VivCompileError: A non-reserved action/selector has a precast role.
         VivCompileError: A role has mutually incompatible labels.
     """
@@ -63,6 +64,23 @@ def _validate_role_labels(*, construct_definition: external_types.ConstructDefin
                     f"label but no 'character' label ('{role_definition['participationMode']}' may only be "
                     f"used for character roles)"
                 )
+        # Ensure that character roles in actions (and action selectors) have a role-participation
+        # mode or else a modifier that obviates the need for one. In other words, flag cases of
+        # a bare `as: character` in an action or action selector.
+        if construct_definition['type'] in config.CONSTRUCT_TYPES_USING_INITIATOR_ROLES:
+            if role_definition['entityType'] == external_types.RoleEntityType.CHARACTER:
+                if (
+                    not role_definition['participationMode']
+                    and not role_definition['anywhere']
+                    and not role_definition['precast']
+                    and not role_definition['spawn']
+                ):
+                    raise errors.VivCompileError(
+                        f"{utils.CONSTRUCT_LABEL[construct_definition['type']]} '{construct_definition['name']}' "
+                        f"has role '{role_definition['name']}' with 'character' label but no participation mode "
+                        f"('initiator', 'partner', 'recipient', 'bystander') or modifier label "
+                        f"('anywhere', 'precast', 'spawn') -- necessary for actions and action selectors"
+                    )
         # Ensure that the `precast` label is used properly
         if role_definition['precast'] and not utils.is_initiator_role(role_definition=role_definition):
             if (

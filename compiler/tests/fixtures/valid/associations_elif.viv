@@ -5,7 +5,7 @@ action evaluate-candidate:
         @evaluator:
             as: initiator
         @candidate:
-            as: character
+            as: recipient
     associations:
         default: routine
         for _@c:

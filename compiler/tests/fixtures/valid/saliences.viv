@@ -7,7 +7,7 @@ action gossip:
         @listener:
             as: recipient
         @subject:
-            as: character
+            as: recipient
         @eavesdroppers*:
             as: bystander
             n: 0-5

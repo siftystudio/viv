@@ -5,7 +5,7 @@ action assess-risk:
         @assessor:
             as: initiator
         @subject:
-            as: character
+            as: recipient
     saliences:
         default: #BORING
         for _@c:

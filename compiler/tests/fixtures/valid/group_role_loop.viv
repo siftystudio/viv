@@ -5,7 +5,7 @@ action announce:
         @speaker:
             as: initiator
         @audience*:
-            as: character
+            as: bystander
             n: 1-5
     effects:
         loop @audience* as _@listener:

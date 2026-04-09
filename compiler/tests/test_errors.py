@@ -64,6 +64,12 @@ def test_error_message_duplicate_salience_role() -> None:
         compile_from_path(source_file_path=INVALID_FIXTURES_SEMANTICS_SUBDIR / "duplicate_salience_role.viv")
 
 
+def test_error_message_bare_character_role_in_action() -> None:
+    """Check the error message for a bare character role in an action names the role and mentions participation mode."""
+    with pytest.raises(VivCompileError, match="(?si)animal.*participation mode"):
+        compile_from_path(source_file_path=INVALID_FIXTURES_SEMANTICS_SUBDIR / "bare_character_role_in_action.viv")
+
+
 def test_error_message_precast_on_non_reserved() -> None:
     """Check the error message for `precast` on a non-reserved action mentions `reserved`."""
     with pytest.raises(VivCompileError, match="(?si)reserved"):

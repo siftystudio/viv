@@ -15,7 +15,7 @@ action test-negation:
         @actor:
             as: initiator
         @target:
-            as: character
+            as: recipient
         &marker:
             as: symbol
             from: @actor.markers

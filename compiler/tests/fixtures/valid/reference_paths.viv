@@ -5,7 +5,7 @@ action examine:
         @examiner:
             as: initiator
         @subject:
-            as: character
+            as: recipient
     conditions:
         // Chained property access
         @subject.stats.strength > 10

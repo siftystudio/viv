@@ -7,8 +7,8 @@ action test-full-chain:
         @b:
             as: partner
         @c:
-            as: character
+            as: recipient
         @d:
-            as: character
+            as: bystander
     conditions:
         @a.x + 1 > 2 && @b.y * 3 <= @c.z || @d.w != 0

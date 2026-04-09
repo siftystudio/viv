@@ -1,0 +1,8 @@
+// Invalid: character role in an action with no participation mode or modifier label
+
+action rescue:
+    roles:
+        @rescuer:
+            as: initiator
+        @animal:
+            as: character

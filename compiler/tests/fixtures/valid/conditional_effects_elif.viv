@@ -5,7 +5,7 @@ action assess-threat:
         @assessor:
             as: initiator
         @subject:
-            as: character
+            as: recipient
     effects:
         if @subject.trust > 70:
             @assessor.trust += 5
