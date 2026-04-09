@@ -53,8 +53,13 @@ jobs:
       - name: Extract changelog for this version
         id: changelog
         run: |
-          body=$(scripts/extract-changelog.sh "${{ steps.version.outputs.version }}" plugins/vscode/CHANGELOG.md)
+          version="${{ steps.version.outputs.version }}"
+          body=$(scripts/extract-changelog.sh "$version" plugins/vscode/CHANGELOG.md)
           echo "body<<CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
+          echo "[Install latest from Marketplace](https://marketplace.visualstudio.com/items?itemName=siftystudio.viv) · [Install v${version} from GitHub](https://github.com/siftystudio/viv/blob/main/plugins/vscode/README.md#getting-started) · [README](https://github.com/siftystudio/viv/blob/main/plugins/vscode/README.md)" >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
+          echo "---" >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
           echo "$body" >> "$GITHUB_OUTPUT"
           echo "CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
 

@@ -49,8 +49,13 @@ jobs:
       - name: Extract changelog for this version
         id: changelog
         run: |
-          body=$(scripts/extract-changelog.sh "${{ steps.version.outputs.version }}" plugins/sublime/CHANGELOG.md)
+          version="${{ steps.version.outputs.version }}"
+          body=$(scripts/extract-changelog.sh "$version" plugins/sublime/CHANGELOG.md)
           echo "body<<CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
+          echo "[Install latest from GitHub](https://github.com/siftystudio/viv/blob/main/plugins/sublime/README.md#getting-started) · [Install v${version} from GitHub](https://github.com/siftystudio/viv/releases/tag/sublime-v${version}) · [README](https://github.com/siftystudio/viv/blob/main/plugins/sublime/README.md)" >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
+          echo "---" >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
           echo "$body" >> "$GITHUB_OUTPUT"
           echo "CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
 

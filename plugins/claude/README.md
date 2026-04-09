@@ -10,6 +10,7 @@ The Viv plugin for [Claude Code](https://code.claude.com) (`viv`) turns Claude i
 - [How It Works](#how-it-works)
 - [Skills](#skills)
 - [Compatibility](#compatibility)
+- [Updating](#updating)
 - [Changelog](#changelog)
 - [License](#license)
 
@@ -22,9 +23,18 @@ The Viv plugin for [Claude Code](https://code.claude.com) (`viv`) turns Claude i
 
 * Install [Claude Code](https://code.claude.com/docs/en/quickstart).
 * In your terminal, boot up Claude Code: `claude`.
-* Within the Claude Code session, paste in these commands to install the Viv Claude Code plugin:
+* Within the Claude Code session, paste in these commands to install the Viv plugin:
   * `/plugin marketplace add siftystudio/claude-plugins`
-  * `/plugin install viv@siftystudio`
+  * `/plugin install viv@siftystudio` 
+    * *Recommended: Choose the user scope to make the plugin available in all your projects.*
+  * Alternatively, you can install from a `.zip` file (e.g., to use an older version):
+    * Download the `.zip` file attached to the pertinent [GitHub release](https://github.com/siftystudio/viv/releases).
+    * Then run `/plugin marketplace add ./path/to/unzipped/directory`.
+* Enable auto-update so the plugin stays current:
+  * `/plugin` → Marketplaces tab → select `siftystudio` → Enable auto-update.
+* Start a new Claude Code session.
+  * Currently a full restart is required for the plugin to become active (despite what `/reload-plugins` may suggest).
+
 * Start using the plugin:
   * `cd` into the project where you intend to use Viv.
   * Boot up Claude Code there: `claude`.
@@ -74,6 +84,14 @@ You can also just talk about Viv with Claude naturally, assuming you're in a pro
 ## Compatibility
 
 The plugin downloads a copy of the Viv monorepo that is matched to your installed compiler and runtime versions. If you update your compiler or runtime, Claude will notice the version mismatch and offer to sync its reference material and/or your Viv install to match. It can also detect when your Viv components are out of date and missing helpful new features or fixes.
+
+## Updating
+
+If you enabled auto-update, the plugin will update automatically. But if auto-update is off, or if the latest version hasn't come through yet, you can still update manually:
+
+* Clear the plugin cache and reinstall: `rm -rf ~/.claude/plugins/cache/siftystudio`.
+
+* Restart Claude Code and install again from scratch, per the instructions in [Getting Started](#getting-started).
 
 ## Changelog
 

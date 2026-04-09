@@ -52,6 +52,10 @@ jobs:
           version="${{ steps.version.outputs.version }}"
           body=$(scripts/extract-changelog.sh "$version" plugins/claude/CHANGELOG.md)
           echo "body<<CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
+          echo "[Install latest from GitHub](https://github.com/siftystudio/viv/blob/main/plugins/claude/README.md#getting-started) · [Install v${version} from GitHub](https://github.com/siftystudio/viv/releases/tag/claude-v${version}) · [README](https://github.com/siftystudio/viv/blob/main/plugins/claude/README.md)" >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
+          echo "---" >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
           echo "$body" >> "$GITHUB_OUTPUT"
           echo "CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
 

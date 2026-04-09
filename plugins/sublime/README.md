@@ -68,6 +68,11 @@ This package is a lightweight **editor plugin** for the project, providing vario
 * Install the [Viv compiler](https://pypi.org/project/viv-compiler): `pip install viv-compiler`.
   * The compiler must be accessible via `python3` on your system. If you installed the compiler into a virtual environment, you will need to ensure that the `python3` invoked by Sublime Text can find it.
 
+* Alternatively, you can install from a `.sublime-package` file (e.g., to use an older version):
+  * Download `Viv.sublime-package` from the pertinent [GitHub release](https://github.com/siftystudio/viv/releases).
+  * Place it in the `Installed Packages` directory (`Preferences > Browse Packages...`, then go up one level to find `Installed Packages`).
+  * Restart Sublime Text.
+
 * Create or open a `.viv` file in Sublime Text. Syntax highlighting should activate automatically.
 
 * Choose a Viv color theme (see [Color Themes](#color-themes)).

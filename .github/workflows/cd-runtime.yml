@@ -62,8 +62,13 @@ jobs:
       - name: Extract changelog for this version
         id: changelog
         run: |
-          body=$(scripts/extract-changelog.sh "${{ steps.version.outputs.version }}" runtimes/js/CHANGELOG.md)
+          version="${{ steps.version.outputs.version }}"
+          body=$(scripts/extract-changelog.sh "$version" runtimes/js/CHANGELOG.md)
           echo "body<<CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
+          echo "[Install latest from npm](https://www.npmjs.com/package/@siftystudio/viv-runtime) · [Install v${version} from npm](https://www.npmjs.com/package/@siftystudio/viv-runtime/v/${version}) · [README](https://github.com/siftystudio/viv/blob/main/runtimes/js/README.md) · [API Reference](https://viv.sifty.studio/reference/runtimes/js/)" >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
+          echo "---" >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
           echo "$body" >> "$GITHUB_OUTPUT"
           echo "CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
 

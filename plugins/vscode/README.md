@@ -38,11 +38,12 @@ The Viv project centers on a rich domain-specific language (DSL) that authors us
 
 ## Getting Started
 
-* Install [this extension](https://marketplace.visualstudio.com/items?itemName=siftystudio.viv).
-  * Alternatively, you can directly install a pre-built `.vsix` file from our [GitHub releases page](https://github.com/siftystudio/viv/releases), then run `code --install-extension <file>.vsix`.
+* Install [the extension](https://marketplace.visualstudio.com/items?itemName=siftystudio.viv).
+  * Alternatively, you can install from a pre-built `.vsix` file  (e.g., to use an older version):
+    * Download the `.vsix` file attached to the pertinent [GitHub release](https://github.com/siftystudio/viv/releases).
+    * Then run `code --install-extension <file>.vsix`.
 * Install the [Viv compiler](https://pypi.org/project/viv-compiler): `pip install viv-compiler`.
   * If the compiler is not detected, because VS Code is using a different Python interpreter, the extension will offer to install it for you automatically (in its associated Python).
-
 * Create or open a `.viv` file. Syntax highlighting should activate automatically.
 * **Important:** Open the `Output` tab of the panel (`Cmd+Shift+U` / `Ctrl+Shift+U`) and select `Viv` from the dropdown.
 * Choose a Viv color theme (see [Color Themes](#color-themes)).

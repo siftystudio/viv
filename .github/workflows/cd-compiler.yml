@@ -54,8 +54,13 @@ jobs:
       - name: Extract changelog for this version
         id: changelog
         run: |
-          body=$(scripts/extract-changelog.sh "${{ steps.version.outputs.version }}" compiler/CHANGELOG.md)
+          version="${{ steps.version.outputs.version }}"
+          body=$(scripts/extract-changelog.sh "$version" compiler/CHANGELOG.md)
           echo "body<<CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
+          echo "[Install latest from PyPI](https://pypi.org/project/viv-compiler/) · [Install v${version} from PyPI](https://pypi.org/project/viv-compiler/${version}/) · [README](https://github.com/siftystudio/viv/blob/main/compiler/README.md) · [Language Reference](https://viv.sifty.studio/reference/language/00-preamble/)" >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
+          echo "---" >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
           echo "$body" >> "$GITHUB_OUTPUT"
           echo "CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
 
