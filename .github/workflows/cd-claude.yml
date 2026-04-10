@@ -61,15 +61,26 @@ jobs:
 
       - name: Build plugin zip
         run: |
-          cd plugins/claude
-          zip -r "../../viv-claude-v${{ steps.version.outputs.version }}.zip" \
-            .claude-plugin/ \
-            docs/ \
-            hooks/ \
-            skills/ \
-            LICENSE.txt \
-            README.md \
-            CHANGELOG.md
+          # Create marketplace wrapper structure
+          version="${{ steps.version.outputs.version }}"
+          staging="viv-claude-v${version}"
+          mkdir -p "${staging}/.claude-plugin" "${staging}/viv"
+          # Download our actual marketplace.json, then patch its 'version' and 'source'
+          curl -sfL "https://raw.githubusercontent.com/siftystudio/claude-plugins/main/.claude-plugin/marketplace.json" \
+            -o marketplace-raw.json
+          jq --arg v "$version" '.plugins[0].version = $v | .plugins[0].source = "./viv"' \
+            marketplace-raw.json > "${staging}/.claude-plugin/marketplace.json"
+          # Copy plugin files into viv/ subdirectory
+          cp -r plugins/claude/.claude-plugin "${staging}/viv/"
+          cp -r plugins/claude/bin "${staging}/viv/"
+          cp -r plugins/claude/docs "${staging}/viv/"
+          cp -r plugins/claude/hooks "${staging}/viv/"
+          cp -r plugins/claude/skills "${staging}/viv/"
+          cp plugins/claude/LICENSE.txt "${staging}/viv/"
+          cp plugins/claude/README.md "${staging}/viv/"
+          cp plugins/claude/CHANGELOG.md "${staging}/viv/"
+          # Zip it up
+          zip -r "${staging}.zip" "${staging}/"
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
