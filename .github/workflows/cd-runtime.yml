@@ -80,6 +80,7 @@ jobs:
         with:
           name: Viv JavaScript Runtime v${{ steps.version.outputs.version }}
           body: ${{ steps.changelog.outputs.body }}
+          make_latest: "false"
 
       - name: Generate API docs
         run: npm --workspace runtimes/js run docs

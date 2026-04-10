@@ -80,3 +80,4 @@ jobs:
         with:
           name: Viv Compiler v${{ steps.version.outputs.version }}
           body: ${{ steps.changelog.outputs.body }}
+          make_latest: "false"

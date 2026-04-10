@@ -90,3 +90,4 @@ jobs:
           name: Viv Claude Code Plugin v${{ steps.version.outputs.version }}
           body: ${{ steps.changelog.outputs.body }}
           files: viv-claude-v${{ steps.version.outputs.version }}.zip
+          make_latest: "false"

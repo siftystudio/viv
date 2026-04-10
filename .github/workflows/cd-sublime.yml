@@ -81,3 +81,4 @@ jobs:
           name: Viv Sublime Text Package v${{ steps.version.outputs.version }}
           body: ${{ steps.changelog.outputs.body }}
           files: Viv.sublime-package
+          make_latest: "false"
