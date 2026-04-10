@@ -1,0 +1,11 @@
+// A character raises a glass to honor a fallen comrade
+action toast-fallen-comrade:
+    gloss: "@mourner raises a glass to the memory of @fallen"
+    roles:
+        @mourner:
+            as: initiator
+        @fallen:
+            as: character, anywhere
+    conditions:
+        !@fallen.alive
+        @mourner.location.type == #TAVERN

@@ -1,0 +1,18 @@
+// A character buries spawned treasure on a beach
+action bury-treasure:
+    gloss: "@burier buries @treasure on @beach under the moonlight"
+    roles:
+        @burier:
+            as: initiator
+        @beach:
+            as: location
+            is: @burier.location
+        @treasure:
+            as: item, spawn
+            spawn: ~createItem("treasure")
+    conditions:
+        @beach.type == #BEACH
+    effects:
+        @treasure.buried = true
+        @treasure.buriedAt = @beach
+        @treasure.buriedBy = @burier

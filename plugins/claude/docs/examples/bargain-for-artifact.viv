@@ -1,0 +1,23 @@
+// A character haggles with a merchant over a mysterious artifact
+action bargain-for-artifact:
+    gloss: "@buyer bargains with @merchant for @artifact"
+    roles:
+        @buyer:
+            as: initiator
+        @merchant:
+            as: partner
+        @artifact:
+            as: item
+            from: @merchant.inventory
+    conditions:
+        ~isItemOfType(@artifact, "artifact")
+        @artifact.mysterious
+        @buyer.wealth >= @artifact.price
+    effects:
+        @buyer.wealth -= @artifact.price
+        @merchant.wealth += @artifact.price
+        ~transferItem(@merchant, @buyer, @artifact)
+    embargoes:
+        embargo:
+            time: 30 days
+            roles: @buyer, @merchant

@@ -1,0 +1,16 @@
+// A character poisons another character's drink at a banquet
+action poison-drink:
+    gloss: "@poisoner poisons @drink, belonging to @target"
+    roles:
+        @poisoner:
+            as: initiator
+        @target:
+            as: bystander
+        @drink:
+            as: item
+            is: @target.drink
+    conditions:
+        @poisoner.location.type == #BANQUET
+        @poisoner.hasPoison
+    effects:
+        @drink.poisoned = true

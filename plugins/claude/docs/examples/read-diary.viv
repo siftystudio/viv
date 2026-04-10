@@ -1,0 +1,16 @@
+// A character reads someone else's diary, learning everything recounted in it
+action read-diary:
+    gloss: "@reader reads @owner's diary"
+    roles:
+        @reader:
+            as: initiator
+        @owner:
+            as: character, anywhere
+        @diary:
+            as: item
+            from: @owner.possessions
+    conditions:
+        ~isItemOfType(@diary, "diary")
+    effects:
+        // @reader learns all past actions inscribed in the diary
+        @reader inspect @diary
