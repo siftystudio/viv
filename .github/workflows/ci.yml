@@ -139,8 +139,44 @@ jobs:
       - name: Build and test
         run: ./gradlew buildPlugin test
 
+  claude:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install compiler
+        run: pip install compiler/
+
+      - name: Run Claude Code plugin tests (bash 5.x, Linux default)
+        run: bash plugins/claude/tests/run-tests.sh
+
+      - name: Cache bash 3.2.57 build
+        id: cache-bash3
+        uses: actions/cache@v4
+        with:
+          path: /tmp/bash3
+          key: bash-3.2.57-${{ runner.os }}
+
+      - name: Build bash 3.2.57 (matches macOS default; cached after first run)
+        if: steps.cache-bash3.outputs.cache-hit != 'true'
+        run: |
+          cd /tmp
+          curl -sSLO https://ftp.gnu.org/gnu/bash/bash-3.2.57.tar.gz
+          tar xzf bash-3.2.57.tar.gz
+          cd bash-3.2.57
+          ./configure --prefix=/tmp/bash3 CFLAGS="-Wno-implicit-function-declaration -Wno-error"
+          make -j"$(nproc)"
+          make install
+
+      - name: Run Claude Code plugin tests (bash 3.2.57, macOS default)
+        run: /tmp/bash3/bin/bash plugins/claude/tests/run-tests.sh
+
   ci:
-    needs: [compiler, runtime, syntax, sync, jetbrains, examples]
+    needs: [compiler, runtime, syntax, sync, jetbrains, claude, examples]
     runs-on: ubuntu-latest
     steps:
       - run: echo "All checks passed"

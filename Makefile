@@ -26,20 +26,21 @@ help:
 
 # Run all CI checks locally.
 #
-# The procedure here mirrors the `check` job in ci.yml, except that it's missing the
+# The procedure here mirrors the `check` job in `ci.yml`, except that it's missing the
 # Sublime syntax test, which requires a Linux binary.
 #
 # If this passes here, CI will pass on GitHub.
 #
 # If a step fails:
-#   Lock file        →  cd compiler && poetry lock
-#   Sync checks      →  heed the FAIL message indicating which invariant drifted
-#   TextMate tests   →  fix the assertion in syntax/tests/syntax_test_viv.viv
-#   Compile runtime  →  fix the TypeScript compilation error
-#   API surface      →  npm --workspace runtimes/js run build (regenerates the report)
-#   Compiler tests   →  fix the failing test or the code it exercises
-#   Runtime tests    →  fix the failing test or the code it exercises
-#   Build runtime    →  fix the build error
+#   Lock file           →  `cd compiler && poetry lock`
+#   Sync checks         →  heed the FAIL message indicating which invariant drifted
+#   TextMate tests      →  fix the assertion in `syntax/tests/syntax_test_viv.viv`
+#   Compile runtime     →  fix the TypeScript compilation error
+#   API surface         →  `npm --workspace runtimes/js run build` (regenerates the report)
+#   Compiler tests      →  fix the failing test or the code it exercises
+#   Runtime tests       →  fix the failing test or the code it exercises
+#   Build runtime       →  fix the build error
+#   Claude Code plugin  →  heed the FAIL message indicating which contract drifted
 preflight:
 	@echo "◌ Checking compiler lock file..." && \
 	cd compiler && poetry check --lock && cd .. && \
@@ -71,6 +72,9 @@ preflight:
 	echo "◌ Building JetBrains plugin..." && \
 	cd plugins/jetbrains && ./gradlew buildPlugin -q && cd ../.. && \
 	echo "  ✓ JetBrains plugin built" && \
+	echo "◌ Testing Claude Code plugin..." && \
+	bash plugins/claude/tests/run-tests.sh && \
+	echo "  ✓ Claude Code plugin tests passed" && \
 	echo "◌ Running example projects..." && \
 	npm --workspace examples/hello-viv-ts run start && \
 	npm --workspace examples/hello-viv-js run start && \
