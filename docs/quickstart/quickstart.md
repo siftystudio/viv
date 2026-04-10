@@ -69,13 +69,13 @@ The plugin's custom skills turn Claude into a Viv expert (with a copy of this mo
 
 * Install [Claude Code](https://code.claude.com/docs/en/quickstart).
 
-* In your terminal, boot up Claude Code: `claude`.
+* Install the Viv Claude Code plugin:
 
-* Within the Claude Code session, paste in these commands to install the Viv Claude Code plugin:
-   * `/plugin marketplace add siftystudio/claude-plugins`
-   
-   * `/plugin install viv@siftystudio`
-   
+  ```sh
+  claude plugin marketplace add siftystudio/claude-plugins
+  claude plugin install viv@siftystudio
+  ```
+  
 * Start using the plugin:
 
    - `cd` into the project where you intend to use Viv.

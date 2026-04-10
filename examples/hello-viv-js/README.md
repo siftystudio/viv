@@ -6,16 +6,35 @@ Three characters walk into a bar... and say hello to each other. That's it.
 
 ## Quick Start
 
-```bash
-# Clone this example project (only)
-npx degit siftystudio/viv/examples/hello-viv-js hello-viv-js
+* Clone this example project (only):
 
-# Install dependencies (including the Viv JS runtime)
+```sh
+npx degit siftystudio/viv/examples/hello-viv-js hello-viv-js
+```
+
+* Install dependencies (including the Viv JavaScript runtime):
+
+```sh
 cd hello-viv-js
 npm install
+```
 
-# Run the example
-npm start
+* Run the example (note that your exact output will differ due to nondeterminism):
+
+```console
+$ npm start
+
+=== Chronicle ===
+
+  [T=0] Alice says hello to Bob
+  [T=0] Bob says hello to Alice
+  [T=0] Carol says hello to Alice
+  [T=10] Alice says hello to Carol
+  [T=10] Bob says hello to Carol
+  [T=10] Carol says hello to Bob
+  [T=20] Alice says hello to Bob
+  [T=20] Bob says hello to Carol
+  [T=20] Carol says hello to Alice
 ```
 
 ## What It Does

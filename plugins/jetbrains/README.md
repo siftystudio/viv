@@ -259,7 +259,7 @@ If the installed compiler version is **newer** than expected, you need to update
 
 Requires JDK 21 or later.
 
-```bash
+```sh
 ./gradlew buildPlugin        # Build the plugin ZIP
 ./gradlew runIde             # Launch a sandboxed IDE with the plugin
 ./gradlew test               # Run the test suite
