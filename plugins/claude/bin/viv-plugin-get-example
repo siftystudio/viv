@@ -9,27 +9,6 @@
 
 set -euo pipefail
 
-CACHE_DIR="$HOME/.claude/plugins/cache/siftystudio/viv"
-
-if [ ! -d "$CACHE_DIR" ]; then
-    echo "" >&2
-    echo "Viv plugin is not installed -- no cache directory found." >&2
-    echo "" >&2
-    exit 1
-fi
-
-# Find the highest semver version directory
-LATEST=$(ls -1 "$CACHE_DIR" | sort -t. -k1,1n -k2,2n -k3,3n | tail -1)
-
-if [ -z "$LATEST" ]; then
-    echo "" >&2
-    echo "Plugin cache is empty -- try reinstalling." >&2
-    echo "" >&2
-    exit 1
-fi
-
-EXAMPLES_DIR="$CACHE_DIR/$LATEST/docs/examples"
-
 show_help() {
     echo ""
     echo "Usage: viv-plugin-get-example [name]"
@@ -57,16 +36,40 @@ list_examples() {
     echo ""
 }
 
+# Handle help and bare listing before touching the filesystem, so these
+# subcommands work even when the plugin cache is not yet installed.
 if [[ $# -eq 0 ]]; then
     list_examples
     exit 0
 fi
 
+if [[ "$1" = "--help" || "$1" = "-h" ]]; then
+    show_help
+    exit 0
+fi
+
+CACHE_DIR="$HOME/.claude/plugins/cache/siftystudio/viv"
+
+if [ ! -d "$CACHE_DIR" ]; then
+    echo "" >&2
+    echo "Viv plugin is not installed -- no cache directory found." >&2
+    echo "" >&2
+    exit 1
+fi
+
+# Find the highest semver version directory
+LATEST=$(ls -1 "$CACHE_DIR" | sort -t. -k1,1n -k2,2n -k3,3n | tail -1)
+
+if [ -z "$LATEST" ]; then
+    echo "" >&2
+    echo "Plugin cache is empty -- try reinstalling." >&2
+    echo "" >&2
+    exit 1
+fi
+
+EXAMPLES_DIR="$CACHE_DIR/$LATEST/docs/examples"
+
 case "$1" in
-    --help|-h)
-        show_help
-        exit 0
-        ;;
     --all)
         for file in "$EXAMPLES_DIR"/*.viv; do
             echo "===== $(basename "$file") ====="
