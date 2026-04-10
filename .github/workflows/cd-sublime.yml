@@ -52,7 +52,7 @@ jobs:
           version="${{ steps.version.outputs.version }}"
           body=$(scripts/extract-changelog.sh "$version" plugins/sublime/CHANGELOG.md)
           echo "body<<CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
-          echo "[Install latest from GitHub](https://github.com/siftystudio/viv/blob/main/plugins/sublime/README.md#getting-started) · [Install v${version} from GitHub](https://github.com/siftystudio/viv/releases/tag/sublime-v${version}) · [README](https://github.com/siftystudio/viv/blob/main/plugins/sublime/README.md)" >> "$GITHUB_OUTPUT"
+          echo "[Install latest from GitHub](https://github.com/siftystudio/viv/blob/main/plugins/sublime/README.md#getting-started) · [Install v${version} from GitHub](https://github.com/siftystudio/viv/blob/main/plugins/sublime/README.md#installing-a-specific-release) · [README](https://github.com/siftystudio/viv/blob/main/plugins/sublime/README.md)" >> "$GITHUB_OUTPUT"
           echo "" >> "$GITHUB_OUTPUT"
           echo "---" >> "$GITHUB_OUTPUT"
           echo "" >> "$GITHUB_OUTPUT"

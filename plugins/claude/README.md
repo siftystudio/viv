@@ -14,6 +14,7 @@ Skills include `/setup` for fully automated Viv installation and project setup, 
 - [Skills](#skills)
 - [Compatibility](#compatibility)
 - [Updating](#updating)
+- [Installing a Specific Release](#installing-a-specific-release)
 - [Changelog](#changelog)
 - [Security and Privacy](#security-and-privacy)
 - [License](#license)
@@ -34,22 +35,7 @@ Skills include `/setup` for fully automated Viv installation and project setup, 
   claude plugin install viv@siftystudio
   ```
 
-  * Alternatively, you can install from a `.zip` file (e.g., to use an older version):
-
-    * If you have a previous install, remove it first:
-
-      ```sh
-      rm -rf ~/.claude/plugins/cache/siftystudio/viv
-      ```
-
-    * Download the `.zip` file attached to the pertinent [GitHub release](https://github.com/siftystudio/viv/releases), and unzip it.
-
-    * Install from the unzipped directory:
-    
-      ```sh
-      claude plugin marketplace add path/to/unzipped/<directory-name>
-      claude plugin install viv@siftystudio
-      ```
+  * To install a specific version, see [Installing a Specific Release](#installing-a-specific-release).
 
 * Enable auto-update so the plugin stays current:
 
@@ -121,6 +107,25 @@ If you [enabled auto-update](#getting-started), the plugin will update automatic
 * Clear the plugin cache and reinstall: `rm -rf ~/.claude/plugins/cache/siftystudio`.
 
 * Restart Claude Code and install again from scratch, following the instructions in [Getting Started](#getting-started).
+
+## Installing a Specific Release
+
+You can also install a specific version of the plugin, for instance to use an older version.
+
+* If you have a previous install, remove it first:
+
+  ```sh
+  rm -rf ~/.claude/plugins/cache/siftystudio/viv
+  ```
+
+* Download the `.zip` file attached to the pertinent [GitHub release](https://github.com/siftystudio/viv/releases), and unzip it.
+
+* Install from the unzipped directory:
+
+  ```sh
+  claude plugin marketplace add path/to/unzipped/<directory-name>
+  claude plugin install viv@siftystudio
+  ```
 
 ## Changelog
 

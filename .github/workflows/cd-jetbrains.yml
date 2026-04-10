@@ -52,7 +52,7 @@ jobs:
           version="${{ steps.version.outputs.version }}"
           body=$(scripts/extract-changelog.sh "$version" plugins/jetbrains/CHANGELOG.md)
           echo "body<<CHANGELOG_BODY_DELIMITER" >> "$GITHUB_OUTPUT"
-          echo "[Install latest from Marketplace](https://plugins.jetbrains.com/plugin/31012-viv) · [Install v${version} from GitHub](https://github.com/siftystudio/viv/blob/main/plugins/jetbrains/README.md#getting-started) · [README](https://github.com/siftystudio/viv/blob/main/plugins/jetbrains/README.md)" >> "$GITHUB_OUTPUT"
+          echo "[Install latest from Marketplace](https://plugins.jetbrains.com/plugin/31012-viv) · [Install v${version} from GitHub](https://github.com/siftystudio/viv/blob/main/plugins/jetbrains/README.md#installing-a-specific-release) · [README](https://github.com/siftystudio/viv/blob/main/plugins/jetbrains/README.md)" >> "$GITHUB_OUTPUT"
           echo "" >> "$GITHUB_OUTPUT"
           echo "---" >> "$GITHUB_OUTPUT"
           echo "" >> "$GITHUB_OUTPUT"

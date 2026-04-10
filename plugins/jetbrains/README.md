@@ -18,6 +18,7 @@ It works in all IntelliJ-based IDEs: [WebStorm](https://www.jetbrains.com/websto
 - [Plugin Settings](#plugin-settings)
 - [Updates](#updates)
 - [Compatibility](#compatibility)
+- [Installing a Specific Release](#installing-a-specific-release)
 - [Building from Source](#building-from-source)
 - [Changelog](#changelog)
 - [Security and Privacy](#security-and-privacy)
@@ -74,9 +75,7 @@ It works in all IntelliJ-based IDEs: [WebStorm](https://www.jetbrains.com/websto
   * If you're using the Viv JavaScript runtime, the natural choice is [WebStorm](https://www.jetbrains.com/webstorm/).
 
 * Install [the plugin](https://plugins.jetbrains.com/plugin/31012-viv).
-  * Alternatively, you can install it from a release ZIP (e.g., to use an older version):
-    * Download the `.zip` file attached to the pertinent [GitHub release](https://github.com/siftystudio/viv/releases).
-    * In your JetBrains IDE, go to `Settings > Plugins`, click the gear icon, choose `Install Plugin from Disk...`, select the downloaded `.zip` file, and restart when prompted.
+  * To install a specific version, see [Installing a Specific Release](#installing-a-specific-release).
   
 * Install the [Viv compiler](https://pypi.org/project/viv-compiler): `pip install viv-compiler`, or **let the plugin do it for you**:
   * If the compiler is not detected, the plugin will offer to install it for you automatically via a notification prompt.
@@ -256,9 +255,18 @@ If the installed compiler version is **older** than expected, the plugin will of
 
 If the installed compiler version is **newer** than expected, you need to update your Viv JetBrains plugin to the latest version.
 
+## Installing a Specific Release
+
+You can also install a specific version of the plugin, for instance to use an older version.
+
+* Download the `.zip` file attached to the pertinent [GitHub release](https://github.com/siftystudio/viv/releases).
+* In your JetBrains IDE, go to `Settings > Plugins`, click the gear icon, and choose `Install Plugin from Disk...`.
+* Select the downloaded `.zip` file.
+* Restart when prompted.
+
 ## Building from Source
 
-Requires JDK 21 or later.
+This requires JDK 21 or later.
 
 ```sh
 ./gradlew buildPlugin        # Build the plugin ZIP

@@ -19,6 +19,7 @@ This package is a lightweight **editor plugin** for the project, providing vario
 - [Boilerplate Snippets](#boilerplate-snippets)
 - [Updates](#updates)
 - [Compatibility](#compatibility)
+- [Installing a Specific Release](#installing-a-specific-release)
 - [Changelog](#changelog)
 - [Security and Privacy](#security-and-privacy)
 - [License](#license)
@@ -65,14 +66,10 @@ This package is a lightweight **editor plugin** for the project, providing vario
 * Search for `Package Control: Install Package` and select it.
 
 * Search for `Viv`, and install the package.
+  * To install a specific version, see [Installing a Specific Release](#installing-a-specific-release).
 
 * Install the [Viv compiler](https://pypi.org/project/viv-compiler): `pip install viv-compiler`.
   * The compiler must be accessible via `python3` on your system. If you installed the compiler into a virtual environment, you will need to ensure that the `python3` invoked by Sublime Text can find it.
-
-* Alternatively, you can install from a `.sublime-package` file (e.g., to use an older version):
-  * Download `Viv.sublime-package` from the pertinent [GitHub release](https://github.com/siftystudio/viv/releases).
-  * Place it in the `Installed Packages` directory (`Preferences > Browse Packages...`, then go up one level to find `Installed Packages`).
-  * Restart Sublime Text.
 
 * Create or open a `.viv` file in Sublime Text. Syntax highlighting should activate automatically.
 
@@ -222,6 +219,17 @@ Package Control will automatically check for updates, and when a new version of 
 Each release of this package is built for a specific version of the Viv compiler. If the installed compiler version doesn't match what the package expects, syntax highlighting and/or compiler integration may be affected. To mark this discrepancy, a warning will appear in the build-results panel upon any compilation action.
 
 To resolve a compatibility issue, update both the package and the compiler to their latest versions.
+
+
+## Installing a Specific Release
+
+You can also install a specific version of the plugin, for instance to use an older version.
+
+* Download `Viv.sublime-package` from the pertinent [GitHub release](https://github.com/siftystudio/viv/releases).
+* Place it in the `Installed Packages` directory.
+  * Select `Preferences > Browse Packages...`, and then go up one level to find `Installed Packages`.
+
+* Restart Sublime Text.
 
 
 ## Changelog

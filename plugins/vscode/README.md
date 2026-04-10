@@ -16,6 +16,7 @@ The Viv project centers on a rich domain-specific language (DSL) that authors us
 - [Extension Settings](#extension-settings)
 - [Updates](#updates)
 - [Compatibility](#compatibility)
+- [Installing a Specific Release](#installing-a-specific-release)
 - [Changelog](#changelog)
 - [Security and Privacy](#security-and-privacy)
 - [License](#license)
@@ -40,9 +41,7 @@ The Viv project centers on a rich domain-specific language (DSL) that authors us
 ## Getting Started
 
 * Install [the extension](https://marketplace.visualstudio.com/items?itemName=siftystudio.viv).
-  * Alternatively, you can install from a pre-built `.vsix` file  (e.g., to use an older version):
-    * Download the `.vsix` file attached to the pertinent [GitHub release](https://github.com/siftystudio/viv/releases).
-    * Then run `code --install-extension <file>.vsix`.
+  * To install a specific version, see [Installing a Specific Release](#installing-a-specific-release).
 * Install the [Viv compiler](https://pypi.org/project/viv-compiler): `pip install viv-compiler`.
   * If the compiler is not detected, because VS Code is using a different Python interpreter, the extension will offer to install it for you automatically (in its associated Python).
 * Create or open a `.viv` file. Syntax highlighting should activate automatically.
@@ -225,6 +224,13 @@ Each release of this extension is built for a specific version of the Viv compil
 If the installed compiler version is **older** than expected, the extension will offer to update it for you automatically (in its associated Python).
 
 If the installed compiler version is **newer** than expected, you need to update your Viv VS Code extension to the latest version.
+
+## Installing a Specific Release
+
+You can also install a specific version of the plugin, for instance to use an older version.
+
+* Download the `.vsix` file attached to the pertinent [GitHub release](https://github.com/siftystudio/viv/releases).
+* Run `code --install-extension <file>.vsix`.
 
 ## Changelog
 
