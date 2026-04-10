@@ -23,6 +23,7 @@ As for runtimes, currently there is a single option: the [Viv JavaScript runtime
 - [Troubleshooting](#troubleshooting)
 - [Running from Source](#running-from-source)
 - [Changelog](#changelog)
+- [Security and Privacy](#security-and-privacy)
 - [License](#license)
 
 ## Requirements
@@ -506,6 +507,10 @@ Here's how to work directly from a repo checkout:
 ## Changelog
 
 See the [changelog](https://github.com/siftystudio/viv/blob/main/compiler/CHANGELOG.md) for a history of changes to this package.
+
+## Security and Privacy
+
+The Viv compiler runs entirely on your machine. It collects no telemetry, makes no analytics calls, and sends no data to any third party. If you discover a security vulnerability in the compiler, please report it using the protocol described in the [Viv security policy](https://github.com/siftystudio/viv/blob/main/.github/SECURITY.md).
 
 ## License
 

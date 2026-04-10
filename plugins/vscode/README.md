@@ -17,6 +17,7 @@ The Viv project centers on a rich domain-specific language (DSL) that authors us
 - [Updates](#updates)
 - [Compatibility](#compatibility)
 - [Changelog](#changelog)
+- [Security and Privacy](#security-and-privacy)
 - [License](#license)
 
 ## Features
@@ -228,6 +229,10 @@ If the installed compiler version is **newer** than expected, you need to update
 ## Changelog
 
 See the [changelog](https://marketplace.visualstudio.com/items/siftystudio.viv/changelog) for a history of changes to this extension.
+
+## Security and Privacy
+
+The Viv VS Code extension runs entirely on your machine. It collects no telemetry, makes no analytics calls, and sends no data to any third party. If you discover a security vulnerability in the extension, please report it using the protocol described in the [Viv security policy](https://github.com/siftystudio/viv/blob/main/.github/SECURITY.md).
 
 ## License
 

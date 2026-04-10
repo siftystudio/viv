@@ -12,6 +12,7 @@ At a high level, the runtime combines an **interpreter** for the [Viv DSL](https
 - [API](#api)
 - [Example Projects](#example-projects)
 - [Changelog](https://github.com/siftystudio/viv/blob/main/runtimes/js/CHANGELOG.md)
+- [Security and Privacy](#security-and-privacy)
 - [License](#license)
 
 ## Requirements
@@ -100,6 +101,10 @@ Here are the current **example projects** making use of the Viv JavaScript runti
 ## Changelog
 
 See the [changelog](https://github.com/siftystudio/viv/blob/main/runtimes/js/CHANGELOG.md) for a history of changes to this package.
+
+## Security and Privacy
+
+The Viv JavaScript runtime runs entirely inside your host application. It collects no telemetry, makes no analytics calls, and sends no data to any third party. If you discover a security vulnerability in the runtime, please report it using the protocol described in the [Viv security policy](https://github.com/siftystudio/viv/blob/main/.github/SECURITY.md).
 
 ## License
 

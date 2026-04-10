@@ -20,6 +20,7 @@ It works in all IntelliJ-based IDEs: [WebStorm](https://www.jetbrains.com/websto
 - [Compatibility](#compatibility)
 - [Building from Source](#building-from-source)
 - [Changelog](#changelog)
+- [Security and Privacy](#security-and-privacy)
 - [License](#license)
 
 ## Features
@@ -271,6 +272,10 @@ The built plugin ZIP is at `build/distributions/`.
 ## Changelog
 
 See the [changelog](CHANGELOG.md) for a history of changes to this plugin.
+
+## Security and Privacy
+
+The Viv JetBrains plugin runs entirely on your machine. It collects no telemetry, makes no analytics calls, and sends no data to any third party. If you discover a security vulnerability in the plugin, please report it using the protocol described in the [Viv security policy](https://github.com/siftystudio/viv/blob/main/.github/SECURITY.md).
 
 ## License
 

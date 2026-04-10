@@ -20,6 +20,7 @@ This package is a lightweight **editor plugin** for the project, providing vario
 - [Updates](#updates)
 - [Compatibility](#compatibility)
 - [Changelog](#changelog)
+- [Security and Privacy](#security-and-privacy)
 - [License](#license)
 
 
@@ -226,6 +227,11 @@ To resolve a compatibility issue, update both the package and the compiler to th
 ## Changelog
 
 See the [changelog](https://github.com/siftystudio/viv/blob/main/plugins/sublime/CHANGELOG.md) for a history of changes to this package.
+
+
+## Security and Privacy
+
+The Viv Sublime Text package runs entirely on your machine. It collects no telemetry, makes no analytics calls, and sends no data to any third party. If you discover a security vulnerability in the package, please report it using the protocol described in the [Viv security policy](https://github.com/siftystudio/viv/blob/main/.github/SECURITY.md).
 
 
 ## License
