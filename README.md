@@ -41,14 +41,17 @@ Below, you'll find a barebones overview of the project, mostly taking the form o
 
 * Install [Claude Code](https://code.claude.com/).
 
-* Within a Claude Code session, install the Viv plugin for Claude Code:
+* Install the [Viv Claude Code plugin](https://github.com/siftystudio/viv/tree/main/plugins/claude):
 
-  ```
-  /plugin marketplace add siftystudio/claude-plugins
-  /plugin install viv@siftystudio
+  ```sh
+  claude plugin marketplace add siftystudio/claude-plugins
+  claude plugin install viv@siftystudio
   ```
 
-* Now simply run the `/viv:setup` skill, and Claude takes it from there, installing Viv components, setting up your project, and answering your questions.
+* In Claude Code, run the `/viv:setup` skill.
+
+  * Claude takes it from there, installing Viv components, setting up your project, answering your questions, and proposing next steps.
+
 
 
 ### I do not use LLMs
