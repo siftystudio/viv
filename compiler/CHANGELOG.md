@@ -4,6 +4,15 @@ All notable changes to the Viv compiler (`viv-compiler`) will be documented in t
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.11.0] – 2026-04-10
+
+### Added
+
+* `compile_from_string()` API function for compiling Viv source code directly from a string, without a file on disk. Accepts an optional `entry_dir` for resolving include paths (defaults to the current working directory).
+* `--string` and `--entry-dir` CLI flags, exposing the new compile-from-string affordance.
+* Validation check flagging `inscribe` and `inspect` expressions with operands of the wrong type.
+* Validation check flagging bare `as: character` role labels in actions and action selectors (where a participation mode like `initiator`, `partner`, `recipient`, or `bystander` is required).
+
 ## [0.10.4] – 2026-04-07
 
 ### Changed

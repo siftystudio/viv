@@ -24,6 +24,7 @@ from viv_compiler import (
 
 def compile_viv_source_code(
     *,
+    source_code: str,
     source_file_path: Path,
     default_importance: float,
     default_salience: float,
@@ -31,10 +32,13 @@ def compile_viv_source_code(
     use_memoization: bool,
     verbose_parser: bool = False,
 ) -> external_types.ContentBundle:
-    """Compile the given Viv source file to produce a JSON-serializable compiled content bundle.
+    """Compile the given Viv source code to produce a JSON-serializable compiled content bundle.
 
     Args:
-        source_file_path: The absolute path to the Viv source file to be parsed.
+        source_code: The Viv source code to compile.
+        source_file_path: Absolute path to the directory containing the entry file, meaning the file whose
+            contents is `source_code`. This is used for error reporting and include resolution (includes
+            resolve relative to this path's parent directory).
         default_importance: A default importance value to use when one is not specified
             in an action definition.
         default_salience: A default salience value to use when one is not specified
@@ -48,7 +52,7 @@ def compile_viv_source_code(
         The compiled content bundle.
 
     Raises:
-        VivParseError: The source file could not be parsed.
+        VivParseError: The source code could not be parsed.
     """
     # Honor user-supplied config parameters, or the associated default values if none were supplied
     _honor_user_supplied_config_parameters(
@@ -58,11 +62,9 @@ def compile_viv_source_code(
     )
     # Create a Viv parser
     viv_parser = _create_viv_parser(use_memoization=use_memoization, verbose=verbose_parser)
-    # Load the source file to be compiled
-    source_file_contents = _load_source_file(source_file_path=source_file_path)
-    # Parse the source file to produce a parse tree
+    # Parse the source code to produce a parse tree
     try:
-        parse_tree = viv_parser.parse(_input=source_file_contents)
+        parse_tree = viv_parser.parse(_input=source_code)
     except arpeggio.NoMatch as parsing_error:
         raise errors.VivParseError(original=parsing_error, file_path=source_file_path) from None
     # Following the visitor pattern in parsing, traverse the parse tree to gradually
@@ -70,7 +72,7 @@ def compile_viv_source_code(
     viv_visitor = visitor.Visitor()
     utils.register_source_file(
         source_file_path=source_file_path,
-        source_file_contents=source_file_contents,
+        source_file_contents=source_code,
         position_to_line_and_column=viv_parser.pos_to_linecol,
         is_entry_file=True
     )
@@ -143,19 +145,3 @@ def _create_viv_parser(*, use_memoization: bool, verbose: bool) -> ParserPEG:
     return viv_parser
 
 
-def _load_source_file(*, source_file_path: Path) -> str:
-    """Return the contents of the Viv source file at the given path.
-
-    Args:
-        source_file_path: Path to the Viv source file to be compiled.
-
-    Returns:
-        Contents of the Viv source file at the given path.
-    """
-    try:
-        with open(source_file_path, encoding="utf-8") as source_file:
-            return source_file.read()
-    except IsADirectoryError:
-        raise errors.VivCompileError(f"Expected a file, but got a directory: {source_file_path}") from None
-    except FileNotFoundError:
-        raise errors.VivCompileError(f"Source file not found: {source_file_path}") from None

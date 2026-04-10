@@ -29,14 +29,14 @@ def main() -> None:
     command_line_parser = _build_parser()
     # Parse the command-line arguments
     args = command_line_parser.parse_args()
+    # The `--entry-dir` flag is only meaningful with `--string` (it sets an anchor for resolving includes)
+    if args.entry_dir and not args.string:
+        command_line_parser.error("--entry-dir can only be used with --string")
     # If the user has requested compiler version numbers, print them and exit
     if args.version:
         _print_versions()
         sys.exit(0)
     with _handle_compiler_errors(show_traceback=args.traceback):
-        # If test mode is not engaged and no source file was provided, error and exit
-        if not args.test and not args.input:
-            command_line_parser.error("Unless the 'test' flag is engaged, a Viv source file must be provided")
         # If test mode is engaged, invoke the compiler on a test file and exit
         if args.test:
             _run_smoke_test()
@@ -70,18 +70,32 @@ def _build_parser() -> argparse.ArgumentParser:
         description="Compile a Viv source file (.viv) to produce a content bundle ready for use in a Viv runtime",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    parser.add_argument(
+    mode_group = parser.add_mutually_exclusive_group(required=True)
+    mode_group.add_argument(
         '-V',
         '--version',
         action='store_true',
         help='print compiler, schema, and grammar versions and exit'
     )
-    parser.add_argument(
+    mode_group.add_argument(
+        '--test',
+        action='store_true',
+        default=False,
+        help='run a simple smoke test to confirm the compiler is installed correctly'
+    )
+    mode_group.add_argument(
         '-i',
         '--input',
         metavar='PATH',
         type=str,
         help='relative or absolute path to the Viv source file (.viv) to be compiled'
+    )
+    mode_group.add_argument(
+        '-s',
+        '--string',
+        metavar='CODE',
+        type=str,
+        help='a string containing (only) Viv source code to compile directly'
     )
     parser.add_argument(
         '-o',
@@ -110,6 +124,13 @@ def _build_parser() -> argparse.ArgumentParser:
         action='store_true',
         default=False,
         help='after compilation, list all compiled construct names in console'
+    )
+    parser.add_argument(
+        '--entry-dir',
+        metavar='PATH',
+        type=str,
+        default=None,
+        help='directory for resolving include paths when using --string (default: current directory)'
     )
     parser.add_argument(
         '--default-importance',
@@ -154,12 +175,6 @@ def _build_parser() -> argparse.ArgumentParser:
         help='upon a compiler error, log traceback in addition to the error message'
     )
     parser.add_argument(
-        '--test',
-        action='store_true',
-        default=False,
-        help='run a simple smoke test to confirm the compiler is installed correctly'
-    )
-    parser.add_argument(
         '-q',
         '--quiet',
         action='store_true',
@@ -197,7 +212,9 @@ def _run_smoke_test() -> None:
 
 
 def _invoke_compiler(*, args: argparse.Namespace) -> external_types.ContentBundle:
-    """Invokes the compiler on the user's specified source file, with their specified configuration settings.
+    """Invokes the compiler on the user's specified source code, with their specified configuration settings.
+
+    The source code may be specified via a file path (via `--input`) or directly as a string (via `--string`).
 
     Args:
         args: Parsed command-line arguments.
@@ -205,17 +222,32 @@ def _invoke_compiler(*, args: argparse.Namespace) -> external_types.ContentBundl
     Returns:
         The compiled content bundle, if compilation succeeds.
     """
-    source_file_path = Path(args.input).expanduser().resolve()
-    if not args.quiet:
-        print(_cyan(text=f"\n* Compiling source file: {source_file_path.name}"), file=sys.stderr)
-    compiled_content_bundle = api.compile_from_path(
-        source_file_path=source_file_path,
-        default_importance=args.default_importance,
-        default_salience=args.default_salience,
-        default_reaction_priority=args.default_reaction_priority,
-        use_memoization=args.memoization,
-        verbose_parser=args.verbose_parser,
-    )
+    if args.string:
+        if not args.quiet:
+            preview = args.string[:20].replace('\n', ' ')
+            print(_cyan(text=f'\n* Compiling from source string: "{preview}..."'), file=sys.stderr)
+        entry_dir = Path(args.entry_dir).expanduser() if args.entry_dir else None
+        compiled_content_bundle = api.compile_from_string(
+            source_code=args.string,
+            entry_dir=entry_dir,
+            default_importance=args.default_importance,
+            default_salience=args.default_salience,
+            default_reaction_priority=args.default_reaction_priority,
+            use_memoization=args.memoization,
+            verbose_parser=args.verbose_parser,
+        )
+    else:
+        source_file_path = Path(args.input).expanduser().resolve()
+        if not args.quiet:
+            print(_cyan(text=f"\n* Compiling source file: {source_file_path.name}"), file=sys.stderr)
+        compiled_content_bundle = api.compile_from_path(
+            source_file_path=source_file_path,
+            default_importance=args.default_importance,
+            default_salience=args.default_salience,
+            default_reaction_priority=args.default_reaction_priority,
+            use_memoization=args.memoization,
+            verbose_parser=args.verbose_parser,
+        )
     return compiled_content_bundle
 
 

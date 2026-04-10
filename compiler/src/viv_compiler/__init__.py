@@ -5,12 +5,13 @@ __all__ = [
     "__grammar_version__",
     "__schema_version__",
     "compile_from_path",
+    "compile_from_string",
     "ContentBundle",
     "VivCompileError",
     "VivParseError"
 ]
 
 from ._versions import __version__, __grammar_version__, __schema_version__
-from .api import compile_from_path  # Relies on `__version__` already being set
+from .api import compile_from_path, compile_from_string  # Relies on `__version__` already being set
 from .errors import VivCompileError, VivParseError
 from .external_types import ContentBundle

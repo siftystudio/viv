@@ -4,6 +4,12 @@ All notable changes to the Viv Sublime Text package (`Viv`) will be documented i
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.9.1] – 2026-04-10
+
+### Changed
+
+* Bump compatible compiler version to `0.11`.
+
 ## [0.9.0] – 2026-04-07
 
 ### Initial Release

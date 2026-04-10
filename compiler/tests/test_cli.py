@@ -9,6 +9,7 @@ from .conftest import (
     INVALID_FIXTURES_SEMANTICS_SUBDIR,
     INVALID_FIXTURES_SYNTAX_SUBDIR,
     VALID_FIXTURES_SUBDIR,
+    VALID_INCLUDES_SUBDIR,
 )
 
 # Base command to invoke the Viv compiler CLI
@@ -180,3 +181,85 @@ def test_cli_quiet_flag_preserves_errors() -> None:
     )
     assert result.returncode != 0
     assert result.stderr != ""
+
+
+# --string flag tests
+
+
+MINIMAL_ACTION = 'action greet:\n    roles:\n        @greeter:\n            as: initiator'
+
+
+def test_cli_string_compiles() -> None:
+    """Compile a minimal action via the --string flag."""
+    result = subprocess.run(
+        [*VIVC, "-s", MINIMAL_ACTION],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0
+    assert "Compilation succeeded" in result.stderr
+
+
+def test_cli_string_shows_preview() -> None:
+    """The --string status message shows a preview of the source."""
+    result = subprocess.run(
+        [*VIVC, "-s", MINIMAL_ACTION],
+        capture_output=True,
+        text=True,
+    )
+    assert "Compiling from source string:" in result.stderr
+    assert '"action greet:' in result.stderr
+
+
+def test_cli_string_with_error() -> None:
+    """A syntax error via --string exits nonzero."""
+    result = subprocess.run(
+        [*VIVC, "-s", "action broken:\n    not valid"],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode != 0
+    assert "Compilation failed" in result.stderr
+
+
+def test_cli_string_with_print_flag() -> None:
+    """The -p flag works with --string."""
+    result = subprocess.run(
+        [*VIVC, "-s", MINIMAL_ACTION, "-p", "actions"],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0
+    assert "greet" in json.loads(result.stdout)
+
+
+def test_cli_string_with_entry_dir() -> None:
+    """The --entry-dir flag resolves includes when using --string."""
+    code = 'include "basic_included.viv"\n\n' + MINIMAL_ACTION
+    result = subprocess.run(
+        [*VIVC, "-s", code, "--entry-dir", str(VALID_INCLUDES_SUBDIR)],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0
+
+
+def test_cli_string_and_input_mutually_exclusive() -> None:
+    """The --string and --input flags cannot be used together."""
+    result = subprocess.run(
+        [*VIVC, "-s", MINIMAL_ACTION, "-i", "some_file.viv"],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode != 0
+
+
+def test_cli_entry_dir_requires_string() -> None:
+    """The --entry-dir flag is rejected without --string."""
+    result = subprocess.run(
+        [*VIVC, "-i", str(VALID_FIXTURES_SUBDIR / "minimal_action.viv"), "--entry-dir", "/tmp"],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode != 0
+    assert "--entry-dir" in result.stderr
