@@ -4,6 +4,25 @@ All notable changes to the Viv Claude Code plugin (`viv`) will be documented in 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.10.0] – 2026-04-10
+
+### Added
+
+* `bin/` utility suite with twelve pre-approved shell commands giving Claude an optimized API surface for the operations it performs during sessions: orientation, monorepo browsing, plugin-state management, and Viv component installs.
+* Defensive baseline for the `bin/` commands: path-traversal rejection, allowlist validation on lookups, atomic state writes, graceful failure on corrupted state, and symlink scrubbing on tarball extraction.
+* Auto-approval hooks for the new `bin/` commands and also the `npm init` and `npm install` operations invoked during `/viv:setup`.
+* Plugin ZIP archive attached to each GitHub Release, enabling local/offline installation workflows.
+* Corpus of example `.viv` files demonstrating idiomatic Viv code, fetched via a `bin/` command.
+* Test suite with 23 checks, wired into CI under both bash 5 and bash 3.2.
+* Privacy policy (`PRIVACY.md`) covering what the plugin reads, writes, and sends over the network.
+
+### Changed
+
+* Move skill execution into the main conversation, populating the session with work that was previously hidden in subagents (forced by subagent work resumption still being experimental in Claude Code).
+* Overhaul and polish onboarding flow for `/viv:setup`.
+* Complete rewrite of all skill instructions, incorporating lessons from end-to-end testing and addressing common LLM pitfalls when writing Viv code.
+
+
 ## [0.9.2] – 2026-04-08
 
 ### Changed
