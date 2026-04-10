@@ -1,10 +1,8 @@
 """Test that prohibited role labels are rejected per construct type."""
 
-from pathlib import Path
-
 import pytest
 
-from viv_compiler import VivCompileError, compile_from_path
+from viv_compiler import VivCompileError, compile_from_string
 
 
 ALL_ROLE_LABELS = frozenset({
@@ -132,10 +130,8 @@ def _build_construct_with_label(construct_type: str, label: str) -> str:
 
 @pytest.mark.parametrize("construct_type, label", _PROHIBITED_PAIRS,
                          ids=[f"{ct}-{lb}" for ct, lb in _PROHIBITED_PAIRS])
-def test_prohibited_role_label_rejected(construct_type: str, label: str, tmp_path: Path) -> None:
+def test_prohibited_role_label_rejected(construct_type: str, label: str) -> None:
     """Check that each prohibited (`construct_type`, `label`) pair raises `VivCompileError`."""
     source = _build_construct_with_label(construct_type, label)
-    viv_file = tmp_path / "test.viv"
-    viv_file.write_text(source)
     with pytest.raises(VivCompileError, match="(?s)invalid role label"):
-        compile_from_path(source_file_path=viv_file)
+        compile_from_string(source_code=source)
