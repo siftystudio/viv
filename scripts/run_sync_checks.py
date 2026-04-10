@@ -160,6 +160,23 @@ def check_sublime_repository_url() -> bool:
     return True
 
 
+def check_vscode_package_lock_version() -> bool:
+    """Verify that the VS Code extension's `package.json` and `package-lock.json` versions agree."""
+    package = json.loads((ROOT / "plugins/vscode/package.json").read_text())
+    lock = json.loads((ROOT / "plugins/vscode/package-lock.json").read_text())
+    package_version = package.get("version")
+    lock_version = lock.get("version")
+    lock_root_version = lock.get("packages", {}).get("", {}).get("version")
+    if package_version != lock_version:
+        print(f"FAIL [vscode package lock]: package.json is {package_version} but package-lock.json is {lock_version}")
+        return False
+    if package_version != lock_root_version:
+        print(f"FAIL [vscode package lock]: package.json is {package_version} but package-lock.json packages[''] is {lock_root_version}")
+        return False
+    print(f"PASS [vscode package lock]: versions match ({package_version})")
+    return True
+
+
 def _check_hello_viv_runtime_dep(example: str) -> bool:
     """Verify that the runtime version satisfies a hello-viv example's dependency constraint."""
     runtime = json.loads((ROOT / "runtimes/js/package.json").read_text())
@@ -312,6 +329,7 @@ def main() -> None:
         check_compiler_version_in_plugins,
         check_keywords,
         check_sublime_repository_url,
+        check_vscode_package_lock_version,
         *[_make_named_check(f"check_{ex.replace('-', '_')}_runtime_dep", _check_hello_viv_runtime_dep, ex)
           for ex in HELLO_VIV_EXAMPLES],
         *[_make_named_check(f"check_{ex.replace('-', '_')}_schema", _check_hello_viv_schema_version, ex)
