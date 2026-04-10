@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+# bin/viv-plugin-fetch-monorepo -- Download or update the Viv monorepo copy
+#
+# Downloads a tarball of the Viv monorepo to the plugin's data directory
+# and updates the monorepo fields in state.json.
+#
+# If a tag is provided, downloads that specific release; otherwise downloads
+# the main branch.
+#
+# Usage: viv-plugin-fetch-monorepo [tag]
+#
+# Examples:
+#   viv-plugin-fetch-monorepo                    Download from main branch
+#   viv-plugin-fetch-monorepo compiler-v0.10.4   Download a specific release tag
+
+set -euo pipefail
+
+if [ "${1:-}" = "--check" ]; then
+    if [ -d "$HOME/.claude/plugins/data/viv-siftystudio/viv-monorepo" ]; then
+        echo "Monorepo: installed"
+    else
+        echo "Monorepo: not installed"
+        exit 0
+    fi
+    exit 0
+fi
+
+if [ "${1:-}" = "--path" ]; then
+    echo "$HOME/.claude/plugins/data/viv-siftystudio/viv-monorepo"
+    exit 0
+fi
+
+if [ "${1:-}" = "--help" ]; then
+    echo ""
+    echo "Usage: viv-plugin-fetch-monorepo [tag]"
+    echo "       viv-plugin-fetch-monorepo --check"
+    echo "       viv-plugin-fetch-monorepo --path"
+    echo ""
+    echo "Downloads the Viv monorepo to the plugin data directory."
+    echo "Defaults to the main branch if no tag is provided."
+    echo "Use --check to see if the monorepo is already downloaded."
+    echo "Use --path to print the monorepo directory path."
+    echo ""
+    echo "Examples:"
+    echo "  viv-plugin-fetch-monorepo                    Download from main branch"
+    echo "  viv-plugin-fetch-monorepo compiler-v0.10.4   Download a specific release tag"
+    echo ""
+    exit 0
+fi
+
+DATA_DIR="$HOME/.claude/plugins/data/viv-siftystudio"
+MONOREPO_DIR="$DATA_DIR/viv-monorepo"
+STATE_FILE="$DATA_DIR/state.json"
+TAG="${1:-main}"
+TODAY=$(date +%Y-%m-%d)
+
+if [ "$TAG" = "main" ]; then
+    URL="https://github.com/siftystudio/viv/archive/refs/heads/main.tar.gz"
+else
+    URL="https://github.com/siftystudio/viv/archive/refs/tags/$TAG.tar.gz"
+fi
+
+echo ""
+echo "Downloading Viv monorepo ($TAG)..."
+
+# Clear any previous extraction so a failed download doesn't leave stale files
+# mixed in with new ones.
+rm -rf "$MONOREPO_DIR"
+mkdir -p "$MONOREPO_DIR"
+if ! curl -sL "$URL" | tar xz --strip-components=1 -C "$MONOREPO_DIR" 2>&1; then
+    echo "" >&2
+    echo "Download failed -- check the tag name and your network connection." >&2
+    echo "" >&2
+    exit 1
+fi
+
+# Defensive: scrub any symlinks introduced by the tarball. The Viv monorepo
+# has none, so anything found here would be a malicious or corrupted upstream.
+find "$MONOREPO_DIR" -type l -delete 2>/dev/null || true
+
+echo "Done -- monorepo is at $MONOREPO_DIR"
+
+# Update state.json with monorepo fields. Always populate (creating the file
+# if it doesn't exist) so a fresh setup gets a usable state file.
+mkdir -p "$DATA_DIR"
+STATE_FILE="$STATE_FILE" TAG="$TAG" TODAY="$TODAY" python3 <<'PY'
+import json
+import os
+import sys
+state_file = os.environ['STATE_FILE']
+state = {}
+if os.path.exists(state_file):
+    try:
+        with open(state_file) as f:
+            state = json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"State file is corrupted: {e}", file=sys.stderr)
+        print(f"Edit or remove {state_file} to recover.", file=sys.stderr)
+        sys.exit(1)
+state['monorepo_tag'] = os.environ['TAG']
+state['monorepo_cloned_at'] = os.environ['TODAY']
+tmp_file = state_file + '.tmp'
+with open(tmp_file, 'w') as f:
+    json.dump(state, f, indent=2)
+os.replace(tmp_file, state_file)
+PY
+echo "Updated state.json (monorepo_tag: $TAG, monorepo_cloned_at: $TODAY)."
+
+echo ""

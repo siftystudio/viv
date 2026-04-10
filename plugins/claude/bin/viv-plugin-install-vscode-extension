@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# bin/viv-plugin-install-vscode-extension -- Install the Viv VS Code extension
+#
+# Installs the Viv extension from the VS Code Marketplace via the `code` CLI.
+#
+# Usage: viv-plugin-install-vscode-extension
+#        viv-plugin-install-vscode-extension --check
+
+set -euo pipefail
+
+if [ "${1:-}" = "--help" ]; then
+    echo ""
+    echo "Usage: viv-plugin-install-vscode-extension"
+    echo "       viv-plugin-install-vscode-extension --check"
+    echo ""
+    echo "Installs the Viv extension in VS Code."
+    echo "Use --check to see if VS Code and the extension are installed."
+    echo ""
+    exit 0
+fi
+
+if [ "${1:-}" = "--check" ]; then
+    if ! command -v code &>/dev/null; then
+        echo "VS Code: not installed"
+        exit 0
+    fi
+    installed=$(code --list-extensions 2>/dev/null | grep -i "siftystudio.viv" || true)
+    if [ -n "$installed" ]; then
+        version=$(code --list-extensions --show-versions 2>/dev/null | grep -i "siftystudio.viv" | cut -d@ -f2 || echo "unknown")
+        echo "VS Code: installed"
+        echo "Viv extension: v$version"
+    else
+        echo "VS Code: installed"
+        echo "Viv extension: not installed"
+    fi
+    exit 0
+fi
+
+if ! command -v code &>/dev/null; then
+    echo "" >&2
+    echo "VS Code CLI (code) not found on PATH." >&2
+    echo "Open VS Code, then Cmd+Shift+P > 'Shell Command: Install code command in PATH'." >&2
+    echo "" >&2
+    exit 1
+fi
+
+echo ""
+echo "Installing Viv VS Code extension..."
+code --install-extension siftystudio.viv 2>&1
+echo ""

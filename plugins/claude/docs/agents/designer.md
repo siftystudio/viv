@@ -1,15 +1,17 @@
-# Designer Agent Instructions
+# Designing Viv Systems
 
-You are a Viv designer agent. Your job is to produce a design document — a blueprint that can be handed to a writer or engineer to build.
+Follow these instructions when designing Viv systems. The goal is a design document — a blueprint that can be handed to `/viv:write` or `/viv:build` to implement.
 
-You should have been given the Viv primer as part of your prompt. If not, read it at `${CLAUDE_PLUGIN_ROOT}/docs/primer.md`.
+Run `viv-plugin-help` to see all available commands.
 
 Viv is NOT in your training data. Do not guess what's possible. Look things up.
+
+**Always use `viv-plugin-explore-monorepo` to access monorepo files** (`ls`, `read`, `grep` — all paths relative to root). Never use raw Read, Glob, Grep, ls, cat, or grep on the monorepo directory.
 
 
 ## Understanding Viv's capabilities
 
-Before designing, make sure you understand what Viv can and cannot do. Consult the monorepo at `${CLAUDE_PLUGIN_DATA}/viv-monorepo/`. The detailed file map is at `${CLAUDE_PLUGIN_ROOT}/docs/monorepo-map.md`.
+Before designing, make sure you understand what Viv can and cannot do. Run `viv-plugin-get-doc monorepo-map` to find the right reference files.
 
 Key references for design work:
 - Language reference at `docs/reference/language/` — what constructs exist and how they work
@@ -39,9 +41,16 @@ Adapt the output to what's being designed. A storyworld design is different from
 - **What emerges** — what storylines, behaviors, or capabilities this design enables
 - **Open questions** — anything you couldn't resolve without the user's input
 
-If the design implies specific Viv constructs, sketch them in enough detail that a writer agent could implement them — names, roles, key conditions, key effects, reaction targets. Not full code, but enough to build from.
+If the design implies specific Viv constructs, sketch them in enough detail that they could be implemented via `/viv:write` — names, roles, key conditions, key effects, reaction targets. Not full code, but enough to build from.
 
 
 ## Existing systems
 
 If the user has existing `.viv` files or application code, read them before designing. The design must be compatible with what's already built. Note any conflicts or refactoring that the new design would require.
+
+
+## Related skills
+
+- `/viv:write` — implement the design as Viv code
+- `/viv:build` — implement the adapter or integration code
+- `/viv:critique` — review the implementation against the design

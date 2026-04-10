@@ -1,0 +1,133 @@
+#!/usr/bin/env bash
+# bin/viv-plugin-write-state -- Write to the Viv plugin state file
+#
+# Updates state.json in the plugin data directory. Can initialize from a
+# JSON string, set individual properties, or register a project.
+#
+# Usage: viv-plugin-write-state --init '{...json...}'      Initialize state from JSON
+#        viv-plugin-write-state --set <key> <value>        Set a top-level property
+#        viv-plugin-write-state --project <path> <key> <value>  Set a project property
+#
+# Examples:
+#   viv-plugin-write-state --init '{"compiler_version": "0.10.4"}'
+#   viv-plugin-write-state --set compiler_version 0.10.4
+#   viv-plugin-write-state --set monorepo_tag compiler-v0.10.4
+#   viv-plugin-write-state --project /Users/me/my-game runtime_version 0.10.2
+
+set -euo pipefail
+
+# Note: state writes use a read-modify-write pattern with no file locking. If
+# two Claude sessions on the same project run concurrent --set or --project
+# commands that touch different keys, one writer's changes can be lost. The
+# realistic collision scenarios are two simultaneous /viv:setup or /viv:sync
+# runs; outside those, state writes are too rare to collide in practice.
+
+DATA_DIR="$HOME/.claude/plugins/data/viv-siftystudio"
+STATE_FILE="$DATA_DIR/state.json"
+
+if [ "${1:-}" = "--help" ] || [ $# -eq 0 ]; then
+    echo ""
+    echo "Usage:"
+    echo "  viv-plugin-write-state --init '{...json...}'           Initialize state from JSON"
+    echo "  viv-plugin-write-state --set <key> <value>             Set a top-level property"
+    echo "  viv-plugin-write-state --project <path> <key> <value>  Set a project property"
+    echo ""
+    echo "Top-level keys: compiler_path, compiler_version, schema_version,"
+    echo "                grammar_version, monorepo_tag, monorepo_cloned_at"
+    echo ""
+    echo "Project keys: runtime_version, last_checked"
+    echo ""
+    exit 0
+fi
+
+mkdir -p "$DATA_DIR"
+
+case "$1" in
+    --init)
+        if [ $# -ne 2 ]; then
+            echo "Usage: viv-plugin-write-state --init '{...json...}'" >&2
+            exit 1
+        fi
+        INIT_JSON="$2" STATE_FILE="$STATE_FILE" python3 <<'PY'
+import json
+import os
+import sys
+try:
+    data = json.loads(os.environ['INIT_JSON'])
+except json.JSONDecodeError as e:
+    print(f"Invalid JSON: {e}", file=sys.stderr)
+    sys.exit(1)
+state_file = os.environ['STATE_FILE']
+tmp_file = state_file + '.tmp'
+with open(tmp_file, 'w') as f:
+    json.dump(data, f, indent=2)
+os.replace(tmp_file, state_file)
+print('State initialized.')
+PY
+        ;;
+    --set)
+        if [ $# -ne 3 ]; then
+            echo "Usage: viv-plugin-write-state --set <key> <value>" >&2
+            exit 1
+        fi
+        KEY="$2" VALUE="$3" STATE_FILE="$STATE_FILE" python3 <<'PY'
+import json
+import os
+import sys
+state_file = os.environ['STATE_FILE']
+key = os.environ['KEY']
+value = os.environ['VALUE']
+state = {}
+if os.path.exists(state_file):
+    try:
+        with open(state_file) as f:
+            state = json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"State file is corrupted: {e}", file=sys.stderr)
+        print(f"Edit or remove {state_file} to recover.", file=sys.stderr)
+        sys.exit(1)
+state[key] = value
+tmp_file = state_file + '.tmp'
+with open(tmp_file, 'w') as f:
+    json.dump(state, f, indent=2)
+os.replace(tmp_file, state_file)
+print(f'Set {key} = {value}')
+PY
+        ;;
+    --project)
+        if [ $# -ne 4 ]; then
+            echo "Usage: viv-plugin-write-state --project <path> <key> <value>" >&2
+            exit 1
+        fi
+        PROJECT="$2" KEY="$3" VALUE="$4" STATE_FILE="$STATE_FILE" python3 <<'PY'
+import json
+import os
+import sys
+state_file = os.environ['STATE_FILE']
+project = os.environ['PROJECT']
+key = os.environ['KEY']
+value = os.environ['VALUE']
+state = {}
+if os.path.exists(state_file):
+    try:
+        with open(state_file) as f:
+            state = json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"State file is corrupted: {e}", file=sys.stderr)
+        print(f"Edit or remove {state_file} to recover.", file=sys.stderr)
+        sys.exit(1)
+state.setdefault('projects', {}).setdefault(project, {})[key] = value
+tmp_file = state_file + '.tmp'
+with open(tmp_file, 'w') as f:
+    json.dump(state, f, indent=2)
+os.replace(tmp_file, state_file)
+print(f'Set projects[{project}].{key} = {value}')
+PY
+        ;;
+    *)
+        echo "" >&2
+        echo "Unknown option: $1 (use --help)" >&2
+        echo "" >&2
+        exit 1
+        ;;
+esac

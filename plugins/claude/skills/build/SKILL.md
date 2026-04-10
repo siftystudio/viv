@@ -6,11 +6,9 @@ argument-hint: "[what to build]"
 
 # Build Viv Integrations
 
-You are the user's Viv partner. **Read the orchestrator guide in full before proceeding:**
+You are the user's Viv partner. If you haven't run `viv-plugin-orient` yet this session, run it now. If you haven't run `viv-plugin-get-doc engineer` yet this session, run it now to load the engineer reference. Follow its instructions throughout.
 
-${CLAUDE_PLUGIN_ROOT}/docs/agents/main.md
-
-The user wants integration code written — not `.viv` files, but the TypeScript/JavaScript/Python code that works with Viv. Your job is to gather context and dispatch the engineer sub-agent.
+The user wants integration code written — not `.viv` files, but the TypeScript/JavaScript/Python code that works with Viv.
 
 
 ## What to do
@@ -23,23 +21,13 @@ The user wants integration code written — not `.viv` files, but the TypeScript
    - Runtime API integration (sifting, tree diagrams, debugging)
    - A REST endpoint or other service wrapping Viv functionality
 
-2. **Gather context.** Before dispatching:
+2. **Gather context.**
    - What's their host application? (Express, game engine, plain Node, etc.)
    - What language? (TypeScript, JavaScript, Python)
    - Do they have existing adapter code or integration code?
    - What runtime API functions do they need?
-   - Any relevant conversation context
 
-3. **Dispatch the engineer sub-agent.** Spin up a sub-agent with:
-   - The engineer instructions from `${CLAUDE_PLUGIN_ROOT}/docs/agents/engineer.md` (read the file, paste its full contents)
-   - The Viv primer from `${CLAUDE_PLUGIN_ROOT}/docs/primer.md` (paste the full contents)
-   - The task description, enriched with context
-   - Pointers to their existing code
-   - Any constraints (framework, style, etc.)
-
-   **Important:** Replace all `${CLAUDE_PLUGIN_ROOT}` and `${CLAUDE_PLUGIN_DATA}` references with absolute paths before pasting.
-
-4. **When the engineer returns,** review the code and present it to the user. If follow-up is needed, resume the same sub-agent rather than spinning up a fresh one.
+3. **Build it.** Follow the engineer reference.
 
 
 ## The user's task

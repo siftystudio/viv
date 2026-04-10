@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+# bin/viv-plugin-orient -- Orient Claude for Viv work
+#
+# Prints everything Claude needs to operate as a Viv partner: the primer
+# (what Viv is), the plugin guide (how to use Viv skills), and the current
+# plugin state (what's installed, what needs attention). One command, fully
+# loaded.
+#
+# Usage: viv-plugin-orient
+
+set -euo pipefail
+
+if [ "${1:-}" = "--help" ]; then
+    echo ""
+    echo "Usage: viv-plugin-orient"
+    echo ""
+    echo "Prints everything Claude needs to operate as a Viv partner:"
+    echo "  1. Viv primer (what Viv is)"
+    echo "  2. Viv plugin guide (how to use Viv skills)"
+    echo "  3. Current plugin state (what's installed, what needs attention)"
+    echo ""
+    echo "One command, fully loaded. Run this at the start of any Viv session."
+    echo ""
+    exit 0
+fi
+
+CACHE_DIR="$HOME/.claude/plugins/cache/siftystudio/viv"
+DATA_DIR="$HOME/.claude/plugins/data/viv-siftystudio"
+STATE_FILE="$DATA_DIR/state.json"
+
+if [ ! -d "$CACHE_DIR" ]; then
+    echo "" >&2
+    echo "Viv plugin is not installed -- no cache directory found." >&2
+    echo "" >&2
+    exit 1
+fi
+
+# Resolve latest installed version
+LATEST=$(ls -1 "$CACHE_DIR" | sort -t. -k1,1n -k2,2n -k3,3n | tail -1)
+
+if [ -z "$LATEST" ]; then
+    echo "" >&2
+    echo "Plugin cache is empty -- try reinstalling." >&2
+    echo "" >&2
+    exit 1
+fi
+
+DOC_ROOT="$CACHE_DIR/$LATEST"
+
+# Print the primer (what Viv is)
+echo "================================================================================"
+echo "  VIV PRIMER"
+echo "================================================================================"
+echo ""
+cat "$DOC_ROOT/docs/primer.md"
+echo ""
+
+# Print the plugin guide (how to use Viv skills)
+echo "================================================================================"
+echo "  VIV PLUGIN GUIDE"
+echo "================================================================================"
+echo ""
+cat "$DOC_ROOT/docs/agents/main.md"
+echo ""
+
+# Print the current state (what's installed, what needs attention)
+echo "================================================================================"
+echo "  CURRENT STATE"
+echo "================================================================================"
+echo ""
+
+if [ -f "$STATE_FILE" ]; then
+    STATE_FILE="$STATE_FILE" python3 <<'PY'
+import json
+import os
+import sys
+state_file = os.environ['STATE_FILE']
+try:
+    with open(state_file) as f:
+        state = json.load(f)
+except json.JSONDecodeError as e:
+    print(f"State file is corrupted: {e}", file=sys.stderr)
+    print(f"Edit or remove {state_file} to recover.", file=sys.stderr)
+    sys.exit(1)
+print(f'Compiler:  v{state.get("compiler_version", "unknown")} ({state.get("compiler_path", "unknown")})')
+print(f'Schema:    v{state.get("schema_version", "unknown")}')
+print(f'Grammar:   v{state.get("grammar_version", "unknown")}')
+print(f'Monorepo:  {state.get("monorepo_tag", "unknown")} (cloned {state.get("monorepo_cloned_at", "unknown")})')
+projects = state.get('projects', {})
+if projects:
+    print()
+    print('Projects:')
+    for path, info in projects.items():
+        print(f'  {path}')
+        print(f'    Runtime: v{info.get("runtime_version", "unknown")}')
+        print(f'    Checked: {info.get("last_checked", "unknown")}')
+PY
+else
+    echo "No state file found. Run /viv:setup to initialize."
+fi
+echo ""

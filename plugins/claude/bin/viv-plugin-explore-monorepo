@@ -1,0 +1,166 @@
+#!/usr/bin/env bash
+# bin/viv-plugin-explore-monorepo -- Browse the Viv monorepo
+#
+# Provides ls, read, and grep access to the local Viv monorepo copy.
+# All paths are relative to the monorepo root.
+#
+# Usage:
+#   viv-plugin-explore-monorepo ls [relpath]                       List a directory
+#   viv-plugin-explore-monorepo read <relpath> [start] [end]        Print a file (optionally a line range)
+#   viv-plugin-explore-monorepo grep <pattern> [relpath] [-A N] [-B N]   Search for a pattern
+#   viv-plugin-explore-monorepo --help                              Show this help
+
+set -euo pipefail
+
+MONOREPO_DIR="$HOME/.claude/plugins/data/viv-siftystudio/viv-monorepo"
+
+show_help() {
+    echo ""
+    echo "Usage: viv-plugin-explore-monorepo <command> [args]"
+    echo ""
+    echo "Browse the local Viv monorepo copy. All paths are relative to the monorepo root."
+    echo ""
+    echo "Commands:"
+    echo "  ls [relpath]                              List a directory (default: root)"
+    echo "  read <relpath> [start] [end]              Print a file. Optional line range:"
+    echo "                                              read foo.md 10 50  -> lines 10-50"
+    echo "                                              read foo.md 10     -> from line 10 to end"
+    echo "  grep <pattern> [relpath] [-A N] [-B N]    Search for a pattern."
+    echo "                                              -A N includes N lines after each match"
+    echo "                                              -B N includes N lines before each match"
+    echo "  --help                                    Show this help"
+    echo ""
+    echo "Start by loading the monorepo map to find what you need:"
+    echo "  viv-plugin-get-doc monorepo-map"
+    echo ""
+    echo "The map is a curated guide with descriptions and keywords for every"
+    echo "important file. Find the path you need there, then use the commands"
+    echo "above to access it."
+    echo ""
+}
+
+check_monorepo() {
+    if [ ! -d "$MONOREPO_DIR" ]; then
+        echo "" >&2
+        echo "Monorepo not found. Run /viv:setup or viv-plugin-fetch-monorepo first." >&2
+        echo "" >&2
+        exit 1
+    fi
+}
+
+# Reject relpaths containing `..` segments or absolute paths. Lexical check
+# (no canonicalization), so legal filenames like `foo..bar` are still allowed
+# while `..`, `../etc/passwd`, and `/etc/passwd` are refused. Symlinks inside
+# the monorepo are not followed -- that's enforced by `viv-plugin-fetch-monorepo`.
+validate_relpath() {
+    local relpath="$1"
+    case "$relpath" in
+        ..|../*|*/../*|*/..)
+            echo "Refusing path traversal: $relpath" >&2
+            exit 1
+            ;;
+        /*)
+            echo "Refusing absolute path: $relpath" >&2
+            exit 1
+            ;;
+    esac
+}
+
+if [ $# -eq 0 ] || [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
+    show_help
+    exit 0
+fi
+
+check_monorepo
+
+case "$1" in
+    ls)
+        relpath="${2:-.}"
+        validate_relpath "$relpath"
+        target="$MONOREPO_DIR/$relpath"
+        if [ ! -e "$target" ]; then
+            echo "Not found: $relpath" >&2
+            exit 1
+        fi
+        if [ ! -d "$target" ]; then
+            echo "Not a directory: $relpath (use 'read' for files)" >&2
+            exit 1
+        fi
+        (cd "$target" && ls)
+        ;;
+    read)
+        if [ -z "${2:-}" ]; then
+            echo "Usage: viv-plugin-explore-monorepo read <relpath> [start] [end]" >&2
+            exit 1
+        fi
+        validate_relpath "$2"
+        target="$MONOREPO_DIR/$2"
+        if [ ! -f "$target" ]; then
+            echo "Not found: $2" >&2
+            exit 1
+        fi
+        start="${3:-}"
+        end="${4:-}"
+        if [ -n "$start" ] && ! [[ "$start" =~ ^[0-9]+$ ]]; then
+            echo "Invalid start line: $start (must be a positive integer)" >&2
+            exit 1
+        fi
+        if [ -n "$end" ] && ! [[ "$end" =~ ^[0-9]+$ ]]; then
+            echo "Invalid end line: $end (must be a positive integer)" >&2
+            exit 1
+        fi
+        if [ -n "$start" ] && [ -n "$end" ] && [ "$start" -gt "$end" ]; then
+            echo "Invalid range: start ($start) must be <= end ($end)" >&2
+            exit 1
+        fi
+        if [ -n "$start" ] && [ -n "$end" ]; then
+            sed -n "${start},${end}p" "$target"
+        elif [ -n "$start" ]; then
+            sed -n "${start},\$p" "$target"
+        else
+            cat "$target"
+        fi
+        ;;
+    grep)
+        if [ -z "${2:-}" ]; then
+            echo "Usage: viv-plugin-explore-monorepo grep <pattern> [relpath] [-A N] [-B N]" >&2
+            exit 1
+        fi
+        pattern="$2"
+        shift 2
+        # Parse optional relpath and -A/-B flags
+        relpath="."
+        grep_args=()
+        while [ $# -gt 0 ]; do
+            case "$1" in
+                -A|-B)
+                    if [ $# -lt 2 ]; then
+                        echo "Error: $1 requires a numeric argument" >&2
+                        exit 1
+                    fi
+                    grep_args+=("$1" "$2")
+                    shift 2
+                    ;;
+                *)
+                    relpath="$1"
+                    shift
+                    ;;
+            esac
+        done
+        validate_relpath "$relpath"
+        target="$MONOREPO_DIR/$relpath"
+        if [ ! -e "$target" ]; then
+            echo "Not found: $relpath" >&2
+            exit 1
+        fi
+        # Escape sed metacharacters in $MONOREPO_DIR (& \ and the | delimiter)
+        # before using it in the substitution.
+        escaped_dir=$(printf '%s' "$MONOREPO_DIR" | sed 's/[&\\|]/\\&/g')
+        grep -rn ${grep_args[@]+"${grep_args[@]}"} "$pattern" "$target" 2>/dev/null | sed "s|${escaped_dir}/||" || true
+        ;;
+    *)
+        echo "Unknown command: $1" >&2
+        echo "Run viv-plugin-explore-monorepo --help for usage." >&2
+        exit 1
+        ;;
+esac

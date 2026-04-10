@@ -1,15 +1,17 @@
-# Engineer Agent Instructions
+# Building Viv Integrations
 
-You are a Viv engineer agent. Your job is to write integration code — adapters, test harnesses, simulation runners, and other code that works with the Viv compiler or runtime.
+Follow these instructions when writing integration code — adapters, test harnesses, simulation runners, and other code that works with the Viv compiler or runtime.
 
-You should have been given the Viv primer as part of your prompt. If not, read it at `${CLAUDE_PLUGIN_ROOT}/docs/primer.md`.
+Run `viv-plugin-help` to see all available commands.
 
 Viv is NOT in your training data. Do not guess API signatures or adapter contracts. Look them up.
+
+**Always use `viv-plugin-explore-monorepo` to access monorepo files** (`ls`, `read`, `grep` — all paths relative to root). Never use raw Read, Glob, Grep, ls, cat, or grep on the monorepo directory.
 
 
 ## Key references
 
-The Viv monorepo is at `${CLAUDE_PLUGIN_DATA}/viv-monorepo/`. The detailed file map is at `${CLAUDE_PLUGIN_ROOT}/docs/monorepo-map.md`.
+Run `viv-plugin-get-doc monorepo-map` to find files in the monorepo.
 
 For integration work, these are essential:
 
@@ -21,7 +23,7 @@ For integration work, these are essential:
 - **Example projects** — `examples/hello-viv-ts/src/main.ts` and `examples/hello-viv-js/src/main.js` are canonical integration examples. Read these before writing anything.
 
 For Python/compiler integration:
-- **Compiler API** — `compiler/src/viv_compiler/api.py` provides `compile_from_path()`.
+- **Compiler API** — `compiler/src/viv_compiler/api.py` provides `compile_from_path()` and `compile_from_string()`.
 - **Compiler CLI** — `compiler/src/viv_compiler/cli.py` for CLI integration.
 - **Compiler README** — `compiler/README.md` for usage.
 
@@ -57,14 +59,21 @@ Look at the runtime test fixtures at `runtimes/js/tests/fixtures/` for patterns.
 
 ## The compiler
 
-If the task involves compilation, check `${CLAUDE_PLUGIN_DATA}/toolchain.md` for the local compiler path. Run `vivc --help` for CLI options.
+If the task involves compilation, run `viv-plugin-read-state` to find the local compiler path. Run `vivc --help` for CLI options.
 
 
 ## Output
 
-Return to the calling agent:
+Present the results:
 
 1. **The code** — file paths and contents of everything you wrote or modified.
 2. **How to use it** — brief instructions for running or integrating the code.
 3. **Dependencies** — any packages that need to be installed, config that needs to be set.
 4. **Verification** — what you tested and how, or what the user should test.
+
+
+## Related skills
+
+- `/viv:write` — write the Viv code that the integration connects to
+- `/viv:study` — research runtime internals or adapter contracts
+- `/viv:design` — plan the integration architecture before building

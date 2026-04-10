@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# bin/viv-plugin-install-runtime -- Install the Viv JavaScript runtime in the current project
+#
+# Creates a package.json if one doesn't exist, then installs
+# @siftystudio/viv-runtime via npm. This modifies the user's project
+# directory (node_modules, package.json, package-lock.json).
+#
+# Only invoke this after the user has consented to project modifications
+# (e.g., during /viv:setup or /viv:sync).
+#
+# Usage: viv-plugin-install-runtime
+#        viv-plugin-install-runtime --check
+
+set -euo pipefail
+
+# Look up the installed runtime version via npm's JSON output. Prints the
+# version string on success, or nothing if the package isn't installed.
+# Always returns 0 -- npm list exits non-zero when the package is missing,
+# which is expected here, not an error.
+get_runtime_version() {
+    npm list @siftystudio/viv-runtime --json 2>/dev/null | python3 -c '
+import json, sys
+try:
+    data = json.load(sys.stdin)
+    pkg = data.get("dependencies", {}).get("@siftystudio/viv-runtime")
+    if pkg:
+        print(pkg.get("version", ""))
+except Exception:
+    pass
+' 2>/dev/null || true
+}
+
+if [ "${1:-}" = "--help" ]; then
+    echo ""
+    echo "Usage: viv-plugin-install-runtime"
+    echo "       viv-plugin-install-runtime --check"
+    echo ""
+    echo "Installs @siftystudio/viv-runtime in the current project."
+    echo "Creates a package.json first if one doesn't exist."
+    echo "Use --check to see if the runtime is already installed."
+    echo ""
+    echo "This modifies your project directory. Only run this after"
+    echo "consenting to project modifications during setup."
+    echo ""
+    exit 0
+fi
+
+if ! command -v npm >/dev/null 2>&1; then
+    echo "" >&2
+    echo "npm not found on PATH -- Node.js / npm must be installed before running this script." >&2
+    echo "" >&2
+    exit 1
+fi
+
+if [ "${1:-}" = "--check" ]; then
+    version=$(get_runtime_version)
+    if [ -n "$version" ]; then
+        echo "Installed: @siftystudio/viv-runtime@$version"
+    else
+        echo "Not installed."
+    fi
+    exit 0
+fi
+
+if [ ! -f "package.json" ]; then
+    echo "Creating package.json..."
+    npm init -y 2>&1
+fi
+
+echo "Installing @siftystudio/viv-runtime..."
+npm install @siftystudio/viv-runtime 2>&1
+
+echo ""
+# Confirm installation
+version=$(get_runtime_version)
+if [ -n "$version" ]; then
+    echo "Installed: @siftystudio/viv-runtime@$version"
+fi

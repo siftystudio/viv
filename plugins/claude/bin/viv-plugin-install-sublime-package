@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+# bin/viv-plugin-install-sublime-package -- Install the Viv Sublime Text package
+#
+# Downloads the latest Viv.sublime-package from GitHub Releases and places
+# it in Sublime Text's Installed Packages directory.
+#
+# Usage: viv-plugin-install-sublime-package
+#        viv-plugin-install-sublime-package --check
+
+set -euo pipefail
+
+if [ "${1:-}" = "--help" ]; then
+    echo ""
+    echo "Usage: viv-plugin-install-sublime-package"
+    echo "       viv-plugin-install-sublime-package --check"
+    echo ""
+    echo "Downloads and installs the Viv Sublime Text package from GitHub Releases."
+    echo "Use --check to see if Sublime Text and the package are installed."
+    echo ""
+    exit 0
+fi
+
+# Detect Sublime Text Installed Packages directory
+DEST=""
+if [ -d "$HOME/Library/Application Support/Sublime Text/Installed Packages" ]; then
+    DEST="$HOME/Library/Application Support/Sublime Text/Installed Packages"
+elif [ -d "$HOME/.config/sublime-text/Installed Packages" ]; then
+    DEST="$HOME/.config/sublime-text/Installed Packages"
+elif [ -d "$HOME/.config/sublime-text-3/Installed Packages" ]; then
+    DEST="$HOME/.config/sublime-text-3/Installed Packages"
+fi
+
+if [ "${1:-}" = "--check" ]; then
+    if [ -z "$DEST" ]; then
+        echo "Sublime Text: not installed"
+        exit 0
+    fi
+    echo "Sublime Text: installed"
+    # Check both Installed Packages (zip) and Packages (extracted) locations
+    PACKAGES_DIR=$(dirname "$DEST")/Packages
+    if [ -f "$DEST/Viv.sublime-package" ] || [ -d "$PACKAGES_DIR/Viv" ]; then
+        echo "Viv package: installed"
+    else
+        echo "Viv package: not installed"
+    fi
+    exit 0
+fi
+
+if [ -z "$DEST" ]; then
+    echo "" >&2
+    echo "Could not find Sublime Text's Installed Packages directory." >&2
+    echo "Is Sublime Text installed?" >&2
+    echo "" >&2
+    exit 1
+fi
+
+PACKAGES_DIR=$(dirname "$DEST")/Packages
+EXTRACT_DIR="$PACKAGES_DIR/Viv"
+
+MONOREPO_SRC="$HOME/.claude/plugins/data/viv-siftystudio/viv-monorepo/plugins/sublime"
+
+if [ ! -d "$MONOREPO_SRC" ]; then
+    echo "" >&2
+    echo "Monorepo not found. Run viv-plugin-fetch-monorepo or /viv:setup first." >&2
+    echo "" >&2
+    exit 1
+fi
+
+echo ""
+echo "Installing Viv Sublime Text package from monorepo..."
+mkdir -p "$EXTRACT_DIR"
+# -P preserves symlinks instead of following them. The monorepo download
+# already scrubs symlinks, so this is defensive: any symlinks that somehow
+# survive would be copied as broken links rather than dereferenced into the
+# user's editor plugin directory.
+cp -rP "$MONOREPO_SRC"/* "$EXTRACT_DIR/"
+
+if [ -f "$EXTRACT_DIR/Viv.sublime-syntax" ]; then
+    echo "Installed to $EXTRACT_DIR"
+    echo ""
+else
+    echo "" >&2
+    echo "Installation failed." >&2
+    echo "" >&2
+    exit 1
+fi

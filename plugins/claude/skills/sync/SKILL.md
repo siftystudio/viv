@@ -6,54 +6,69 @@ user-invocable: false
 
 # Viv Sync
 
-You are tasked with synchronizing the Viv ecosystem. This means ensuring the compiler, runtime, and local monorepo copy are all in harmony.
+You are tasked with synchronizing the Viv ecosystem. This means ensuring the compiler, runtime, monorepo copy, and editor plugins are all in harmony.
 
 
 ## What to check
 
-1. **Compiler version:** Run `vivc --version` (check `${CLAUDE_PLUGIN_DATA}/toolchain.md` for the path if not on PATH).
+1. **Compiler version:** Run `vivc --version`. Check `viv-plugin-read-state` for the compiler path if not on PATH.
 
-2. **Runtime version:** Run `npm list @siftystudio/viv-runtime` in the user's project, or check their `package.json`.
+2. **Runtime version:** Run `viv-plugin-install-runtime --check`.
 
-3. **Monorepo copy:** Check if `${CLAUDE_PLUGIN_DATA}/viv-monorepo/` exists. If it does, check its version — look at `compiler/pyproject.toml` or `runtimes/js/package.json` in the copy.
+3. **Monorepo copy:** Run `viv-plugin-fetch-monorepo --check`. If installed, check its version — look at `compiler/pyproject.toml` or `runtimes/js/package.json` in the monorepo.
 
 4. **Compatibility:** The compiler and runtime must be compatible. If they're not, the tools themselves will produce errors telling you what's wrong. Compatible versions ship from the same monorepo commit.
+
+5. **Editor plugins:** Run `--check` on all three editor install scripts to detect installed editors missing the Viv plugin. If an editor is installed but the Viv plugin isn't, offer to install it.
 
 
 ## Actions
 
 **If the monorepo copy doesn't exist:**
 
-Clone it:
 ```bash
-mkdir -p ${CLAUDE_PLUGIN_DATA}/viv-monorepo
-curl -sL https://github.com/siftystudio/viv/archive/refs/heads/main.tar.gz | tar xz --strip-components=1 -C ${CLAUDE_PLUGIN_DATA}/viv-monorepo/
+viv-plugin-fetch-monorepo
 ```
 
-If you know the specific release tag for the user's installed version, use that instead of `main`:
+If you know the specific release tag for the user's installed version (format: `compiler-v<version>`), pass it:
+
 ```bash
-curl -sL https://github.com/siftystudio/viv/archive/refs/tags/{TAG}.tar.gz | tar xz --strip-components=1 -C ${CLAUDE_PLUGIN_DATA}/viv-monorepo/
+viv-plugin-fetch-monorepo compiler-v0.10.4
 ```
 
 **If the monorepo copy is behind the installed compiler/runtime:**
 
-Update it by downloading the matching release tag tarball and replacing the directory.
+Update it by running `viv-plugin-fetch-monorepo` with the matching release tag.
 
 **If the monorepo copy is ahead of the installed versions:**
 
 Either:
-- Suggest the user update their compiler/runtime: `pip install --upgrade viv-compiler`, `npm install @siftystudio/viv-runtime@latest`
-- Or downgrade the monorepo copy to match (download the older tag)
+- Suggest the user update their compiler (conversational — Python environments vary)
+- Update the runtime: `viv-plugin-install-runtime`
+- Or downgrade the monorepo copy to match (run `viv-plugin-fetch-monorepo` with the older tag)
 
 **If the compiler and runtime are incompatible:**
 
-Report the mismatch to the calling agent. Suggest the user update whichever component is behind. The tools' own error messages will indicate which direction the mismatch goes.
+Report the mismatch to the user. Suggest they update whichever component is behind. The tools' own error messages will indicate which direction the mismatch goes.
+
+**If editor plugins are missing:**
+
+Install them using the corresponding scripts:
+- `viv-plugin-install-vscode-extension`
+- `viv-plugin-install-webstorm-plugin`
+- `viv-plugin-install-sublime-package`
 
 
 ## After syncing
 
-Update `${CLAUDE_PLUGIN_DATA}/toolchain.md` with current paths and versions.
+Update state using `viv-plugin-write-state`:
 
-Update `${CLAUDE_PLUGIN_DATA}/status.json` with the current state — monorepo tag, clone date, and the current project's compiler/runtime versions. If `status.json` already exists, merge updates into the existing data (preserve other projects' entries).
+```bash
+viv-plugin-write-state --set monorepo_tag <tag>
+viv-plugin-write-state --set monorepo_cloned_at <date>
+viv-plugin-write-state --set compiler_version <version>
+viv-plugin-write-state --project <path> runtime_version <version>
+viv-plugin-write-state --project <path> last_checked <date>
+```
 
-Report what you did back to the calling agent or user.
+Report what you did back to the user.

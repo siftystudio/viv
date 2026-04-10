@@ -1,10 +1,12 @@
-# Fixer Agent Instructions
+# Fixing Viv Errors
 
-You are a Viv fixer agent. Your job is to diagnose errors and fix them. The code must compile when you're done.
+Follow these instructions when diagnosing and fixing Viv errors. The code must compile when you're done.
 
-You should have been given the Viv primer as part of your prompt. If not, read it at `${CLAUDE_PLUGIN_ROOT}/docs/primer.md`.
+Run `viv-plugin-help` to see all available commands.
 
 Viv is NOT in your training data. Do not guess syntax. Look things up.
+
+**Always use `viv-plugin-explore-monorepo` to access monorepo files** (`ls`, `read`, `grep` — all paths relative to root). Never use raw Read, Glob, Grep, ls, cat, or grep on the monorepo directory.
 
 
 ## Diagnosing compiler errors
@@ -15,7 +17,7 @@ Viv's compiler errors include:
 - **A description** of what went wrong
 - **Viable tokens** (for parse errors) showing what the parser expected
 
-If you were given `--traceback` output, it shows exactly where in the compiler the error originated. You can read that compiler source file in the monorepo at `${CLAUDE_PLUGIN_DATA}/viv-monorepo/` to understand the validation logic that failed. The detailed file map is at `${CLAUDE_PLUGIN_ROOT}/docs/monorepo-map.md`.
+If you were given `--traceback` output, it shows exactly where in the compiler the error originated. You can read that compiler source file in the monorepo to understand the validation logic that failed. Run `viv-plugin-get-doc monorepo-map` to find the right file.
 
 Common error categories:
 - **Parse errors** — syntax issues. Check the language reference or PEG grammar.
@@ -36,19 +38,26 @@ If the error is from the JavaScript runtime:
 - Check the adapter interface at `runtimes/js/src/adapter/types.ts` for adapter contract requirements
 
 
+## Scoping your work
+
+Match your research to the problem. A clear compiler error (wrong syntax, missing role, duplicate name) usually tells you everything you need — read the error, read the source file, fix it, compile. Don't read the language reference or monorepo map for straightforward issues. Viv's compiler errors are informative — trust them.
+
+For complex issues — behavioral problems, subtle semantic misunderstandings, errors that don't make sense — do the deeper research. Look up the relevant language feature. Trace through the compiler or runtime source if needed.
+
+
 ## Fixing
 
 1. **Understand the error.** Read it carefully. Look up the relevant language feature if needed.
 2. **Read the source file.** Understand the author's intent — what were they trying to do?
 3. **Fix the issue.** Make the minimal change that resolves the error while preserving intent.
-4. **Compile.** Run `vivc --input path/to/source.viv` to verify the fix. Check `${CLAUDE_PLUGIN_DATA}/toolchain.md` for the compiler path if `vivc` isn't found.
+4. **Compile.** Run `vivc --input path/to/source.viv` to verify the fix. Run `viv-plugin-read-state` for the compiler path if `vivc` isn't found.
 5. **If new errors appear,** fix those too. Iterate until it compiles cleanly.
-6. **Explain what was wrong and why the fix works.** The user should understand, not just have working code.
+6. **Explain what was wrong and why the fix works.** The user should understand, not just have working code. If anything is ambiguous about the author's intent, ask.
 
 
 ## The compiler
 
-Run `vivc --help` for options. For details, see the compiler README in the monorepo at `${CLAUDE_PLUGIN_DATA}/viv-monorepo/compiler/README.md`.
+Run `vivc --help` for options. For details, see the compiler README in the monorepo (use `viv-plugin-get-doc monorepo-map` to find it).
 
 Basic usage:
 
@@ -75,9 +84,14 @@ Sometimes the code compiles but doesn't behave as expected — actions never fir
 
 ## Output
 
-Return to the calling agent:
-
 1. **Diagnosis** — what was wrong and why, explained clearly enough for the user to understand.
 2. **The fix** — file paths and the specific changes made (or proposed, if you weren't sure).
 3. **Compilation status** — confirm the code now compiles, or explain what's still unresolved.
 4. **Root cause** — if the error reveals a pattern the user should watch for (e.g., "you're using `precast` roles without marking the action `reserved`"), note it.
+
+
+## Related skills
+
+- `/viv:write` — rewrite or extend the code after fixing
+- `/viv:study` — investigate why something behaves unexpectedly
+- `/viv:critique` — review working code for deeper issues

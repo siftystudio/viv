@@ -1,8 +1,8 @@
 # Viv Monorepo Map
 
-A detailed reference to key files and directories in the Viv monorepo. All paths are relative to the monorepo root (typically `${CLAUDE_PLUGIN_DATA}/viv-monorepo/`).
+A curated guide to key files and directories in the Viv monorepo. Use this map to find what you need, then use `viv-plugin-explore-monorepo` to access it. All paths here are relative to the monorepo root.
 
-When you need to find something, search this file for relevant terms. Each entry includes a prose description and keywords to help you find the right file.
+Workflow: search this map for relevant terms → find the path → `viv-plugin-explore-monorepo read <path>`. You can also `ls` directories and `grep` for patterns. Run `viv-plugin-explore-monorepo --help` for the full command reference.
 
 
 ## Background and documentation
@@ -56,7 +56,7 @@ The authoritative specification for the Viv language. When you need to understan
 |------|-------|-------------|
 | Compiler README | `compiler/README.md` | How to install and use the compiler CLI and Python API. Keywords: install, CLI, usage, pip, vivc, command line |
 | CLI entry point | `compiler/src/viv_compiler/cli.py` | Argument parsing and main function. Keywords: CLI, arguments, main, entry point |
-| Python API | `compiler/src/viv_compiler/api.py` | `compile_from_path()` for programmatic compilation. Keywords: API, compile_from_path, programmatic |
+| Python API | `compiler/src/viv_compiler/api.py` | `compile_from_path()` and `compile_from_string()` for programmatic compilation. Keywords: API, compile_from_path, compile_from_string, programmatic |
 | Pipeline orchestrator | `compiler/src/viv_compiler/pipeline/pipeline.py` | Coordinates parsing, visiting, postprocessing, validation, and bundling. Keywords: pipeline, compilation phases, orchestration |
 | PEG grammar | `compiler/src/viv_compiler/grammar/viv.peg` | The formal grammar specification — ground truth for what parses. Keywords: grammar, PEG, syntax, parsing, tokens, keywords |
 | Config and defaults | `compiler/src/viv_compiler/config/config.py` | Default values for importance, salience, reaction priority; role labels permitted per construct type; mutually incompatible labels. Keywords: config, defaults, role labels, construct types, importance, salience |
@@ -128,23 +128,23 @@ The authoritative specification for the Viv language. When you need to understan
 
 ## Syntax and editor plugins
 
-| What | Where | Description |
-|------|-------|-------------|
-| TextMate grammar | `syntax/viv.tmLanguage.json` | Syntax highlighting grammar used by VS Code and other editors. Keywords: TextMate, grammar, syntax highlighting, scopes |
-| Syntax README | `syntax/README.md` | How to use the TextMate grammar in your own docs (via Shiki), relationships between the three syntax definitions (TextMate, Sublime, JetBrains). Keywords: syntax highlighting, TextMate, Shiki, documentation, code blocks, custom language |
-| Syntax tests | `syntax/tests/syntax_test_viv.viv` | 43K test file with inline assertions checking every token receives the correct TextMate scope. Keywords: syntax tests, TextMate, scopes, assertions, grammar tests |
-| Syntax examples | `syntax/examples/` | Example `.viv` files showcasing language features and color themes. Keywords: examples, showcase, syntax, color themes |
-| VS Code extension | `plugins/vscode/` | Full VS Code extension — syntax, diagnostics, compile on save, snippets, themes. Keywords: VS Code, extension, editor |
-| VS Code entry point | `plugins/vscode/extension.ts` | Extension activation, compiler integration, diagnostics provider. Keywords: VS Code, extension, TypeScript, activation |
-| VS Code compiler bridge | `plugins/vscode/compiler_bridge.py` | Python bridge invoking the compiler from VS Code. Keywords: bridge, compiler, VS Code, Python |
-| VS Code snippets | `plugins/vscode/snippets/viv.json` | Boilerplate snippets for all construct types — good reference for construct structure. Keywords: snippets, boilerplate, templates, constructs |
-| JetBrains plugin | `plugins/jetbrains/` | Full JetBrains plugin — syntax, rename, go-to-def, autocompletion, hover docs, structure view. Keywords: JetBrains, IntelliJ, plugin, IDE |
-| JetBrains autocompletion | `plugins/jetbrains/src/main/kotlin/studio/sifty/viv/VivCompletionContributor.kt` | Context-aware autocompletion logic. Keywords: autocompletion, completions, JetBrains |
-| JetBrains hover docs | `plugins/jetbrains/src/main/kotlin/studio/sifty/viv/VivDocumentationProvider.kt` | Hover documentation provider. Keywords: hover, documentation, JetBrains |
-| JetBrains snippets | `plugins/jetbrains/src/main/resources/liveTemplates/Viv.xml` | Live templates (code snippets). Keywords: snippets, live templates, JetBrains |
-| Sublime package | `plugins/sublime/` | Sublime Text package — syntax, snippets, build system, themes. Keywords: Sublime, package, editor |
-| Sublime compiler bridge | `plugins/sublime/bridge/compiler_bridge.py` | Python bridge invoking the compiler from Sublime. Keywords: bridge, compiler, Sublime, Python |
-| Sublime syntax | `plugins/sublime/Viv.sublime-syntax` | Native Sublime syntax definition. Keywords: syntax, Sublime, highlighting |
+| What                         | Where | Description |
+|------------------------------|-------|-------------|
+| TextMate grammar             | `syntax/viv.tmLanguage.json` | Syntax highlighting grammar used by VS Code and other editors. Keywords: TextMate, grammar, syntax highlighting, scopes |
+| Syntax README                | `syntax/README.md` | How to use the TextMate grammar in your own docs (via Shiki), relationships between the three syntax definitions (TextMate, Sublime, JetBrains). Keywords: syntax highlighting, TextMate, Shiki, documentation, code blocks, custom language |
+| Syntax tests                 | `syntax/tests/syntax_test_viv.viv` | 43K test file with inline assertions checking every token receives the correct TextMate scope. Keywords: syntax tests, TextMate, scopes, assertions, grammar tests |
+| Syntax examples              | `syntax/examples/` | Example `.viv` files showcasing language features and color themes. Keywords: examples, showcase, syntax, color themes |
+| VS Code extension            | `plugins/vscode/` | Full VS Code extension — syntax, diagnostics, compile on save, snippets, themes. Keywords: VS Code, extension, editor |
+| VS Code entry point          | `plugins/vscode/extension.ts` | Extension activation, compiler integration, diagnostics provider. Keywords: VS Code, extension, TypeScript, activation |
+| VS Code compiler bridge      | `plugins/vscode/compiler_bridge.py` | Python bridge invoking the compiler from VS Code. Keywords: bridge, compiler, VS Code, Python |
+| VS Code snippets             | `plugins/vscode/snippets/viv.json` | Boilerplate snippets for all construct types — good reference for construct structure. Keywords: snippets, boilerplate, templates, constructs |
+| JetBrains plugin             | `plugins/jetbrains/` | Full JetBrains plugin — syntax, rename, go-to-def, autocompletion, hover docs, structure view. Keywords: JetBrains, IntelliJ, plugin, IDE |
+| JetBrains autocompletion     | `plugins/jetbrains/src/main/kotlin/studio/sifty/viv/VivCompletionContributor.kt` | Context-aware autocompletion logic. Keywords: autocompletion, completions, JetBrains |
+| JetBrains hover docs         | `plugins/jetbrains/src/main/kotlin/studio/sifty/viv/VivDocumentationProvider.kt` | Hover documentation provider. Keywords: hover, documentation, JetBrains |
+| JetBrains snippets           | `plugins/jetbrains/src/main/resources/liveTemplates/Viv.xml` | Live templates (code snippets). Keywords: snippets, live templates, JetBrains |
+| Sublime Text package         | `plugins/sublime/` | Sublime Text package — syntax, snippets, build system, themes. Keywords: Sublime, package, editor |
+| Sublime Text compiler bridge | `plugins/sublime/bridge/compiler_bridge.py` | Python bridge invoking the compiler from Sublime. Keywords: bridge, compiler, Sublime, Python |
+| Sublime Text syntax          | `plugins/sublime/Viv.sublime-syntax` | Native Sublime syntax definition. Keywords: syntax, Sublime, highlighting |
 
 
 ## Build and CI

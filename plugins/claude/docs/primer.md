@@ -53,13 +53,13 @@ Viv code is composed of seven construct types:
 
 ## Toolchain
 
-| Component | Install | Invoke |
-|-----------|---------|--------|
-| Compiler | `pip install viv-compiler` | `vivc --input source.viv` |
-| JS runtime | `npm install @siftystudio/viv-runtime` | `import { selectAction } from "@siftystudio/viv-runtime"` |
-| VS Code extension | Search "Viv" in Extensions | Syntax highlighting, inline diagnostics, compile on save |
-| JetBrains plugin | Search "Viv" in Plugins | Above + rename, go-to-def, autocompletion, hover docs |
-| Sublime package | Search "Viv" in Package Control | Syntax highlighting, compile via build system |
+| Component            | Install | Invoke |
+|----------------------|---------|--------|
+| Compiler             | `pip install viv-compiler` | `vivc --input source.viv` |
+| JS runtime           | `npm install @siftystudio/viv-runtime` | `import { selectAction } from "@siftystudio/viv-runtime"` |
+| VS Code extension    | Search "Viv" in Extensions | Syntax highlighting, inline diagnostics, compile on save |
+| JetBrains plugin     | Search "Viv" in Plugins | Above + rename, go-to-def, autocompletion, hover docs |
+| Sublime Text package | Search "Viv" in Package Control | Syntax highlighting, compile via build system |
 
 
 ## What Viv looks like
@@ -67,36 +67,92 @@ Viv code is composed of seven construct types:
 Here is a real Viv action — a character writes a gossip note about an embarrassing past event:
 
 ```viv
-action write-gossip-note:
-    gloss: "@writer writes a gossip note about @subject"
+// A character processes their repeated mistreatment by another character
+action contemplate-mistreatment:
+    gloss: "@thinker recalls cases in which @subject has mistreated them"
     roles:
-        @writer:
+        @thinker:
             as: initiator
         @subject:
+            as: character, anywhere  // Not physically present
+        @history*:  // 3-5 past actions fitting the bill
             as: action
+            n: 3-5
             from:
-                search query gossip-worthy-event:
-                    over: @writer
-        @note:
-            as: item, spawn
-            spawn: ~createItem("note")
-    conditions:
-        @writer.personality.loudmouth
+                search query harm:  // Defined elsewhere: a query for finding harmful actions
+                    over: @thinker  // Search over @thinker's memories
+                    with:
+                        @perpetrator: @subject
+                        @victim: @thinker
     effects:
-        @note inscribe @subject
+        // Affinity isn't modeled in Viv, but you can read and write arbitrary sim data
+        @thinker.affinity[@subject] -= #BIG
     reactions:
-        if @hearer == @subject.initiator && <@hearer> fits trope is-unhinged:
-            queue plan-selector plot-revenge:
+        if @thinker.personality.vengeful:  // More arbitrary sim data (from Viv's view)
+            queue plan plot-revenge:  // Defined elsewhere: a plan for orchestrating the actions of a revenge scheme
                 with:
-                    @plotter: @hearer
-                    @target: @writer
-                    @reason: @this
+                    @plotter: @thinker
+                    @target: @subject
         end
 ```
 
 This shows the basic shape: a construct keyword (`action`), a name, then indented fields (`roles`, `conditions`, `effects`, `reactions`). Roles use the `@` sigil. Conditions are boolean expressions. Effects mutate state. Reactions queue follow-up constructs. The `@hearer` is a special reference automatically bound when a character learns about this action after the fact.
 
 Do NOT attempt to write Viv code from this example alone. Always consult the language reference for the full syntax and semantics of any construct.
+
+For simple, idiomatic examples of various Viv features, run `viv-plugin-get-example` to list what's available, then `viv-plugin-get-example <name>` to view one. These are vetted, compilable, and demonstrate correct patterns.
+
+
+## Common misconceptions
+
+These are mistakes that LLMs consistently make when writing Viv code. Review this section before writing or reviewing any Viv code.
+
+**Do not cargo-cult from examples.** There are often multiple ways to do something in Viv, and the best way usually depends on the host application. Do not blindly copy host functions (`~transferItem`, `~createItem`, etc.) or entity property paths (`@person.inventory`, `@location.characters`, etc.) just because you saw them in a reference file or example. Those examples were written for a specific host application and a different audience — they may be terser, more abstract, or more concrete than what's idiomatic for the user's project. When working in an existing project, use the actual host functions and property paths from that project's adapter and schemas. When writing from whole cloth, choose names that are reasonable and self-documenting, but understand they are placeholders the host developer will adapt.
+
+**Roles are already unique.** Viv guarantees that distinct roles are cast with distinct entities during role casting. You do not need conditions like `@owner != @reader` or `@buyer != @seller` — the engine already enforces this. Exceptions: sifting pattern 'actions' field and symbol roles.
+
+**Colocation is implicit.** Unless a role has the `anywhere` label, Viv requires all cast characters and items to be at the same location as the initiator. You do not need conditions like `@buyer.location == @merchant.location` — the engine already enforces this. You also do not need casting pools like `from: @buyer.location.characters` to restrict candidates to the current location — the engine already does this. Only add location conditions when checking something *other* than colocation (e.g., `@person.location.type == #TAVERN`).
+
+**Entity properties are not methods.** A property access like `@merchant.inventory.has(@artifact)` is not valid — entity properties cannot be called as methods. Instead, use a host function (`~hasItem(@merchant, @artifact)`) or a membership test (`@artifact in @merchant.inventory`). Which is best depends on the host application.
+
+**Casting pools are a huge win.** Instead of casting a role from all eligible entities and then filtering with a condition, use a casting pool to narrow candidates upfront. This is more idiomatic and more efficient:
+
+```viv
+// Instead of this:
+    @friend:
+        as: character
+conditions:
+    @friend in @person.friends
+
+// Do this:
+@friend:
+    as: character
+    from: @person.friends
+```
+
+Similarly, use `is:` to bind a role to a specific entity rather than checking equality in conditions:
+
+```viv
+// Instead of this:
+    @beach:
+        as: location
+conditions:
+    @burier.location == @beach
+
+// Do this:
+@beach:
+    as: location
+    is: @burier.location
+```
+
+
+**Let the gloss do the lifting.** Not every detail in a brief needs to be captured in action logic. If the brief says "buries treasure on a moonlit beach," the moonlit atmosphere is flavor — put it in the gloss:
+
+```viv
+gloss: "@burier buries @treasure on @beach under the moonlight"
+```
+
+A condition like `~isMoonlit(@beach)` or `@beach.moonlit` would be absurd — no host application models that. Similarly, `@location.hasBookshelf` is not a property any game developer would maintain. Think about the burden on the host if every incidental detail required its own property. If time of day matters, check `~isNighttime()` or similar. But often the gloss alone is the right place for atmospheric detail. The rule of thumb: if the host application doesn't, or probably wouldn't, model it, let the text carry it.
 
 
 ## Version semantics
@@ -106,7 +162,7 @@ The Viv ecosystem has several independent version numbers: the compiler, the run
 
 ## Reference material
 
-A local copy of the Viv monorepo is available in the plugin's data directory. If it is not there, suggest the user run `/viv:setup` to download it. The orchestrator guide (which you should have already read) tells you exactly where to find it and how to use the monorepo map to locate files efficiently.
+A local copy of the Viv monorepo is available via `viv-plugin-explore-monorepo` (`ls`, `read`, `grep` — all paths relative to root). If the monorepo is not downloaded yet, suggest the user run `/viv:setup`. Use `viv-plugin-get-doc monorepo-map` to load a curated guide to the most important files, then `viv-plugin-explore-monorepo read <path>` to access them.
 
 Key starting points within the monorepo:
 

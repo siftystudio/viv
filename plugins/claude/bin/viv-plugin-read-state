@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# bin/viv-plugin-read-state -- Read the Viv plugin state
+#
+# Reads state.json from the plugin data directory and prints a pretty
+# summary of versions, paths, monorepo info, and registered projects.
+#
+# Usage: viv-plugin-read-state
+
+set -euo pipefail
+
+DATA_DIR="$HOME/.claude/plugins/data/viv-siftystudio"
+STATE_FILE="$DATA_DIR/state.json"
+
+if [ "${1:-}" = "--help" ]; then
+    echo ""
+    echo "Usage: viv-plugin-read-state"
+    echo ""
+    echo "Prints the current Viv plugin state: versions, paths, monorepo info,"
+    echo "and registered projects."
+    echo ""
+    exit 0
+fi
+
+if [ ! -f "$STATE_FILE" ]; then
+    echo "No prior setup found."
+    exit 0
+fi
+
+# Print a pretty summary
+STATE_FILE="$STATE_FILE" python3 <<'PY'
+import json
+import os
+import sys
+state_file = os.environ['STATE_FILE']
+try:
+    with open(state_file) as f:
+        state = json.load(f)
+except json.JSONDecodeError as e:
+    print(f"State file is corrupted: {e}", file=sys.stderr)
+    print(f"Edit or remove {state_file} to recover.", file=sys.stderr)
+    sys.exit(1)
+print()
+print('Viv Plugin State')
+print('=' * 40)
+print(f'Compiler:  v{state.get("compiler_version", "unknown")} ({state.get("compiler_path", "unknown")})')
+print(f'Schema:    v{state.get("schema_version", "unknown")}')
+print(f'Grammar:   v{state.get("grammar_version", "unknown")}')
+print(f'Monorepo:  {state.get("monorepo_tag", "unknown")} (cloned {state.get("monorepo_cloned_at", "unknown")})')
+projects = state.get('projects', {})
+if projects:
+    print()
+    print('Projects')
+    print('-' * 40)
+    for path, info in projects.items():
+        print(f'  {path}')
+        print(f'    Runtime: v{info.get("runtime_version", "unknown")}')
+        print(f'    Checked: {info.get("last_checked", "unknown")}')
+print()
+PY

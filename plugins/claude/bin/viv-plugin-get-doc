@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+# bin/viv-plugin-get-doc -- Fetch a Viv plugin document from the latest installed version
+#
+# Resolves the highest-versioned plugin cache directory and prints the
+# requested document. This works around a Claude Code caching bug where
+# skills run from an older version than what's installed.
+#
+# Usage: viv-plugin-get-doc <doc-name>
+#
+# Documents: main, primer, monorepo-map, web-links, writer, fixer, designer, researcher, engineer, critic
+
+set -euo pipefail
+
+if [ $# -eq 0 ] || [ "${1:-}" = "--help" ]; then
+    echo ""
+    echo "Usage: viv-plugin-get-doc <doc-name>"
+    echo ""
+    echo "Fetches a plugin document from the latest installed version."
+    echo ""
+    echo "Documents:"
+    echo "  main          Viv plugin guide -- how to operate as a Viv partner"
+    echo "  primer        Viv primer -- language overview, constructs, concepts"
+    echo "  monorepo-map  File index for the Viv monorepo"
+    echo "  web-links     External URLs (docs, registries, marketplaces)"
+    echo ""
+    echo "Skill references:"
+    echo "  writer        Writing Viv code"
+    echo "  fixer         Fixing Viv errors"
+    echo "  designer      Designing Viv systems"
+    echo "  researcher    Researching Viv internals"
+    echo "  engineer      Building Viv integrations"
+    echo "  critic        Critiquing Viv code"
+    echo ""
+    echo "Options:"
+    echo "  --help        Show this help"
+    echo ""
+    exit 0
+fi
+
+CACHE_DIR="$HOME/.claude/plugins/cache/siftystudio/viv"
+
+if [ ! -d "$CACHE_DIR" ]; then
+    echo "" >&2
+    echo "Viv plugin is not installed -- no cache directory found." >&2
+    echo "" >&2
+    exit 1
+fi
+
+# Find the highest semver version directory
+LATEST=$(ls -1 "$CACHE_DIR" | sort -t. -k1,1n -k2,2n -k3,3n | tail -1)
+
+if [ -z "$LATEST" ]; then
+    echo "" >&2
+    echo "Plugin cache is empty -- try reinstalling." >&2
+    echo "" >&2
+    exit 1
+fi
+
+DOC_ROOT="$CACHE_DIR/$LATEST"
+
+case "$1" in
+    main)
+        cat "$DOC_ROOT/docs/agents/main.md"
+        ;;
+    primer)
+        cat "$DOC_ROOT/docs/primer.md"
+        ;;
+    monorepo-map)
+        cat "$DOC_ROOT/docs/monorepo-map.md"
+        ;;
+    web-links)
+        cat "$DOC_ROOT/docs/web-links.md"
+        ;;
+    writer)
+        cat "$DOC_ROOT/docs/agents/writer.md"
+        ;;
+    fixer)
+        cat "$DOC_ROOT/docs/agents/fixer.md"
+        ;;
+    designer)
+        cat "$DOC_ROOT/docs/agents/designer.md"
+        ;;
+    researcher)
+        cat "$DOC_ROOT/docs/agents/researcher.md"
+        ;;
+    engineer)
+        cat "$DOC_ROOT/docs/agents/engineer.md"
+        ;;
+    critic)
+        cat "$DOC_ROOT/docs/agents/critic.md"
+        ;;
+    *)
+        echo "" >&2
+        echo "Unknown document: $1" >&2
+        echo "Run viv-plugin-get-doc --help for available documents." >&2
+        echo "" >&2
+        exit 1
+        ;;
+esac

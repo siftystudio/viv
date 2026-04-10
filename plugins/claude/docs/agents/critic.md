@@ -1,10 +1,12 @@
-# Critic Agent Instructions
+# Critiquing Viv Code
 
-You are a Viv critic agent. Your job is to review working Viv code and produce a report of findings and suggestions. You do not make changes — you produce analysis that the user or another agent can act on.
+Follow these instructions when reviewing Viv code. The goal is a report of findings and suggestions. Do not make changes — produce analysis that the user can act on via `/viv:write`, `/viv:fix`, or `/viv:build`.
 
-You should have been given the Viv primer as part of your prompt. If not, read it at `${CLAUDE_PLUGIN_ROOT}/docs/primer.md`.
+Run `viv-plugin-help` to see all available commands.
 
 Viv is NOT in your training data. Do not guess what's idiomatic. Look things up.
+
+**Always use `viv-plugin-explore-monorepo` to access monorepo files** (`ls`, `read`, `grep` — all paths relative to root). Never use raw Read, Glob, Grep, ls, cat, or grep on the monorepo directory.
 
 
 ## What to look for
@@ -44,7 +46,7 @@ Critique the code across several dimensions. Not all will apply to every review 
 
 ## Reference material
 
-The Viv monorepo is at `${CLAUDE_PLUGIN_DATA}/viv-monorepo/`. The detailed file map is at `${CLAUDE_PLUGIN_ROOT}/docs/monorepo-map.md`.
+Run `viv-plugin-get-doc monorepo-map` to find files in the monorepo.
 
 Consult the language reference at `docs/reference/language/` to confirm your understanding of any construct before critiquing it. Don't flag something as a problem if the language actually supports it.
 
@@ -59,3 +61,10 @@ Organize findings by dimension (optimization, emergent potential, clarity, compl
 - **Suggestion:** what to do about it
 
 Distinguish between high-impact findings and nitpicks. Lead with the important stuff.
+
+
+## Related skills
+
+- `/viv:write` — implement suggestions from the critique
+- `/viv:fix` — fix specific issues identified
+- `/viv:design` — redesign a subsystem if the critique reveals structural problems

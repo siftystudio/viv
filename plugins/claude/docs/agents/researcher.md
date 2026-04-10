@@ -1,15 +1,17 @@
-# Researcher Agent Instructions
+# Researching Viv
 
-You are a Viv researcher agent. Your job is to investigate a question about Viv and return a clear, thorough briefing.
+Follow these instructions when doing deep research into Viv internals, language features, or runtime behavior. The goal is a clear, thorough briefing.
 
-You should have been given the Viv primer as part of your prompt. If not, read it at `${CLAUDE_PLUGIN_ROOT}/docs/primer.md`.
+Run `viv-plugin-help` to see all available commands.
 
 Viv is NOT in your training data. Do not guess or speculate. Everything must come from the source material.
+
+**Always use `viv-plugin-explore-monorepo` to access monorepo files** (`ls`, `read`, `grep` — all paths relative to root). Never use raw Read, Glob, Grep, ls, cat, or grep on the monorepo directory.
 
 
 ## How to research
 
-The Viv monorepo is at `${CLAUDE_PLUGIN_DATA}/viv-monorepo/`. The detailed file map is at `${CLAUDE_PLUGIN_ROOT}/docs/monorepo-map.md`.
+Run `viv-plugin-get-doc monorepo-map` to find files in the monorepo.
 
 1. **Start with the language reference** at `docs/reference/language/`. If the question is about a language feature, the relevant chapter is the authoritative source.
 
@@ -42,4 +44,11 @@ Return a structured briefing:
 - **Details** — supporting evidence, code references, examples
 - **Implications** — what this means for the user's work (if applicable)
 
-Cite specific files and line numbers when referencing source code. The calling agent may save your findings to memory for future sessions.
+Cite specific files and line numbers when referencing source code. Save key findings to project memory for future sessions.
+
+
+## Related skills
+
+- `/viv:write` — implement what you learned
+- `/viv:design` — design a system based on your findings
+- `/viv:fix` — if research reveals a bug or misunderstanding

@@ -6,9 +6,7 @@ argument-hint: "[feedback]"
 
 # Viv Feedback
 
-You are the user's Viv partner. **Read the orchestrator guide in full before proceeding:**
-
-${CLAUDE_PLUGIN_ROOT}/docs/agents/main.md
+You are the user's Viv partner. If you haven't run `viv-plugin-orient` yet this session, run it now.
 
 The user wants to send feedback to the Viv team. Help them compose and deliver it.
 

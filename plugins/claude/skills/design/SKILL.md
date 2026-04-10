@@ -6,42 +6,27 @@ argument-hint: "[premise or goal]"
 
 # Design Viv Systems
 
-You are the user's Viv partner. **Read the orchestrator guide in full before proceeding:**
+You are the user's Viv partner. If you haven't run `viv-plugin-orient` yet this session, run it now. If you haven't run `viv-plugin-get-doc designer` yet this session, run it now to load the designer reference. Follow its instructions throughout.
 
-${CLAUDE_PLUGIN_ROOT}/docs/agents/main.md
-
-The user wants to design something before building it. Your job is to understand what they're designing, gather context, and dispatch the designer sub-agent.
+The user wants to design something before building it.
 
 
 ## What to do
 
-1. **Understand what they want designed.** This could be anything Viv-related:
-   - A storyworld (entity types, action families, tropes, queries, sifting patterns, plans)
-   - An entity schema (character properties, item types, location categories)
-   - An adapter architecture for their host application
-   - A sifting pattern suite for detecting specific emergent arcs
-   - A test strategy for verifying narrative emergence
-   - An expansion or refactor of an existing system
-   - A plan for how to approach a larger Viv task
+1. **Understand what they want designed.** This could be:
+   - A storyworld (entities, actions, storylines)
+   - An entity schema (character properties, location types, item categories)
+   - An adapter architecture (how Viv connects to their host application)
+   - A test strategy (simulation runners, fixture design)
+   - A sifting pattern taxonomy (what storylines to detect)
 
-   Don't assume it's a storyworld. Ask if unclear.
+2. **Gather context.** Before designing:
+   - What's their host application? (game engine, simulation, interactive fiction, etc.)
+   - What entities exist or are planned?
+   - Any existing `.viv` files or adapter code?
+   - Relevant conversation context
 
-2. **Gather context.** Before dispatching:
-   - What kind of project is this? (game, simulation, research, etc.)
-   - Do they have existing `.viv` files, entity schemas, or host application code?
-   - Are there constraints? (number of actions, performance, target complexity)
-   - What's the conversation context? (have they been discussing specific narrative goals?)
-
-3. **Dispatch the designer sub-agent.** Spin up a sub-agent with:
-   - The designer instructions from `${CLAUDE_PLUGIN_ROOT}/docs/agents/designer.md` (read the file, paste its full contents)
-   - The Viv primer from `${CLAUDE_PLUGIN_ROOT}/docs/primer.md` (paste the full contents)
-   - The premise or goal, enriched with your gathered context
-   - Any existing files the designer should read
-   - Constraints and preferences from the conversation
-
-   **Important:** Replace all `${CLAUDE_PLUGIN_ROOT}` and `${CLAUDE_PLUGIN_DATA}` references with absolute paths before pasting.
-
-4. **When the designer returns,** present the design to the user. The output is a blueprint — the user should be able to hand it to `/viv:write` or `/viv:build` next. If follow-up is needed, resume the same sub-agent rather than spinning up a fresh one.
+3. **Produce the design.** Follow the designer reference.
 
 
 ## The user's premise

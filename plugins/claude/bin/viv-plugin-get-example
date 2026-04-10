@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+# bin/viv-plugin-get-example -- List or fetch example Viv files
+#
+# Usage:
+#   viv-plugin-get-example              List available examples
+#   viv-plugin-get-example <name>       Print the contents of an example
+#   viv-plugin-get-example --all        Print the contents of every example
+#   viv-plugin-get-example --help       Show this help
+
+set -euo pipefail
+
+CACHE_DIR="$HOME/.claude/plugins/cache/siftystudio/viv"
+
+if [ ! -d "$CACHE_DIR" ]; then
+    echo "" >&2
+    echo "Viv plugin is not installed -- no cache directory found." >&2
+    echo "" >&2
+    exit 1
+fi
+
+# Find the highest semver version directory
+LATEST=$(ls -1 "$CACHE_DIR" | sort -t. -k1,1n -k2,2n -k3,3n | tail -1)
+
+if [ -z "$LATEST" ]; then
+    echo "" >&2
+    echo "Plugin cache is empty -- try reinstalling." >&2
+    echo "" >&2
+    exit 1
+fi
+
+EXAMPLES_DIR="$CACHE_DIR/$LATEST/docs/examples"
+
+show_help() {
+    echo ""
+    echo "Usage: viv-plugin-get-example [name]"
+    echo ""
+    echo "List or fetch example Viv files."
+    echo ""
+    echo "  viv-plugin-get-example              List available examples"
+    echo "  viv-plugin-get-example <name>       Print the contents of an example"
+    echo "  viv-plugin-get-example --all        Print the contents of every example"
+    echo "  viv-plugin-get-example --help       Show this help"
+    echo ""
+}
+
+list_examples() {
+    echo ""
+    echo "Available examples:"
+    echo ""
+    echo "  bury-treasure             A character buries spawned treasure on a beach"
+    echo "  read-diary                A character reads someone else's diary (inspect)"
+    echo "  bargain-for-artifact      A character bargains with a merchant for an artifact (embargoes)"
+    echo "  poison-drink              A character poisons someone's drink (is: role binding)"
+    echo "  toast-fallen-comrade      A character proposes a toast to a deceased comrade (anywhere, no effects)"
+    echo "  confess-secret            A character confesses a secret to a friend -- best example for a new author"
+    echo "  secret-note               A character leaves a secret note (spawn, inscribe, reaction, query)"
+    echo ""
+}
+
+if [[ $# -eq 0 ]]; then
+    list_examples
+    exit 0
+fi
+
+case "$1" in
+    --help|-h)
+        show_help
+        exit 0
+        ;;
+    --all)
+        for file in "$EXAMPLES_DIR"/*.viv; do
+            echo "===== $(basename "$file") ====="
+            echo ""
+            cat "$file"
+            echo ""
+        done
+        ;;
+    *)
+        name="$1"
+        # Allowlist: example names are lowercase letters, digits, and hyphens.
+        # This rejects path traversal (`..`, `/`) and any other unexpected input.
+        if ! [[ "$name" =~ ^[a-z][a-z0-9-]*$ ]]; then
+            echo "Invalid example name: $name" >&2
+            echo "Names must be lowercase letters, digits, and hyphens only." >&2
+            exit 1
+        fi
+        file="${EXAMPLES_DIR}/${name}.viv"
+        if [[ ! -f "$file" ]]; then
+            echo "Unknown example: $name" >&2
+            echo "Run viv-plugin-get-example to see available examples." >&2
+            exit 1
+        fi
+        cat "$file"
+        ;;
+esac

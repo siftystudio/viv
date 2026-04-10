@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+# bin/viv-plugin-install-webstorm-plugin -- Install the Viv JetBrains plugin in WebStorm
+#
+# Installs the Viv plugin from the JetBrains Marketplace via the WebStorm CLI.
+# Requires WebStorm to be installed and its CLI launcher on PATH.
+#
+# Usage: viv-plugin-install-webstorm-plugin
+#        viv-plugin-install-webstorm-plugin --check
+
+set -euo pipefail
+
+if [ "${1:-}" = "--help" ]; then
+    echo ""
+    echo "Usage: viv-plugin-install-webstorm-plugin"
+    echo "       viv-plugin-install-webstorm-plugin --check"
+    echo ""
+    echo "Installs the Viv JetBrains plugin in WebStorm."
+    echo "Use --check to see if WebStorm and the plugin are installed."
+    echo ""
+    exit 0
+fi
+
+# Resolve WebStorm CLI
+CMD=""
+if command -v webstorm &>/dev/null; then
+    CMD="webstorm"
+elif command -v webstorm.sh &>/dev/null; then
+    CMD="webstorm.sh"
+fi
+
+# Detect WebStorm app even if CLI launcher isn't on PATH
+APP_FOUND=false
+if [ -d "/Applications/WebStorm.app" ] || [ -d "$HOME/Applications/WebStorm.app" ]; then
+    APP_FOUND=true
+fi
+
+if [ "${1:-}" = "--check" ]; then
+    if [ -z "$CMD" ] && [ "$APP_FOUND" = false ]; then
+        echo "WebStorm: not installed"
+        exit 0
+    fi
+    if [ -n "$CMD" ]; then
+        echo "WebStorm: installed ($CMD)"
+    else
+        echo "WebStorm: installed (app found, but no CLI launcher)"
+    fi
+    # Check if Viv plugin is installed by looking in the plugins directory
+    viv_found=false
+    for dir in "$HOME/.config/JetBrains/WebStorm"*/plugins/viv-jetbrains* \
+               "$HOME/Library/Application Support/JetBrains/WebStorm"*/plugins/viv-jetbrains* \
+               "$HOME/Library/Application Support/JetBrains/WebStorm"*/viv-jetbrains*; do
+        if [ -e "$dir" ]; then
+            viv_found=true
+            break
+        fi
+    done
+    # Also check the plugin ID directory name pattern
+    for dir in "$HOME/.config/JetBrains/WebStorm"*/plugins/studio.sifty.viv* \
+               "$HOME/Library/Application Support/JetBrains/WebStorm"*/plugins/studio.sifty.viv*; do
+        if [ -e "$dir" ]; then
+            viv_found=true
+            break
+        fi
+    done
+    if [ "$viv_found" = true ]; then
+        echo "Viv plugin: installed"
+    else
+        echo "Viv plugin: not detected (may need to check manually in WebStorm > Settings > Plugins)"
+    fi
+    exit 0
+fi
+
+if [ -z "$CMD" ]; then
+    echo "" >&2
+    echo "WebStorm CLI not found on PATH." >&2
+    echo "Install the command-line launcher: WebStorm > Tools > Create Command-line Launcher." >&2
+    echo "" >&2
+    exit 1
+fi
+
+echo ""
+echo "Installing Viv JetBrains plugin in WebStorm..."
+"$CMD" installPlugins 31012 2>&1
+echo ""
