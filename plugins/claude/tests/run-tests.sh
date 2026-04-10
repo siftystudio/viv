@@ -20,6 +20,20 @@ DOCS_DIR="$PLUGIN_DIR/docs"
 SKILLS_DIR="$PLUGIN_DIR/skills"
 EXAMPLES_DIR="$DOCS_DIR/examples"
 
+# Isolate every check from the developer's real plugin cache by running the
+# suite under an empty HOME. Checks that need populated state build their own
+# temp HOME via make_temp_home and pass it inline (HOME=... script ...), which
+# overrides this default. Without this, bugs that only surface on a fresh
+# install (CI, new contributors) get masked locally.
+#
+# REAL_HOME is preserved for the one check that legitimately needs the
+# developer's real HOME -- check_examples_compile invokes vivc, which may be
+# a Python user-site install under ~/Library/Python/.../site-packages.
+REAL_HOME="$HOME"
+CLEAN_HOME=$(mktemp -d)
+trap 'rm -rf "$CLEAN_HOME"' EXIT
+export HOME="$CLEAN_HOME"
+
 PASS=0
 FAIL=0
 
@@ -311,7 +325,9 @@ check_examples_compile() {
     for example in "$EXAMPLES_DIR"/*.viv; do
         local name
         name=$(basename "$example")
-        if ! vivc --input "$example" >/dev/null 2>&1; then
+        # vivc may be a Python user-site install, so it needs the real HOME
+        # to locate its own package (see the REAL_HOME note at the top).
+        if ! HOME="$REAL_HOME" vivc --input "$example" >/dev/null 2>&1; then
             errors+=("$name: failed to compile")
         fi
     done
