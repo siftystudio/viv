@@ -1,6 +1,12 @@
-# Viv Monorepo
+# Viv: An Engine for Emergent Narrative
 
-Welcome to the monorepo for **Viv**, an engine for **emergent narrative** in games and simulations.
+[![docs][docs-badge]][docs-link] [![CI][ci-badge]][ci-link] [![last release][last-release-badge]][last-release-link] [![last commit][last-commit-badge]][last-commit-link] [![license][license-badge]][license-link]
+
+[![pypi][pypi-badge]][pypi-link] [![npm][npm-badge]][npm-link] [![jetbrains][jetbrains-badge]][jetbrains-link] [![vs code][vscode-badge]][vscode-link] [![sublime text][sublime-badge]][sublime-link] [![claude code][claude-badge]][claude-link]
+
+## Welcome
+
+Welcome to the **monorepo** for Viv, an engine for emergent narrative in games and simulations.
 
 In *emergent narrative*, stories arise from the bottom up, as characters take action in a simulated storyworld, rather than being authored from the top down. Viv offers practitioners of this approach a custom programming language that allows rich specifications of character actions, as well as material for *story sifting*—the task of identifying emergent storylines in a given simulation instance, such as a videogame playthrough.
 
@@ -9,10 +15,10 @@ If you're new to Viv, check out the [**homepage**](https://viv.sifty.studio) for
 Viv is a **source-available project**, which means that:
 
 * Anyone can view its full codebase (which lives here in this monorepo).
-* Non-commercial use is freely permitted. 
+* Non-commercial use is freely permitted.
 * Commercial use requires a [license](#license).
 
-Below, you'll find a barebones overview of the project, mostly taking the form of links to the published packages and to various docs. The [monorepo layout](#monorepo-layout) section also provides a high-level map of the codebase, for folks who want to explore around in there.
+Below, you'll find a high-level overview of the project, mostly taking the form of links to the published packages and to various docs. The [monorepo layout](#monorepo-layout) section also provides a high-level map of the codebase, for folks who want to explore around in there.
 
 
 ## Table of Contents
@@ -60,7 +66,7 @@ Below, you'll find a barebones overview of the project, mostly taking the form o
 
   ```sh
   pip install viv-compiler
-  
+
   vivc --test
   ```
 
@@ -74,7 +80,7 @@ Below, you'll find a barebones overview of the project, mostly taking the form o
 
   ```sh
   npx degit siftystudio/viv/examples/hello-viv-ts my-viv-project  # or hello-viv-js
-  
+
   cd my-viv-project
   npm install && npm start
   ```
@@ -83,7 +89,7 @@ Below, you'll find a barebones overview of the project, mostly taking the form o
 
   ```sh
   vivc -i src/content/source.viv -o src/content/compiled_content_bundle.json
-  
+
   npm start
   ```
 
@@ -93,24 +99,24 @@ Below, you'll find a barebones overview of the project, mostly taking the form o
 
 ## Packages
 
-| Package | Description | Registry |
-|---------|-------------|----------|
-| Viv Compiler | Compiles `.viv` source files into JSON content bundles. | [PyPI](https://pypi.org/project/viv-compiler/) |
-| Viv JavaScript Runtime | Action selection, planning, and story sifting from a content bundle. | [npm](https://www.npmjs.com/package/@siftystudio/viv-runtime) |
-| Viv JetBrains Plugin | Full-featured IDE support for `.viv` files. This is the default tool for writing Viv code. | [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/31012-viv) |
-| Viv VS Code Extension | Editor support for `.viv` files. | [VS Marketplace](https://marketplace.visualstudio.com/items?itemName=siftystudio.viv) |
-| Viv Sublime Text Package | Lightweight editor support for `.viv` files. | [GitHub](https://github.com/siftystudio/viv/tree/main/plugins/sublime) |
-| Viv Claude Code Plugin | LLM-powered Viv expertise in your terminal. | [GitHub](https://github.com/siftystudio/viv/tree/main/plugins/claude) |
+| Package | Description | Install |
+|---------|-------------|---------|
+| [Viv Compiler](compiler/README.md) | Compiles `.viv` source files into JSON content bundles. | [![pypi][pypi-badge]][pypi-link] |
+| [Viv JavaScript Runtime](runtimes/js/README.md) | Action selection, planning, and story sifting from a content bundle. | [![npm][npm-badge]][npm-link] |
+| [Viv JetBrains Plugin](plugins/jetbrains/README.md) | Full-featured IDE support for `.viv` files. This is the default tool for writing Viv code. | [![jetbrains][jetbrains-badge]][jetbrains-link] |
+| [Viv VS Code Extension](plugins/vscode/README.md) | Editor support for `.viv` files. | [![vs code][vscode-badge]][vscode-link] |
+| [Viv Sublime Text Package](plugins/sublime/README.md) | Lightweight editor support for `.viv` files. | [![sublime text][sublime-badge]][sublime-link] |
+| [Viv Claude Code Plugin](plugins/claude/README.md) | LLM-powered Viv expertise in your terminal. | [![claude code][claude-badge]][claude-link] |
 
 
 ## Docs
 
-| Resource                                                     | Description                                                  |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [Quickstart](https://viv.sifty.studio/quickstart/)      | Installation, editor plugins, and LLM-augmented authoring for those that want it. |
-| [Introduction](https://viv.sifty.studio/introduction/)  | A complete introduction to Viv: features, design philosophy, and an extensive working example. |
-| [Language Reference](https://viv.sifty.studio/reference/language/) | A complete specification of the Viv language.                |
-| [Runtime API Docs](https://viv.sifty.studio/reference/runtimes/js/) | Reference for the JavaScript runtime API.                    |
+| Resource | Description |
+|----------|-------------|
+| [Quickstart](https://viv.sifty.studio/quickstart/) | Installation, editor plugins, and LLM-augmented authoring for those that want it. |
+| [Introduction](https://viv.sifty.studio/introduction/) | A complete introduction to Viv: features, design philosophy, and an extensive working example. |
+| [Language Reference](https://viv.sifty.studio/reference/language/) | A complete specification of the Viv language. |
+| [Runtime API Docs](https://viv.sifty.studio/reference/runtimes/js/) | Reference for the JavaScript runtime API. |
 | [Viv: A Brief History](https://viv.sifty.studio/background/history-of-viv/) | A short overview of the intellectual and technical backdrop for the Viv project. |
 | [*Curating Simulated Storyworlds*](https://viv.sifty.studio/background/curating_simulated_storyworlds.pdf) | My PhD thesis, which serves as the intellectual basis for Viv. |
 
@@ -159,3 +165,26 @@ That said, bug reports, feature requests, and general feedback are certainly wel
 Viv is freely available for non-commercial use, while commercial use requires a license from [Sifty](https://sifty.studio). See [LICENSE.txt](LICENSE.txt) for the full details, or visit [sifty.studio/licensing](https://sifty.studio/licensing).
 
 *© 2025-2026 Sifty LLC. All rights reserved.*
+
+[docs-badge]: https://img.shields.io/badge/docs-online-blue?logo=astro&logoColor=white
+[docs-link]: https://viv.sifty.studio/quickstart/
+[ci-badge]: https://img.shields.io/github/actions/workflow/status/siftystudio/viv/ci.yml?branch=main&label=CI&logo=githubactions&logoColor=white
+[ci-link]: https://github.com/siftystudio/viv/actions/workflows/ci.yml
+[last-release-badge]: https://img.shields.io/github/release-date/siftystudio/viv?label=last%20release&logo=github&logoColor=white
+[last-release-link]: https://github.com/siftystudio/viv/releases
+[last-commit-badge]: https://img.shields.io/github/last-commit/siftystudio/viv?logo=git&logoColor=white
+[last-commit-link]: https://github.com/siftystudio/viv/commits/main
+[license-badge]: https://img.shields.io/badge/license-source--available-blue
+[license-link]: https://github.com/siftystudio/viv/blob/main/LICENSE.txt
+[pypi-badge]: https://img.shields.io/pypi/v/viv-compiler?logo=python&logoColor=white
+[pypi-link]: https://pypi.org/project/viv-compiler/
+[npm-badge]: https://img.shields.io/npm/v/%40siftystudio%2Fviv-runtime?logo=npm&logoColor=white
+[npm-link]: https://www.npmjs.com/package/@siftystudio/viv-runtime
+[jetbrains-badge]: https://img.shields.io/jetbrains/plugin/v/31012?label=jetbrains&logo=jetbrains&logoColor=white
+[jetbrains-link]: https://plugins.jetbrains.com/plugin/31012-viv
+[vscode-badge]: https://img.shields.io/github/v/release/siftystudio/viv?filter=vscode-v*&label=vs%20code&color=orange&logo=data:image/svg%2Bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0yMy4xNSAyLjU5IDE4LjIuMmExLjUgMS41IDAgMCAwLTEuNy4yOUw3LjA0IDkuMTMgMi45MyA2YTEgMSAwIDAgMC0xLjI4LjA2TC4zMyA3LjI2YTEgMSAwIDAgMCAwIDEuNDhMMy45IDEyIC4zMiAxNS4yNmExIDEgMCAwIDAgMCAxLjQ4bDEuMzMgMS4yYTEgMSAwIDAgMCAxLjI4LjA2bDQuMTItMy4xMyA5LjQ2IDguNjNjLjQ0LjQ1IDEuMTMuNTcgMS43LjI5bDQuOTQtMi4zOGMuNTItLjI1Ljg1LS43Ny44NS0xLjM1VjMuOTRjMC0uNTgtLjMzLTEuMS0uODUtMS4zNlpNMTggMTcuNDUgMTAuODIgMTIgMTggNi41NXYxMC45WiIvPjwvc3ZnPg%3D%3D
+[vscode-link]: https://marketplace.visualstudio.com/items?itemName=siftystudio.viv
+[sublime-badge]: https://img.shields.io/github/v/release/siftystudio/viv?filter=sublime-v*&label=sublime%20text&color=orange&logo=sublimetext&logoColor=white
+[sublime-link]: https://github.com/siftystudio/viv/blob/main/plugins/sublime/README.md
+[claude-badge]: https://img.shields.io/github/v/release/siftystudio/viv?filter=claude-v*&label=claude%20code&color=orange&logo=claude&logoColor=white
+[claude-link]: https://github.com/siftystudio/viv/blob/main/plugins/claude/README.md
