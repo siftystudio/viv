@@ -101,12 +101,12 @@ Below, you'll find a high-level overview of the project, mostly taking the form 
 
 | Package | Description | Install |
 |---------|-------------|---------|
-| [Viv Compiler](compiler/README.md) | Compiles `.viv` source files into JSON content bundles. | [![pypi][pypi-badge]][pypi-link] |
-| [Viv JavaScript Runtime](runtimes/js/README.md) | Action selection, planning, and story sifting from a content bundle. | [![npm][npm-badge]][npm-link] |
-| [Viv JetBrains Plugin](plugins/jetbrains/README.md) | Full-featured IDE support for `.viv` files. This is the default tool for writing Viv code. | [![jetbrains][jetbrains-badge]][jetbrains-link] |
-| [Viv VS Code Extension](plugins/vscode/README.md) | Editor support for `.viv` files. | [![vs code][vscode-badge]][vscode-link] |
-| [Viv Sublime Text Package](plugins/sublime/README.md) | Lightweight editor support for `.viv` files. | [![sublime text][sublime-badge]][sublime-link] |
-| [Viv Claude Code Plugin](plugins/claude/README.md) | LLM-powered Viv expertise in your terminal. | [![claude code][claude-badge]][claude-link] |
+| [Compiler](compiler/README.md) | Compiles `.viv` source files into JSON content bundles. | [PyPI][pypi-link] |
+| [JavaScript Runtime](runtimes/js/README.md) | Action selection, planning, and story sifting from a content bundle. | [npm][npm-link] |
+| [JetBrains Plugin](plugins/jetbrains/README.md) | Full-featured IDE support for `.viv` files. This is the default tool for writing Viv code. | [JetBrains Marketplace][jetbrains-link] |
+| [VS Code Extension](plugins/vscode/README.md) | Editor support for `.viv` files. | [VS Marketplace][vscode-link] |
+| [Sublime Text Package](plugins/sublime/README.md) | Lightweight editor support for `.viv` files. | [GitHub][sublime-link] |
+| [Claude Code Plugin](plugins/claude/README.md) | LLM-powered Viv expertise in your terminal. | [GitHub][claude-link] |
 
 
 ## Docs
