@@ -99,14 +99,14 @@ Below, you'll find a high-level overview of the project, mostly taking the form 
 
 ## Packages
 
-| Package | Description | Install |
-|---------|-------------|---------|
-| [Compiler](compiler/README.md) | Compiles `.viv` source files into JSON content bundles. | [PyPI][pypi-link] |
-| [JavaScript Runtime](runtimes/js/README.md) | Action selection, planning, and story sifting from a content bundle. | [npm][npm-link] |
-| [JetBrains Plugin](plugins/jetbrains/README.md) | Full-featured IDE support for `.viv` files. This is the default tool for writing Viv code. | [JetBrains Marketplace][jetbrains-link] |
-| [VS Code Extension](plugins/vscode/README.md) | Editor support for `.viv` files. | [VS Marketplace][vscode-link] |
-| [Sublime Text Package](plugins/sublime/README.md) | Lightweight editor support for `.viv` files. | [GitHub][sublime-link] |
-| [Claude Code Plugin](plugins/claude/README.md) | LLM-powered Viv expertise in your terminal. | [GitHub][claude-link] |
+| Package | Description                                                                                    | Install |
+|---------|------------------------------------------------------------------------------------------------|---------|
+| [Compiler](compiler/README.md) | Compiles `.viv` source files into JSON content bundles.                                        | [PyPI][pypi-link] |
+| [JavaScript Runtime](runtimes/js/README.md) | Action selection, planning, and story sifting from a content bundle.                           | [npm][npm-link] |
+| [JetBrains Plugin](plugins/jetbrains/README.md) | Full-featured IDE support for `.viv` files. This is the recommended tool for writing Viv code. | [JetBrains Marketplace][jetbrains-link] |
+| [VS Code Extension](plugins/vscode/README.md) | Editor support for `.viv` files.                                                               | [VS Marketplace][vscode-link] |
+| [Sublime Text Package](plugins/sublime/README.md) | Lightweight editor support for `.viv` files.                                                   | [GitHub][sublime-link] |
+| [Claude Code Plugin](plugins/claude/README.md) | LLM-powered Viv expertise in your terminal.                                                    | [GitHub][claude-link] |
 
 
 ## Docs
@@ -185,6 +185,6 @@ Viv is freely available for non-commercial use, while commercial use requires a 
 [vscode-badge]: https://img.shields.io/github/v/release/siftystudio/viv?filter=vscode-v*&label=vs%20code&color=orange&logo=data:image/svg%2Bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0yMy4xNSAyLjU5IDE4LjIuMmExLjUgMS41IDAgMCAwLTEuNy4yOUw3LjA0IDkuMTMgMi45MyA2YTEgMSAwIDAgMC0xLjI4LjA2TC4zMyA3LjI2YTEgMSAwIDAgMCAwIDEuNDhMMy45IDEyIC4zMiAxNS4yNmExIDEgMCAwIDAgMCAxLjQ4bDEuMzMgMS4yYTEgMSAwIDAgMCAxLjI4LjA2bDQuMTItMy4xMyA5LjQ2IDguNjNjLjQ0LjQ1IDEuMTMuNTcgMS43LjI5bDQuOTQtMi4zOGMuNTItLjI1Ljg1LS43Ny44NS0xLjM1VjMuOTRjMC0uNTgtLjMzLTEuMS0uODUtMS4zNlpNMTggMTcuNDUgMTAuODIgMTIgMTggNi41NXYxMC45WiIvPjwvc3ZnPg%3D%3D
 [vscode-link]: https://marketplace.visualstudio.com/items?itemName=siftystudio.viv
 [sublime-badge]: https://img.shields.io/github/v/release/siftystudio/viv?filter=sublime-v*&label=sublime%20text&color=orange&logo=sublimetext&logoColor=white
-[sublime-link]: https://github.com/siftystudio/viv/blob/main/plugins/sublime/README.md
+[sublime-link]: https://github.com/siftystudio/viv/blob/main/plugins/sublime/README.md#getting-started
 [claude-badge]: https://img.shields.io/github/v/release/siftystudio/viv?filter=claude-v*&label=claude%20code&color=orange&logo=claude&logoColor=white
-[claude-link]: https://github.com/siftystudio/viv/blob/main/plugins/claude/README.md
+[claude-link]: https://github.com/siftystudio/viv/blob/main/plugins/claude/README.md#getting-started
