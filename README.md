@@ -1,8 +1,10 @@
 # Viv: An Engine for Emergent Narrative
 
-[![docs][docs-badge]][docs-link] [![CI][ci-badge]][ci-link] [![last release][last-release-badge]][last-release-link] [![last commit][last-commit-badge]][last-commit-link] [![license][license-badge]][license-link]
+[![pypi][pypi-badge]][pypi-link] [![npm][npm-badge]][npm-link] [![claude code][claude-badge]][claude-link]
 
-[![pypi][pypi-badge]][pypi-link] [![npm][npm-badge]][npm-link] [![jetbrains][jetbrains-badge]][jetbrains-link] [![vs code][vscode-badge]][vscode-link] [![sublime text][sublime-badge]][sublime-link] [![claude code][claude-badge]][claude-link]
+[![jetbrains][jetbrains-badge]][jetbrains-link] [![vs code][vscode-badge]][vscode-link] [![sublime text][sublime-badge]][sublime-link]
+
+[![docs][docs-badge]][docs-link] [![CI][ci-badge]][ci-link] [![last release][last-release-badge]][last-release-link] [![last commit][last-commit-badge]][last-commit-link] [![license][license-badge]][license-link]
 
 ## Welcome
 
