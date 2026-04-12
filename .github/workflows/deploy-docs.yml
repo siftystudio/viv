@@ -1,0 +1,75 @@
+name: Deploy Docs
+
+# Reusable workflow that builds and deploys the full Viv docs site.
+#
+# Called by `ci.yml` on every push to main, and `cd-runtime.yml` on every runtime release.
+#
+# Both callers get identical behavior: check out current main for all docs tooling and
+# authored content, pin the runtime TypeScript source to the last-released version
+# (the release just deployed if the caller is `cd-runtime.yml`), generate the TypeDoc
+# API reference, build the Starlight site, assemble, and deploy to GitHub Pages.
+
+on:
+  workflow_call:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: true
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Generate the runtime API reference from the last-released source. Here we
+      # pin `runtimes/js/src/` to the latest `runtime-v*` tag, so the docs reflect
+      # what was actually shipped, then run TypeDoc with current main's config and
+      # tooling. Docs-level changes (CSS, typedoc.json) take effect immediately,
+      # while the API surface stays release-pinned.
+      - name: Generate runtime API docs
+        run: |
+          TAG=$(git tag -l 'runtime-v*' | sort -V | tail -1)
+          if [ -z "$TAG" ]; then
+            echo "::warning::No runtime-v* tag found — skipping runtime API docs"
+          else
+            echo "Generating runtime API docs from $TAG"
+            rm -rf runtimes/js/src/
+            git checkout "$TAG" -- runtimes/js/src/
+            npm --workspace runtimes/js run docs
+          fi
+
+      - name: Build docs
+        run: cd docs && npm run build
+
+      - name: Assemble site
+        run: |
+          if [ -d docs/reference/runtimes/js ]; then
+            mkdir -p docs/dist/reference/runtimes/js
+            cp -r docs/reference/runtimes/js/* docs/dist/reference/runtimes/js/
+          fi
+
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/dist
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4

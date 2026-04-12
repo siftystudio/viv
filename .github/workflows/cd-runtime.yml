@@ -9,8 +9,6 @@ permissions:
   contents: write
   actions: read
   checks: read
-  pages: write
-  id-token: write
 
 jobs:
   publish:
@@ -82,41 +80,10 @@ jobs:
           body: ${{ steps.changelog.outputs.body }}
           make_latest: "false"
 
-      - name: Generate API docs
-        run: npm --workspace runtimes/js run docs
-
-      - name: Upload API docs for CI use
-        uses: actions/upload-artifact@v4
-        with:
-          name: js-runtime-api-docs
-          path: docs/reference/runtimes/js
-          retention-days: 400
-
-      - name: Build language reference
-        run: cd docs && npm run build
-
-      - name: Assemble site
-        run: |
-          if [ -d docs/reference/runtimes/js ]; then
-            mkdir -p docs/dist/reference/runtimes/js
-            cp -r docs/reference/runtimes/js/* docs/dist/reference/runtimes/js/
-          fi
-
-      - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/dist
-
   docs:
     needs: publish
-    runs-on: ubuntu-latest
-    concurrency:
-      group: pages
-      cancel-in-progress: true
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deploy
-        uses: actions/deploy-pages@v4
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/deploy-docs.yml

@@ -192,46 +192,4 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    runs-on: ubuntu-latest
-    concurrency:
-      group: pages
-      cancel-in-progress: true
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build docs
-        run: cd docs && npm run build
-
-      - name: Restore API docs from last runtime release
-        uses: dawidd6/action-download-artifact@v20
-        with:
-          workflow: cd-runtime.yml
-          name: js-runtime-api-docs
-          path: docs/reference/runtimes/js
-          if_no_artifact_found: warn
-
-      - name: Assemble site
-        run: |
-          if [ -d docs/reference/runtimes/js ]; then
-            mkdir -p docs/dist/reference/runtimes/js
-            cp -r docs/reference/runtimes/js/* docs/dist/reference/runtimes/js/
-          fi
-
-      - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/dist
-
-      - name: Deploy to GitHub Pages
-        id: deploy
-        uses: actions/deploy-pages@v4
+    uses: ./.github/workflows/deploy-docs.yml
