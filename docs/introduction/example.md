@@ -10,7 +10,7 @@ Along the way, we'll encounter actions, queries, tropes, selectors, plans, sifti
 
 Alice is well underway in her effort to author Viv-powered revenge stories for her game.
 
-Currently she is using the [Viv JavaScript runtime](https://www.npmjs.com/package/@siftystudio/viv-runtime) to test whether the storylines that emerge are to her liking. First, she simulates a few decades of story time in a storyworld that persists inside of her host application, making use of Viv's facilities for *action selection*:
+Currently she is using the [Viv JavaScript runtime](https://www.npmjs.com/package/@siftystudio/viv-runtime) to test whether the storylines that emerge are to her liking. First, she simulates a few decades of story time, making use of Viv's facilities for *action selection*:
 
 ```javascript
 import { selectAction } from "@siftystudio/viv-runtime";
@@ -24,11 +24,23 @@ while (sim.year < config.worldgen.stopYear) {
 }
 ```
 
-Now she's got a world in which Viv has produced around 100,000 character actions—in Viv parlance, this collection is called the *chronicle*.
+Now she's got a world in which Viv has produced thousands of character actions—in Viv parlance, this collection is called the *chronicle*. It persists in Alice's game, the *host application*, and Viv reads and writes it using a bridge to that application called the *adapter*. Alice registers her adapter once, by calling the function [`initializeVivRuntime()`](https://viv.sifty.studio/reference/runtimes/js/functions/initializeVivRuntime.html) in her game's startup code, and from there on Viv's accessing of sim data is totally abstracted.
 
 ## Running a sifting pattern
 
-Since Alice is working on revenge arcs right now, she wants to determine whether any emerged in the decades of story time that she simulated. To carry out this investigation, she employs Viv's *story sifting* faculties to run a *sifting pattern* that she has authored. This pattern searches the chronicle to match sequences of actions that compose revenge arcs, according to how she defines them:
+Since Alice is working on revenge arcs right now, she wants to determine whether any such storylines emerged in the decades of time that she simulated. To carry out this investigation, she employs Viv's *story sifting* faculties to run a *sifting pattern* that she has authored, called `revenge`:
+
+```javascript
+import { runSiftingPattern } from "@siftystudio/viv-runtime";
+
+const siftingMatch = await runSiftingPattern({ patternName: "revenge" });
+```
+
+This pattern searches the chronicle to match sequences of actions that compose revenge arcs, according to how she defines them.
+
+## Diagramming an emergent storyline
+
+She's found a match! One way to examine it, as an author, is to invoke the Viv runtime's functionality for constructing a *causal tree diagram* for the sifting match. She expands the code snippet above to log the diagram for the match:
 
 ```javascript
 import { runSiftingPattern, constructSiftingMatchDiagram } from "@siftystudio/viv-runtime";
@@ -40,11 +52,7 @@ if (siftingMatch) {
 }
 ```
 
-## Diagramming an emergent storyline
-
-She's found a match! One way to examine it, as an author, is to invoke the Viv runtime's functionality for constructing a *causal tree diagram* for the sifting match.
-
-Alice did this in the code snippet above, which logged the following diagram for a sifted revenge story:
+When she runs this code, it logs this diagram for a sifted revenge story:
 
 ```
 ⋮ (19)
@@ -74,7 +82,9 @@ There's a lot happening here.
 
 First off, this is a tree diagram that moves from top left to bottom right, where each node is a historical action (in Alice's simulated storyworld) and each edge (`└─`) marks a *causal link*. For example, the action `a2`, which is an instance of the `write-gossip-note` action, is marked as having caused `a3`, itself a `read-note` instance. In other words, a character wrote a gossip note, later another character read the note, and the system has automatically recorded a causal relation between the two actions.
 
-In the diagram, *elision indicators* of the form `⋮ (N)` mark actions that, while being part of the causal ancestry, were not specifically matched by Alice's `revenge` sifting pattern. So the `⋮ (31)` between `spread-rumor [a4]` and `mock-in-public [a5]` marks 31 elided actions, in this case other actions that have `spread-rumor [a4]` as a causal ancestor (either direct or indirect). Meanwhile, `begin-apprenticeship-with-builder [a10]` caused 847 actions, none of which are fundamental components of the revenge arc described here.
+In the diagram, *elision indicators* of the form `⋮ (N)` mark actions that, while being part of the causal ancestry, were not specifically matched by Alice's `revenge` sifting pattern. So the `⋮ (31)` between `spread-rumor [a4]` and `mock-in-public [a5]` marks 31 elided actions, in this case other actions that have `spread-rumor [a4]` as a causal ancestor (either direct or indirect). Meanwhile, `begin-apprenticeship-with-builder [a10]` caused 847 actions, none of which are fundamental components of the revenge arc described here. These are causally related offshoots of the sifted storyline.
+
+It turns out that when you exhaustively track causality between actions, like Viv does, storylines tend not to be neat causal trees, but rather substructures of such topologies. Conventional human-authored stories don't look like this because the cognitive cost of the necessary worldbuilding would be too high, but for a computer it is a simple manner of graph maintenance (so long as there is a means of tracking causal links). This enables a new kind of narratology—one where storylines embed and interweave one another—as the next section discusses.
 
 Finally, in parentheses we see what *role* each action plays in the `revenge` sifting pattern (whose definition we will read momentarily). For instance, `write-gossip-note [a2]` was the `offense` for which vengeance was sought, `befriend-victim-family [a12]` is part of the `scheme`, and the `payback` was `arson [a14]`.
 
@@ -84,9 +94,9 @@ So let's back out and take stock of the emergent storyline here: a character who
 
 Later on, a whopping 1,204 actions occurred as a result of the arson, but none of them were deemed pertinent to the revenge arc itself, according to Alice's `revenge` sifting pattern.
 
-Now it may be the case that another sifting pattern, such as a `rags-to-riches`, would match a subset of `arson`'s 1,204 causal descendants. In this case, the entire `revenge` *storyline* here could be conceived as having caused the `rags-to-riches` storyline, and such relations between sifting matches can be matched via higher-order sifting patterns that specify child sifting patterns—and correspondences between their respective matches. Below, Alice will write [a pattern](#storylines-of-storylines) called `eye-for-an-eye` that matches when a `revenge` storyline causes another `revenge` storyline, but with the aggressor of the first being the target of the latter, and `payback` of the first being the `offense` of the second.
+Now it may be the case that another sifting pattern, such as a `rags-to-riches`, would match a subset of `arson`'s 1,204 causal descendants. In this case, the entire `revenge` *storyline* here could be conceived as having caused the `rags-to-riches` storyline, and such relations between sifting matches can be matched via higher-order sifting patterns that specify child sifting patterns—and correspondences between their respective matches. [Below](#storylines-of-storylines), Alice will write a higher-order pattern called `eye-for-an-eye` that matches when a `revenge` storyline causes another `revenge` storyline, but with the aggressor of the first being the target of the latter, and `payback` of the first being the `offense` of the second.
 
-In general, the aesthetics of Viv is a hyper-Pynchonian gnarl of storylines begetting (and embedding) other storylines—but in ways that can be controlled by authors and recognized by Viv itself, as the simulation is proceeding. In my PhD thesis, I referred to this phenomenon as *storyline interlocking*, and in Viv it is a first-class notion that works according to one's authored constructs.
+In general, the aesthetics of Viv is a hyper-Pynchonian gnarl of storylines begetting (and embedding) other storylines—but in ways that can be controlled by authors and recognized by Viv itself, as the simulation is proceeding. In my [PhD thesis](https://viv.sifty.studio/background/curating_simulated_storyworlds.pdf), I referred to this phenomenon as *storyline interlocking*, and in Viv it is a first-class notion that works according to one's authored constructs.
 
 ## Writing actions, queries, and tropes
 
@@ -125,7 +135,7 @@ Here we have Alice's definition for `write-gossip-note`, an instance of which se
 
 This action casts three *roles*: `@writer` (a character), `@subject` (a past action), and `@note` (an item). These are the variables that must be bound in order for the action to be performed. In Viv, this binding process is framed using the verbiage of casting roles in a dramatic production—a metaphor borrowed from [*Comme il Faut*](https://ojs.aaai.org/index.php/AIIDE/article/download/12454/12313), one of Viv's [antecedents](/background/history-of-viv/).
 
-The `conditions` field specifies that `@writer`, the *initiator* of the action, must have the `loudmouth` personality trait. But that's not a Viv concern—the `.personality.loudmouth` path is an arbitrary one (from Viv's standpoint) that Alice's host application will resolve, on request, as the Viv runtime evaluates this condition.
+The `conditions` field specifies that `@writer`, the *initiator* of the action, must have the `loudmouth` personality trait. But that's not a Viv concern—the `.personality.loudmouth` path is an arbitrary one (from Viv's standpoint) that Alice's host application will resolve, on request, as the Viv runtime evaluates this condition. As noted above, this depends on the *adapter* module that Alice registers with the Viv runtime in her game's startup code.
 
 If the condition holds for a character considering this action, the next concern is casting the `@subject` role, whose candidate pool is a set of actions matching the `gossip-worthy-event` *query*:
 
@@ -138,11 +148,15 @@ query gossip-worthy-event:
         >=: #MODERATE
 ```
 
-This query matches actions tagged `embarrassing` (another arbitrary author-defined value) and exceeding a salience threshold (specified by the author-defined *enum* `#MODERATE`). Critically, the bit `over: @writer` specifies that the query is to be run only against actions that `@writer` knows about.
+This query matches actions tagged `embarrassing` (another author-defined value) and exceeding a salience threshold (specified by the author-defined *enum* `#MODERATE`). Critically, the bit `over: @writer` specifies that the query is to be run only against actions that `@writer` knows about.
 
-Meanwhile, the `@note` role specifies that an *item* is to be spawned, upon performance of the action, to be cast in this role. The item will be created via an author-defined function called `createItem()`. Further, the `effects` field of the action uses the special `inscribe` operator to write into the `@note` item knowledge of the `@subject` action. Elsewhere, as we'll see below, Alice can use the `inspect` operator to cause a character to read the `@note`, thereby gaining knowledge of the `@subject` action. In general, one hallmark of Viv is its rich affordances for dealing in character knowledge, specifically of past actions, which enables a whole suite of storylines. For instance, a character could discover this very `@note` a century after it was written, thereby learning about `@subject` at that time, which could itself cause the character to *react*, with the causal link between `@subject` and this subsequent action (a century later) being automatically tracked by the system.
+Meanwhile, the `@note` role specifies that an *item* is to be spawned, upon performance of the action, to be cast in this role. The item will be created via an author-defined function called `createItem()`. Further, the `effects` field of the action uses the special `inscribe` operator to write into the `@note` item knowledge of the `@subject` action. Elsewhere, as we'll see below, Alice can use the `inspect` operator to cause a character to read the `@note`, thereby gaining knowledge of the `@subject` action
 
-Next, let's focus on the all-important `reactions` field, which in this case works as a fulcrum for any storyline matching Alice's `revenge` sifting pattern. Here we have an important conditional clause, whose condition is as follows: `@hearer == @subject.initiator && <@hearer> fits trope is-unhinged`. In Viv, `@hearer` is a special role that is automatically cast when a character learns about the action at hand after the fact. In English, this condition could be restated like this: the character who performed the original embarrassing action is learning about this gossip action after the fact, and this character fits the `is-unhinged` trope. Let's take a look at the definition for that trope:
+In general, one hallmark of Viv is its rich affordances for dealing in character knowledge, specifically of past actions, which enables a whole suite of storylines. For instance, a character could discover this very `@note` a century after it was written, thereby learning about `@subject` at that time, which could itself cause the character to *react*, with the causal link between `@subject` and this subsequent action (a century later) being automatically tracked by the system. This is called *causal bookkeeping*.
+
+Next, let's focus on the all-important `reactions` field, which in this case works as a fulcrum for any storyline matching Alice's `revenge` sifting pattern. Here we have an important conditional clause that is only entered when `@hearer == @subject.initiator` and `<@hearer> fits trope is-unhinged`. In Viv, `@hearer` is a special role that is automatically cast when a character learns about the action at hand after the fact. In English, these conditions could be restated like this: the character who performed the original embarrassing action is learning about this gossip action after the fact, and this character fits the `is-unhinged` trope.
+
+Let's take a look at the definition for that trope:
 
 ```viv
 // Fits character who is volatile, either currently or always
@@ -154,11 +168,11 @@ trope is-unhinged:
         @person.personality.volatile || @person.mood.spiraling
 ```
 
-In Viv, a *trope* is a reusable bundle of conditions. While this one is simple, tropes can be quite complex, potentially referencing other tropes and so on.
+In Viv, a *trope* is a reusable bundle of conditions. Again, `personality` and `mood` are not Viv keywords, but rather character properties originating in Alice's game code. While this trope is simple, they can be quite complex, potentially referencing other tropes and so on.
 
-## Writing selectors, plans, and sifting patterns
+## Writing selectors and plans
 
-If this situation does obtain—a volatile character embarrasses themself, someone writes a gossip note about it, and the volatile character learns of this later on—Viv will queue up the `plot-revenge` plan selector:
+If the situation marked by this conditional does obtain—a volatile character embarrasses themself, someone writes a gossip note about it, and the volatile character learns of this later on—Viv will queue up the `plot-revenge` plan selector:
 
 ```viv
 // Queue a plan orchestrating a particular method of revenge
@@ -185,7 +199,7 @@ plan-selector plot-revenge:
                 @target: @target
 ```
 
-A *plan selector* is a tiny program for selecting a Viv plan to launch. While various policies are supported, the *weighted random* policy that we see here has allowed Alice to attach relative weights to three candidates, one of which is itself a plan selector that will have its own policy and its own candidates. (Viv also has *action selectors*.)
+A *plan selector* is a tiny program for selecting a Viv plan to launch. While various policies are supported, the *weighted random* policy that we see here has allowed Alice to attach relative weights to three candidates, one of which is itself a plan selector that will have its own policy and its own candidates. Viv also has *action selectors*, and in general this notation supports [utility-based methods](https://en.wikipedia.org/wiki/Utility_system).
 
 Now let's look at a plan, and in particular `long-con-ingratiation`, which orchestrated the revenge scheme seen in Alice's emergent storyline above:
 
@@ -232,9 +246,13 @@ plan long-con-ingratiation:
                     exactly: @target.home
 ```
 
-Viv's *plan* construct is a powerful mechanism for orchestrating reactions with shared bindings. This plan has two roles, `@schemer` and `@target`, and it plays out over three *phases*: `>preparation`, `>ingratiation`, and `>execution`. Notably, Alice has specified a very slow burn here—notice how seven *years* must pass between the `>ingratiation` and `>execution` phases. Using the full plan notation, of which only a subset is employed here, an author can specify rich logics around timing, parallel tracks, and so forth. For instance, a plan phase could queue three subplans, advancing execution only once the subplans each succeed. Generally, plan execution proceeds to the next phase pending occurrence of the constructs queued in the present phase, succeeds when the last phase completes, and fails when a queued construct required to occur does not occur. But again, there's a bevy of rich mechanism afforded by the full plan notation.
+Viv's *plan* construct is a powerful mechanism for orchestrating reactions with shared bindings. Alice's plan here has two roles, `@schemer` and `@target`, and it plays out over three *phases*: `>preparation`, `>ingratiation`, and `>execution`. Notably, Alice has specified a very slow burn here—notice how seven *years* must pass between the `>ingratiation` and `>execution` phases. Generally, plan execution proceeds to the next phase pending occurrence of the constructs queued in the present phase, succeeds when the last phase completes, and fails when a queued construct required to occur does not occur.
 
-Finally, Viv's crown jewel: *sifting patterns*. A sifting pattern is a query that matches a collection of actions—or, in other words, an emergent storyline. Here's Alice's definition for the `revenge` sifting pattern that we saw her running up above:
+Using the full plan notation, of which only a subset is employed here, an author can specify rich logics around timing, parallel tracks, partial ordering, and so forth. For instance, a plan could queue three subplans, advancing execution only once all the subplans each succeed. Or it could it queue two alternative subplans and terminate the second when the first succeeds.
+
+## Writing sifting patterns
+
+This brings us to Viv's crown jewel: *sifting patterns*. A sifting pattern is a query that matches a collection of actions—or, in other words, an emergent storyline. Here is Alice's definition for the `revenge` sifting pattern that we saw her running up above:
 
 ```viv
 // A revenge story!
@@ -287,13 +305,31 @@ pattern revenge:
         @vow caused @payback
 ```
 
-This pattern has two standard roles (`@avenger` and `@victim`) and also five `actions` roles, each of which casts past actions. The `@setup*` and `@scheme*` roles are group roles (indicated by `*`), meaning they can each match multiple actions (between `1` and `50` in each case). The other action roles (`@offense`, `@vow`, `@payback`) each match exactly one action. If the roles and actions can all be successfully cast, the sifting pattern will produce a *match*, that being the bindings for the `actions` roles.
+This pattern has two standard roles (`@avenger` and `@victim`) and also five `actions` roles, each of which casts past actions. The `@setup*` and `@scheme*` roles are group roles (indicated by `*`), meaning they can each fill multiple slots (between `1` and `50` in each case). The other action roles (`@offense`, `@vow`, `@payback`) each match exactly one action. If the roles and actions can all be successfully cast, the sifting pattern will produce a *match*, that being the bindings for the `actions` roles.
 
-Let's focus on the `@offense` and `@payback` actions, each of which are cast by running the same query, `cruelty`, but in one case `@victim` is cruel toward `@avenger` and in the other case it's reversed. As such, this pattern operationalizes a theory of revenge as a kind of symmetrical cruelty. Finally, a glance over the `conditions` block reveals the causal glue that holds the pattern together: every `@setup` action must have caused the `@vow`, the `@offense` must have also caused the `@vow`, every `@scheme` action must have been caused by the `@vow` and must have preceded the `@payback`, and the `@vow` must have caused the `@payback`. These are the constraints that, taken together, define what Alice means by a 'revenge story'—and what the system "understands" when it runs the `revenge` pattern to detect a concrete match like the one seen in the causal tree diagram above.
+Note the `@offense` and `@payback` actions, each of which are cast by running the same query, `cruelty`. But in one case, `@victim` is cruel toward `@avenger`, and in the other case it's reversed. As such, this pattern operationalizes a theory of revenge as a kind of symmetrical cruelty.
+
+Finally, a glance over the `conditions` block reveals the causal glue that holds the pattern together: every `@setup` action must have caused the `@vow`, the `@offense` must have also caused the `@vow`, every `@scheme` action must have been caused by the `@vow` and must have preceded the `@payback`, and the `@vow` must have caused the `@payback`.  Here's a visual:
+
+```
+@setup   @offense
+   │         │
+   └───@vow──┘
+         │
+    ┌────┤
+@scheme  │
+    └────┤
+         │
+     @payback
+```
+
+In total, these aspects of the sifting pattern are the operational constraints that define what Alice means by a 'revenge story'—and what the system "understands" when it runs the `revenge` pattern to detect a concrete match like the one seen in the causal tree diagram above.
 
 ## Storylines of storylines
 
-Now here's where it gets wild. Sifting patterns can reference other sifting patterns, which allows Alice to write a (quite elegant) higher-order pattern called `eye-for-an-eye`:
+Now here's where it gets wild.
+
+Sifting patterns can reference other sifting patterns, which allows Alice to write a higher-order pattern called `eye-for-an-eye`:
 
 ```viv
 // Revenge for an act of revenge
@@ -326,17 +362,77 @@ pattern eye-for-an-eye:
                         @offense: @crux
 ```
 
-This pattern matches when two `revenge` matches are themselves intertwined in a particular way: the `@avenger` of the first is the `@victim` of the second, and the `@payback` of the first is the `@offense` of the second. That is, `@second-avenger` earned retribution for the very act of revenge at the heart of the first `revenge` match.
+This pattern matches when two `revenge` matches are themselves intertwined in a particular way: the `@avenger` of the first is the `@victim` of the second, and the `@payback` action of the first is the `@offense` action of the second. That is, the avenger of the second `revenge` match earned retribution for the very act of reprisal at the heart of the first `revenge` match. This is pretty complex stuff, but Viv's patterns-of-patterns notation allows Alice to specify it with elegance.
+
+Here's a visual showing how the two `revenge` matches (labeled with `¹`  and `²`) interlock via the `@crux` role in `eye-for-an-eye` (labeled with `³`):
+
+```
+       @setup¹    @offense¹
+          │           │
+          └───@vow¹───┘
+                │
+           ┌────┤
+       @scheme¹ │
+           └────┤
+                │
+  @setup²    @crux³ (@payback¹ / @offense²)
+     │          │
+     └───@vow²──┘
+           │
+      ┌────┤
+  @scheme² │
+      └────┤
+           │
+       @payback²
+```
 
 ## Sifting a character's memories
 
-And here's the cherry on top: a sifting pattern can be applied to a character's memories—with the sifting happening *within the simulation*—allowing an author to gate actions based on the kinds of emergent storylines that a character *knows about*:
+And here's the cherry on top: a sifting pattern can be applied to a character's memories—with the sifting happening *within the simulation*.
+
+First, let's get into more detail about Viv's handling of character knowledge, which again is a hallmark of the system. When a character participates in, witnesses, or otherwise learns about an action that itself casts one or more past actions, the character will *learn* about all those past actions. Viv handles this automatically: an author simply has to write a role casting past actions, and if the authored action is performed, it will propagate knowledge of those past actions. So, as a matter of course, the characters in Viv-powered simulations build up rich libraries of memories about historical actions, according to what they do, see, and hear.
+
+And just as sifting patterns can be applied to the chronicle, like Alice did when she ran her `revenge` pattern up above, they can also be applied to character memories. Moreover, this kind of diegetic sifting can be specified in the Viv code itself, allowing an author to gate actions based on the kinds of emergent storylines that a character *knows about*.
+
+What follows is an illustrative example in which a grandparent sifts their own memories to match Alice's `eye-for-an-eye` pattern from the previous section, and then imparts the sifted story to their grandchild:
 
 ```viv
 // A grandparent tells a parable to their grandchild
 //
-// Note that the grandchild will form memories about all the eye-for-an-eye actions, which they can
-// then propagate in further actions -- for instance, via item inscription.
+// Note that the grandchild will form knowledge of all the eye-for-an-eye actions.
+action tell-revenge-parable:
+    gloss: "@grandparent teaches @grandchild about the futility of revenge"
+    roles:
+        @grandparent:
+            as: initiator
+        @grandchild:
+            as: recipient
+            from: @grandparent.grandchildren
+        @parable*:
+            as: action
+            from:
+                sift pattern eye-for-an-eye:
+                    over: @grandparent
+            n: 3-999
+```
+
+Here the `@parable*` group role casts all the actions contained in a sifting match for the `eye-for-an-eye` pattern as applied to the grandparent's memories (via `over: @grandparent`). That is, `@parable*` casts the *sifted story itself*.
+
+But consider this fact with relation to the feature just explained: an action automatically propagates knowledge about any actions that it casts in its own roles. This means that anyone who experiences, observes, or otherwise hears about this `tell-revenge-parable` action will learn about the `eye-for-an-eye` story. So when the grandchild here experiences `tell-revenge-parable`, they automatically form memories for each of the actions making up the `eye-for-an-eye` story. Effectively, the character downloads the full story, which is itself a collection of two interrelated `revenge` arcs!
+
+What's more, the sifting patterns `revenge` and `eye-for-an-eye` can now be matched against the grandchild's memories, turning all three stories into discrete tokens that are now at the grandchild's disposal—or at Alice's disposal, rather, and with almost no notational overhead (e.g., `@parable*`).
+
+While it is otherwise a purely descriptive mechanism, when fed back into the simulation itself, a sifting pattern becomes a generative tool too.
+
+## Inscribing stories into items
+
+Alice wraps up her session with a potent expansion of the `tell-revenge-parable` action above that makes use of Viv's affordances for item inscription:
+
+```viv
+// A grandparent tells a parable to their grandchild
+//
+// Note that the grandchild will form knowledge of all the eye-for-an-eye actions, which 
+// they can then propagate in further actions -- for instance, via item inscription.
 action tell-revenge-parable:
     gloss: "@grandparent teaches @grandchild about the futility of revenge"
     roles:
@@ -360,15 +456,7 @@ action tell-revenge-parable:
                 after: 20 years from action  // When they grow up
 ```
 
-When a character participates in, witnesses, or otherwise learns about an action that itself casts one or more past actions, the character will learn about all those past actions. Viv handles this automatically, and it tracks all the causal links too (here: `@parable*` actions → `tell-revenge-parable`  → `carve-monument`).
-
-In this case, the grandchild downloads the full `eye-for-an-eye` story, which is itself a collection of two interrelated `revenge` arcs. Because the associated sifting patterns can now be matched against the grandchild's memories, all three stories become discrete tokens that are at the grandchild's disposal—or at Alice's disposal, rather, and with almost no notational overhead.
-
-When fed back into the simulation itself, what is otherwise a purely descriptive mechanism becomes a generative one too.
-
-## Inscribing stories into items
-
-Consider how the `@story*: @parable*` bit in the reaction above causes the entire `eye-for-an-eye` sequence to be inscribed into a storyworld item, should the `carve-monument` action be performed:
+Now we have reaction whereby the action `carve-monument` is queued for the grandchild to target after at least twenty years have passed. Critically, the `@parable*` actions constituting the `eye-for-an-eye` story are precast as the `@story*` bindings for `carve-monument`, which is defined as follows:
 
 ```viv
 // A story is carved into a monument
@@ -389,7 +477,9 @@ reserved action carve-monument:
         end
 ```
 
-And via a single usage of the special `inspect` operator, subsequent characters can download the full `eye-for-an-eye` story, even as centuries of story time may have passed since the grandparent first told this tale to their grandchild:
+Like the `@note` role in `write-gossip-note` above, the `@monument` role here spawns an item. In this case, Alice doesn't inscribe a single action into it, but rather an entire story. That is, `@monument` now imparts knowledge of each of the actions making up the `eye-for-an-eye` story.
+
+And via a single usage of the special `inspect` operator—which causes a character to learn about all the actions inscribed into the item being inspected—subsequent characters can download the full `eye-for-an-eye` story, even as centuries of story time may have passed since the grandparent first told this tale to their grandchild:
 
 ```viv
 // A character studies a monument, learning the story it tells
@@ -405,3 +495,13 @@ action study-monument:
     effects:
         @viewer inspect @monument  // @viewer downloads all its inscribed knowledge
 ```
+
+Finally, it's worth emphasizing how causal bookkeeping applies in this case. The term 'causal bookkeeping' originates in my [thesis](https://viv.sifty.studio/background/curating_simulated_storyworlds.pdf) and refers to the task of automatically tracking causal links between actions as a simulation proceeds, which greatly facilitates story sifting. It's one of Viv's core tasks, and one of its major selling points.
+
+With regard to the monument storyline seen here, Viv would work behind the scenes to automatically record causal links between: each `eye-for-an-eye` action and `tell-revenge-parable`, `tell-revenge-parable` and `carve-monument`, and any `eye-for-an-eye` action and any action it causes by virtue of someone learning about (including much later on via inspecting the monument). And this is all by virtue of how Alice *implied* causality when she wrote the associated actions—she doesn't have to tell Viv what causes what, she simply writes down what kinds of past actions might lead someone to perform the action she is defining, and what kinds of follow-on actions might happen as a result of this action.
+
+## Wrangling the hyper-Pynchonian gnarl
+
+In Viv, characters constantly learn about past actions, learning about those actions causes reactions, and the system tracks the causal threads all the while. This is how the hyper-Pynchonian gnarl reliably obtains—and the gnarl, left to itself, will break your brain.
+
+But the core takeaway is that Viv's facilities for *story sifting* make it possible to wrangle the gnarl: sifting patterns decompose massive causal graphs into legible subgraphs, each being a discrete emergent story that an author like Alice can treat as a token, that a character like the grandchild above can reason about, and that a game like Alice's can surface to the player.
