@@ -8,7 +8,7 @@
 
 Welcome to the **monorepo** for Viv, an engine for emergent narrative in games and simulations.
 
-In *emergent narrative*, stories arise from the bottom up, as characters take action in a simulated storyworld, rather than being authored from the top down. Viv offers practitioners of this approach a custom programming language that allows rich specifications of character actions, as well as material for *story sifting*—the task of identifying emergent storylines in a given simulation instance, such as a videogame playthrough.
+In *emergent narrative*, stories arise from the bottom up, as characters take action in a simulated storyworld, rather than being authored from the top down. Viv offers (aspiring) narrative designers a custom programming language affording rich specifications of character actions, as well as constructs to drive *story sifting*—the task of identifying emergent storylines in a given simulation instance, such as a videogame playthrough.
 
 If you're new to Viv, check out the [**homepage**](https://viv.sifty.studio) for a proper introduction.
 
@@ -18,7 +18,7 @@ Viv is a **source-available project**, which means that:
 * Non-commercial use is freely permitted.
 * Commercial use requires a [license](#license).
 
-Below, you'll find a high-level overview of the project, mostly taking the form of links to the published packages and to various docs. The [monorepo layout](#monorepo-layout) section also provides a high-level map of the codebase, for folks who want to explore around in there.
+Below, you'll find a high-level overview of the project, mostly in the form of links to the published packages and to various docs. There is also a [monorepo layout](#monorepo-layout) section providing a high-level map of the codebase, for folks who want to explore around in there.
 
 
 ## Table of Contents
@@ -58,8 +58,6 @@ Below, you'll find a high-level overview of the project, mostly taking the form 
 
   * Claude takes it from there, installing Viv components, setting up your project, answering your questions, and proposing next steps.
 
-
-
 ### I do not use LLMs
 
 * Install the compiler, and verify it works:
@@ -94,7 +92,6 @@ Below, you'll find a high-level overview of the project, mostly taking the form 
   ```
 
 * Check out the full [Quickstart guide](https://viv.sifty.studio/quickstart/) for information on editor plugins and LLM-augmented authoring, and consult the [language reference](https://viv.sifty.studio/reference/language/) for details on the Viv syntax.
-
 
 
 ## Packages
@@ -174,7 +171,7 @@ Viv is freely available for non-commercial use, while commercial use requires a 
 [last-release-link]: https://github.com/siftystudio/viv/releases
 [last-commit-badge]: https://img.shields.io/github/last-commit/siftystudio/viv?logo=git&logoColor=white
 [last-commit-link]: https://github.com/siftystudio/viv/commits/main
-[license-badge]: https://img.shields.io/badge/license-source--available-blue
+[license-badge]: https://img.shields.io/badge/license-source--available-blue?logo=data:image/svg%2Bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xMiAzdjE4Ii8%2BPHBhdGggZD0iTTMgN2w5LTQgOSA0Ii8%2BPHBhdGggZD0iTTMgMTNsMi02aDBsMiA2Ii8%2BPHBhdGggZD0iTTMgMTNoNCIvPjxwYXRoIGQ9Ik0xNyAxM2wyLTZoMGwyIDYiLz48cGF0aCBkPSJNMTcgMTNoNCIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iMjEiIHI9IjEiLz48L3N2Zz4%3D
 [license-link]: https://github.com/siftystudio/viv/blob/main/LICENSE.txt
 [pypi-badge]: https://img.shields.io/pypi/v/viv-compiler?logo=python&logoColor=white
 [pypi-link]: https://pypi.org/project/viv-compiler/
