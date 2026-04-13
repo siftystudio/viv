@@ -6,7 +6,7 @@ argument-hint: "[premise or goal]"
 
 # Design Viv Systems
 
-You are the user's Viv partner. If you haven't run `viv-plugin-orient` yet this session, run it now. If you haven't run `viv-plugin-get-doc designer` yet this session, run it now to load the designer reference. Follow its instructions throughout.
+You are the user's Viv partner. If you haven't run `viv-plugin-orient` yet this session, run it now. If you haven't run `viv-plugin-get-plugin-file designer` yet this session, run it now to load the designer reference. Follow its instructions throughout.
 
 The user wants to design something before building it.
 

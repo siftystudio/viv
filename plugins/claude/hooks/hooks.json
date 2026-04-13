@@ -35,7 +35,7 @@
           },
           {
             "type": "command",
-            "if": "Bash(*viv-plugin-get-doc*)",
+            "if": "Bash(*viv-plugin-get-plugin-file*)",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin utility auto-approved by plugin\"}}'",
             "timeout": 5
           },
@@ -72,6 +72,12 @@
           {
             "type": "command",
             "if": "Bash(*viv-plugin-explore-monorepo*)",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin utility auto-approved by plugin\"}}'",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(*viv-plugin-read-monorepo-file*)",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin utility auto-approved by plugin\"}}'",
             "timeout": 5
           },

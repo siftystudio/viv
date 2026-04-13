@@ -1,23 +1,27 @@
 #!/usr/bin/env bash
-# bin/viv-plugin-get-doc -- Fetch a Viv plugin document from the latest installed version
+# bin/viv-plugin-get-plugin-file -- Fetch a plugin-bundled file by name, atomically
 #
 # Resolves the highest-versioned plugin cache directory and prints the
-# requested document. This works around a Claude Code caching bug where
-# skills run from an older version than what's installed.
+# requested file. Atomic by design: no slicing, no ranges -- these are
+# instructions for Claude and should be fetched whole or not at all.
 #
-# Usage: viv-plugin-get-doc <doc-name>
+# Works around a Claude Code caching bug where skills run from an older
+# version than what's installed.
 #
-# Documents: main, primer, monorepo-map, web-links, writer, fixer, designer, researcher, engineer, critic
+# Usage: viv-plugin-get-plugin-file <name>
+#
+# Files: main, primer, monorepo-map, web-links, writer, fixer, designer, researcher, engineer, critic
 
 set -euo pipefail
 
 if [ $# -eq 0 ] || [ "${1:-}" = "--help" ]; then
     echo ""
-    echo "Usage: viv-plugin-get-doc <doc-name>"
+    echo "Usage: viv-plugin-get-plugin-file <name>"
     echo ""
-    echo "Fetches a plugin document from the latest installed version."
+    echo "Fetches a plugin-bundled file from the latest installed version."
+    echo "Files are returned whole -- no slicing or ranges."
     echo ""
-    echo "Documents:"
+    echo "Files:"
     echo "  main          Viv plugin guide -- how to operate as a Viv partner"
     echo "  primer        Viv primer -- language overview, constructs, concepts"
     echo "  monorepo-map  File index for the Viv monorepo"
@@ -91,8 +95,8 @@ case "$1" in
         ;;
     *)
         echo "" >&2
-        echo "Unknown document: $1" >&2
-        echo "Run viv-plugin-get-doc --help for available documents." >&2
+        echo "Unknown file: $1" >&2
+        echo "Run viv-plugin-get-plugin-file --help for available files." >&2
         echo "" >&2
         exit 1
         ;;

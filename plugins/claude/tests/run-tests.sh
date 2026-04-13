@@ -2,7 +2,7 @@
 # plugins/claude/tests/run-tests.sh -- Test suite for the Viv Claude Code plugin
 #
 # Validates contracts the plugin depends on: bin script integrity, manifest validity,
-# `SKILL.md` frontmatter, cross-reference resolution (every `viv-plugin-get-doc` and
+# `SKILL.md` frontmatter, cross-reference resolution (every `viv-plugin-get-plugin-file` and
 # `viv-plugin-get-example` name in any markdown resolves to a real file), and the
 # validity of all example `.viv` files (i.e., that they compile).
 #
@@ -184,10 +184,10 @@ if not has_field('description'):
 }
 
 
-# Verify get-doc names resolve to real files
-check_get_doc_names_resolve() {
-    local label="get-doc names resolve"
-    local script="$BIN_DIR/viv-plugin-get-doc"
+# Verify get-plugin-file names resolve to real files
+check_get_plugin_file_names_resolve() {
+    local label="get-plugin-file names resolve"
+    local script="$BIN_DIR/viv-plugin-get-plugin-file"
     # Extract names from the case statement (lines like "    main)" or "    primer)")
     local errors=()
     while IFS= read -r name; do
@@ -253,11 +253,11 @@ check_get_example_names_resolve() {
 }
 
 
-# Validate get-doc references in markdown
-check_get_doc_references_in_markdown() {
-    local label="get-doc references in markdown"
+# Validate get-plugin-file references in markdown
+check_get_plugin_file_references_in_markdown() {
+    local label="get-plugin-file references in markdown"
     local errors=()
-    # Find every viv-plugin-get-doc <name> reference in any markdown file.
+    # Find every viv-plugin-get-plugin-file <name> reference in any markdown file.
     # A single line can have multiple references; process each one.
     while IFS= read -r line; do
         local file="${line%%:*}"
@@ -273,8 +273,8 @@ check_get_doc_references_in_markdown() {
                     errors+=("$relpath references unknown doc: $name")
                     ;;
             esac
-        done < <(echo "$rest" | grep -oE 'viv-plugin-get-doc [a-z][a-z-]*' | awk '{print $2}')
-    done < <(grep -rn 'viv-plugin-get-doc [a-z]' "$PLUGIN_DIR" --include='*.md' 2>/dev/null)
+        done < <(echo "$rest" | grep -oE 'viv-plugin-get-plugin-file [a-z][a-z-]*' | awk '{print $2}')
+    done < <(grep -rn 'viv-plugin-get-plugin-file [a-z]' "$PLUGIN_DIR" --include='*.md' 2>/dev/null)
     if [ ${#errors[@]} -gt 0 ]; then
         fail "$label" "$(printf '%s; ' "${errors[@]}")"
     else
@@ -359,11 +359,11 @@ check_setup_skill_step_numbering() {
 }
 
 
-# Verify the doc table in main.md lists every name supported by viv-plugin-get-doc
-check_main_md_lists_all_get_doc_names() {
-    local label="main.md doc table lists all get-doc names"
+# Verify the doc table in main.md lists every name supported by viv-plugin-get-plugin-file
+check_main_md_lists_all_get_plugin_file_names() {
+    local label="main.md doc table lists all get-plugin-file names"
     local main_md="$DOCS_DIR/agents/main.md"
-    local script="$BIN_DIR/viv-plugin-get-doc"
+    local script="$BIN_DIR/viv-plugin-get-plugin-file"
     local errors=()
     while IFS= read -r name; do
         [ -z "$name" ] && continue
@@ -462,7 +462,7 @@ check_fetch_monorepo_populates_state_on_fresh_setup() {
 }
 
 
-# Verify viv-plugin-explore-monorepo refuses path traversal
+# Verify viv-plugin-explore-monorepo refuses path traversal on ls
 check_explore_monorepo_refuses_path_traversal() {
     local label="explore-monorepo refuses path traversal"
     local test_home
@@ -472,13 +472,32 @@ check_explore_monorepo_refuses_path_traversal() {
     local errors=()
     # From monorepo dir to test_home is 5 ups: viv-monorepo -> siftystudio -> data -> plugins -> .claude -> test_home
     local output
-    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read "../../../../../secret.txt" 2>/dev/null || true)
-    if echo "$output" | grep -q "SENTINEL_OUTSIDE_MONOREPO"; then
-        errors+=("read: traversal succeeded")
-    fi
     output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" ls "../../../../.." 2>/dev/null || true)
     if echo "$output" | grep -q "secret.txt"; then
         errors+=("ls: traversal succeeded")
+    fi
+    rm -rf "$test_home"
+    if [ ${#errors[@]} -gt 0 ]; then
+        fail "$label" "$(printf '%s; ' "${errors[@]}")"
+    else
+        pass "$label"
+    fi
+}
+
+
+# Verify viv-plugin-read-monorepo-file refuses path traversal
+check_read_monorepo_file_refuses_path_traversal() {
+    local label="read-monorepo-file refuses path traversal"
+    local test_home
+    test_home=$(make_temp_home)
+    echo "monorepo content" > "$test_home/.claude/plugins/data/viv-siftystudio/viv-monorepo/README.md"
+    echo "SENTINEL_OUTSIDE_MONOREPO" > "$test_home/secret.txt"
+    local errors=()
+    # From monorepo dir to test_home is 5 ups: viv-monorepo -> siftystudio -> data -> plugins -> .claude -> test_home
+    local output
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-read-monorepo-file" "../../../../../secret.txt" 2>/dev/null || true)
+    if echo "$output" | grep -q "SENTINEL_OUTSIDE_MONOREPO"; then
+        errors+=("traversal succeeded")
     fi
     rm -rf "$test_home"
     if [ ${#errors[@]} -gt 0 ]; then
@@ -568,9 +587,9 @@ check_explore_monorepo_grep_flags() {
 }
 
 
-# Verify viv-plugin-explore-monorepo read parses slicing args correctly
-check_explore_monorepo_read_flags() {
-    local label="explore-monorepo read flag parsing"
+# Verify viv-plugin-read-monorepo-file parses slicing args correctly
+check_read_monorepo_file_flags() {
+    local label="read-monorepo-file flag parsing"
     local test_home
     test_home=$(make_temp_home)
     local repo="$test_home/.claude/plugins/data/viv-siftystudio/viv-monorepo"
@@ -579,55 +598,55 @@ check_explore_monorepo_read_flags() {
     local output
 
     # Existing positional start/end still works
-    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read ten.md 3 5 2>&1 || true)
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-read-monorepo-file" ten.md 3 5 2>&1 || true)
     if [ "$output" != $'line3\nline4\nline5' ]; then
         errors+=("positional '3 5': unexpected output: $output")
     fi
 
     # --offset alone reads from that line to end
-    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read ten.md --offset 8 2>&1 || true)
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-read-monorepo-file" ten.md --offset 8 2>&1 || true)
     if [ "$output" != $'line8\nline9\nline10' ]; then
         errors+=("--offset 8: unexpected output: $output")
     fi
 
     # --offset with --limit reads exactly limit lines starting at offset
-    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read ten.md --offset 2 --limit 3 2>&1 || true)
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-read-monorepo-file" ten.md --offset 2 --limit 3 2>&1 || true)
     if [ "$output" != $'line2\nline3\nline4' ]; then
         errors+=("--offset 2 --limit 3: unexpected output: $output")
     fi
 
     # --limit alone reads the first N lines
-    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read ten.md --limit 2 2>&1 || true)
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-read-monorepo-file" ten.md --limit 2 2>&1 || true)
     if [ "$output" != $'line1\nline2' ]; then
         errors+=("--limit 2: unexpected output: $output")
     fi
 
     # Flags can come before the relpath
-    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read --offset 5 --limit 1 ten.md 2>&1 || true)
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-read-monorepo-file" --offset 5 --limit 1 ten.md 2>&1 || true)
     if [ "$output" != "line5" ]; then
         errors+=("flags-before-relpath '--offset 5 --limit 1 ten.md': unexpected output: $output")
     fi
 
     # Unsupported flag must error out with a clear message
-    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read ten.md --skip 3 2>&1 || true)
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-read-monorepo-file" ten.md --skip 3 2>&1 || true)
     if ! echo "$output" | grep -q "unsupported flag"; then
         errors+=("--skip: should reject unknown flag (got: $output)")
     fi
 
     # --offset without a value must error
-    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read ten.md --offset 2>&1 || true)
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-read-monorepo-file" ten.md --offset 2>&1 || true)
     if ! echo "$output" | grep -qi "requires"; then
         errors+=("--offset without value: should error (got: $output)")
     fi
 
     # Non-integer --offset must error
-    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read ten.md --offset abc 2>&1 || true)
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-read-monorepo-file" ten.md --offset abc 2>&1 || true)
     if ! echo "$output" | grep -qi "invalid"; then
         errors+=("--offset abc: should reject non-integer (got: $output)")
     fi
 
     # Mixing positional slicing with flag slicing must error
-    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read ten.md 3 --limit 2 2>&1 || true)
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-read-monorepo-file" ten.md 3 --limit 2 2>&1 || true)
     if ! echo "$output" | grep -qi "mix"; then
         errors+=("positional + flag mix: should reject (got: $output)")
     fi
@@ -661,9 +680,9 @@ check_get_example_refuses_path_traversal() {
 }
 
 
-# Verify viv-plugin-get-doc rejects non-semver entries in cache
-check_get_doc_rejects_non_semver_cache() {
-    local label="get-doc rejects non-semver cache entries"
+# Verify viv-plugin-get-plugin-file rejects non-semver entries in cache
+check_get_plugin_file_rejects_non_semver_cache() {
+    local label="get-plugin-file rejects non-semver cache entries"
     local test_home
     test_home=$(mktemp -d)
     local cache_root="$test_home/.claude/plugins/cache/siftystudio/viv"
@@ -673,7 +692,7 @@ check_get_doc_rejects_non_semver_cache() {
     mkdir -p "$cache_root/zzz-not-a-version/docs"
     echo "WRONG_PRIMER" > "$cache_root/zzz-not-a-version/docs/primer.md"
     local output
-    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-get-doc" primer 2>/dev/null || true)
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-get-plugin-file" primer 2>/dev/null || true)
     rm -rf "$test_home"
     if echo "$output" | grep -q "WRONG_PRIMER"; then
         fail "$label" "selected non-semver cache entry 'zzz-not-a-version'"
@@ -708,10 +727,10 @@ check_corrupted_state_graceful_error() {
 }
 
 
-# Verify every doc file has a viv-plugin-get-doc case statement entry
-check_get_doc_case_statement_complete() {
-    local label="get-doc case statement covers all doc files"
-    local script="$BIN_DIR/viv-plugin-get-doc"
+# Verify every doc file has a viv-plugin-get-plugin-file case statement entry
+check_get_plugin_file_case_statement_complete() {
+    local label="get-plugin-file case statement covers all doc files"
+    local script="$BIN_DIR/viv-plugin-get-plugin-file"
     local errors=()
     # Extract names from the script's case statement.
     local script_names
@@ -722,7 +741,7 @@ check_get_doc_case_statement_complete() {
         local name
         name=$(basename "$doc" .md)
         if ! echo "$script_names" | grep -q "^${name}$"; then
-            errors+=("doc file '$name.md' has no case branch in viv-plugin-get-doc")
+            errors+=("doc file '$name.md' has no case branch in viv-plugin-get-plugin-file")
         fi
     done
     if [ ${#errors[@]} -gt 0 ]; then
@@ -813,25 +832,26 @@ CHECKS=(
     check_plugin_manifest
     check_hooks_manifest
     check_skill_frontmatter
-    check_get_doc_names_resolve
+    check_get_plugin_file_names_resolve
     check_get_example_names_resolve
-    check_get_doc_references_in_markdown
+    check_get_plugin_file_references_in_markdown
     check_get_example_references_in_markdown
     check_examples_compile
     check_setup_skill_step_numbering
-    check_main_md_lists_all_get_doc_names
+    check_main_md_lists_all_get_plugin_file_names
     check_help_mentions_all_flags
     check_writer_md_example_length_claim
     check_hooks_cover_invoked_commands
     check_fetch_monorepo_populates_state_on_fresh_setup
     check_explore_monorepo_refuses_path_traversal
     check_explore_monorepo_grep_flags
-    check_explore_monorepo_read_flags
+    check_read_monorepo_file_flags
+    check_read_monorepo_file_refuses_path_traversal
     check_get_example_refuses_path_traversal
-    check_get_doc_rejects_non_semver_cache
+    check_get_plugin_file_rejects_non_semver_cache
     check_corrupted_state_graceful_error
     check_write_state_init_graceful_error
-    check_get_doc_case_statement_complete
+    check_get_plugin_file_case_statement_complete
     check_skill_frontmatter_yaml_valid
 )
 

@@ -6,14 +6,14 @@ Run `viv-plugin-help` to see all available commands.
 
 Viv is NOT in your training data. Do not guess syntax. Look things up.
 
-**Always use `viv-plugin-explore-monorepo` to access monorepo files** (`ls`, `read`, `grep` — all paths relative to root). Never use raw Read, Glob, Grep, ls, cat, or grep on the monorepo directory.
+**Always use the plugin commands to access monorepo files** — `viv-plugin-explore-monorepo` for `ls`/`grep`, and `viv-plugin-read-monorepo-file` for reading file content. All paths are relative to the monorepo root. Never use raw Read, Glob, Grep, ls, cat, or grep on the monorepo directory.
 
 
 ## Compiling
 
 Compile early and often. The result must compile unless you have been told otherwise.
 
-The compiler is invoked via `vivc`. **Your authoritative reference is `vivc --help`** — it lists every flag, mode, and option the compiler supports. Check it whenever you need to know what `vivc` can do; do not guess flags from memory. For broader context — concepts, design notes, deeper reference — consult the compiler documentation in the monorepo (find it via `viv-plugin-get-doc monorepo-map`).
+The compiler is invoked via `vivc`. **Your authoritative reference is `vivc --help`** — it lists every flag, mode, and option the compiler supports. Check it whenever you need to know what `vivc` can do; do not guess flags from memory. For broader context — concepts, design notes, deeper reference — consult the compiler documentation in the monorepo (find it via `viv-plugin-get-plugin-file monorepo-map`).
 
 Basic usage:
 
@@ -49,7 +49,7 @@ For small tasks:
 
 For larger tasks:
 1. Read any existing `.viv` files to understand the world — entity types, property names, enum constants, naming conventions, action families, existing tropes and queries.
-2. If you need to understand a specific language feature, run `viv-plugin-get-doc monorepo-map` to find the right file, then `viv-plugin-explore-monorepo read <path>` to read it. The language reference at `docs/reference/language/` is the authoritative source.
+2. If you need to understand a specific language feature, run `viv-plugin-get-plugin-file monorepo-map` to find the right file, then `viv-plugin-read-monorepo-file <path>` to read it. The language reference at `docs/reference/language/` is the authoritative source.
 3. Study real examples beyond the walkthrough. Use `viv-plugin-explore-monorepo ls syntax/examples/` and `viv-plugin-explore-monorepo ls compiler/tests/fixtures/valid/` to find idiomatic patterns.
 4. If anything is ambiguous, ask the user.
 

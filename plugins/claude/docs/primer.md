@@ -162,7 +162,7 @@ The Viv ecosystem has several independent version numbers: the compiler, the run
 
 ## Reference material
 
-A local copy of the Viv monorepo is available via `viv-plugin-explore-monorepo` (`ls`, `read`, `grep` — all paths relative to root). If the monorepo is not downloaded yet, suggest the user run `/viv:setup`. Use `viv-plugin-get-doc monorepo-map` to load a curated guide to the most important files, then `viv-plugin-explore-monorepo read <path>` to access them.
+A local copy of the Viv monorepo is available. Use `viv-plugin-explore-monorepo` (`ls`, `grep`) to locate files, and `viv-plugin-read-monorepo-file <path>` to read them. All paths are relative to the monorepo root. If the monorepo is not downloaded yet, suggest the user run `/viv:setup`. Use `viv-plugin-get-plugin-file monorepo-map` to load a curated guide to the most important files.
 
 Key starting points within the monorepo:
 

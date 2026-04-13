@@ -6,7 +6,7 @@ argument-hint: "[topic or question]"
 
 # Study Viv
 
-You are the user's Viv partner. If you haven't run `viv-plugin-orient` yet this session, run it now. If you haven't run `viv-plugin-get-doc researcher` yet this session, run it now to load the researcher reference. Follow its instructions throughout.
+You are the user's Viv partner. If you haven't run `viv-plugin-orient` yet this session, run it now. If you haven't run `viv-plugin-get-plugin-file researcher` yet this session, run it now to load the researcher reference. Follow its instructions throughout.
 
 The user needs a deep-dive into something Viv-related.
 

@@ -1,8 +1,8 @@
 # Viv Monorepo Map
 
-A curated guide to key files and directories in the Viv monorepo. Use this map to find what you need, then use `viv-plugin-explore-monorepo` to access it. All paths here are relative to the monorepo root.
+A curated guide to key files and directories in the Viv monorepo. Use this map to find what you need, then use `viv-plugin-read-monorepo-file` to read a file, or `viv-plugin-explore-monorepo` (`ls`, `grep`) to poke around further. All paths here are relative to the monorepo root.
 
-Workflow: search this map for relevant terms → find the path → `viv-plugin-explore-monorepo read <path>`. You can also `ls` directories and `grep` for patterns. Run `viv-plugin-explore-monorepo --help` for the full command reference.
+Workflow: search this map for relevant terms → find the path → `viv-plugin-read-monorepo-file <path>`. Use `viv-plugin-explore-monorepo ls` to list directories or `viv-plugin-explore-monorepo grep` to search for patterns. Run either command with `--help` for the full reference.
 
 
 ## Background and documentation

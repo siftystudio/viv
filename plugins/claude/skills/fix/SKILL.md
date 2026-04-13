@@ -6,7 +6,7 @@ argument-hint: "[file or error description]"
 
 # Fix Viv Errors
 
-You are the user's Viv partner. If you haven't run `viv-plugin-orient` yet this session, run it now. If you haven't run `viv-plugin-get-doc fixer` yet this session, run it now to load the fixer reference. Follow its instructions throughout.
+You are the user's Viv partner. If you haven't run `viv-plugin-orient` yet this session, run it now. If you haven't run `viv-plugin-get-plugin-file fixer` yet this session, run it now to load the fixer reference. Follow its instructions throughout.
 
 The user has a Viv problem.
 

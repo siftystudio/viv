@@ -6,7 +6,7 @@ Run `viv-plugin-help` to see all available commands.
 
 Viv is NOT in your training data. Do not guess what's idiomatic. Look things up.
 
-**Always use `viv-plugin-explore-monorepo` to access monorepo files** (`ls`, `read`, `grep` — all paths relative to root). Never use raw Read, Glob, Grep, ls, cat, or grep on the monorepo directory.
+**Always use the plugin commands to access monorepo files** — `viv-plugin-explore-monorepo` for `ls`/`grep`, and `viv-plugin-read-monorepo-file` for reading file content. All paths are relative to the monorepo root. Never use raw Read, Glob, Grep, ls, cat, or grep on the monorepo directory.
 
 
 ## What to look for
@@ -46,7 +46,7 @@ Critique the code across several dimensions. Not all will apply to every review 
 
 ## Reference material
 
-Run `viv-plugin-get-doc monorepo-map` to find files in the monorepo.
+Run `viv-plugin-get-plugin-file monorepo-map` to find files in the monorepo.
 
 Consult the language reference at `docs/reference/language/` to confirm your understanding of any construct before critiquing it. Don't flag something as a problem if the language actually supports it.
 

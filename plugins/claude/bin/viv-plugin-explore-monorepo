@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
-# bin/viv-plugin-explore-monorepo -- Browse the Viv monorepo
+# bin/viv-plugin-explore-monorepo -- Locate files in the Viv monorepo
 #
-# Provides ls, read, and grep access to the local Viv monorepo copy.
+# Provides ls and grep access to the local Viv monorepo copy for finding
+# files. To read file contents, use viv-plugin-read-monorepo-file.
 # All paths are relative to the monorepo root.
 #
 # Usage:
 #   viv-plugin-explore-monorepo ls [relpath]                       List a directory
-#   viv-plugin-explore-monorepo read <relpath> [start] [end]        Print a file (optionally a line range)
-#   viv-plugin-explore-monorepo read <relpath> [--offset N] [--limit M]   Same, with flag-style slicing
-#   viv-plugin-explore-monorepo grep [flags] <pattern> [relpath]    Search for a pattern
-#   viv-plugin-explore-monorepo --help                              Show this help
+#   viv-plugin-explore-monorepo grep [flags] <pattern> [relpath]   Search for a pattern
+#   viv-plugin-explore-monorepo --help                             Show this help
 
 set -euo pipefail
 
@@ -19,17 +18,13 @@ show_help() {
     echo ""
     echo "Usage: viv-plugin-explore-monorepo <command> [args]"
     echo ""
-    echo "Browse the local Viv monorepo copy. All paths are relative to the monorepo root."
+    echo "Locate files in the local Viv monorepo copy (ls and grep only). To read"
+    echo "file contents, use viv-plugin-read-monorepo-file."
+    echo ""
+    echo "All paths are relative to the monorepo root."
     echo ""
     echo "Commands:"
     echo "  ls [relpath]                              List a directory (default: root)"
-    echo "  read <relpath> [start] [end]              Print a file. Optional line range:"
-    echo "                                              read foo.md 10 50  -> lines 10-50"
-    echo "                                              read foo.md 10     -> from line 10 to end"
-    echo "                                            Equivalent flag-style slicing:"
-    echo "                                              read foo.md --offset 10 --limit 41  -> lines 10-50"
-    echo "                                              read foo.md --offset 10             -> from line 10 to end"
-    echo "                                              read foo.md --limit 20              -> first 20 lines"
     echo "  grep [flags] <pattern> [relpath]          Search for a pattern."
     echo "                                              -A N  include N lines after each match"
     echo "                                              -B N  include N lines before each match"
@@ -39,11 +34,11 @@ show_help() {
     echo "  --help                                    Show this help"
     echo ""
     echo "Start by loading the monorepo map to find what you need:"
-    echo "  viv-plugin-get-doc monorepo-map"
+    echo "  viv-plugin-get-plugin-file monorepo-map"
     echo ""
     echo "The map is a curated guide with descriptions and keywords for every"
-    echo "important file. Find the path you need there, then use the commands"
-    echo "above to access it."
+    echo "important file. Find the path you need there, then use ls/grep here"
+    echo "to explore the tree, and viv-plugin-read-monorepo-file to read content."
     echo ""
 }
 
@@ -91,117 +86,10 @@ case "$1" in
             exit 1
         fi
         if [ ! -d "$target" ]; then
-            echo "Not a directory: $relpath (use 'read' for files)" >&2
+            echo "Not a directory: $relpath (use viv-plugin-read-monorepo-file for files)" >&2
             exit 1
         fi
         (cd "$target" && ls)
-        ;;
-    read)
-        shift
-        offset=""
-        limit=""
-        use_flags=false
-        positionals=()
-        while [ $# -gt 0 ]; do
-            case "$1" in
-                --offset)
-                    if [ $# -lt 2 ]; then
-                        echo "Error: --offset requires a line number" >&2
-                        exit 1
-                    fi
-                    offset="$2"
-                    use_flags=true
-                    shift 2
-                    ;;
-                --limit)
-                    if [ $# -lt 2 ]; then
-                        echo "Error: --limit requires a line count" >&2
-                        exit 1
-                    fi
-                    limit="$2"
-                    use_flags=true
-                    shift 2
-                    ;;
-                --)
-                    shift
-                    while [ $# -gt 0 ]; do
-                        positionals+=("$1")
-                        shift
-                    done
-                    ;;
-                -*)
-                    echo "Error: unsupported flag: $1" >&2
-                    echo "Supported flags: --offset N, --limit M" >&2
-                    exit 1
-                    ;;
-                *)
-                    positionals+=("$1")
-                    shift
-                    ;;
-            esac
-        done
-        if [ ${#positionals[@]} -eq 0 ]; then
-            echo "Usage: viv-plugin-explore-monorepo read <relpath> [start] [end]" >&2
-            echo "   or: viv-plugin-explore-monorepo read <relpath> [--offset N] [--limit M]" >&2
-            exit 1
-        fi
-        relpath="${positionals[0]}"
-        if [ "$use_flags" = true ] && [ ${#positionals[@]} -gt 1 ]; then
-            echo "Error: cannot mix positional start/end with --offset/--limit flags" >&2
-            exit 1
-        fi
-        if [ "$use_flags" = false ] && [ ${#positionals[@]} -gt 3 ]; then
-            echo "Error: too many arguments. Usage: viv-plugin-explore-monorepo read <relpath> [start] [end]" >&2
-            exit 1
-        fi
-        if [ "$use_flags" = true ]; then
-            if [ -n "$offset" ] && ! [[ "$offset" =~ ^[0-9]+$ ]]; then
-                echo "Invalid --offset: $offset (must be a positive integer)" >&2
-                exit 1
-            fi
-            if [ -n "$limit" ] && ! [[ "$limit" =~ ^[0-9]+$ ]]; then
-                echo "Invalid --limit: $limit (must be a positive integer)" >&2
-                exit 1
-            fi
-            if [ -n "$offset" ] && [ -n "$limit" ]; then
-                start="$offset"
-                end=$((offset + limit - 1))
-            elif [ -n "$offset" ]; then
-                start="$offset"
-                end=""
-            else
-                start="1"
-                end="$limit"
-            fi
-        else
-            start="${positionals[1]:-}"
-            end="${positionals[2]:-}"
-        fi
-        validate_relpath "$relpath"
-        target="$MONOREPO_DIR/$relpath"
-        if [ ! -f "$target" ]; then
-            echo "Not found: $relpath" >&2
-            exit 1
-        fi
-        if [ -n "$start" ] && ! [[ "$start" =~ ^[0-9]+$ ]]; then
-            echo "Invalid start line: $start (must be a positive integer)" >&2
-            exit 1
-        fi
-        if [ -n "$end" ] && ! [[ "$end" =~ ^[0-9]+$ ]]; then
-            echo "Invalid end line: $end (must be a positive integer)" >&2
-            exit 1
-        fi
-        if [ -n "$start" ] && [ -n "$end" ] && [ "$start" -gt "$end" ]; then
-            echo "Invalid range: start ($start) must be <= end ($end)" >&2
-            exit 1
-        fi
-        if [ -n "$start" ] && [ -n "$end" ]; then
-            sed -n "${start},${end}p" "$target"
-        elif [ -n "$start" ]; then
-            sed -n "${start},\$p" "$target"
-        else
-            cat "$target"
-        fi
         ;;
     grep)
         shift

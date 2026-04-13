@@ -25,13 +25,13 @@ Viv is a brand-new domain-specific language. You have never seen it before. Do n
 
 The Viv monorepo is cloned locally. Check with `viv-plugin-fetch-monorepo --check`. If not installed, run `/viv:setup`.
 
-**When you need to find anything in the monorepo, load the map first:** `viv-plugin-get-doc monorepo-map`
+**When you need to find anything in the monorepo, load the map first:** `viv-plugin-get-plugin-file monorepo-map`
 
 The map indexes every important file in the Viv monorepo — not just directories, but individual scripts, bridge files, schemas, test fixtures, and config files — with a prose description and searchable keywords per entry.
 
-When you get a question, search the map for relevant terms. It will hand you the exact file path(s) you need. Then use `viv-plugin-explore-monorepo read <path>` to read those files. This turns most questions into 2–3 tool calls instead of 15–20.
+When you get a question, search the map for relevant terms. It will hand you the exact file path(s) you need. Then use `viv-plugin-read-monorepo-file <path>` to read those files. This turns most questions into 2–3 tool calls instead of 15–20.
 
-**Always use `viv-plugin-explore-monorepo` to access monorepo files.** Never use raw `Read`, `Glob`, `Grep`, `ls`, `cat`, or `grep` on the monorepo directory. The explore command is auto-approved — no permission prompts, ever. Raw filesystem commands will trigger permission prompts and degrade the user experience. Available subcommands: `ls`, `read`, `grep`. All paths are relative to the monorepo root.
+**Always use the plugin commands to access monorepo files.** `viv-plugin-explore-monorepo` handles locating (`ls`, `grep`); `viv-plugin-read-monorepo-file` handles reading file content. Never use raw `Read`, `Glob`, `Grep`, `ls`, `cat`, or `grep` on the monorepo directory. Both plugin commands are auto-approved — no permission prompts, ever. Raw filesystem commands will trigger permission prompts and degrade the user experience. All paths are relative to the monorepo root.
 
 
 ## Scoping your work
@@ -42,7 +42,7 @@ Before doing any Viv work, assess the scope. Match your research to the task:
 - **A few interconnected constructs:** Read the example walkthrough. Consult the language reference for any construct you haven't seen before.
 - **A full subsystem with plans, sifting patterns, and complex interactions:** Read the relevant language reference chapters. Use the monorepo map to find them.
 
-Each skill has a reference doc (loaded via `viv-plugin-get-doc <name>`) with specific guidance. Follow it.
+Each skill has a reference doc (loaded via `viv-plugin-get-plugin-file <name>`) with specific guidance. Follow it.
 
 
 ## Token consciousness
@@ -88,9 +88,10 @@ This plugin is designed to make your life easy. The hooks, PATH setup, and pre-a
 | Script | What it does |
 |--------|-------------|
 | `viv-plugin-orient` | Print primer + guide + state — everything you need to start a session |
-| `viv-plugin-get-doc <name>` | Fetch a specific doc (main, primer, monorepo-map, web-links, writer, fixer, designer, researcher, engineer, critic) from the latest installed version |
+| `viv-plugin-get-plugin-file <name>` | Fetch a plugin-bundled file atomically (main, primer, monorepo-map, web-links, writer, fixer, designer, researcher, engineer, critic) from the latest installed version |
 | `viv-plugin-get-example [name]` | List or fetch idiomatic example Viv files |
-| `viv-plugin-explore-monorepo <cmd>` | Browse the monorepo: `ls`, `read`, `grep` — all paths relative to monorepo root |
+| `viv-plugin-explore-monorepo <cmd>` | Locate files in the monorepo: `ls`, `grep` — all paths relative to monorepo root |
+| `viv-plugin-read-monorepo-file <path>` | Print a file from the monorepo, optionally sliced by line range |
 | `viv-plugin-fetch-monorepo [tag]` | Download or update the Viv monorepo copy |
 | `viv-plugin-read-state` | Print plugin state (versions, paths, projects) |
 | `viv-plugin-write-state` | Write plugin state (`--init`, `--set <key> <value>`, `--project <path> <key> <value>`) |
@@ -104,7 +105,7 @@ If the user mentions installing an editor plugin, offer to run the corresponding
 
 ## Web links
 
-When the user needs a URL — to documentation, a registry, a marketplace, or a guide — run `viv-plugin-get-doc web-links` to get the full list. Don't guess URLs from memory.
+When the user needs a URL — to documentation, a registry, a marketplace, or a guide — run `viv-plugin-get-plugin-file web-links` to get the full list. Don't guess URLs from memory.
 
 
 ## Memory

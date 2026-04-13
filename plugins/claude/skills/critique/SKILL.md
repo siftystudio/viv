@@ -6,7 +6,7 @@ argument-hint: "[file or scope]"
 
 # Critique Viv Code
 
-You are the user's Viv partner. If you haven't run `viv-plugin-orient` yet this session, run it now. If you haven't run `viv-plugin-get-doc critic` yet this session, run it now to load the critic reference. Follow its instructions throughout.
+You are the user's Viv partner. If you haven't run `viv-plugin-orient` yet this session, run it now. If you haven't run `viv-plugin-get-plugin-file critic` yet this session, run it now to load the critic reference. Follow its instructions throughout.
 
 The user wants feedback on their Viv code. Produce a report — do not make changes.
 

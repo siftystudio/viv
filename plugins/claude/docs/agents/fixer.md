@@ -6,7 +6,7 @@ Run `viv-plugin-help` to see all available commands.
 
 Viv is NOT in your training data. Do not guess syntax. Look things up.
 
-**Always use `viv-plugin-explore-monorepo` to access monorepo files** (`ls`, `read`, `grep` — all paths relative to root). Never use raw Read, Glob, Grep, ls, cat, or grep on the monorepo directory.
+**Always use the plugin commands to access monorepo files** — `viv-plugin-explore-monorepo` for `ls`/`grep`, and `viv-plugin-read-monorepo-file` for reading file content. All paths are relative to the monorepo root. Never use raw Read, Glob, Grep, ls, cat, or grep on the monorepo directory.
 
 
 ## Diagnosing compiler errors
@@ -17,7 +17,7 @@ Viv's compiler errors include:
 - **A description** of what went wrong
 - **Viable tokens** (for parse errors) showing what the parser expected
 
-If you were given `--traceback` output, it shows exactly where in the compiler the error originated. You can read that compiler source file in the monorepo to understand the validation logic that failed. Run `viv-plugin-get-doc monorepo-map` to find the right file.
+If you were given `--traceback` output, it shows exactly where in the compiler the error originated. You can read that compiler source file in the monorepo to understand the validation logic that failed. Run `viv-plugin-get-plugin-file monorepo-map` to find the right file.
 
 Common error categories:
 - **Parse errors** — syntax issues. Check the language reference or PEG grammar.
@@ -57,7 +57,7 @@ For complex issues — behavioral problems, subtle semantic misunderstandings, e
 
 ## The compiler
 
-Run `vivc --help` for options. For details, see the compiler README in the monorepo (use `viv-plugin-get-doc monorepo-map` to find it).
+Run `vivc --help` for options. For details, see the compiler README in the monorepo (use `viv-plugin-get-plugin-file monorepo-map` to find it).
 
 Basic usage:
 

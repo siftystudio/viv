@@ -1,0 +1,172 @@
+#!/usr/bin/env bash
+# bin/viv-plugin-read-monorepo-file -- Print a file from the local Viv monorepo copy
+#
+# Optionally slices by line range using trailing positionals or --offset/--limit flags.
+# Path is relative to the monorepo root.
+#
+# Usage:
+#   viv-plugin-read-monorepo-file <relpath>                             Print the whole file
+#   viv-plugin-read-monorepo-file <relpath> [start] [end]               Positional line range
+#   viv-plugin-read-monorepo-file <relpath> [--offset N] [--limit M]    Flag-style slicing
+#   viv-plugin-read-monorepo-file --help                                Show this help
+
+set -euo pipefail
+
+MONOREPO_DIR="$HOME/.claude/plugins/data/viv-siftystudio/viv-monorepo"
+
+show_help() {
+    echo ""
+    echo "Usage: viv-plugin-read-monorepo-file <relpath> [slicing]"
+    echo ""
+    echo "Print a file from the local Viv monorepo copy."
+    echo "The path is relative to the monorepo root."
+    echo ""
+    echo "Slicing options (optional):"
+    echo "  <start> <end>            Positional line range: foo.md 10 50  -> lines 10-50"
+    echo "  <start>                  From line N to end:    foo.md 10     -> from line 10 to end"
+    echo "  --offset N               Same as positional start"
+    echo "  --limit M                First M lines of the file"
+    echo "  --offset N --limit M     Read M lines starting at line N"
+    echo ""
+    echo "To list directories or search the monorepo, use viv-plugin-explore-monorepo."
+    echo ""
+}
+
+check_monorepo() {
+    if [ ! -d "$MONOREPO_DIR" ]; then
+        echo "" >&2
+        echo "Monorepo not found. Run /viv:setup or viv-plugin-fetch-monorepo first." >&2
+        echo "" >&2
+        exit 1
+    fi
+}
+
+# Reject relpaths containing `..` segments or absolute paths. Lexical check
+# (no canonicalization), so legal filenames like `foo..bar` are still allowed
+# while `..`, `../etc/passwd`, and `/etc/passwd` are refused. Symlinks inside
+# the monorepo are not followed -- that's enforced by `viv-plugin-fetch-monorepo`.
+validate_relpath() {
+    local relpath="$1"
+    case "$relpath" in
+        ..|../*|*/../*|*/..)
+            echo "Refusing path traversal: $relpath" >&2
+            exit 1
+            ;;
+        /*)
+            echo "Refusing absolute path: $relpath" >&2
+            exit 1
+            ;;
+    esac
+}
+
+if [ $# -eq 0 ] || [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
+    show_help
+    exit 0
+fi
+
+check_monorepo
+
+offset=""
+limit=""
+use_flags=false
+positionals=()
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --offset)
+            if [ $# -lt 2 ]; then
+                echo "Error: --offset requires a line number" >&2
+                exit 1
+            fi
+            offset="$2"
+            use_flags=true
+            shift 2
+            ;;
+        --limit)
+            if [ $# -lt 2 ]; then
+                echo "Error: --limit requires a line count" >&2
+                exit 1
+            fi
+            limit="$2"
+            use_flags=true
+            shift 2
+            ;;
+        --)
+            shift
+            while [ $# -gt 0 ]; do
+                positionals+=("$1")
+                shift
+            done
+            ;;
+        -*)
+            echo "Error: unsupported flag: $1" >&2
+            echo "Supported flags: --offset N, --limit M" >&2
+            exit 1
+            ;;
+        *)
+            positionals+=("$1")
+            shift
+            ;;
+    esac
+done
+if [ ${#positionals[@]} -eq 0 ]; then
+    echo "Usage: viv-plugin-read-monorepo-file <relpath> [start] [end]" >&2
+    echo "   or: viv-plugin-read-monorepo-file <relpath> [--offset N] [--limit M]" >&2
+    exit 1
+fi
+relpath="${positionals[0]}"
+if [ "$use_flags" = true ] && [ ${#positionals[@]} -gt 1 ]; then
+    echo "Error: cannot mix positional start/end with --offset/--limit flags" >&2
+    exit 1
+fi
+if [ "$use_flags" = false ] && [ ${#positionals[@]} -gt 3 ]; then
+    echo "Error: too many arguments. Usage: viv-plugin-read-monorepo-file <relpath> [start] [end]" >&2
+    exit 1
+fi
+if [ "$use_flags" = true ]; then
+    if [ -n "$offset" ] && ! [[ "$offset" =~ ^[0-9]+$ ]]; then
+        echo "Invalid --offset: $offset (must be a positive integer)" >&2
+        exit 1
+    fi
+    if [ -n "$limit" ] && ! [[ "$limit" =~ ^[0-9]+$ ]]; then
+        echo "Invalid --limit: $limit (must be a positive integer)" >&2
+        exit 1
+    fi
+    if [ -n "$offset" ] && [ -n "$limit" ]; then
+        start="$offset"
+        end=$((offset + limit - 1))
+    elif [ -n "$offset" ]; then
+        start="$offset"
+        end=""
+    else
+        start="1"
+        end="$limit"
+    fi
+else
+    start="${positionals[1]:-}"
+    end="${positionals[2]:-}"
+fi
+validate_relpath "$relpath"
+target="$MONOREPO_DIR/$relpath"
+if [ ! -f "$target" ]; then
+    echo "Not found: $relpath" >&2
+    exit 1
+fi
+if [ -n "$start" ] && ! [[ "$start" =~ ^[0-9]+$ ]]; then
+    echo "Invalid start line: $start (must be a positive integer)" >&2
+    exit 1
+fi
+if [ -n "$end" ] && ! [[ "$end" =~ ^[0-9]+$ ]]; then
+    echo "Invalid end line: $end (must be a positive integer)" >&2
+    exit 1
+fi
+if [ -n "$start" ] && [ -n "$end" ] && [ "$start" -gt "$end" ]; then
+    echo "Invalid range: start ($start) must be <= end ($end)" >&2
+    exit 1
+fi
+if [ -n "$start" ] && [ -n "$end" ]; then
+    sed -n "${start},${end}p" "$target"
+elif [ -n "$start" ]; then
+    sed -n "${start},\$p" "$target"
+else
+    cat "$target"
+fi

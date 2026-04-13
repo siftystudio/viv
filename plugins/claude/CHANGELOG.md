@@ -9,16 +9,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 
 * `-i`, `-l`, and `-c` flags for `viv-plugin-explore-monorepo grep`.
-* `--offset N` and `--limit M` flag aliases for `viv-plugin-explore-monorepo read`, matching Claude's built-in `Read` tool conventions (so agents discover slicing on first try).
 
 ### Changed
 
-* Hoist `vivc --help` as the authoritative compiler reference in writer instructions, instead of enumerating flags that drift from the installed compiler.
+* Emphasize `vivc --help` as the authoritative compiler reference in writer instructions, instead of enumerating flags that may drift from the installed compiler.
+* Hoist `viv-plugin-explore-monorepo read` into its own command, `viv-plugin-read-monorepo-file`, to delineate exploration (`ls`, `grep`) and reading (`--offset`, `--limit`). 
+* Rename `viv-plugin-get-doc` to `viv-plugin-get-plugin-file` (agents were trying to use it to get monorepo docs).
 
 ### Fixed
 
 * `viv-plugin-explore-monorepo grep` silently treated unsupported flags (e.g. `-l`) as the search pattern, scanning the wrong directory for the wrong string.
-* `viv-plugin-explore-monorepo read` silently tried to parse unsupported flags like `--offset` as positional line-number arguments, producing misleading "Invalid start line" errors.
+* Reading monorepo files silently tried to parse unsupported flags like `--offset` as positional line-number arguments, producing misleading "Invalid start line" errors.
 
 
 ## [0.10.0] – 2026-04-10

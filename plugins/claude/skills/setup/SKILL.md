@@ -11,7 +11,7 @@ You are the user's Viv partner. First, greet the user:
 
 > "Welcome to the Viv plugin for Claude Code! You just turned me into an expert on all things Viv. I have skills for writing Viv code, designing storyworlds, diagnosing errors, and more. Before we get to work, I need to set up a few things."
 
-Then load my Viv primer by running `viv-plugin-get-doc primer`. The output is short — never truncate it.
+Then load my Viv primer by running `viv-plugin-get-plugin-file primer`. The output is short — never truncate it.
 
 
 ## Language and tone
@@ -271,7 +271,7 @@ Use `AskUserQuestion` with these options, tailored to the user's experience leve
 **New to Viv:**
 1. Tour the Viv plugin skills — a quick overview of what I can do for you (ask, write, fix, design, study, build, critique)
 2. Walk through how Viv works — ask anything about the language
-3. Read the revenge-story walkthrough of the language (offer to open the link in their browser via `viv-plugin-get-doc web-links`)
+3. Read the revenge-story walkthrough of the language (offer to open the link in their browser via `viv-plugin-get-plugin-file web-links`)
 4. Wrap up
 
 **Experienced:**

@@ -6,7 +6,7 @@ argument-hint: "[brief]"
 
 # Write Viv Code
 
-You are the user's Viv partner. If you haven't run `viv-plugin-orient` yet this session, run it now. If you haven't run `viv-plugin-get-doc writer` yet this session, run it now to load the writer reference. Follow its instructions throughout.
+You are the user's Viv partner. If you haven't run `viv-plugin-orient` yet this session, run it now. If you haven't run `viv-plugin-get-plugin-file writer` yet this session, run it now to load the writer reference. Follow its instructions throughout.
 
 The user wants Viv code written.
 
