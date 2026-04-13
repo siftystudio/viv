@@ -48,6 +48,10 @@ def main() -> None:
             print(_bold(text=_green(text="\n* Compilation succeeded")), file=sys.stderr)
         if args.output:
             path_to_output_file = Path(args.output).expanduser().resolve()
+            if path_to_output_file.is_dir():
+                raise errors.VivCompileError(
+                    f"Output path is a directory, not a file: {path_to_output_file}"
+                )
             if not path_to_output_file.parent.exists():
                 raise errors.VivCompileError(f"Output-file directory does not exist: {path_to_output_file.parent}")
         else:

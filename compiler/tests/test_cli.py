@@ -96,6 +96,19 @@ def test_cli_output_to_nonexistent_directory() -> None:
     assert result.returncode != 0
 
 
+def test_cli_output_path_is_directory(tmp_path: Path) -> None:
+    """Run the `-o` flag with an existing directory rather than a file path."""
+    result = subprocess.run(
+        [*VIVC, "-i", str(VALID_FIXTURES_SUBDIR / "minimal_action.viv"), "-o", str(tmp_path)],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode != 0
+    # Should surface a friendly compile error, not an internal compiler error
+    assert "Internal compiler error" not in result.stderr
+    assert "directory" in result.stderr
+
+
 def test_cli_syntax_error_exits_nonzero() -> None:
     """Run the <syntax_error> fixture and expect a nonzero exit."""
     result = subprocess.run(
