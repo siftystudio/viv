@@ -568,6 +568,79 @@ check_explore_monorepo_grep_flags() {
 }
 
 
+# Verify viv-plugin-explore-monorepo read parses slicing args correctly
+check_explore_monorepo_read_flags() {
+    local label="explore-monorepo read flag parsing"
+    local test_home
+    test_home=$(make_temp_home)
+    local repo="$test_home/.claude/plugins/data/viv-siftystudio/viv-monorepo"
+    printf 'line1\nline2\nline3\nline4\nline5\nline6\nline7\nline8\nline9\nline10\n' > "$repo/ten.md"
+    local errors=()
+    local output
+
+    # Existing positional start/end still works
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read ten.md 3 5 2>&1 || true)
+    if [ "$output" != $'line3\nline4\nline5' ]; then
+        errors+=("positional '3 5': unexpected output: $output")
+    fi
+
+    # --offset alone reads from that line to end
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read ten.md --offset 8 2>&1 || true)
+    if [ "$output" != $'line8\nline9\nline10' ]; then
+        errors+=("--offset 8: unexpected output: $output")
+    fi
+
+    # --offset with --limit reads exactly limit lines starting at offset
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read ten.md --offset 2 --limit 3 2>&1 || true)
+    if [ "$output" != $'line2\nline3\nline4' ]; then
+        errors+=("--offset 2 --limit 3: unexpected output: $output")
+    fi
+
+    # --limit alone reads the first N lines
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read ten.md --limit 2 2>&1 || true)
+    if [ "$output" != $'line1\nline2' ]; then
+        errors+=("--limit 2: unexpected output: $output")
+    fi
+
+    # Flags can come before the relpath
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read --offset 5 --limit 1 ten.md 2>&1 || true)
+    if [ "$output" != "line5" ]; then
+        errors+=("flags-before-relpath '--offset 5 --limit 1 ten.md': unexpected output: $output")
+    fi
+
+    # Unsupported flag must error out with a clear message
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read ten.md --skip 3 2>&1 || true)
+    if ! echo "$output" | grep -q "unsupported flag"; then
+        errors+=("--skip: should reject unknown flag (got: $output)")
+    fi
+
+    # --offset without a value must error
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read ten.md --offset 2>&1 || true)
+    if ! echo "$output" | grep -qi "requires"; then
+        errors+=("--offset without value: should error (got: $output)")
+    fi
+
+    # Non-integer --offset must error
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read ten.md --offset abc 2>&1 || true)
+    if ! echo "$output" | grep -qi "invalid"; then
+        errors+=("--offset abc: should reject non-integer (got: $output)")
+    fi
+
+    # Mixing positional slicing with flag slicing must error
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" read ten.md 3 --limit 2 2>&1 || true)
+    if ! echo "$output" | grep -qi "mix"; then
+        errors+=("positional + flag mix: should reject (got: $output)")
+    fi
+
+    rm -rf "$test_home"
+    if [ ${#errors[@]} -gt 0 ]; then
+        fail "$label" "$(printf '%s; ' "${errors[@]}")"
+    else
+        pass "$label"
+    fi
+}
+
+
 # Verify viv-plugin-get-example refuses path traversal
 check_get_example_refuses_path_traversal() {
     local label="get-example refuses path traversal"
@@ -753,6 +826,7 @@ CHECKS=(
     check_fetch_monorepo_populates_state_on_fresh_setup
     check_explore_monorepo_refuses_path_traversal
     check_explore_monorepo_grep_flags
+    check_explore_monorepo_read_flags
     check_get_example_refuses_path_traversal
     check_get_doc_rejects_non_semver_cache
     check_corrupted_state_graceful_error

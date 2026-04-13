@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 
 * `-i`, `-l`, and `-c` flags for `viv-plugin-explore-monorepo grep`.
+* `--offset N` and `--limit M` flag aliases for `viv-plugin-explore-monorepo read`, matching Claude's built-in `Read` tool conventions (so agents discover slicing on first try).
 
 ### Changed
 
@@ -17,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Fixed
 
 * `viv-plugin-explore-monorepo grep` silently treated unsupported flags (e.g. `-l`) as the search pattern, scanning the wrong directory for the wrong string.
+* `viv-plugin-explore-monorepo read` silently tried to parse unsupported flags like `--offset` as positional line-number arguments, producing misleading "Invalid start line" errors.
 
 
 ## [0.10.0] – 2026-04-10
