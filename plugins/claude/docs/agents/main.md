@@ -81,7 +81,9 @@ Run `viv-plugin-read-state` and check `compiler_path`. If the state file doesn't
 
 ## Plugin utilities (`bin/`)
 
-These scripts are on your PATH when the plugin is active. All are auto-approved via hooks — no permission prompts.
+These scripts are on your PATH when the plugin is active. All are auto-approved via hooks — no permission prompts. **Invoke them directly** — never wrap them in defensive shell patterns like `which cmd 2>/dev/null && cmd || echo "NOT FOUND"`, `command -v`, or `2>&1` redirects. They are guaranteed to exist when the plugin is loaded, and the Bash tool already captures both stdout and stderr. Defensive shell noise is unnecessary, wastes tokens, and looks alarming to the user — as if you're doing something secretive.
+
+This plugin is designed to make your life easy. The hooks, PATH setup, and pre-approved permissions aren't restrictions — they're problems we already solved for you. Common agent pain points (permission prompts, missing commands, lost stderr) have been handled ahead of time so that both you and the user get an ultrasmooth experience. Trust the setup and just run the commands.
 
 | Script | What it does |
 |--------|-------------|

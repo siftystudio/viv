@@ -7,7 +7,7 @@
 # Usage:
 #   viv-plugin-explore-monorepo ls [relpath]                       List a directory
 #   viv-plugin-explore-monorepo read <relpath> [start] [end]        Print a file (optionally a line range)
-#   viv-plugin-explore-monorepo grep <pattern> [relpath] [-A N] [-B N]   Search for a pattern
+#   viv-plugin-explore-monorepo grep [flags] <pattern> [relpath]    Search for a pattern
 #   viv-plugin-explore-monorepo --help                              Show this help
 
 set -euo pipefail
@@ -25,9 +25,12 @@ show_help() {
     echo "  read <relpath> [start] [end]              Print a file. Optional line range:"
     echo "                                              read foo.md 10 50  -> lines 10-50"
     echo "                                              read foo.md 10     -> from line 10 to end"
-    echo "  grep <pattern> [relpath] [-A N] [-B N]    Search for a pattern."
-    echo "                                              -A N includes N lines after each match"
-    echo "                                              -B N includes N lines before each match"
+    echo "  grep [flags] <pattern> [relpath]          Search for a pattern."
+    echo "                                              -A N  include N lines after each match"
+    echo "                                              -B N  include N lines before each match"
+    echo "                                              -i    case-insensitive match"
+    echo "                                              -l    list matching files only"
+    echo "                                              -c    count matches per file"
     echo "  --help                                    Show this help"
     echo ""
     echo "Start by loading the monorepo map to find what you need:"
@@ -122,15 +125,9 @@ case "$1" in
         fi
         ;;
     grep)
-        if [ -z "${2:-}" ]; then
-            echo "Usage: viv-plugin-explore-monorepo grep <pattern> [relpath] [-A N] [-B N]" >&2
-            exit 1
-        fi
-        pattern="$2"
-        shift 2
-        # Parse optional relpath and -A/-B flags
-        relpath="."
+        shift
         grep_args=()
+        positional=()
         while [ $# -gt 0 ]; do
             case "$1" in
                 -A|-B)
@@ -138,15 +135,45 @@ case "$1" in
                         echo "Error: $1 requires a numeric argument" >&2
                         exit 1
                     fi
+                    if ! [[ "$2" =~ ^[0-9]+$ ]]; then
+                        echo "Error: $1 requires a non-negative integer, got: $2" >&2
+                        exit 1
+                    fi
                     grep_args+=("$1" "$2")
                     shift 2
                     ;;
+                -i|-l|-c)
+                    grep_args+=("$1")
+                    shift
+                    ;;
+                --)
+                    shift
+                    while [ $# -gt 0 ]; do
+                        positional+=("$1")
+                        shift
+                    done
+                    ;;
+                -*)
+                    echo "Error: unsupported flag: $1" >&2
+                    echo "Supported flags: -A N, -B N, -i, -l, -c" >&2
+                    exit 1
+                    ;;
                 *)
-                    relpath="$1"
+                    positional+=("$1")
                     shift
                     ;;
             esac
         done
+        if [ ${#positional[@]} -eq 0 ]; then
+            echo "Usage: viv-plugin-explore-monorepo grep [flags] <pattern> [relpath]" >&2
+            exit 1
+        fi
+        if [ ${#positional[@]} -gt 2 ]; then
+            echo "Error: too many arguments. Usage: viv-plugin-explore-monorepo grep [flags] <pattern> [relpath]" >&2
+            exit 1
+        fi
+        pattern="${positional[0]}"
+        relpath="${positional[1]:-.}"
         validate_relpath "$relpath"
         target="$MONOREPO_DIR/$relpath"
         if [ ! -e "$target" ]; then
@@ -156,7 +183,7 @@ case "$1" in
         # Escape sed metacharacters in $MONOREPO_DIR (& \ and the | delimiter)
         # before using it in the substitution.
         escaped_dir=$(printf '%s' "$MONOREPO_DIR" | sed 's/[&\\|]/\\&/g')
-        grep -rn ${grep_args[@]+"${grep_args[@]}"} "$pattern" "$target" 2>/dev/null | sed "s|${escaped_dir}/||" || true
+        grep -rn ${grep_args[@]+"${grep_args[@]}"} -e "$pattern" "$target" 2>/dev/null | sed "s|${escaped_dir}/||" || true
         ;;
     *)
         echo "Unknown command: $1" >&2

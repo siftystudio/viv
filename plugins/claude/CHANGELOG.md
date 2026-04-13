@@ -4,6 +4,17 @@ All notable changes to the Viv Claude Code plugin (`viv`) will be documented in 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+* `-i`, `-l`, and `-c` flags for `viv-plugin-explore-monorepo grep`.
+
+### Fixed
+
+* `viv-plugin-explore-monorepo grep` silently treated unsupported flags (e.g. `-l`) as the search pattern, scanning the wrong directory for the wrong string.
+
+
 ## [0.10.0] – 2026-04-10
 
 ### Added

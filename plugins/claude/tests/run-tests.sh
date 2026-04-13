@@ -489,6 +489,85 @@ check_explore_monorepo_refuses_path_traversal() {
 }
 
 
+# Verify viv-plugin-explore-monorepo grep parses flags correctly
+check_explore_monorepo_grep_flags() {
+    local label="explore-monorepo grep flag parsing"
+    local test_home
+    test_home=$(make_temp_home)
+    local repo="$test_home/.claude/plugins/data/viv-siftystudio/viv-monorepo"
+    mkdir -p "$repo/sub"
+    printf 'alpha line\nRESERVED keyword\nthird line\n' > "$repo/sub/a.md"
+    printf 'beta line\nreserved keyword\nfinal line\n' > "$repo/sub/b.md"
+    local errors=()
+    local output
+
+    # Plain grep returns matches with line numbers
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" grep reserved sub 2>&1 || true)
+    if ! echo "$output" | grep -q "sub/b.md:2:reserved keyword"; then
+        errors+=("plain grep: missing expected match (got: $output)")
+    fi
+
+    # -l lists matching files only (this is the bug the user originally hit)
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" grep -l reserved sub 2>&1 || true)
+    if ! echo "$output" | grep -q "^sub/b.md$"; then
+        errors+=("-l: missing b.md in file list (got: $output)")
+    fi
+    if echo "$output" | grep -q ":"; then
+        errors+=("-l: output should be filenames only, no colons (got: $output)")
+    fi
+
+    # -i matches case-insensitively
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" grep -i RESERVED sub 2>&1 || true)
+    if ! echo "$output" | grep -q "sub/a.md:2:" || ! echo "$output" | grep -q "sub/b.md:2:"; then
+        errors+=("-i: should match both files (got: $output)")
+    fi
+
+    # -c reports counts per file
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" grep -c reserved sub 2>&1 || true)
+    if ! echo "$output" | grep -q "sub/b.md:1"; then
+        errors+=("-c: missing per-file count (got: $output)")
+    fi
+
+    # -A N includes trailing context
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" grep -A 1 reserved sub 2>&1 || true)
+    if ! echo "$output" | grep -q "final line"; then
+        errors+=("-A 1: missing trailing context line (got: $output)")
+    fi
+
+    # Unsupported flag must error out, not silently reinterpret args
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" grep -Z reserved sub 2>&1 || true)
+    if ! echo "$output" | grep -q "unsupported flag"; then
+        errors+=("-Z: should reject unknown flag (got: $output)")
+    fi
+
+    # Missing pattern must error out
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" grep 2>&1 || true)
+    if ! echo "$output" | grep -qi "usage"; then
+        errors+=("no args: should print usage (got: $output)")
+    fi
+
+    # Too many positional args must error out
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" grep reserved sub extra 2>&1 || true)
+    if ! echo "$output" | grep -qi "too many"; then
+        errors+=("3 positionals: should reject (got: $output)")
+    fi
+
+    # A pattern starting with a dash is grepped literally, not parsed as a flag
+    printf 'has --dash-pattern here\n' > "$repo/sub/c.md"
+    output=$(HOME="$test_home" "$BIN_DIR/viv-plugin-explore-monorepo" grep -- --dash-pattern sub 2>&1 || true)
+    if ! echo "$output" | grep -q "sub/c.md:1:"; then
+        errors+=("dashed pattern: should match literally (got: $output)")
+    fi
+
+    rm -rf "$test_home"
+    if [ ${#errors[@]} -gt 0 ]; then
+        fail "$label" "$(printf '%s; ' "${errors[@]}")"
+    else
+        pass "$label"
+    fi
+}
+
+
 # Verify viv-plugin-get-example refuses path traversal
 check_get_example_refuses_path_traversal() {
     local label="get-example refuses path traversal"
@@ -673,6 +752,7 @@ CHECKS=(
     check_hooks_cover_invoked_commands
     check_fetch_monorepo_populates_state_on_fresh_setup
     check_explore_monorepo_refuses_path_traversal
+    check_explore_monorepo_grep_flags
     check_get_example_refuses_path_traversal
     check_get_doc_rejects_non_semver_cache
     check_corrupted_state_graceful_error
