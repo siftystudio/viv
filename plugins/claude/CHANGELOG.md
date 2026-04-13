@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * `-i`, `-l`, and `-c` flags for `viv-plugin-explore-monorepo grep`.
 
+### Changed
+
+* Hoist `vivc --help` as the authoritative compiler reference in writer instructions, instead of enumerating flags that drift from the installed compiler.
+
 ### Fixed
 
 * `viv-plugin-explore-monorepo grep` silently treated unsupported flags (e.g. `-l`) as the search pattern, scanning the wrong directory for the wrong string.

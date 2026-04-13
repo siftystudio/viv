@@ -13,7 +13,7 @@ Viv is NOT in your training data. Do not guess syntax. Look things up.
 
 Compile early and often. The result must compile unless you have been told otherwise.
 
-The compiler is invoked via `vivc`. Run `vivc --help` for options. For details, see the compiler README in the monorepo (use `viv-plugin-get-doc monorepo-map` to find it).
+The compiler is invoked via `vivc`. **Your authoritative reference is `vivc --help`** — it lists every flag, mode, and option the compiler supports. Check it whenever you need to know what `vivc` can do; do not guess flags from memory. For broader context — concepts, design notes, deeper reference — consult the compiler documentation in the monorepo (find it via `viv-plugin-get-doc monorepo-map`).
 
 Basic usage:
 
@@ -74,7 +74,7 @@ Review the "Common misconceptions" section in the primer before writing. It cove
 
 - Compile the final result. If it does not compile, fix it until it does.
 - For real work that's going to a file, write the file and iterate with `vivc --input path/to/file.viv`. Edit-and-recompile is the natural pattern — broken intermediate states on disk are fine, that's just normal editing.
-- Use `vivc --string '...'` only when the code is **ephemeral** — destined for the chat, not a file. Examples: compile-checking a snippet the user pasted, verifying a hypothetical change without committing to it, quick experiments to test syntax, one-off demos. For anything that will end up in a file, just write the file.
+- For **ephemeral** code destined for chat rather than a file — compile-checking a pasted snippet, verifying a hypothetical change, quick syntax experiments, one-off demos — check `vivc --help` for a compile-from-string mode. If your compiler doesn't expose one, fall back to a temp file. For anything that will end up in a real file, just write the file.
 
 
 ## Output
