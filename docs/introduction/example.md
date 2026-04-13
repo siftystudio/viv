@@ -24,7 +24,9 @@ while (sim.year < config.worldgen.stopYear) {
 }
 ```
 
-Now she's got a world in which Viv has produced thousands of character actions—in Viv parlance, this collection is called the *chronicle*. It persists in Alice's game, the *host application*, and Viv reads and writes it using a bridge to that application called the *adapter*. Alice registers her adapter once, by calling the function [`initializeVivRuntime()`](https://viv.sifty.studio/reference/runtimes/js/functions/initializeVivRuntime.html) in her game's startup code, and from there on Viv's accessing of sim data is totally abstracted.
+Now she's got a world in which Viv has produced thousands of character actions—in Viv parlance, this collection is called the *chronicle*. It persists in Alice's game, the *host application*, and Viv reads and writes it using a bridge to that application called the *adapter*.
+
+Earlier, Alice registered her adapter by calling the function [`initializeVivRuntime()`](https://viv.sifty.studio/reference/runtimes/js/functions/initializeVivRuntime.html) in her game's startup code, and as a result Viv's accessing of sim data is totally abstracted. This function also accepted Alice's *content bundle*, meaning her compiled Viv code.
 
 ## Running a sifting pattern
 
@@ -150,6 +152,8 @@ query gossip-worthy-event:
 
 This query matches actions tagged `embarrassing` (another author-defined value) and exceeding a salience threshold (specified by the author-defined *enum* `#MODERATE`). Critically, the bit `over: @writer` specifies that the query is to be run only against actions that `@writer` knows about.
 
+In general, queries allow an author to specify the *kinds* of actions that might cause the one at hand, which greatly expands the expressive range of a given content bundle: rather than specifying that this particular action type can be caused by that particular action type, you enable causal links between classes of actions, and this blows up the possibility space (in terms of potential emergent storylines).
+
 Meanwhile, the `@note` role specifies that an *item* is to be spawned, upon performance of the action, to be cast in this role. The item will be created via an author-defined function called `createItem()`. Further, the `effects` field of the action uses the special `inscribe` operator to write into the `@note` item knowledge of the `@subject` action. Elsewhere, as we'll see below, Alice can use the `inspect` operator to cause a character to read the `@note`, thereby gaining knowledge of the `@subject` action.
 
 In general, one hallmark of Viv is its rich affordances for dealing in character knowledge, specifically of past actions, which enables a whole suite of storylines. For instance, a character could discover this very `@note` a century after it was written, thereby learning about `@subject` at that time, which could itself cause the character to *react*, with the causal link between `@subject` and this subsequent action (a century later) being automatically tracked by the system. This is called *causal bookkeeping*.
@@ -185,7 +189,7 @@ plan-selector plot-revenge:
         @reason:
             as: action
     target with weights:
-        (35) long-con-ingratiation:
+        (30) long-con-ingratiation:
             with partial:
                 @schemer: @plotter
                 @target: @target
@@ -199,7 +203,26 @@ plan-selector plot-revenge:
                 @target: @target
 ```
 
-A *plan selector* is a tiny program for selecting a Viv plan to launch. While various policies are supported, the *weighted random* policy that we see here has allowed Alice to attach relative weights to three candidates, one of which is itself a plan selector that will have its own policy and its own candidates. Viv also has *action selectors*, and in general this notation supports [utility-based methods](https://en.wikipedia.org/wiki/Utility_system).
+A *plan selector* is a tiny program for selecting a Viv plan to launch. While various policies are supported, the *weighted random* policy that we see here has allowed Alice to attach relative weights to three candidates, one of which is itself a plan selector that will have its own policy and its own candidates. This notation drives probabilistic selection between alternatives.
+
+Though we can't see it here, the weights are specified not by numbers necessarily, but by arbitrary Viv expressions, supporting [utility-based methods](https://en.wikipedia.org/wiki/Utility_system). For instance, Alice could have instead written something like this:
+
+```viv
+(~getPropensity(@plotter, #SCHEMING)) long-con-ingratiation:
+    with partial:
+        @schemer: @plotter
+        @target: @target
+(~getPropensity(@plotter, #VIOLENCE)) selector plan-direct-assault:
+    with partial:
+        @plotter: @plotter
+        @target: @target
+(~getPropensity(@plotter, #SCHEMING) / 2) social-destruction:
+    with partial:
+        @plotter: @plotter
+        @target: @target
+```
+
+Viv also has *action selectors*, and in general selectors work like queries to expand the expressive range of a content bundle. Whereas queries allow an author to specify a class of possible causal ancestors for a given action, selectors afford specification of a class of possible causal descendants. In each case, this blows up the possibility space  (in terms of potential emergent storylines) relative to connecting concrete action types.
 
 Now let's look at a plan, and in particular `long-con-ingratiation`, which orchestrated the revenge scheme seen in Alice's emergent storyline above:
 
@@ -500,16 +523,16 @@ action study-monument:
 
 ## Causal bookkeeping
 
-It's worth emphasizing how causal bookkeeping applies in this case. The term 'causal bookkeeping' originates in my [thesis](https://viv.sifty.studio/background/curating_simulated_storyworlds.pdf) and refers to the task of automatically tracking causal links between actions as a simulation proceeds, which greatly facilitates story sifting. It's one of Viv's core tasks, and one of its major selling points.
+It's worth emphasizing how causal bookkeeping applies in this case. This term originates in my [thesis](https://viv.sifty.studio/background/curating_simulated_storyworlds.pdf) and refers to the task of automatically tracking causal links between actions as a simulation proceeds, which facilitates story sifting by turning what is otherwise a soup of actions into a collection of causal graphs. It's one of Viv's core tasks, and one of its major selling points.
 
 With regard to the monument storyline seen here, Viv would work behind the scenes to automatically record causal links between: each `eye-for-an-eye` action and `tell-revenge-parable`; `tell-revenge-parable` and `carve-monument`; and each `eye-for-an-eye` action and any subsequent action it causes by virtue of someone learning about it, including via inspecting the monument. This is not to mention the causal ancestors of the `eye-for-an-eye` actions, and the causal descendants of any downstream actions, all of which will be included in the graph containing `tell-revenge-parable`.
 
-Critically, this causal bookkeeping is driven only by how Alice *implies* causality when she writes the associated actions. She doesn't have to tell Viv what causes what, but rather she simply writes down what kinds of past actions might lead someone to perform the action she is defining, and what kinds of follow-on actions might happen as a result of this action. Viv can do the work behind the scenes, because causality is part of the operational semantics of the language.
+Critically, this causal bookkeeping is driven purely by Alice's *implications* of causality in her action definitions. She doesn't have to tell Viv what causes what, but rather she simply writes down what kinds of past actions might lead someone to perform the action she is defining, and what kinds of follow-on actions might happen as a result of this action. Viv can do the work behind the scenes, because causality is part of the operational semantics of the language.
 
-For more on causal bookkeeping, with a breakdown of the five sources of causality in Viv, see [this section](/reference/language/20-runtime-model#causal-bookkeeping) of the language reference.
+For more on causal bookkeeping, including a breakdown of the five sources of causality in Viv, see [this section](/reference/language/20-runtime-model#causal-bookkeeping) of the language reference.
 
 ## Wrangling the gnarl
 
-In Viv, characters constantly learn about past actions, learning about those actions causes reactions, and the system tracks the causal threads all the while. This is how the aforementioned hyper-Pynchonian gnarl reliably obtains—and the gnarl, left to itself, will break your brain.
+In Viv, characters constantly learn about past actions, learning about those actions causes reactions, and the system tracks the causal threads all the while. This is how its so-called 'hyper-Pynchonian gnarl' reliably obtains—and the gnarl, left to itself, will break your brain.
 
-But a core takeaway here is that Viv's facilities for *story sifting* make it possible to tap the gnarl in a controlled manner: sifting patterns decompose massive causal graphs into legible subgraphs, each being a discrete emergent story that an author like Alice can treat as a token, that a character like the grandchild above can reason about, and that a game like Alice's can surface to the player.
+But a core takeaway here is that Viv's facilities for story sifting make it possible to tap the gnarl in a controlled manner: sifting patterns decompose massive causal graphs into legible subgraphs, each being a discrete emergent story that an author like Alice can treat as a token, that a character like the grandchild above can reason about, and that a game like Alice's can surface to the player.
