@@ -52,6 +52,17 @@ def main() -> None:
                 raise errors.VivCompileError(
                     f"Output path is a directory, not a file: {path_to_output_file}"
                 )
+            if path_to_output_file.suffix.lower() == ".viv":
+                raise errors.VivCompileError(
+                    f"Output path has a `.viv` extension, but the compiler emits JSON content "
+                    f"bundles, not Viv source. Refusing to overwrite what looks like a source "
+                    f"file: {path_to_output_file}"
+                )
+            if args.input and path_to_output_file == Path(args.input).expanduser().resolve():
+                raise errors.VivCompileError(
+                    f"Output path is the same as the input path: {path_to_output_file}. "
+                    f"Refusing to overwrite the source file."
+                )
             if not path_to_output_file.parent.exists():
                 raise errors.VivCompileError(f"Output-file directory does not exist: {path_to_output_file.parent}")
         else:

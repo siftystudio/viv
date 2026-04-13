@@ -109,6 +109,37 @@ def test_cli_output_path_is_directory(tmp_path: Path) -> None:
     assert "directory" in result.stderr
 
 
+def test_cli_output_path_with_viv_extension(tmp_path: Path) -> None:
+    """Run the `-o` flag with a `.viv` output path (almost certainly a typo)."""
+    output_file = tmp_path / "output.viv"
+    result = subprocess.run(
+        [*VIVC, "-i", str(VALID_FIXTURES_SUBDIR / "minimal_action.viv"), "-o", str(output_file)],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode != 0
+    assert "Internal compiler error" not in result.stderr
+    assert ".viv" in result.stderr
+    # The file should not have been created
+    assert not output_file.exists()
+
+
+def test_cli_output_path_equals_input_path(tmp_path: Path) -> None:
+    """Run the `-o` flag pointing at the same path as `-i` (would clobber the source)."""
+    source_path = tmp_path / "source.txt"
+    source_path.write_text((VALID_FIXTURES_SUBDIR / "minimal_action.viv").read_text())
+    original_contents = source_path.read_text()
+    result = subprocess.run(
+        [*VIVC, "-i", str(source_path), "-o", str(source_path)],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode != 0
+    assert "Internal compiler error" not in result.stderr
+    # The source file should not have been clobbered
+    assert source_path.read_text() == original_contents
+
+
 def test_cli_syntax_error_exits_nonzero() -> None:
     """Run the <syntax_error> fixture and expect a nonzero exit."""
     result = subprocess.run(

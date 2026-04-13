@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+* Validation check flagging `.viv` extensions on the CLI's `--output` argument.
+* Validation check flagging `--output` paths that resolve to the same file as `--input`.
+
 ### Fixed
 
 * Passing a directory for the CLI's `--output` argument raised an internal-error traceback instead of a friendly `VivCompileError`.
