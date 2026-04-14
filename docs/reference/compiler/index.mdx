@@ -1,0 +1,92 @@
+---
+title: Viv Compiler
+description: Reference documentation for the Viv compiler — command-line interface, Python API, and troubleshooting.
+prev: false
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+The *compiler* is one of the Viv system's two fundamental components, the other being the runtime, which consumes its output. Its function is to transform `.viv` *source files* into JSON *content bundles* over which any Viv runtime can operate.
+
+We ship the compiler as both a command-line tool (`vivc`) and a Python library (`viv_compiler`), the latter of which is invoked in our [editor plugins](#editor-plugins). This allows you to use the compiler in three different ways, namely via: the command-line interface (CLI), the Python API, or an editor plugin. The last method is recommended, since it allows you to compile directly from your preferred editor, but there are still use cases for invoking the CLI and API directly.
+
+## Reference Pages
+
+While you'll find more high-level information below, the following concerns have dedicated pages within the compiler reference.
+
+<CardGrid>
+  <LinkCard
+    title="Command-Line Interface"
+    href="/reference/compiler/cli/"
+    description="How to use the <code>vivc</code> command-line tool."
+  />
+  <LinkCard
+    title="Python API"
+    href="/reference/compiler/api/"
+    description="How to use the <code>viv_compiler</code> Python package directly."
+  />
+  <LinkCard
+    title="Troubleshooting"
+    href="/reference/compiler/troubleshooting/"
+    description="Diagnosing installation issues and compilation failures."
+  />
+</CardGrid>
+
+
+## Installation
+
+The [compiler package](https://pypi.org/project/viv-compiler/) is published to PyPI, as `viv-compiler`, which makes installation easy:
+
+```sh
+pip install viv-compiler
+```
+
+That said, if your machine doesn't have Python, or if it has an outdated version and/or multiple versions, you might consider using the [Viv Claude Code plugin](https://github.com/siftystudio/viv/blob/main/plugins/claude/README.md) to handle installation for you. See the [troubleshooting guide](/reference/compiler/troubleshooting#phoning-a-friend) for a log of a particularly difficult compiler installation administered by the plugin.
+
+## Editor Plugins
+
+We recommend writing Viv code in an editor for which we have released a *plugin*. The Viv editor plugins provide compiler integration, syntax highlighting, boilerplate snippets, and many other features.
+
+So far, these three are available:
+
+- [Viv JetBrains Plugin](https://plugins.jetbrains.com/plugin/31012-viv) *(recommended)*
+  - The default tool for writing Viv code. Turns any JetBrains editor into a full-on Viv IDE.
+
+- [Viv VS Code extension](https://marketplace.visualstudio.com/items?itemName=siftystudio.viv)
+  - A lightweight alternative.
+
+- [Viv Sublime Text package](https://github.com/siftystudio/viv/blob/main/plugins/sublime/README.md)
+  - A very lightweight alternative. Even if you use one of the above, you might consider setting Sublime Text as your default application for opening `.viv` files, since it boots up so quickly.
+
+Each plugin release is built for a specific range of compiler versions. If there's a mismatch, your plugin will issue a warning, as described in its documentation.
+
+Finally, if you're not averse to using LLMs, take a look at the [Viv Claude Code plugin](https://github.com/siftystudio/viv/blob/main/plugins/claude/README.md). This turns Claude into a Viv expert who can set up your project integration, diagnose errors, write Viv code, and more.
+
+## Runtime Compatibility
+
+In order to use a compiled content bundle in a Viv runtime, there must be compatibility between the respective *schema versions* associated with the compiler and the runtime. The schema describes the shape of the JSON content bundles that the compiler emits and the runtime consumes, making it a contract between the two components, each of which stores a copy of the schema.
+
+Generally, compatibility is not a concern for Viv users, because the respective latest releases of the compiler and the runtimes are always guaranteed to be in sync. That said, here's how compatibility is enforced:
+
+- When the compiler emits a content bundle, it stamps it (at `metadata.schemaVersion`) with the current version number for the schema, which is stored in its copy of the schema.
+
+	- The schema version for your installed compiler is exposed in the CLI via `vivc -V`, and in the Python package as `viv_compiler.__schema_version__`.
+- Each runtime has an associated schema version, which is stored in its own copy of the schema.
+- When registering a content bundle with a runtime, it will throw an error if the bundle's schema version is incompatible with its own, as governed by semantic versioning.
+
+If your compiler and runtime fall out of sync, the easiest fix is to update both to their respective latest versions, which are guaranteed to be in sync. You can also rely on the [Viv Claude Code plugin](https://github.com/siftystudio/viv/blob/main/plugins/claude/README.md) to detect such discrepancies and rectify them (with your permission), since this is one of its features. 
+
+## Related Documentation
+
+<CardGrid>
+  <LinkCard
+    title="Language Reference"
+    href="/reference/language/00-preamble/"
+    description="The full specification of the Viv language."
+  />
+  <LinkCard
+    title="JavaScript Runtime API"
+    href="/reference/runtimes/js/"
+    description="The runtime that consumes the content bundles produced by the compiler."
+  />
+</CardGrid>

@@ -223,7 +223,7 @@ def _run_smoke_test() -> None:
     with resources.as_file(resources.files("viv_compiler._samples") / "smoke-test.viv") as sample_path:
         api.compile_from_path(source_file_path=sample_path)
         print(_bold(text=_green(text="\n* Smoke test passed")), file=sys.stderr)
-        print(_green(text="\nViv compiler installation is operational.\n"), file=sys.stderr)
+        print(_green(text="\n* Viv compiler installation is operational\n"), file=sys.stderr)
 
 
 def _invoke_compiler(*, args: argparse.Namespace) -> external_types.ContentBundle:

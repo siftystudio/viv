@@ -4,12 +4,17 @@ All notable changes to the Viv compiler (`viv-compiler`) will be documented in t
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.11.1]
 
 ### Added
 
+* Full compiler reference on the docs site, covering the CLI, Python API, and troubleshooting.
 * Validation check flagging `.viv` extensions on the CLI's `--output` argument.
 * Validation check flagging `--output` paths that resolve to the same file as `--input`.
+
+### Changed
+
+* Pare down `README.md` (and point at the new compiler reference).
 
 ### Fixed
 

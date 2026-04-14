@@ -30,7 +30,7 @@ export default defineConfig({
                 },
             },
             markdown: {
-                processedDirs: ["./reference/language", "./background", "./introduction", "./quickstart"],
+                processedDirs: ["./reference/language", "./reference/compiler", "./background", "./introduction", "./quickstart"],
             },
             head: [
                 {
@@ -107,6 +107,15 @@ export default defineConfig({
                         { label: "Runtime model", slug: "reference/language/20-runtime-model" },
                         { label: "Appendix A: Implementation notes", slug: "reference/language/21-appendix-a-implementation-notes" },
                         { label: "Glossary", slug: "reference/language/22-glossary" },
+                    ],
+                },
+                {
+                    label: "Compiler Reference",
+                    items: [
+                        { label: "Overview", slug: "reference/compiler" },
+                        { label: "Command-Line Interface", slug: "reference/compiler/cli" },
+                        { label: "Python API", slug: "reference/compiler/api" },
+                        { label: "Troubleshooting", slug: "reference/compiler/troubleshooting" },
                     ],
                 },
                 { label: "JavaScript Runtime API", link: "/reference/runtimes/js/", attrs: { target: "_blank" } },
