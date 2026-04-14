@@ -7,25 +7,136 @@
 #
 # Usage: release.sh <package> <version>
 #        release.sh --delete <package> <version>
+#        release.sh --check
 #
 # Packages: compiler, runtime, sublime, vscode, jetbrains, claude
 
 set -euo pipefail
 
+# Print an error message to stderr, padded with blank lines, and exit 1
 die() { echo "" >&2; echo "$1" >&2; echo "" >&2; exit 1; }
+
+# Print a status message to stdout, padded with blank lines
 say() { echo ""; echo "$1"; echo ""; }
 
-# Handle --delete mode
+# Parse mode flags
 DELETE=false
+CHECK=false
 if [ "${1:-}" = "--delete" ]; then
     DELETE=true
     shift
+elif [ "${1:-}" = "--check" ]; then
+    CHECK=true
+    shift
+fi
+
+# Resolve the monorepo root from this script's location
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+ALL_PACKAGES=(compiler runtime sublime vscode jetbrains claude)
+
+# Read the current version from a package's manifest
+manifest_version_for() {
+    case "$1" in
+        compiler)   sed -n 's/^version = "\(.*\)"/\1/p' "$ROOT/compiler/pyproject.toml" ;;
+        runtime)    node -e "console.log(require('$ROOT/runtimes/js/package.json').version)" ;;
+        sublime)    python3 -c "import json; print(json.load(open('$ROOT/plugins/sublime/repository.json'))['packages'][0]['releases'][0]['version'])" ;;
+        vscode)     node -e "console.log(require('$ROOT/plugins/vscode/package.json').version)" ;;
+        jetbrains)  grep '^pluginVersion' "$ROOT/plugins/jetbrains/gradle.properties" | cut -d= -f2 | tr -d ' ' ;;
+        claude)     python3 -c "import json; print(json.load(open('$ROOT/plugins/claude/.claude-plugin/plugin.json'))['version'])" ;;
+    esac
+}
+
+# Resolve the changelog path for a package
+changelog_for() {
+    case "$1" in
+        compiler)   echo "$ROOT/compiler/CHANGELOG.md" ;;
+        runtime)    echo "$ROOT/runtimes/js/CHANGELOG.md" ;;
+        sublime)    echo "$ROOT/plugins/sublime/CHANGELOG.md" ;;
+        vscode)     echo "$ROOT/plugins/vscode/CHANGELOG.md" ;;
+        jetbrains)  echo "$ROOT/plugins/jetbrains/CHANGELOG.md" ;;
+        claude)     echo "$ROOT/plugins/claude/CHANGELOG.md" ;;
+    esac
+}
+
+# Resolve the source directory for a package, relative to ROOT
+path_for() {
+    case "$1" in
+        compiler)   echo "compiler" ;;
+        runtime)    echo "runtimes/js" ;;
+        sublime)    echo "plugins/sublime" ;;
+        vscode)     echo "plugins/vscode" ;;
+        jetbrains)  echo "plugins/jetbrains" ;;
+        claude)     echo "plugins/claude" ;;
+    esac
+}
+
+# Read the topmost version heading from a package's changelog
+changelog_latest_for() {
+    awk '/^## \[/{gsub(/^## \[|\].*/, ""); print; exit}' "$(changelog_for "$1")"
+}
+
+# --check mode -- per package, show changelog/manifest/released
+# versions and unreleased commit count, with stale cells in red
+if [ "$CHECK" = true ]; then
+    if [ $# -ne 0 ]; then
+        die "Usage: release.sh --check (takes no arguments)"
+    fi
+    say "Fetching tags from origin..."
+    git -C "$ROOT" fetch --tags --quiet origin
+    # Set up color codes only when stdout is a terminal
+    if [ -t 1 ]; then
+        RED=$'\033[31m'
+        RESET=$'\033[0m'
+    else
+        RED=""
+        RESET=""
+    fi
+    # Render a fixed-width version cell, red if it's below the row's max
+    cell() {
+        local value="$1" max="$2" color=""
+        if [ -n "$max" ] && [ "$value" != "$max" ]; then
+            color="$RED"
+        fi
+        printf '%s%-8s%s' "$color" "$value" "$RESET"
+    }
+    for pkg in "${ALL_PACKAGES[@]}"; do
+        cl_version=$(changelog_latest_for "$pkg")
+        [ -z "$cl_version" ] && cl_version="none"
+        current=$(manifest_version_for "$pkg")
+        latest_tag=$(git -C "$ROOT" tag -l "${pkg}-v*" --sort=-v:refname | head -1)
+        if [ -n "$latest_tag" ]; then
+            released="${latest_tag#${pkg}-v}"
+            commit_range="${latest_tag}..HEAD"
+        else
+            released="none"
+            commit_range="HEAD"
+        fi
+        commits=$(git -C "$ROOT" rev-list --count "$commit_range" -- "$(path_for "$pkg")")
+        case "$commits" in
+            0)  commits_label="up to date" ;;
+            1)  commits_label="1 unreleased commit" ;;
+            *)  commits_label="$commits unreleased commits" ;;
+        esac
+        # Compute the row's max version, ignoring "none", to mark stale cells
+        max_version=$(printf '%s\n%s\n%s\n' "$cl_version" "$current" "$released" \
+            | grep -v '^none$' | sort -V | tail -1)
+        printf "  %-10s changelog %s current %s released %s %s\n" \
+            "$pkg" \
+            "$(cell "$cl_version" "$max_version")" \
+            "$(cell "$current"    "$max_version")" \
+            "$(cell "$released"   "$max_version")" \
+            "$commits_label"
+    done
+    echo ""
+    exit 0
 fi
 
 if [ $# -ne 2 ]; then
     echo "" >&2
     echo "Usage: release.sh <package> <version>" >&2
     echo "       release.sh --delete <package> <version>" >&2
+    echo "       release.sh --check" >&2
     echo "Packages: compiler, runtime, sublime, vscode, jetbrains, claude" >&2
     echo "" >&2
     exit 1
@@ -33,9 +144,6 @@ fi
 
 PACKAGE="$1"
 VERSION="$2"
-
-# Resolve the monorepo root from this script's location
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 # Map package names to tag prefixes
 case "$PACKAGE" in
@@ -65,45 +173,17 @@ if [ "$DELETE" = true ]; then
     exit 0
 fi
 
-# Map package names to manifest paths, version commands, and formal names
+# Map package names to manifest paths and formal names
 case "$PACKAGE" in
-    compiler)
-        MANIFEST="$ROOT/compiler/pyproject.toml"
-        MANIFEST_VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' "$MANIFEST")
-        CHANGELOG="$ROOT/compiler/CHANGELOG.md"
-        FORMAL_NAME="Viv Compiler v$VERSION"
-        ;;
-    runtime)
-        MANIFEST="$ROOT/runtimes/js/package.json"
-        MANIFEST_VERSION=$(node -e "console.log(require('$MANIFEST').version)")
-        CHANGELOG="$ROOT/runtimes/js/CHANGELOG.md"
-        FORMAL_NAME="Viv JavaScript Runtime v$VERSION"
-        ;;
-    sublime)
-        MANIFEST="$ROOT/plugins/sublime/repository.json"
-        MANIFEST_VERSION=$(python3 -c "import json; print(json.load(open('$MANIFEST'))['packages'][0]['releases'][0]['version'])")
-        CHANGELOG="$ROOT/plugins/sublime/CHANGELOG.md"
-        FORMAL_NAME="Viv Sublime Text Package v$VERSION"
-        ;;
-    vscode)
-        MANIFEST="$ROOT/plugins/vscode/package.json"
-        MANIFEST_VERSION=$(node -e "console.log(require('$MANIFEST').version)")
-        CHANGELOG="$ROOT/plugins/vscode/CHANGELOG.md"
-        FORMAL_NAME="Viv VS Code Extension v$VERSION"
-        ;;
-    jetbrains)
-        MANIFEST="$ROOT/plugins/jetbrains/gradle.properties"
-        MANIFEST_VERSION=$(grep '^pluginVersion' "$MANIFEST" | cut -d= -f2 | tr -d ' ')
-        CHANGELOG="$ROOT/plugins/jetbrains/CHANGELOG.md"
-        FORMAL_NAME="Viv JetBrains Plugin v$VERSION"
-        ;;
-    claude)
-        MANIFEST="$ROOT/plugins/claude/.claude-plugin/plugin.json"
-        MANIFEST_VERSION=$(python3 -c "import json; print(json.load(open('$MANIFEST'))['version'])")
-        CHANGELOG="$ROOT/plugins/claude/CHANGELOG.md"
-        FORMAL_NAME="Viv Claude Code Plugin v$VERSION"
-        ;;
+    compiler)   MANIFEST="$ROOT/compiler/pyproject.toml";                   FORMAL_NAME="Viv Compiler v$VERSION" ;;
+    runtime)    MANIFEST="$ROOT/runtimes/js/package.json";                  FORMAL_NAME="Viv JavaScript Runtime v$VERSION" ;;
+    sublime)    MANIFEST="$ROOT/plugins/sublime/repository.json";           FORMAL_NAME="Viv Sublime Text Package v$VERSION" ;;
+    vscode)     MANIFEST="$ROOT/plugins/vscode/package.json";               FORMAL_NAME="Viv VS Code Extension v$VERSION" ;;
+    jetbrains)  MANIFEST="$ROOT/plugins/jetbrains/gradle.properties";       FORMAL_NAME="Viv JetBrains Plugin v$VERSION" ;;
+    claude)     MANIFEST="$ROOT/plugins/claude/.claude-plugin/plugin.json"; FORMAL_NAME="Viv Claude Code Plugin v$VERSION" ;;
 esac
+MANIFEST_VERSION=$(manifest_version_for "$PACKAGE")
+CHANGELOG=$(changelog_for "$PACKAGE")
 
 # Ensure version matches manifest
 if [ "$MANIFEST_VERSION" != "$VERSION" ]; then
