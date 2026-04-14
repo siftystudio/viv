@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [project]
 name = "viv-compiler"
-version = "0.11.0"
+version = "0.11.1"
 description = "Compiler for Viv, a DSL for emergent narrative in games and simulations."
 license = "LicenseRef-Viv"
 license-files = ["LICENSE.txt"]
