@@ -10,9 +10,10 @@ Workflow: search this map for relevant terms → find the path → `viv-plugin-r
 | What | Where | Description |
 |------|-------|-------------|
 | Monorepo README | `README.md` | Project overview with quickstart, package links, example projects, and monorepo layout. Keywords: overview, project, packages, layout |
-| Introduction: Overview | `docs/introduction/overview.md` | Features, design philosophy, and licensing. The "what is Viv and why should I care" document. Keywords: introduction, overview, features, design philosophy, what is Viv, feature tour |
-| Introduction: Example | `docs/introduction/example.md` | Extensive revenge-story walkthrough of the Viv language, showing actions, roles, conditions, effects, reactions, plans, selectors, sifting patterns, knowledge propagation, and item inscription in a single extended example. Keywords: example, walkthrough, revenge story, tutorial, end-to-end, runtime API |
-| Quickstart | `docs/quickstart/quickstart.md` | Getting started guide covering requirements, installation, and both LLM and non-LLM workflows. Keywords: quickstart, getting started, installation, requirements, setup, new project |
+| Docs site homepage | `docs/index.mdx` | Landing page for the Viv docs site. Keywords: docs site, homepage, landing |
+| Introduction: Overview | `docs/introduction/overview.mdx` | Features, design philosophy, and licensing. The "what is Viv and why should I care" document. Keywords: introduction, overview, features, design philosophy, what is Viv, feature tour |
+| Introduction: Tour | `docs/introduction/example.md` | Extensive revenge-story walkthrough of the Viv language, showing actions, roles, conditions, effects, reactions, plans, selectors, sifting patterns, knowledge propagation, and item inscription in a single extended example. Keywords: tour, example, walkthrough, revenge story, tutorial, end-to-end, runtime API |
+| Quickstart | `docs/quickstart/quickstart.mdx` | Getting started guide covering requirements, installation, and both LLM and non-LLM workflows. Keywords: quickstart, getting started, installation, requirements, setup, new project |
 | History of Viv | `docs/background/history-of-viv.md` | Background and motivation for the project. Keywords: history, background, motivation, origins |
 | PhD thesis | `docs/.llm/curating_simulated_storyworlds.md` | James Ryan's thesis on emergent narrative introducing story sifting and causal bookkeeping as concepts. Keywords: thesis, emergent narrative, curation, theory, academic, story sifting origins |
 | License | `LICENSE.txt` | Project license terms. Freely available for non-commercial use; commercial use requires a license from Sifty. Keywords: license, pricing, cost, free, open source, commercial |
@@ -25,12 +26,12 @@ The authoritative specification for the Viv language. When you need to understan
 
 | What | Where | Description |
 |------|-------|-------------|
-| Preamble | `docs/reference/language/00-preamble.md` | Overview of the language reference itself. Keywords: preamble, introduction, conventions |
+| Preamble | `docs/reference/language/00-preamble.mdx` | Overview of the language reference itself. Keywords: preamble, introduction, conventions |
 | Introduction | `docs/reference/language/01-introduction.md` | Scope of the language reference, normative language conventions (MUST/SHOULD/MAY), notation, and grammar overview. Keywords: introduction, scope, normative language, conventions, notation, grammar |
 | Lexical elements | `docs/reference/language/02-lexical-elements.md` | Tokens, comments, literals, sigils (`@`, `&`, `$`, `_`, `>`), whitespace rules. Keywords: tokens, comments, literals, sigils, syntax, whitespace, lexer |
 | File structure | `docs/reference/language/03-file-structure.md` | How `.viv` files are structured, top-level declarations. Keywords: file, structure, declarations, top-level |
 | Includes | `docs/reference/language/04-includes.md` | The `include` directive for splitting code across files. Keywords: include, import, files, modules, splitting |
-| Entities and symbols | `docs/reference/language/05-entities-and-symbols.md` | Characters, items, locations, actions as entities; symbols as abstract values. Entity types and the `@`/`&` sigils. Keywords: entities, symbols, characters, items, locations, entity types, sigils |
+| Entities and symbols | `docs/reference/language/05-entities-and-symbols.mdx` | Characters, items, locations, actions as entities; symbols as abstract values. Entity types and the `@`/`&` sigils. Keywords: entities, symbols, characters, items, locations, entity types, sigils |
 | Names | `docs/reference/language/06-names.md` | Identifier rules, naming conventions, reserved words. Keywords: names, identifiers, reserved words, naming, conventions |
 | Expressions | `docs/reference/language/07-expressions.md` | The expression sublanguage — references, arithmetic, comparisons, logical operators, fail-safe `?`, assignments, custom functions, enums. Keywords: expressions, operators, references, arithmetic, comparisons, assignments, enums, custom functions, fail-safe |
 | Statements and control flow | `docs/reference/language/08-statements-and-control-flow.md` | `if`/`elif`/`else`/`end`, `loop`, local variables. Keywords: if, else, loop, control flow, conditionals, iteration, local variables |
@@ -45,16 +46,28 @@ The authoritative specification for the Viv language. When you need to understan
 | Plans | `docs/reference/language/17-plans.md` | Multi-phase orchestrators — phases, reaction windows (`all`/`any`/`untracked`), `wait`, `advance`, `succeed`, `fail`, loops, conditional branching. Keywords: plans, phases, reaction windows, wait, advance, succeed, fail, orchestration, sequencing, multi-phase |
 | Selectors | `docs/reference/language/18-selectors.md` | Action and plan selectors — random, weighted, ordered policies; initiator pass-through; selector chaining. Keywords: selectors, action-selector, plan-selector, random, weighted, ordered, selection policy |
 | Compiler output | `docs/reference/language/19-compiler-output.md` | The content bundle format — what the compiler produces, metadata, schema versioning. Keywords: compiler output, content bundle, JSON, schema, metadata, bundle format |
-| Runtime model | `docs/reference/language/20-runtime-model.md` | How the runtime executes Viv code — action selection, plan ticking, knowledge propagation, the adapter contract. Keywords: runtime, execution, action selection, plan ticking, adapter, simulation loop, stepping |
+| Runtime model | `docs/reference/language/20-runtime-model.mdx` | How the runtime executes Viv code — action selection, plan ticking, knowledge propagation, the adapter contract. Keywords: runtime, execution, action selection, plan ticking, adapter, simulation loop, stepping |
 | Implementation notes | `docs/reference/language/21-appendix-a-implementation-notes.md` | Technical notes on compiler and runtime internals. Keywords: implementation, internals, technical notes |
-| Glossary | `docs/reference/language/22-glossary.md` | Definitions of all Viv terminology. Keywords: glossary, definitions, terminology, terms |
+| Glossary | `docs/reference/language/22-glossary.mdx` | Definitions of all Viv terminology. Keywords: glossary, definitions, terminology, terms |
+
+
+## Compiler reference
+
+High-level user-facing documentation for the Viv compiler toolchain — how to invoke `vivc`, how to call the Python API, how to diagnose installation and compilation failures. Companion to the language reference above, but focused on the toolchain rather than the language. Read the language reference for "how does construct X work?"; read the compiler reference for "how do I run the compiler?" or "why did this fail to compile?"
+
+| What | Where | Description |
+|------|-------|-------------|
+| Compiler reference landing | `docs/reference/compiler/index.mdx` | Overview of the compiler: what it does, installation via pip or the Claude plugin, editor plugin recommendations, and runtime/compiler schema compatibility. Keywords: compiler, install, pip, editor plugins, schema version, compatibility, runtime compatibility |
+| CLI reference | `docs/reference/compiler/cli.mdx` | Complete reference for the `vivc` command-line tool — every flag, option, and usage pattern. Keywords: CLI, vivc, flags, options, command-line, compiler invocation |
+| Python API reference | `docs/reference/compiler/api.md` | How to invoke the compiler programmatically via the `viv_compiler` Python package — `compile_from_path`, `compile_from_string`, error classes, version introspection, external types. Keywords: Python API, viv_compiler, compile_from_path, compile_from_string, programmatic, error classes, version introspection |
+| Troubleshooting | `docs/reference/compiler/troubleshooting.md` | Diagnosing installation issues (Python version, PATH, multiple pip installs, virtualenv confusion) and compilation failures (parse errors, semantic errors). Includes a worked example of a difficult install handled by the Claude plugin. Keywords: troubleshooting, install issues, Python, PATH, parse errors, semantic errors, debugging |
 
 
 ## Compiler
 
 | What | Where | Description |
 |------|-------|-------------|
-| Compiler README | `compiler/README.md` | How to install and use the compiler CLI and Python API. Keywords: install, CLI, usage, pip, vivc, command line |
+| Compiler README | `compiler/README.md` | Slim landing page for the compiler Python package. Defers detailed documentation to the compiler reference in the docs site (see the Compiler reference section above). Keywords: compiler, package, README, landing page |
 | CLI entry point | `compiler/src/viv_compiler/cli.py` | Argument parsing and main function. Keywords: CLI, arguments, main, entry point |
 | Python API | `compiler/src/viv_compiler/api.py` | `compile_from_path()` and `compile_from_string()` for programmatic compilation. Keywords: API, compile_from_path, compile_from_string, programmatic |
 | Pipeline orchestrator | `compiler/src/viv_compiler/pipeline/pipeline.py` | Coordinates parsing, visiting, postprocessing, validation, and bundling. Keywords: pipeline, compilation phases, orchestration |
@@ -159,6 +172,7 @@ The authoritative specification for the Viv language. When you need to understan
 | TypeDoc config | `runtimes/js/typedoc.json` | API docs configuration: category ordering, intentionally not-exported types, custom CSS. Keywords: TypeDoc, API docs, categories, configuration |
 | API Extractor config | `runtimes/js/api-extractor.json` | Generates d.ts rollup, tracks API surface in `etc/viv-runtime.api.md`. Keywords: api-extractor, d.ts rollup, API surface |
 | Docs site config | `docs/astro.config.mjs` | Starlight/Astro configuration: sidebar structure, Viv syntax highlighting via TextMate grammar, color themes, custom plugins. Keywords: docs site, Starlight, Astro, sidebar, configuration, site structure |
+| Docs site content config | `docs/src/content.config.ts` | Starlight content collection config — declares which top-level `.md`/`.mdx` files under `docs/` belong to the site. Source of truth for where docs site content actually lives (content is at top-level `docs/`, not under `src/content/docs/` as default Starlight projects do). Keywords: Starlight, content collection, Astro, docs site structure, content config |
 
 ## Wizard (fine-tuned LLM)
 

@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 * Hoist `viv-plugin-explore-monorepo read` into its own command, `viv-plugin-read-monorepo-file`, to delineate exploration (`ls`, `grep`) and reading (`--offset`, `--limit`).
 * Rename `viv-plugin-get-doc` to `viv-plugin-get-plugin-file` (agents were trying to use it to get monorepo docs).
 * Make `/viv:sync` user-invocable and reframe it around upgrading all Viv components to their latest published versions (with downgrades and other complex syncs being possible but nonstandard usages).
+* Update the monorepo map and primer to reflect the docs site overhaul.
 
 ### Fixed
 

@@ -167,12 +167,12 @@ A local copy of the Viv monorepo is available. Use `viv-plugin-explore-monorepo`
 Key starting points within the monorepo:
 
 - **Language reference** — `docs/reference/language/` (23 chapters, one per topic). This is the authoritative source for how any construct works. When you need to understand actions, read chapter 10. Sifting patterns, chapter 16. Plans, chapter 17. Etc.
-- **Glossary** — `docs/reference/language/22-glossary.md` — alphabetized definitions of all Viv terminology, with links to where each term is introduced.
+- **Glossary** — `docs/reference/language/22-glossary.mdx` — alphabetized definitions of all Viv terminology, with links to where each term is introduced.
+- **Compiler reference** — `docs/reference/compiler/` — user-facing docs for the compiler toolchain (CLI, Python API, troubleshooting). Complements the language reference above.
 - **Monorepo README** — `README.md` — project overview with quickstart, package links, and monorepo layout
-- **Introduction: Overview** — `docs/introduction/overview.md` — features, design philosophy, and licensing
-- **Introduction: Example** — `docs/introduction/example.md` — extensive revenge-story walkthrough of the language
-- **Quickstart** — `docs/quickstart/quickstart.md` — getting started guide for LLM and non-LLM workflows
-- **Compiler README** — `compiler/README.md` — CLI usage and installation
+- **Introduction: Overview** — `docs/introduction/overview.mdx` — features, design philosophy, and licensing
+- **Introduction: Tour** — `docs/introduction/example.md` — extensive revenge-story walkthrough of the language
+- **Quickstart** — `docs/quickstart/quickstart.mdx` — getting started guide for LLM and non-LLM workflows
 - **Runtime README** — `runtimes/js/README.md` — integration guide and adapter setup
 - **Hello Viv example** — `examples/hello-viv-ts/src/main.ts` — canonical TypeScript integration
 - **License** — `LICENSE.txt` — freely available for non-commercial use; commercial use requires a license from Sifty
