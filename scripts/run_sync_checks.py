@@ -4,6 +4,7 @@
 
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import Final
@@ -177,6 +178,49 @@ def check_vscode_package_lock_version() -> bool:
     return True
 
 
+def _read_package_manifest_version(package: str) -> str:
+    """Return the manifest version for a package via the shared helper script."""
+    result = subprocess.run(
+        [str(ROOT / "scripts/extract-package-manifest-version.sh"), package],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return result.stdout.strip()
+
+
+def _read_package_changelog_version(package: str) -> str:
+    """Return the topmost changelog version for a package via the shared helper script."""
+    result = subprocess.run(
+        [str(ROOT / "scripts/extract-package-changelog-version.sh"), package],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return result.stdout.strip()
+
+
+def check_changelog_manifest_parity() -> bool:
+    """Verify each package's manifest version matches the top entry in its changelog."""
+    packages = ["compiler", "runtime", "sublime", "vscode", "jetbrains", "claude"]
+    mismatches = []
+    for package in packages:
+        changelog_version = _read_package_changelog_version(package=package)
+        # Skip packages whose top entry is a yet-unreleased section
+        if changelog_version == "Unreleased":
+            continue
+        manifest_version = _read_package_manifest_version(package=package)
+        if changelog_version != manifest_version:
+            mismatches.append((package, changelog_version, manifest_version))
+    if mismatches:
+        print(f"FAIL [changelog/manifest parity]: {len(mismatches)} package(s) diverged:")
+        for package, changelog_version, manifest_version in mismatches:
+            print(f"  - {package}: changelog {changelog_version}, manifest {manifest_version}")
+        return False
+    print(f"PASS [changelog/manifest parity]: all {len(packages)} packages in sync")
+    return True
+
+
 def _check_hello_viv_runtime_dep(example: str) -> bool:
     """Verify that the runtime version satisfies a hello-viv example's dependency constraint."""
     runtime = json.loads((ROOT / "runtimes/js/package.json").read_text())
@@ -330,6 +374,7 @@ def main() -> None:
         check_keywords,
         check_sublime_repository_url,
         check_vscode_package_lock_version,
+        check_changelog_manifest_parity,
         *[_make_named_check(f"check_{ex.replace('-', '_')}_runtime_dep", _check_hello_viv_runtime_dep, ex)
           for ex in HELLO_VIV_EXAMPLES],
         *[_make_named_check(f"check_{ex.replace('-', '_')}_schema", _check_hello_viv_schema_version, ex)

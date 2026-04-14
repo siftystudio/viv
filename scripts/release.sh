@@ -37,14 +37,7 @@ ALL_PACKAGES=(compiler runtime sublime vscode jetbrains claude)
 
 # Read the current version from a package's manifest
 manifest_version_for() {
-    case "$1" in
-        compiler)   sed -n 's/^version = "\(.*\)"/\1/p' "$ROOT/compiler/pyproject.toml" ;;
-        runtime)    node -e "console.log(require('$ROOT/runtimes/js/package.json').version)" ;;
-        sublime)    python3 -c "import json; print(json.load(open('$ROOT/plugins/sublime/repository.json'))['packages'][0]['releases'][0]['version'])" ;;
-        vscode)     node -e "console.log(require('$ROOT/plugins/vscode/package.json').version)" ;;
-        jetbrains)  grep '^pluginVersion' "$ROOT/plugins/jetbrains/gradle.properties" | cut -d= -f2 | tr -d ' ' ;;
-        claude)     python3 -c "import json; print(json.load(open('$ROOT/plugins/claude/.claude-plugin/plugin.json'))['version'])" ;;
-    esac
+    "$ROOT/scripts/extract-package-manifest-version.sh" "$1"
 }
 
 # Resolve the changelog path for a package
@@ -73,7 +66,7 @@ path_for() {
 
 # Read the topmost version heading from a package's changelog
 changelog_latest_for() {
-    awk '/^## \[/{gsub(/^## \[|\].*/, ""); print; exit}' "$(changelog_for "$1")"
+    "$ROOT/scripts/extract-package-changelog-version.sh" "$1"
 }
 
 # --check mode -- per package, show changelog/manifest/released
