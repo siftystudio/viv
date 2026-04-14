@@ -85,4 +85,3 @@ jobs:
           name: Viv JetBrains Plugin v${{ steps.version.outputs.version }}
           body: ${{ steps.changelog.outputs.body }}
           files: plugins/jetbrains/build/distributions/*.zip
-          make_latest: "false"

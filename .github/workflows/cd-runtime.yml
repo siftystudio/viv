@@ -78,7 +78,6 @@ jobs:
         with:
           name: Viv JavaScript Runtime v${{ steps.version.outputs.version }}
           body: ${{ steps.changelog.outputs.body }}
-          make_latest: "false"
 
   docs:
     needs: publish

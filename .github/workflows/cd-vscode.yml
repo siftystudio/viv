@@ -88,4 +88,3 @@ jobs:
           name: Viv VS Code Extension v${{ steps.version.outputs.version }}
           body: ${{ steps.changelog.outputs.body }}
           files: plugins/vscode/viv-v${{ steps.version.outputs.version }}.vsix
-          make_latest: "false"
