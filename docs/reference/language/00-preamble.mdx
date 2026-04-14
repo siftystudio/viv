@@ -1,0 +1,159 @@
+---
+title: Viv Language Reference
+prev: false
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+:::note
+This document corresponds to version `0.10` of the Viv language grammar.
+:::
+
+The Viv language reference is the complete specification of the Viv domain-specific language (DSL). It documents the syntax and semantics of every construct in the language.
+
+Below you'll find a listing of its chapters.
+
+## Foundations
+
+<CardGrid>
+  <LinkCard
+    title="Introduction"
+    href="/reference/language/01-introduction/"
+    description="A high-level overview of the language and how to read this reference."
+  />
+  <LinkCard
+    title="Lexical elements"
+    href="/reference/language/02-lexical-elements/"
+    description="Tokens, keywords, operators, punctuation, and whitespace."
+  />
+  <LinkCard
+    title="File structure"
+    href="/reference/language/03-file-structure/"
+    description="How constructs are organized in .viv source files."
+  />
+  <LinkCard
+    title="Includes"
+    href="/reference/language/04-includes/"
+    description="Splitting source code across multiple files with include statements."
+  />
+  <LinkCard
+    title="Entities and symbols"
+    href="/reference/language/05-entities-and-symbols/"
+    description="Characters, items, enums, and function references."
+  />
+  <LinkCard
+    title="Names and sigils"
+    href="/reference/language/06-names/"
+    description="Identifiers, role prefixes, and naming conventions."
+  />
+  <LinkCard
+    title="Expressions"
+    href="/reference/language/07-expressions/"
+    description="Values, operators, and the computation sublanguage."
+  />
+  <LinkCard
+    title="Statements and control flow"
+    href="/reference/language/08-statements-and-control-flow/"
+    description="Conditionals, loops, and imperative blocks."
+  />
+</CardGrid>
+
+## Constructs
+
+<CardGrid>
+  <LinkCard
+    title="Roles"
+    href="/reference/language/09-roles/"
+    description="Casting characters, items, and past actions into construct slots."
+  />
+  <LinkCard
+    title="Actions"
+    href="/reference/language/10-actions/"
+    description="The core simulation unit: what characters do."
+  />
+  <LinkCard
+    title="Reactions"
+    href="/reference/language/11-reactions/"
+    description="Queued responses to past actions, with automatic causal tracking."
+  />
+  <LinkCard
+    title="Temporal constraints"
+    href="/reference/language/12-temporal-constraints/"
+    description="Timing, delays, and intervals for reactions and plans."
+  />
+  <LinkCard
+    title="Bindings"
+    href="/reference/language/13-bindings/"
+    description="Passing values between constructs."
+  />
+  <LinkCard
+    title="Tropes"
+    href="/reference/language/14-tropes/"
+    description="Reusable bundles of conditions with a name."
+  />
+  <LinkCard
+    title="Queries"
+    href="/reference/language/15-queries/"
+    description="Rich criteria for searching the chronicle or character memories."
+  />
+  <LinkCard
+    title="Sifting patterns"
+    href="/reference/language/16-sifting-patterns/"
+    description="Matching sequences of actions—emergent storylines."
+  />
+  <LinkCard
+    title="Plans"
+    href="/reference/language/17-plans/"
+    description="Multi-phase orchestrators for coordinating reactions over time."
+  />
+  <LinkCard
+    title="Selectors"
+    href="/reference/language/18-selectors/"
+    description="Tiny programs for choosing actions or plans from candidates."
+  />
+</CardGrid>
+
+## System
+
+<CardGrid>
+  <LinkCard
+    title="Compiler output"
+    href="/reference/language/19-compiler-output/"
+    description="The shape of the JSON content bundle emitted by the compiler."
+  />
+  <LinkCard
+    title="Runtime model"
+    href="/reference/language/20-runtime-model/"
+    description="How the runtime executes content bundles."
+  />
+</CardGrid>
+
+## Appendices
+
+<CardGrid>
+    <LinkCard
+        title="Appendix A: Implementation notes"
+        href="/reference/language/21-appendix-a-implementation-notes/"
+        description="Internals for curious contributors."
+    />
+    <LinkCard
+        title="Glossary"
+        href="/reference/language/22-glossary/"
+        description="Definitions of terms used throughout the reference."
+    />
+</CardGrid>
+
+## Related Documentation
+
+<CardGrid>
+  <LinkCard
+    title="Compiler Reference"
+    href="/reference/compiler/"
+    description="How to compile Viv source files into JSON content bundles."
+  />
+  <LinkCard
+    title="JavaScript Runtime API"
+    href="/reference/runtimes/js/"
+    description="How to execute compiled content bundles at runtime."
+  />
+</CardGrid>

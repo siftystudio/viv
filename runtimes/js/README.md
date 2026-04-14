@@ -18,7 +18,7 @@ At a high level, the runtime combines an **interpreter** for the [Viv DSL](https
 ## Requirements
 
 * Node.js 18+.
-* The [Viv compiler](https://pypi.org/project/viv-compiler) is needed to produce the content bundles that the runtime consumes.
+* The [Viv compiler](https://viv.sifty.studio/reference/compiler/) is needed to produce the content bundles that the runtime consumes.
 
 ## Installation
 
@@ -59,7 +59,7 @@ Consult the [language reference](https://viv.sifty.studio/reference/language/) f
 
 ### Compiling a Content Bundle
 
-Run your Viv code through the [**Viv compiler**](https://pypi.org/project/viv-compiler) to produce a **content bundle** for your project. This compiler target is a JSON structure that your host application can utilize by including it in a Viv adapter, as explained below.
+Run your Viv code through the [**Viv compiler**](https://viv.sifty.studio/reference/compiler/) to produce a **content bundle** for your project. This compiler target is a JSON structure that your host application can utilize by including it in a Viv adapter, as explained below.
 
 #### Compatibility
 
@@ -73,7 +73,7 @@ To use this version of the JavaScript runtime, you must supply a **compatible** 
 
 If the content bundle is incompatible, the runtime will throw an error during initialization, with a message explaining the mismatch.
 
-The schema version supported by your runtime installation can be retrieved via the API, as documented [here](https://viv.sifty.studio/reference/runtimes/js/functions/getSchemaVersion.html). To get the schema version associated with your compiler, follow the relevant instructions in the [compiler docs](https://pypi.org/project/viv-compiler). Note that the respective latest versions of the Viv compiler and runtime will always be associated with the same schema version.
+The schema version supported by your runtime installation can be retrieved via the API, as documented [here](https://viv.sifty.studio/reference/runtimes/js/functions/getSchemaVersion.html). To get the schema version associated with your compiler, follow the relevant instructions in the [compiler docs](https://viv.sifty.studio/reference/compiler/cli/). Note that the respective latest versions of the Viv compiler and runtime will always be associated with the same schema version.
 
 ### Creating a Viv Adapter
 

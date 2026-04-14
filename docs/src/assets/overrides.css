@@ -18,6 +18,7 @@
     --sl-color-accent-high: #3a3530;
     --sl-color-backdrop-overlay: hsla(25, 15%, 10%, 0.66);
     --sl-font: 'Source Serif 4', 'Georgia', serif;
+    --sl-font-mono: 'Commit Mono', ui-monospace, 'SF Mono', 'Menlo', monospace;
 }
 :root[data-theme="dark"] {
     --sl-color-white: #f6f0e4;
@@ -36,6 +37,11 @@
     --sl-color-accent: #f6f0e4;
     --sl-color-accent-high: #e2dacb;
     --sl-color-backdrop-overlay: hsla(25, 15%, 8%, 0.66);
+}
+
+/* Inline code in headings: shrink to compensate for mono's larger visual weight */
+.sl-markdown-content :is(h1, h2, h3, h4, h5, h6) code {
+    font-size: 0.85em;
 }
 
 /* Header: "Viv" text */
@@ -81,6 +87,56 @@
 .sl-link-button.secondary:hover {
     background-color: var(--sl-color-gray-6);
     border-color: var(--sl-color-gray-4);
+}
+
+/* Asides: note variant uses warm sepia tones instead of Starlight's default blue */
+.starlight-aside--note {
+    --sl-color-asides-text-accent: var(--sl-color-gray-2);
+    --sl-color-asides-border: var(--sl-color-gray-3);
+    background-color: var(--sl-color-accent-low);
+}
+
+/* Asides: tip variant uses muted sage/olive tones instead of Starlight's default purple */
+.starlight-aside--tip {
+    --sl-color-asides-text-accent: #5a5c3f;
+    --sl-color-asides-border: #8a8c6f;
+    background-color: #dfe3c9;
+}
+:root[data-theme="dark"] .starlight-aside--tip {
+    --sl-color-asides-text-accent: #b5b894;
+    --sl-color-asides-border: #8a8c6f;
+    background-color: #3a3e2e;
+}
+/* Replace the tip's default rocket SVG with a fleuron glyph */
+.starlight-aside--tip .starlight-aside__icon {
+    display: none;
+}
+.starlight-aside--tip .starlight-aside__title::before {
+    content: "❧";
+    font-size: 1.333em;
+    line-height: 1;
+}
+
+/* Code blocks: diff markers use the warm palette (olive for ins, muted sepia-rust for del) */
+.expressive-code {
+    --ec-tm-insBg: #dfe3c9;
+    --ec-tm-insBrdCol: #8a8c6f;
+    --ec-tm-delBg: #ebd2c2;
+    --ec-tm-delBrdCol: #a06850;
+    /* Plain line/text highlights use a warm tan instead of Expressive Code's default blue */
+    --ec-tm-markBg: #e8dfd0;
+    --ec-tm-markBrdCol: #8a7e70;
+    /* Suppress the +/- gutter symbols — we use ins/del for visual accent, not diff semantics */
+    --ec-tm-insDiffIndContent: "";
+    --ec-tm-delDiffIndContent: "";
+}
+:root[data-theme="dark"] .expressive-code {
+    --ec-tm-insBg: #3a3e2e;
+    --ec-tm-insBrdCol: #8a8c6f;
+    --ec-tm-delBg: #4a322a;
+    --ec-tm-delBrdCol: #a06850;
+    --ec-tm-markBg: #453c34;
+    --ec-tm-markBrdCol: #8a7e70;
 }
 
 /* Code blocks: "Copied!" tooltip in theme colors */

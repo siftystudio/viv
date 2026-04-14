@@ -34,6 +34,20 @@ export default defineConfig({
             },
             head: [
                 {
+                    tag: "meta",
+                    attrs: {
+                        property: "og:image",
+                        content: "https://viv.sifty.studio/social-preview.png",
+                    },
+                },
+                {
+                    tag: "meta",
+                    attrs: {
+                        name: "twitter:image",
+                        content: "https://viv.sifty.studio/social-preview.png",
+                    },
+                },
+                {
                     tag: "link",
                     attrs: {
                         rel: "preconnect",
@@ -55,6 +69,20 @@ export default defineConfig({
                         href: "https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap",
                     },
                 },
+                {
+                    tag: "link",
+                    attrs: {
+                        rel: "stylesheet",
+                        href: "https://cdn.jsdelivr.net/npm/@fontsource/commit-mono@latest/400.css",
+                    },
+                },
+                {
+                    tag: "link",
+                    attrs: {
+                        rel: "stylesheet",
+                        href: "https://cdn.jsdelivr.net/npm/@fontsource/commit-mono@latest/700.css",
+                    },
+                },
             ],
             title: "Viv",
             favicon: "/viv-icon.png",
@@ -63,7 +91,8 @@ export default defineConfig({
                 dark: "./src/assets/viv-icon-dark.svg",
                 replacesTitle: false,
             },
-            description: "Documentation for the Viv system for emergent narrative.",
+            description: "Viv is an engine for emergent narrative.",
+            tableOfContents: { maxHeadingLevel: 2 },
             customCss: ["./src/assets/overrides.css"],
             sidebar: [
                 { label: "Quickstart", slug: "quickstart" },
@@ -71,7 +100,7 @@ export default defineConfig({
                     label: "Introduction",
                     items: [
                         { label: "Overview", slug: "introduction" },
-                        { label: "Example: A Revenge Story", slug: "introduction/example" },
+                        { label: "Tour: A Revenge Story", slug: "introduction/example" },
                     ],
                 },
                 {

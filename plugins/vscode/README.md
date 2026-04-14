@@ -73,7 +73,7 @@ To select a theme:
 
 ## Compiler Integration
 
-The Viv VS Code extension integrates with the [Viv compiler](https://pypi.org/project/viv-compiler) to afford the following compilation actions, directly from the editor, assuming the compiler is installed and accessible to VS Code (see [Getting Started](#getting-started)).
+The Viv VS Code extension integrates with the [Viv compiler](https://viv.sifty.studio/reference/compiler/) to afford the following compilation actions, directly from the editor, assuming the compiler is installed and accessible to VS Code (see [Getting Started](#getting-started)).
 
 ### Compile Check
 

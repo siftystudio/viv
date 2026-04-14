@@ -112,8 +112,6 @@ action-selector choose-social:
 
 Omitting the `roles` field signals that the initiator is the only role and should be passed through implicitly; including it signals that all roles—including the initiator—are explicitly declared.
 
-This mechanism applies only to action selectors. Plans do not have initiators, and consequently neither do plan selectors.
-
 ### Plan selectors and roles
 
 [Plans](17-plans.md) do not have initiators, so there is no initiator pass-through for plan selectors. A plan selector [MAY](01-introduction.md#normative-language) still omit the `roles` field—but the meaning is different: a role-less plan selector is pure dispatch, and the selected plan's roles are cast entirely from the world state at execution time. When a plan selector does define roles, those roles can be used to parameterize the selection or to pre-bind candidate plan roles via [bindings](13-bindings.md):

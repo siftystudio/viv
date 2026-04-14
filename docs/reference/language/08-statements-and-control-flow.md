@@ -45,15 +45,17 @@ Conditions are evaluated in order. The first branch whose condition is truthy ha
 
 A conditional [MUST](01-introduction.md#normative-language) be terminated by `end`:
 
-```viv
+```viv del={1-3}
+// Illegal: missing 'end'
+if @person.mood > 50:
+    @person.status = "happy"
+```
+
+```viv ins={1-4}
 // Legal
 if @person.mood > 50:
     @person.status = "happy"
 end
-
-// Illegal: missing 'end'
-if @person.mood > 50:
-    @person.status = "happy"
 ```
 
 Conditionals may be nested:

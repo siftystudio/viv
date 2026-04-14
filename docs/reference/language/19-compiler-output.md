@@ -2,7 +2,7 @@
 title: 19. Compiler output
 ---
 
-The Viv compiler processes one or more source files (after resolving [includes](04-includes.md)), via a single [entry file](#entry-file), and produces a single JSON file called the *content bundle*. This chapter describes the structure of that output.
+The [Viv compiler](/reference/compiler/) processes one or more source files (after resolving [includes](04-includes.md)), via a single [entry file](#entry-file), and produces a single JSON file called the *content bundle*. This chapter describes the structure of that output.
 
 ## Entry file
 

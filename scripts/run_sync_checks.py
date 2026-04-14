@@ -253,7 +253,7 @@ def check_language_reference_version() -> bool:
         print("FAIL [language reference version]: could not parse version from viv.peg")
         return False
     grammar_major_minor = ".".join(peg_match.group(1).split(".")[:2])
-    preamble_text = (ROOT / "docs/reference/language/00-preamble.md").read_text()
+    preamble_text = (ROOT / "docs/reference/language/00-preamble.mdx").read_text()
     preamble_match = re.search(r"version\s+`([^`]+)`", preamble_text)
     if not preamble_match:
         print("FAIL [language reference version]: could not find version in preamble")

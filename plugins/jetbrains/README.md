@@ -107,7 +107,7 @@ To select a theme:
 
 ## Compiler Integration
 
-The Viv JetBrains plugin integrates with the [Viv compiler](https://pypi.org/project/viv-compiler) to afford the following compilation actions, directly from the editor, assuming the compiler is installed and accessible (see [Getting Started](#getting-started)). All compilation is routed through IntelliJ's `Run` system—the same play button and `Run` tool window that JetBrains users already know.
+The Viv JetBrains plugin integrates with the [Viv compiler](https://viv.sifty.studio/reference/compiler/) to afford the following compilation actions, directly from the editor, assuming the compiler is installed and accessible (see [Getting Started](#getting-started)). All compilation is routed through IntelliJ's `Run` system—the same play button and `Run` tool window that JetBrains users already know.
 
 ### Compile Check
 

@@ -37,7 +37,7 @@ include "tropes.viv"
 include "../tropes/tropes.viv"
 
 // No resolution required
-include "/Users/Vivian/Documents/viv/tropes/tropes.viv"
+include "/Users/vivian/Documents/viv/tropes/tropes.viv"
 ```
 
 ## Recursive includes

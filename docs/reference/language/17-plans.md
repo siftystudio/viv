@@ -161,7 +161,7 @@ A *reaction window* groups multiple plan instructions and specifies how the plan
 
 Phases are the primary sequencing mechanism for plans: if step A must complete before step B begins, they belong in separate phases. Within a single phase, bare reactions are concurrent—they are all issued as part of that phase's work. Reaction windows provide finer-grained synchronization within a phase, for cases where some reactions must complete before the tape proceeds to subsequent instructions.
 
-```viv
+```viv {2,9}
 >infiltration:
     all:
         queue action forge-documents:
@@ -178,7 +178,7 @@ Phases are the primary sequencing mechanism for plans: if step A must complete b
 
 Here, the `all:` window ensures that both `forge-documents` and `establish-cover-identity` complete before `enter-compound` is queued. Without the window, all three would be queued immediately as bare reactions.
 
-```viv
+```viv {2,9}
 >preparation:
     all:
         queue action gather-supplies:

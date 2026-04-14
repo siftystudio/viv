@@ -102,7 +102,7 @@ To select a theme:
 
 ## Compiler Integration
 
-The Viv compiler can be invoked from the editor if the [Viv compiler](https://pypi.org/project/viv-compiler) is installed and accessible to Sublime Text (see [Getting Started](#getting-started)).
+The Viv compiler can be invoked from the editor if the [Viv compiler](https://viv.sifty.studio/reference/compiler/) is installed and accessible to Sublime Text (see [Getting Started](#getting-started)).
 
 To compile the current `.viv` file, run the `Build` command (`Cmd+B` / `Ctrl+B`). This *does not* write out the resulting content bundle, but the compilation result will appear in Sublime's build-results panel:
 

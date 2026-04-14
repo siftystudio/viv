@@ -104,7 +104,7 @@ If you're stuck on a compiler error, the [Viv Claude Code plugin](https://github
 
 Here's an illustrative example showing a user who merely points to a file that won't compile:
 
-```diff frame="terminal" 
+```diff frame="terminal" {1,37}
 ❯ /viv:fix the compiler error in haunted-house.viv                                                    
                                                                                                       
 ⏺ Let me compile it to see the error.                                                             
@@ -134,8 +134,8 @@ Here's an illustrative example showing a user who merely points to a file that w
  75      target randomly:                                                                             
  76          calm-nerves:                                                                             
  77              with partial:                      
-- 78                  @escapee: @escapee                                                               
-+ 78                  @comforter: @escapee                                                             
+- 78 -                @escapee: @escapee                                                               
++ 78 +                @comforter: @escapee                                                             
  79     
  80  
  81  // --------------------------------------------------------------------------
@@ -148,7 +148,7 @@ Here's an illustrative example showing a user who merely points to a file that w
 
 The Claude Code plugin can also handle installing the compiler into gnarly Python situations:
 
-```text frame="terminal" 
+```text frame="terminal" {1,100,114,162}
 ❯ /viv:fix I can't install the compiler
 
 ⏺ Bash(vivc --version 2>&1 || echo "NOT_INSTALLED")
@@ -307,5 +307,9 @@ The Claude Code plugin can also handle installing the compiler into gnarly Pytho
      … +2 lines (ctrl+o to expand)
 
 ⏺ Smoke test passed. You're good to go.
+
+✻ Baked for 51s
+
+❯ Wow
 ```
 

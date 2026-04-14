@@ -49,18 +49,20 @@ template action social-template:
 
 An action header terminating with `:` [MUST](01-introduction.md#normative-language) be followed by an [action body](#action-body):
 
-```viv
-// Legal
-action good:
-    ...
-
+```viv del={1-2}
 // Illegal
 action bad:
 ```
 
+```viv ins={1-3}
+// Legal
+action good:
+    ...
+```
+
 When an action header terminates with `;`, the definition terminates too, but this is only legal when a parent action is specified:
 
-```viv
+```viv ins={4-5} del={7-8}
 action parent:
     ...
 
@@ -315,15 +317,17 @@ tag         = identifier .
 
 The *tags field* is introduced by the `tags` keyword, and specifies a set of one or more annotations that will be attached to all instances of this action. Tags are comma-separated [identifiers](02-lexical-elements.md#identifiers) (not [strings](02-lexical-elements.md#strings)):
 
-```viv
-// Legal
-action foo:
-    tags: fun, cool
-    ...
-
+```viv del={1-4}
 // Illegal: tags must be identifiers, not strings
 action foo:
     tags: "fun"
+    ...
+```
+
+```viv ins={1-4}
+// Legal
+action foo:
+    tags: fun, cool
     ...
 ```
 

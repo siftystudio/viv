@@ -2,6 +2,8 @@
 title: 20. Runtime model
 ---
 
+import { Steps } from '@astrojs/starlight/components';
+
 This chapter describes key runtime behaviors that are relevant to understanding how Viv constructs execute. It is not a complete specification of the runtime; rather, it covers the aspects that are most pertinent to authors.
 
 ## Rendering template strings
@@ -19,6 +21,8 @@ For example, given a template string `"@person greets @friend"`, the runtime eva
 
 *Action targeting* is the process by which the runtime determines whether an action can be performed for a given initiator. The process proceeds as follows:
 
+<Steps>
+
 1. **Initiator selection.** The host application supplies the character for whom action selection is being run. This character is bound to the `initiator` role.
 
 2. **Candidate actions.** The runtime considers all non-[reserved](10-actions.md#reserved-marker) actions (and any queued reserved actions) as candidates.
@@ -28,6 +32,8 @@ For example, given a template string `"@person greets @friend"`, the runtime eva
 4. **Condition evaluation.** As roles are cast, [conditions](10-actions.md#conditions) referencing those roles are evaluated. If any condition fails, the runtime backtracks and tries alternative candidates for the most recently cast role.
 
 5. **Success or failure.** If all roles are successfully cast and all conditions are satisfied, targeting succeeds and the action is performed. Otherwise, targeting fails and the action is skipped.
+
+</Steps>
 
 ## Casting-pool shuffling
 

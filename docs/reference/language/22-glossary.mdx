@@ -1,0 +1,349 @@
+---
+title: Glossary
+next: false
+---
+
+What follows is an alphabetized glossary of terms defined in this reference.
+
+Each entry below links to the section where the term is introduced.
+
+<dl>
+  <dt>Action</dt>
+  <dd>A construct specifying something a character can do in the storyworld. See [Actions](10-actions.md).</dd>
+
+  <dt>Action body</dt>
+  <dd>The fields that make up an action definition. See [Action body](10-actions.md#action-body).</dd>
+
+  <dt>Action header</dt>
+  <dd>The portion of an action definition that declares its name, markers, and inheritance. See [Action header](10-actions.md#action-header).</dd>
+
+  <dt>Action name</dt>
+  <dd>The unique identifier for an action definition. See [Action name](10-actions.md#action-name).</dd>
+
+  <dt>Action search</dt>
+  <dd>An expression that searches over a character's memories or the chronicle, optionally filtered by a query. See [Action searches](07-expressions.md#action-searches).</dd>
+
+  <dt>Action targeting</dt>
+  <dd>The runtime process of determining whether an action can be performed. See [Action targeting](20-runtime-model.md#action-targeting).</dd>
+
+  <dt>Adapter</dt>
+  <dd>The interface through which the host application exposes read–write capabilities to the Viv runtime. See [Introduction](01-introduction.md).</dd>
+
+  <dt>Arithmetic expression</dt>
+  <dd>An expression applying a binary arithmetic operator. See [Arithmetic expressions](07-expressions.md#arithmetic-expressions).</dd>
+
+  <dt>Assignment expression</dt>
+  <dd>An expression that modifies a value in the host application. See [Assignment expressions](07-expressions.md#assignments).</dd>
+
+  <dt>Associations</dt>
+  <dd>Per-character tag-like annotations attached to an action memory. See [Associations](10-actions.md#associations).</dd>
+
+  <dt>Binding entry</dt>
+  <dd>A mapping from a role reference to an expression in a bindings block. See [Binding entries](13-bindings.md#binding-entries).</dd>
+
+  <dt>Bindings</dt>
+  <dd>Precast role values supplied to a targeted construct. See [Bindings](13-bindings.md).</dd>
+
+  <dt>Boolean literals</dt>
+  <dd>The values `true` and `false`. See [Booleans](02-lexical-elements.md#booleans).</dd>
+
+  <dt>Casting pool</dt>
+  <dd>The set of candidates from which a role is cast. See [Casting pool](09-roles.md#casting-pool).</dd>
+
+  <dt>Casting-pool directive</dt>
+  <dd>A role field specifying a custom casting pool. See [Casting pool](09-roles.md#casting-pool).</dd>
+
+  <dt>Chance expression</dt>
+  <dd>An expression that evaluates to `true` with a specified probability. See [Chance expressions](07-expressions.md#chance-expressions).</dd>
+
+  <dt>Child action</dt>
+  <dd>An action that inherits from a parent action. See [Inheritance](10-actions.md#inheritance).</dd>
+
+  <dt>Chronicle</dt>
+  <dd>The complete record of all actions performed in a simulation. See [Search domains](07-expressions.md#search-domains).</dd>
+
+  <dt>Comment</dt>
+  <dd>Text introduced with `//` that is ignored by the grammar. See [Comments](02-lexical-elements.md#comments).</dd>
+
+  <dt>Concatenated source</dt>
+  <dd>The result of merging all included files into a single logical source. See [Concatenated source](04-includes.md#concatenated-source).</dd>
+
+  <dt>Conditional</dt>
+  <dd>An `if`/`elif`/`else`/`end` control-flow construct. See [Conditionals](08-statements-and-control-flow.md#conditionals).</dd>
+
+  <dt>Constants</dt>
+  <dd>Tokens with special fixed values. See [Constants](02-lexical-elements.md#constants).</dd>
+
+  <dt>Content bundle</dt>
+  <dd>The compiled JSON artifact consumed by a Viv runtime. See [Compiler output](19-compiler-output.md).</dd>
+
+  <dt>Custom function call</dt>
+  <dd>An invocation of a host-application function via the `~` operator. See [Custom function calls](07-expressions.md#custom-function-calls).</dd>
+
+  <dt>Dehydration</dt>
+  <dd>The conversion of entity data to entity IDs before passing values across boundaries. See [Dehydration](20-runtime-model.md#dehydration).</dd>
+
+  <dt>Embargo</dt>
+  <dd>A declaration constraining the subsequent performance of an action. See [Embargoes](10-actions.md#embargoes).</dd>
+
+  <dt>Entity</dt>
+  <dd>Anything in the storyworld with a persistent identity managed by the host application. See [Entities](05-entities-and-symbols.md#entities).</dd>
+
+  <dt>Entity ID</dt>
+  <dd>A unique string identifier for an entity, provisioned by the host application. See [Entities](05-entities-and-symbols.md#entities).</dd>
+
+  <dt>Entity view</dt>
+  <dd>The data object furnished by the host application for a given entity. See [Entities](05-entities-and-symbols.md#entities).</dd>
+
+  <dt>Enum literal</dt>
+  <dd>An identifier preceded by `#`, representing a named value. See [Enums](02-lexical-elements.md#enums).</dd>
+
+  <dt>Evaluation context</dt>
+  <dd>The set of bindings and state available during expression evaluation. See [Evaluation context](20-runtime-model.md#evaluation-context).</dd>
+
+  <dt>Expression</dt>
+  <dd>A construct that evaluates to a value. See [Expressions](07-expressions.md).</dd>
+
+  <dt>Fail-safe marker</dt>
+  <dd>The `?` token, which causes missing values to yield `null` rather than errors. See [Fail-safe marker](07-expressions.md#fail-safe-marker).</dd>
+
+  <dt>General action</dt>
+  <dd>An action that may be targeted anytime (not reserved). See [Reserved marker](10-actions.md#reserved-marker).</dd>
+
+  <dt>Global condition</dt>
+  <dd>A condition that references no roles and is tested before role casting. See [Condition grouping](21-appendix-a-implementation-notes.md#condition-grouping).</dd>
+
+  <dt>Gloss</dt>
+  <dd>A brief string or template string describing an action instance. See [Gloss](10-actions.md#gloss).</dd>
+
+  <dt>Group role</dt>
+  <dd>A role with a slots maximum greater than one. See [Group roles](09-roles.md#group-roles).</dd>
+
+  <dt>Group-role decorator</dt>
+  <dd>The `*` token appended to a role reference to mark it as a group role. See [Group-role decorator](06-names.md#group-role-decorator).</dd>
+
+  <dt>Hearer (`@hearer`)</dt>
+  <dd>A special role reference bound to the character hearing about an action after the fact, via knowledge relaying. See [Evaluation context](20-runtime-model.md#evaluation-context).</dd>
+
+  <dt>Host application</dt>
+  <dd>The project (typically a videogame) that integrates the Viv runtime. See [Introduction](01-introduction.md).</dd>
+
+  <dt>Identifier</dt>
+  <dd>An author-defined name for a construct, role, or variable. See [Identifiers](02-lexical-elements.md#identifiers).</dd>
+
+  <dt>Include</dt>
+  <dd>A statement that imports constructs from another Viv source file. See [Includes](04-includes.md).</dd>
+
+  <dt>Inheritance</dt>
+  <dd>The mechanism by which a child action incorporates material from a parent action. See [Inheritance](10-actions.md#inheritance).</dd>
+
+  <dt>Inscription</dt>
+  <dd>An expression that records knowledge of an action onto an item. See [Inscriptions](07-expressions.md#inscriptions).</dd>
+
+  <dt>Inspection</dt>
+  <dd>An expression that causes a character to learn about actions inscribed on an item. See [Inspections](07-expressions.md#inspections).</dd>
+
+  <dt>Joinable</dt>
+  <dd>A field that may be merged (rather than overridden) during inheritance. See [Field joinability](10-actions.md#field-joinability).</dd>
+
+  <dt>Keywords</dt>
+  <dd>Tokens with special meaning in the grammar. See [Keywords](02-lexical-elements.md#keywords).</dd>
+
+  <dt>List literal</dt>
+  <dd>An ordered sequence of expressions in brackets. See [Lists](02-lexical-elements.md#lists).</dd>
+
+  <dt>Local variable</dt>
+  <dd>A variable scoped to a single block, prefixed with `_`. See [Local variables](08-statements-and-control-flow.md#local-variables).</dd>
+
+  <dt>Logical expression</dt>
+  <dd>An expression combining tests with `&&` and `||`. See [Logical expressions](07-expressions.md#logical-expressions).</dd>
+
+  <dt>Loop</dt>
+  <dd>A `loop`/`as`/`end` iteration construct. See [Loops](08-statements-and-control-flow.md#loops).</dd>
+
+  <dt>Metadata</dt>
+  <dd>Version and validation data in the content bundle. See [Metadata](19-compiler-output.md#metadata).</dd>
+
+  <dt>Null literal</dt>
+  <dd>The value `null`. See [Null](02-lexical-elements.md#null).</dd>
+
+  <dt>Number literal</dt>
+  <dd>A decimal integer or fraction. See [Numbers](02-lexical-elements.md#numbers).</dd>
+
+  <dt>Numeric criterion</dt>
+  <dd>A threshold test on a numeric value in a query. See [Numeric criteria](15-queries.md#numeric-criteria).</dd>
+
+  <dt>Object literal</dt>
+  <dd>Key–value pairs in a JavaScript-like notation. See [Objects](02-lexical-elements.md#objects).</dd>
+
+  <dt>Operators</dt>
+  <dd>Tokens that perform computations or comparisons. See [Operators](02-lexical-elements.md#operators).</dd>
+
+  <dt>Optional role</dt>
+  <dd>A role with a slots minimum of zero. See [Slots range](09-roles.md#slots-range).</dd>
+
+  <dt>Optional slot</dt>
+  <dd>A slot beyond the minimum that may or may not be filled. See [Slots range](09-roles.md#slots-range).</dd>
+
+  <dt>Orderless</dt>
+  <dd>The property that constructs in a source file have no meaningful order. See [Source units are orderless](03-file-structure.md#source-units-are-orderless).</dd>
+
+  <dt>Parent action</dt>
+  <dd>An action from which a child action inherits. See [Inheritance](10-actions.md#inheritance).</dd>
+
+  <dt>Plan</dt>
+  <dd>A multi-phase sequence of coordinated reactions. See [Plans](17-plans.md).</dd>
+
+  <dt>Plan instruction</dt>
+  <dd>A building block of a plan phase. See [Plan instructions](17-plans.md#plan-instructions).</dd>
+
+  <dt>Plan phase</dt>
+  <dd>A named stage in a plan, prefixed with `>`. See [Phases](17-plans.md#phases).</dd>
+
+  <dt>Positional binding</dt>
+  <dd>A sugared binding matched to roles by position rather than name. See [Positional bindings](13-bindings.md#positional-bindings).</dd>
+
+  <dt>Query</dt>
+  <dd>A pattern for searching over recorded action instances. See [Queries](15-queries.md).</dd>
+
+  <dt>Reaction</dt>
+  <dd>A declaration that queues a construct for future execution. See [Reactions](11-reactions.md).</dd>
+
+  <dt>Reaction window</dt>
+  <dd>A plan construct that groups instructions with a completion policy. See [Reaction windows](17-plans.md#reaction-windows).</dd>
+
+  <dt>Reference</dt>
+  <dd>The primary way to name and access a role binding or variable. See [References](06-names.md#references).</dd>
+
+  <dt>Reference path</dt>
+  <dd>A chain of property, pointer, or lookup accesses extending a reference. See [Reference paths](07-expressions.md#reference-paths).</dd>
+
+  <dt>Relational expression</dt>
+  <dd>An expression comparing two operands. See [Relational operators](07-expressions.md#relational-operators).</dd>
+
+  <dt>Report</dt>
+  <dd>A longer string or template string describing an action instance. See [Report](10-actions.md#report).</dd>
+
+  <dt>Required slot</dt>
+  <dd>A slot that must be filled for targeting to succeed. See [Slots range](09-roles.md#slots-range).</dd>
+
+  <dt>Reserved action</dt>
+  <dd>An action that may only be targeted via a reaction or selector. See [Reserved marker](10-actions.md#reserved-marker).</dd>
+
+  <dt>Reserved word</dt>
+  <dd>A keyword that cannot be used as an identifier. See [Identifiers](02-lexical-elements.md#identifiers).</dd>
+
+  <dt>Role</dt>
+  <dd>A slot in the cast of a construct, filled with an entity or symbol at runtime. See [Roles](09-roles.md).</dd>
+
+  <dt>Role body</dt>
+  <dd>The fields that make up a role definition. See [Role body](09-roles.md#role-body).</dd>
+
+  <dt>Role label</dt>
+  <dd>A keyword specifying a role's entity type and casting behavior. See [Labels](09-roles.md#labels).</dd>
+
+  <dt>Role reference</dt>
+  <dd>A sigil-prefixed identifier naming a role. See [Role reference](09-roles.md#role-reference).</dd>
+
+  <dt>Role-dependency forest</dt>
+  <dd>A tree structure governing the order in which roles are cast. See [Role dependency trees](21-appendix-a-implementation-notes.md#role-dependency-trees).</dd>
+
+  <dt>Salience</dt>
+  <dd>A per-character numeric score representing how memorable an action is. See [Saliences](10-actions.md#saliences).</dd>
+
+  <dt>Scope sigil</dt>
+  <dd>A sigil (`$` or `_`) indicating storage scope. See [Scope sigils](06-names.md#scope-sigils).</dd>
+
+  <dt>Scratch variable</dt>
+  <dd>A temporary variable scoped to an action definition, prefixed with `$`. See [Scratch](10-actions.md#scratch).</dd>
+
+  <dt>Search domain</dt>
+  <dd>The collection of action instances to search over. See [Search domains](07-expressions.md#search-domains).</dd>
+
+  <dt>Selector</dt>
+  <dd>A construct specifying a set of candidates and a policy for choosing among them. See [Selectors](18-selectors.md).</dd>
+
+  <dt>Set predicate</dt>
+  <dd>A test on the relationship between an actual set and a specified set. See [Set predicates](15-queries.md#set-predicates).</dd>
+
+  <dt>Sifting expression</dt>
+  <dd>An expression that invokes a sifting pattern. See [Sifting expressions](07-expressions.md#sifting-expressions).</dd>
+
+  <dt>Sifting pattern</dt>
+  <dd>A pattern describing a causally related sequence of actions. See [Sifting patterns](16-sifting-patterns.md).</dd>
+
+  <dt>Sigil</dt>
+  <dd>A single-character token prefixing a name to indicate type or scope. See [Sigils](02-lexical-elements.md#sigils).</dd>
+
+  <dt>Slots</dt>
+  <dd>Parameters controlling how many entities fill a role. See [Slots](09-roles.md#slots).</dd>
+
+  <dt>Spawn directive</dt>
+  <dd>A role field specifying an adapter function to construct a new entity. See [Spawn directive](09-roles.md#spawn-directive).</dd>
+
+  <dt>Statement</dt>
+  <dd>A conditional, loop, reaction, or expression. See [Statements](08-statements-and-control-flow.md).</dd>
+
+  <dt>Story sifting</dt>
+  <dd>The detection of emergent storylines via sifting patterns. See [Sifting patterns](16-sifting-patterns.md).</dd>
+
+  <dt>String literal</dt>
+  <dd>A quoted string value. See [Strings](02-lexical-elements.md#strings).</dd>
+
+  <dt>Sugared bindings</dt>
+  <dd>Compact inline bindings enclosed in angle brackets. See [Sugared bindings](13-bindings.md#sugared-bindings).</dd>
+
+  <dt>Symbol</dt>
+  <dd>A value that does not correspond to a host-application entity. See [Symbols](05-entities-and-symbols.md#symbols).</dd>
+
+  <dt>Target</dt>
+  <dd>The file path specified in an include statement. See [Targets](04-includes.md#targets).</dd>
+
+  <dt>Target group</dt>
+  <dd>The set of candidates and selection policy in a selector. See [Target group](18-selectors.md#target-group).</dd>
+
+  <dt>Target policy</dt>
+  <dd>The strategy for choosing among selector candidates. See [Target policies](18-selectors.md#target-policies).</dd>
+
+  <dt>Template action</dt>
+  <dd>An action intended solely for inheritance, excluded from the content bundle. See [Template marker](10-actions.md#template-marker).</dd>
+
+  <dt>Template gap</dt>
+  <dd>An interpolation point in a template string. See [Template strings](02-lexical-elements.md#template-strings).</dd>
+
+  <dt>Template string</dt>
+  <dd>A string with interpolated expressions. See [Template strings](02-lexical-elements.md#template-strings).</dd>
+
+  <dt>Temporal constraint</dt>
+  <dd>A restriction on when a reaction or query match is valid. See [Temporal constraints](12-temporal-constraints.md).</dd>
+
+  <dt>This (`@this`)</dt>
+  <dd>A special reference to the action instance currently being executed. See [Evaluation context](20-runtime-model.md#evaluation-context).</dd>
+
+  <dt>Time period</dt>
+  <dd>A duration comprising a quantity and a unit. See [Time periods](12-temporal-constraints.md#time-periods).</dd>
+
+  <dt>Time-frame anchor</dt>
+  <dd>The reference point for a time-frame constraint. See [Time-frame anchors](12-temporal-constraints.md#time-frame-anchors).</dd>
+
+  <dt>Time-frame constraint</dt>
+  <dd>A temporal constraint specifying a window relative to an anchor. See [Time-frame constraints](12-temporal-constraints.md#time-frame-constraints).</dd>
+
+  <dt>Time-of-day constraint</dt>
+  <dd>A temporal constraint specifying clock-time boundaries. See [Time-of-day constraints](12-temporal-constraints.md#time-of-day-constraints).</dd>
+
+  <dt>Token</dt>
+  <dd>The smallest unit of meaning recognized by the grammar. See [Tokens](02-lexical-elements.md#tokens).</dd>
+
+  <dt>Trope</dt>
+  <dd>A relational pattern among entities that can be tested at runtime. See [Tropes](14-tropes.md).</dd>
+
+  <dt>Trope fit</dt>
+  <dd>An expression testing whether a trope matches for given bindings. See [Trope fits](07-expressions.md#trope-fits).</dd>
+
+  <dt>Type sigil</dt>
+  <dd>A sigil (`@` or `&`) indicating entity or symbol type. See [Type sigils](06-names.md#type-sigils).</dd>
+
+  <dt>Wait instruction</dt>
+  <dd>A plan instruction that pauses execution for a duration. See [Wait](17-plans.md#wait).</dd>
+</dl>

@@ -8,10 +8,11 @@ export const collections = {
             base: ".",
             pattern: [
                 "index.mdx",
-                "quickstart/quickstart.md",
-                "introduction/overview.md",
+                "quickstart/quickstart.{md,mdx}",
+                "introduction/overview.{md,mdx}",
                 "introduction/example.md",
-                "reference/language/*.md",
+                "reference/language/*.{md,mdx}",
+                "reference/compiler/**/*.{md,mdx}",
                 "background/history-of-viv.md",
             ],
             generateId: ({ entry }) => {
@@ -20,6 +21,7 @@ export const collections = {
                     "quickstart/quickstart": "quickstart",
                     "introduction/overview": "introduction",
                     "introduction/example": "introduction/example",
+                    "reference/compiler/index": "reference/compiler",
                 };
                 return slugMap[id] ?? id;
             },

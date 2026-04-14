@@ -98,21 +98,16 @@ These markers are described at length in a [dedicated chapter](06-names.md), but
 
 The following *operators*, each detailed elsewhere, are treated as tokens:
 
-* Arithmetic operators: `+`, `-`, `*`, `/`.
-
-* Relational operators: `==`, `!=`, `<`, `<=`, `>`, `>=`, `in`, `knows`, `caused`, `triggered`, `preceded`.
-
-* Assignment operators: `=`, `+=`, `-=`, `*=`, `/=`, `append`, `remove`.
-
-* Logical operators: `!`, `&&`, `||`.
-
-* Reference operators: `.`, `->`, `[`, `]`, `?`.
-
-* Custom function call operators: `~`.
-
-* Probabilistic casting operators: `%`, `~`.
-
-* Inscribed-knowledge operators: `inscribe`, `inspect`.
+| Category              | Operators |
+|-----------------------|-----------|
+| Arithmetic            | `+`, `-`, `*`, `/` |
+| Relational            | `==`, `!=`, `<`, `<=`, `>`, `>=`, `in`, `knows`, `caused`, `triggered`, `preceded` |
+| Assignment            | `=`, `+=`, `-=`, `*=`, `/=`, `append`, `remove` |
+| Logical               | `!`, `&&`, `\|\|` |
+| Reference             | `.`, `->`, `[`, `]`, `?` |
+| Custom function call  | `~` |
+| Probabilistic casting | `%`, `~` |
+| Inscription           | `inscribe`, `inspect` |
 
 Note that certain symbols correspond to multiple operators, either because they function as distinct operators in different contexts (e.g., `*`, `~`) or because they happen to occur in multi-symbol operators (e.g., `-` vis-à-vis `-=` and `->`).
 

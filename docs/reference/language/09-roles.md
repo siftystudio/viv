@@ -123,11 +123,11 @@ For character roles in [actions](10-actions.md), a *participation-mode label* sp
 
 *Modifier labels* alter casting behavior. See [combining labels](#combining-labels) for which combinations are valid.
 
-| Label | Meaning |
-|-------|---------|
-| `anywhere` | The entity cast in this role does not need to be physically present at the action's location. Note that the entity *can* still be present; authors [SHOULD](01-introduction.md#normative-language) write [conditions](10-actions.md#conditions) to enforce absence if needed. |
+| Label | Meaning                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|-------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `anywhere` | The entity cast in this role does not need to be physically present at the action's location. Note that the entity *can* still be present, but cannot be cast in another role (e.g., a `bystander` role). Authors [SHOULD](01-introduction.md#normative-language) write [conditions](10-actions.md#conditions) to enforce absence if needed.                                                                                                                    |
 | `precast` | The role must be precast (bound in advance) and is never cast through typical role casting. For actions, a role can be precast via a [reaction](11-reactions.md) that targets the action. If an action or [action selector](18-selectors.md) has a non-initiator precast role, it [MUST](01-introduction.md#normative-language) be marked [`reserved`](10-actions.md#reserved-marker). Note that the compiler automatically marks `initiator` roles as precast. |
-| `spawn` | The entity cast in this role is to be constructed as a result of the action. Spawn roles are always accompanied by a [spawn directive](#spawn-directive). |
+| `spawn` | The entity cast in this role is to be constructed as a result of the action. Spawn roles are always accompanied by a [spawn directive](#spawn-directive).                                                                                                                                                                                                                                                                                                       |
 
 ### Combining labels
 
@@ -181,7 +181,7 @@ The [action manager](20-runtime-model.md) will attempt to fill as many slots as 
 
 For a role whose maximum is greater than its minimum, the first `min` slots are *required slots*, while the rest are *optional slots*. If the minimum is `0`, the role is an *optional role*—one that does not need to be cast for action targeting to succeed. The maximum [MUST](01-introduction.md#normative-language) be greater than zero, and it MUST be equal to or greater than the minimum.
 
-```viv
+```viv del={16-19,21-24}
 action foo:
     roles:
         @hero:
@@ -240,7 +240,7 @@ Optionally, an author can specify the probability that a qualifying candidate wi
 
 This is only permitted for roles with optional slots—that is, where the maximum is greater than the minimum:
 
-```viv
+```viv del={1-4}
 // Illegal: role must have optional slots
 @fixed:
     as: bystander
@@ -413,7 +413,7 @@ action rally:
 
 The `*` decorator [MUST](01-introduction.md#normative-language) appear in the [declaration](06-names.md#declarations) of any role whose [slots](#slots) maximum exceeds one, and it [MUST](01-introduction.md#normative-language) also appear in every subsequent [reference](06-names.md#references) to that role. Conversely, using `*` on a [singleton role](#singleton-roles) is an error:
 
-```viv
+```viv del={1-4,6-8}
 // Illegal: max > 1 but decorator is missing
 @followers:
     as: partner
@@ -432,12 +432,14 @@ loop @friends* as _@friend:
 end
 ```
 
-Note that [template strings](02-lexical-elements.md#template-strings) are an exception to this rule:
+:::note
+[Template strings](02-lexical-elements.md#template-strings) are an exception to this rule:
 
 ```viv
 // @allies* will be expanded into a comma-separated list of entity labels
 "@instigator rallies @allies* against @target."
 ```
+:::
 
 ## Role constraints
 

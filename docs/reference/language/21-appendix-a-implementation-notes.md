@@ -2,7 +2,7 @@
 title: "Appendix A: Implementation notes"
 ---
 
-This appendix documents implementation details of the Viv compiler and runtime that are relevant to authors and implementors but are not part of the language specification proper.
+This appendix documents implementation details of the [Viv compiler](/reference/compiler/) and runtime that are relevant to authors and implementors but are not part of the language specification proper.
 
 ## Role dependency trees
 

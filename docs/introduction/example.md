@@ -1,8 +1,8 @@
 ---
-title: "Example: A Revenge Story"
+title: "Tour: A Revenge Story"
 ---
 
-This walkthrough provides an extensive working example of writing Viv code and invoking the Viv runtime. We'll follow an author named Alice as she writes the Viv constructs needed for *revenge arcs* to appear in her game—and then watch what happens when they do emerge.
+This tour provides an extensive working example of writing Viv code and invoking the Viv runtime. We'll follow an author named Alice as she writes the Viv constructs needed for *revenge arcs* to appear in her game—and then watch what happens when they do emerge.
 
 Along the way, we'll encounter actions, queries, tropes, selectors, plans, sifting patterns, knowledge propagation, item inscription, and causal bookkeeping. If you haven't already, you may want to read the [introduction](/introduction/) first for a high-level overview of these features. And once you're ready, you can consult the [language reference](/reference/language/00-preamble/) for more details on any language construct and the [JavaScript runtime reference](/reference/runtimes/js/) for information on the API functions invoked below.
 

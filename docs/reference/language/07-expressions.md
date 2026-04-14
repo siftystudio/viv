@@ -75,7 +75,9 @@ The negation operator `!` inverts the truthiness of an expression:
 !(@person.best_friend == @target)
 ```
 
+:::caution
 Only a single `!` may be applied. For instance, `!!@person.dead` yields a parse error. (`!(!@person.dead)` does not, however.)
+:::
 
 ## Literals
 
@@ -321,7 +323,11 @@ A *relational expression* compares two operands using one of the following opera
 | `>` | Greater than |
 | `>=` | Greater than or equal to |
 
-### `in`
+### Special comparison
+
+The additional relational operators each merit a bit more detail.
+
+#### `in`
 
 The `in` operator tests whether the left operand is contained in the right operand (typically a list or collection):
 
@@ -329,7 +335,7 @@ The `in` operator tests whether the left operand is contained in the right opera
 @person in @group.members
 ```
 
-### `knows`
+#### `knows`
 
 The `knows` operator tests whether a character (left operand) has a memory of a given action (right operand). It returns `true` if the character's memories include the action, and `false` otherwise:
 
@@ -337,7 +343,7 @@ The `knows` operator tests whether a character (left operand) has a memory of a 
 @person knows @betrayal_action
 ```
 
-### `caused`
+#### `caused`
 
 The `caused` operator tests whether an action (left operand) is a causal ancestor of another action (right operand)—that is, whether the left action directly or transitively led to the right action:
 
@@ -345,7 +351,7 @@ The `caused` operator tests whether an action (left operand) is a causal ancesto
 @insult caused @retaliation
 ```
 
-### `triggered`
+#### `triggered`
 
 The `triggered` operator tests whether an action (left operand) is a direct cause of another action (right operand)—that is, whether the right action's immediate causes include the left action:
 
@@ -353,9 +359,11 @@ The `triggered` operator tests whether an action (left operand) is a direct caus
 @insult triggered @retaliation
 ```
 
+:::note
 The distinction between `caused` and `triggered` is one of directness: `caused` tests transitive ancestry, while `triggered` tests immediate parentage.
+:::
 
-### `preceded`
+#### `preceded`
 
 The `preceded` operator tests whether an action (left operand) occurred before another action (right operand). If both actions have the same timestamp, the left is deemed to have preceded the right if and only if the right is not a causal ancestor of the left:
 

@@ -1,6 +1,8 @@
 ---
 title: Python API
 description: Reference for the Viv compiler's Python API — compile_from_path(), compile_from_string(), and the exception types.
+tableOfContents:
+  maxHeadingLevel: 3
 ---
 
 In addition to the [command-line interface](/reference/compiler/cli/) and the [editor plugins](/reference/compiler/#editor-plugins), Viv ships a Python API to its compiler. Once you've [installed](/reference/compiler/#installation) the compiler, its Python API can be accessed by importing `viv_compiler` into your project, as seen in the [usage examples](#examples) below.

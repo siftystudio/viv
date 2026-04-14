@@ -16,17 +16,21 @@ Each entity has a unique identifier called an *entity ID*, which is a string pro
 
 ## Entity types
 
-There are four entity types in Viv:
+There are four entity types in Viv: *characters*, *items*, *locations*, and *actions*. [Roles](09-roles.md) and [variables](06-names.md) binding entity values are prefixed with the [entity sigil](06-names.md#type-sigils) `@`.
 
-* **Characters.** Characters initiate actions, participate in them in other ways, and witness events as bystanders. They also form [memories](20-runtime-model.md#knowledge-manager) when they experience or otherwise learn about actions, which can be searched via [queries](15-queries.md) and [sifting patterns](16-sifting-patterns.md). The Viv runtime [assumes](20-runtime-model.md#assumptions) that each character is in a discrete storyworld location at any given point.
+<dl>
+  <dt>Characters</dt>
+  <dd>Characters initiate actions, participate in them in other ways, and witness events as bystanders. They also form [memories](20-runtime-model.md#knowledge-manager) when they experience or otherwise learn about actions, which can be searched via [queries](15-queries.md) and [sifting patterns](16-sifting-patterns.md). The Viv runtime [assumes](20-runtime-model.md#assumptions) that each character is in a discrete storyworld location at any given point.</dd>
 
-* **Items.** Items are inanimate objects in the storyworld that characters can involve in actions. While the exact sense of 'item' depends on the [host application](20-runtime-model.md#host-application), items do not take action or form memories. [Knowledge](20-runtime-model.md#knowledge-manager) about past actions can be [inscribed](07-expressions.md#inscriptions) onto items and later revealed to characters via [inspection](07-expressions.md#inspections). As with characters, the Viv runtime [assumes](20-runtime-model.md#assumptions) that each item is in a discrete storyworld location at any given point.
+  <dt>Items</dt>
+  <dd>Items are inanimate objects in the storyworld that characters can involve in actions. While the exact sense of 'item' depends on the [host application](20-runtime-model.md#host-application), items do not take action or form memories. [Knowledge](20-runtime-model.md#knowledge-manager) about past actions can be [inscribed](07-expressions.md#inscriptions) onto items and later revealed to characters via [inspection](07-expressions.md#inspections). As with characters, the Viv runtime [assumes](20-runtime-model.md#assumptions) that each item is in a discrete storyworld location at any given point.</dd>
 
-* **Locations.** Locations are discrete storyworld locales that characters can involve in actions. They are also the places where characters and items may be located.
+  <dt>Locations</dt>
+  <dd>Locations are discrete storyworld locales that characters can involve in actions. They are also the places where characters and items may be located.</dd>
 
-* **Actions.** Past actions are themselves entities to which subsequent actions can refer. Critically, the Viv runtime tracks [causal relations](20-runtime-model.md#causal-bookkeeping) between actions, which enables [story sifting](16-sifting-patterns.md).
-
-[Roles](09-roles.md) and [variables](06-names.md) binding entity values are prefixed with the [entity sigil](06-names.md#type-sigils) `@`.
+  <dt>Actions</dt>
+  <dd>Past actions are themselves entities to which subsequent actions can refer. Critically, the Viv runtime tracks [causal relations](20-runtime-model.md#causal-bookkeeping) between actions, which enables [story sifting](16-sifting-patterns.md).</dd>
+</dl>
 
 ## Symbols
 

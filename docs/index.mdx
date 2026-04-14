@@ -1,5 +1,8 @@
 ---
-title: Home
+title: Viv
+head:
+  - tag: title
+    content: Viv
 template: splash
 hero:
   title: Viv
@@ -34,37 +37,37 @@ import Card from './src/components/IconLinkCard.astro';
 ## Overview
 
 <CardGrid>
-  <Card title="Emergent Narrative" icon="compass" description="You put characters in your game, and Viv makes the magic happen. Stories emerge according to your authored Viv code." />
-  <Card title="Story Sifting" icon="compass" description="Viv detects emergent storylines as they develop, allowing your game to understand—and surface—the narrative that happens to happen in a given playthrough." />
-  <Card title="Source-Available" icon="compass" description="Anyone can view the full codebase on GitHub. Non-commercial use is freely permitted, while commercial use requires a license from Sifty, the studio behind Viv." />
-  <Card title="A Labor of Love" icon="compass" description="Viv is designed, built, and maintained by me, James Ryan. It's based on my PhD work at UC Santa Cruz—and thousands of hours of follow-on work in industry contexts." />
+  <Card title="Emergent Narrative" icon="layers" description="You write Viv code, put characters in your game (or other simulation), and Viv makes the magic happen. Stories emerge according to what you authored." />
+  <Card title="Story Sifting" icon="funnel" description="Viv detects emergent storylines as they develop, allowing your game to understand—and surface—the narrative that happens to happen in a given playthrough." />
+  <Card title="Source-Available" icon="code" description="Anyone can view the full codebase on GitHub. Non-commercial use is freely permitted, while commercial use requires a license from Sifty, the studio behind Viv." />
+  <Card title="A Labor of Love" icon="heart" description="Viv is designed, built, and maintained by me, James Ryan. It's based on my PhD work at UC Santa Cruz—and thousands of hours of follow-on work in industry contexts." />
 </CardGrid>
 
 ## Features
 
 <CardGrid>
-  <Card title="Actions & Reactions" icon="color-palette" description="Characters perform actions, and actions trigger reactions, growing emergent storylines through causal connections." />
-  <Card title="Knowledge Propagation" icon="color-palette" description="Characters remember actions. This knowledge can then be spread via subsequent actions and item inscriptions—and characters react to what they learn." />
-  <Card title="Plans" icon="color-palette" description="Write tiny programs that queue reactions over diegetic spans ranging from a single timestep to an entire century or more." />
-  <Card title="Story Sifting" icon="color-palette" description="Author queries and higher-order patterns that match actions and full-fledged emergent storylines. Then run them over all historical actions—or a character's memories." />
-  <Card title="Causal Bookkeeping" icon="color-palette" description="The system records causal links between actions as they occur, making the full causal graph a given for story sifting." />
-  <Card title="Authorial Control" icon="color-palette" description="Viv is a symbolic AI system, with no LLMs in the loop at runtime. Behavior is fully specified by your authored Viv code, making the system highly controllable." />
+  <Card title="Actions & Reactions" icon="flash" description="Characters perform actions, and actions trigger reactions, growing emergent storylines through causal connections." />
+  <Card title="Knowledge Propagation" icon="bulb" description="Characters remember actions. This knowledge can then be spread via subsequent actions and item inscriptions—and characters react to what they learn." />
+  <Card title="Plans" icon="calendar" description="Write tiny programs that queue reactions over diegetic spans ranging from a single timestep to an entire century or more." />
+  <Card title="Queries & Sifting Patterns" icon="search" description="Author queries and higher-order patterns that match actions and full-fledged emergent storylines. Then run them over historical actions—or a character's memories." />
+  <Card title="Causal Bookkeeping" icon="link" description="The system automatically records causal links between actions as they occur, under the operational semantics of the language, making the full causal graph a given for story sifting." />
+  <Card title="Authorial Control" icon="options-2" description="Viv is a symbolic AI system, with no LLMs in the loop at runtime. Behavior is fully specified by your authored Viv code, making the system highly controllable." />
 </CardGrid>
 
 ## Usage
 
 <CardGrid>
-  <Card title="Write Viv Code" icon="brush" description="Write code in the Viv language, using the plugin for your preferred IDE or lightweight code editor." />
-  <Card title="Compile Viv Code" icon="brush" description="Compile your code into a content bundle by invoking the Viv compiler—without leaving your IDE." />
-  <Card title="Plug Into Your Project" icon="brush" description="Create a Viv adapter that connects the Viv runtime to your host application, enabling Viv to read and write your sim data." />
-  <Card title="Run Viv Code" icon="brush" description="Invoke the Viv runtime to act on your content bundle for action selection, plan execution, story sifting, and more." />
+  <Card title="Write Viv Code" icon="edit-2" description="Write code in the Viv language, using the plugin for your preferred IDE or lightweight code editor." />
+  <Card title="Compile Viv Code" icon="cube" description="Compile your code into a content bundle by invoking the Viv compiler—without leaving your IDE." />
+  <Card title="Plug Into Your Project" icon="puzzle-piece" description="Create a Viv adapter that connects the Viv runtime to your host application, enabling Viv to read and write your sim data." />
+  <Card title="Run Viv Code" icon="play-circle" description="Invoke the Viv runtime to act on your content bundle for action selection, plan execution, story sifting, and more." />
 </CardGrid>
 
 ## Simple Example
 
 Here's a simple, yet potent, Viv action that shows off a bit of the syntax.
 
-This action is performed by a character who searches over their own memories to find evidence of another character repeatedly mistreating them. If there exists such a character, given the memories of the one at hand, then the initiator of this action will lower their affinity toward that person and may even plot revenge as a result.
+This action is initiated by a character who searches over their own memories to find evidence of another character repeatedly mistreating them, and it can only be performed if such memories exist. As a result of the action, the initiator will lower their affinity toward the character in question—and may even plot revenge as a result.
 
 ```viv
 // A character processes their repeated mistreatment by another character
@@ -74,7 +77,7 @@ action contemplate-mistreatment:
             as: initiator
         @subject:
             as: character, anywhere  // Not physically present
-        @history*:  // 3-5 past actions fitting the bill
+        @mistreatments*:  // 3-5 past actions where @subject harmed @thinker
             as: action
             n: 3-5
             from:
@@ -95,9 +98,9 @@ action contemplate-mistreatment:
         end
 ```
 
-Should the queued `plot-revenge` plan be carried out, the instance of `contemplate-mistreatment` that triggered it will be marked as a cause of its component actions. Moreover, the `@history*` actions matched by the `harm` query will each be recorded as direct causes of the `contemplate-mistreatment` instance. Further, those actions will likely have their *own* causal ancestries, and the eventual `plot-revenge` actions will no doubt cause further actions in turn.
+As these events unfold, Viv will work behind the scenes to automatically track all the causal threads: the `@mistreatments*` actions → `contemplate-mistreatment` → the `plot-revenge` actions. This happens automatically behind the scenes, via Viv's mechanism for *causal bookkeeping*. Later on, the emergent storylines embedded in this graph can easily be detected via Viv's facilities for story sifting.
 
-As these events unfold, Viv will work behind the scenes to automatically track all the causal through lines, via its mechanism for *causal bookkeeping*. Later on, the emergent storylines embedded in this graph can easily be detected via Viv's facilities for story sifting. All the while, the Viv author has not been tasked with explicitly marking these links—they simply wrote down what kinds of past actions might lead someone to perform `contemplate-mistreatment`, and what kinds of follow-on actions might happen as a result of its performance.
+All the while, the Viv author has not been tasked with explicitly marking these links—they simply wrote down what kinds of past actions might lead someone to perform `contemplate-mistreatment`, and what kinds of follow-on actions might happen as a result of its performance.
 
 For a more extensive example of Viv code, see the working example [here](/introduction/example/).
 
@@ -105,8 +108,8 @@ For a more extensive example of Viv code, see the working example [here](/introd
 
 <CardGrid>
   <Card title="Quickstart" description="Get up and running in no time." icon="open-book" href="/introduction/" />
-  <Card title="Introduction" description="Features, design philosophy, and an extensive working example." icon="open-book" href="/introduction/" />
-  <Card title="Example: A Revenge Story" description="A whirlwind tour of the Viv language, from gossip notes to arson to knowledge-propagating monuments." icon="open-book" href="/introduction/example/" />
+  <Card title="Introduction" description="Features, design philosophy, and an extensive tour." icon="open-book" href="/introduction/" />
+  <Card title="Tour: A Revenge Story" description="A whirlwind tour of the Viv language, from gossip notes to arson to knowledge-propagating monuments." icon="open-book" href="/introduction/example/" />
   <Card title="A Brief History" description="A brief account of the Viv project and its origins." icon="open-book" href="/background/history-of-viv/" />
   <Card title="Language Reference" description="A complete specification of the Viv language." icon="open-book" href="/reference/language/00-preamble/" />
   <Card title="JavaScript Runtime API" description="Reference for the Viv JavaScript runtime system." icon="open-book" href="/reference/runtimes/js/" />
