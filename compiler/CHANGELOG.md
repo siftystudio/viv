@@ -4,7 +4,7 @@ All notable changes to the Viv compiler (`viv-compiler`) will be documented in t
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.11.1]
+## [0.11.1] – 2026-04-14
 
 ### Added
 
