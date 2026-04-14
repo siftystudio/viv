@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * `viv-plugin-explore-monorepo grep` silently treated unsupported flags (e.g. `-l`) as the search pattern, scanning the wrong directory for the wrong string.
 * Reading monorepo files silently tried to parse unsupported flags like `--offset` as positional line-number arguments, producing misleading "Invalid start line" errors.
+* The test suite's `SKILL.md` frontmatter validator accepted unquoted values containing `": "` and values starting with YAML reserved characters.
 
 
 ## [0.10.0] – 2026-04-10

@@ -752,15 +752,12 @@ check_get_plugin_file_case_statement_complete() {
 }
 
 
-# Verify SKILL.md frontmatter parses as valid YAML
-check_skill_frontmatter_yaml_valid() {
-    local label="SKILL.md frontmatter is valid YAML"
-    local errors=()
-    for skill_file in "$SKILLS_DIR"/*/SKILL.md; do
-        local skill_name
-        skill_name=$(basename "$(dirname "$skill_file")")
-        local result
-        result=$(SKILL_FILE="$skill_file" python3 <<'PY' 2>&1
+# Helper: validate a SKILL.md frontmatter block using stdlib-only Python.
+# Prints errors to stdout and exits non-zero on failure. Shared by both the
+# main frontmatter check and the validator self-test, so they stay in lockstep.
+_validate_skill_frontmatter() {
+    local file="$1"
+    SKILL_FILE="$file" python3 <<'PY' 2>&1
 import os
 import sys
 text = open(os.environ['SKILL_FILE']).read()
@@ -772,9 +769,10 @@ if end == -1:
     print('unclosed frontmatter')
     sys.exit(1)
 fm = text[3:end]
-# Pure-stdlib YAML validation: parse line-by-line, check that each non-blank
-# line is `key: value` with balanced quotes. Sufficient for the simple
-# frontmatter we use (no nested structures, no multiline values).
+# Pure-stdlib YAML validation: parse line-by-line, check each non-blank line
+# is `key: value` with balanced quotes and no ambiguities that strict YAML
+# parsers reject. Sufficient for the simple frontmatter we use (no nested
+# structures, no multiline values).
 for lineno, line in enumerate(fm.splitlines(), start=1):
     stripped = line.strip()
     if not stripped or stripped.startswith('#'):
@@ -787,19 +785,240 @@ for lineno, line in enumerate(fm.splitlines(), start=1):
         print(f'line {lineno}: empty key')
         sys.exit(1)
     value = value.strip()
-    # Check balanced quotes if the value starts with one
-    if value.startswith('"') and not (len(value) >= 2 and value.endswith('"')):
-        print(f'line {lineno}: unbalanced double quote')
-        sys.exit(1)
-    if value.startswith("'") and not (len(value) >= 2 and value.endswith("'")):
-        print(f'line {lineno}: unbalanced single quote')
-        sys.exit(1)
+    if value.startswith('"'):
+        if not (len(value) >= 2 and value.endswith('"')):
+            print(f'line {lineno}: unbalanced double quote')
+            sys.exit(1)
+    elif value.startswith("'"):
+        if not (len(value) >= 2 and value.endswith("'")):
+            print(f'line {lineno}: unbalanced single quote')
+            sys.exit(1)
+    elif value:
+        # Unquoted non-empty value: reject YAML ambiguities that strict
+        # parsers would reject.
+        #
+        # YAML reserved starting characters -- flow indicators, block
+        # scalar indicators, tag/alias/anchor markers, directive chars.
+        # Checked first so flow-style values get a more accurate diagnosis
+        # than the ": " check below (e.g., `{foo: bar}` is primarily a
+        # reserved-char issue, not a colon-space ambiguity).
+        if value[0] in '{}[]|>*&!?%@`':
+            print(f'line {lineno}: unquoted value starts with reserved character {value[0]!r} -- quote the value')
+            sys.exit(1)
+        # ": " in an unquoted value is ambiguous -- a strict parser may
+        # interpret the rest as a nested key/value pair. Real bug hit
+        # 2026-04-14: a description containing "Default flow: check ..."
+        # tripped an IDE YAML parser. Quoting the value resolves it.
+        if ': ' in value:
+            print(f'line {lineno}: unquoted value contains ": " -- quote the value to disambiguate')
+            sys.exit(1)
 PY
-)
+}
+
+
+# Verify SKILL.md frontmatter parses as valid YAML
+check_skill_frontmatter_yaml_valid() {
+    local label="SKILL.md frontmatter is valid YAML"
+    local errors=()
+    for skill_file in "$SKILLS_DIR"/*/SKILL.md; do
+        local skill_name
+        skill_name=$(basename "$(dirname "$skill_file")")
+        local result
+        result=$(_validate_skill_frontmatter "$skill_file")
         if [ -n "$result" ]; then
             errors+=("$skill_name: $result")
         fi
     done
+    if [ ${#errors[@]} -gt 0 ]; then
+        fail "$label" "$(printf '%s; ' "${errors[@]}")"
+    else
+        pass "$label"
+    fi
+}
+
+
+# Exercise the frontmatter validator itself against known-bad and known-good
+# fixture inputs, to ensure it rejects real YAML ambiguities (like unquoted
+# values with ": ") and doesn't false-positive on legitimate frontmatter.
+check_skill_frontmatter_validator_self_test() {
+    local label="frontmatter validator self-test"
+    local errors=()
+    local tmpdir
+    tmpdir=$(mktemp -d)
+    local test_file="$tmpdir/SKILL.md"
+
+    # Assert the validator rejects a fixture and the error contains a substring.
+    _assert_rejects() {
+        local name="$1"
+        local content="$2"
+        local expected="$3"
+        printf '%s' "$content" > "$test_file"
+        local output
+        output=$(_validate_skill_frontmatter "$test_file")
+        if [ -z "$output" ]; then
+            errors+=("$name: expected rejection but validator accepted")
+        elif ! echo "$output" | grep -qF "$expected"; then
+            errors+=("$name: expected error containing '$expected', got: $output")
+        fi
+    }
+
+    # Assert the validator accepts a fixture with no errors.
+    _assert_accepts() {
+        local name="$1"
+        local content="$2"
+        printf '%s' "$content" > "$test_file"
+        local output
+        output=$(_validate_skill_frontmatter "$test_file")
+        if [ -n "$output" ]; then
+            errors+=("$name: expected acceptance, got: $output")
+        fi
+    }
+
+    # --- Known-bad fixtures ---
+
+    # The exact case we hit this session: an unquoted description containing
+    # ": " trips strict YAML parsers.
+    _assert_rejects "unquoted_colon_space" \
+'---
+name: test
+description: Sync the install. Default flow: check for newer versions.
+---
+body' \
+        'contains'
+
+    # Flow-style list indicator as start of unquoted value.
+    _assert_rejects "unquoted_flow_list" \
+'---
+name: test
+description: [foo, bar]
+---
+body' \
+        'reserved'
+
+    # Flow-style mapping indicator as start of unquoted value.
+    _assert_rejects "unquoted_flow_map" \
+'---
+name: test
+description: {foo: bar}
+---
+body' \
+        'reserved'
+
+    # Block scalar indicator as start of unquoted value.
+    _assert_rejects "unquoted_block_scalar" \
+'---
+name: test
+description: | multiline-ish
+---
+body' \
+        'reserved'
+
+    # Unbalanced double quote on a quoted value.
+    _assert_rejects "unbalanced_double_quote" \
+'---
+name: test
+description: "never closed
+---
+body' \
+        'unbalanced double quote'
+
+    # Unbalanced single quote on a quoted value.
+    _assert_rejects "unbalanced_single_quote" \
+"---
+name: test
+description: 'never closed
+---
+body" \
+        'unbalanced single quote'
+
+    # No frontmatter at all.
+    _assert_rejects "no_frontmatter" \
+'just body text, no frontmatter block' \
+        'no frontmatter'
+
+    # Frontmatter opens but never closes.
+    _assert_rejects "unclosed_frontmatter" \
+'---
+name: test
+description: something' \
+        'unclosed'
+
+    # Key line missing its colon.
+    _assert_rejects "missing_colon" \
+'---
+name test
+description: value
+---
+body' \
+        'missing colon'
+
+    # Line starts with a colon -- empty key.
+    _assert_rejects "empty_key" \
+'---
+: orphan value
+---
+body' \
+        'empty key'
+
+    # --- Known-good fixtures ---
+
+    # Simple unquoted prose, no colons.
+    _assert_accepts "simple_prose" \
+'---
+name: test
+description: A simple description without embedded colons.
+---
+body'
+
+    # Properly double-quoted value containing colons.
+    _assert_accepts "double_quoted_with_colons" \
+'---
+name: test
+description: "A description with: embedded colons and commas."
+---
+body'
+
+    # Properly single-quoted value containing colons.
+    _assert_accepts "single_quoted_with_colons" \
+"---
+name: test
+description: 'A description with: colons.'
+---
+body"
+
+    # Boolean value.
+    _assert_accepts "boolean" \
+'---
+name: test
+user-invocable: true
+---
+body'
+
+    # URL containing :// (not ": ", so not ambiguous).
+    _assert_accepts "url_value" \
+'---
+name: test
+description: See https://example.com for details.
+---
+body'
+
+    # Value ending with a colon (no trailing space, so not ambiguous).
+    _assert_accepts "trailing_colon" \
+'---
+name: test
+description: ends with colon:
+---
+body'
+
+    # Quoted value starting with reserved character is fine.
+    _assert_accepts "quoted_bracket_start" \
+'---
+name: test
+argument-hint: "[question]"
+---
+body'
+
+    rm -rf "$tmpdir"
     if [ ${#errors[@]} -gt 0 ]; then
         fail "$label" "$(printf '%s; ' "${errors[@]}")"
     else
@@ -853,6 +1072,7 @@ CHECKS=(
     check_write_state_init_graceful_error
     check_get_plugin_file_case_statement_complete
     check_skill_frontmatter_yaml_valid
+    check_skill_frontmatter_validator_self_test
 )
 
 for check in "${CHECKS[@]}"; do
