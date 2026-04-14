@@ -8,6 +8,9 @@
 # Usage: release.sh <package> <version>
 #        release.sh --delete <package> <version>
 #        release.sh --check
+#        release.sh --help
+#
+# Example: release.sh compiler 0.11.1
 #
 # Packages: compiler, runtime, sublime, vscode, jetbrains, claude
 
@@ -19,7 +22,27 @@ die() { echo "" >&2; echo "$1" >&2; echo "" >&2; exit 1; }
 # Print a status message to stdout, padded with blank lines
 say() { echo ""; echo "$1"; echo ""; }
 
+# Print the script's usage info, example, and supported packages
+print_usage() {
+    cat <<'EOF'
+
+Usage: release.sh <package> <version>
+       release.sh --delete <package> <version>
+       release.sh --check
+       release.sh --help
+
+Example: release.sh compiler 0.11.1
+
+Packages: compiler, runtime, sublime, vscode, jetbrains, claude
+
+EOF
+}
+
 # Parse mode flags
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
+    print_usage
+    exit 0
+fi
 DELETE=false
 CHECK=false
 if [ "${1:-}" = "--delete" ]; then
@@ -126,12 +149,7 @@ if [ "$CHECK" = true ]; then
 fi
 
 if [ $# -ne 2 ]; then
-    echo "" >&2
-    echo "Usage: release.sh <package> <version>" >&2
-    echo "       release.sh --delete <package> <version>" >&2
-    echo "       release.sh --check" >&2
-    echo "Packages: compiler, runtime, sublime, vscode, jetbrains, claude" >&2
-    echo "" >&2
+    print_usage >&2
     exit 1
 fi
 
