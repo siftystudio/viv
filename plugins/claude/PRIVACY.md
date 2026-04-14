@@ -1,13 +1,14 @@
 # Privacy Policy
 
 > ***Viv Claude Code Plugin***
-> ***Last updated:** April 10, 2026*
+> 
+> ***Last updated:** April 14, 2026*
 
 The Viv Claude Code plugin (the "plugin") is published by [Sifty LLC](https://www.sifty.studio/). This policy describes what data the plugin handles, what it sends to third parties, and what choices you have.
 
 ## The short version
 
-The plugin does not collect, transmit, or store any personal data. It runs entirely on your machine and does not phone home. The network requests it makes are limited to installing the Viv toolchain, syncing reference material, and filing feedback.
+The plugin does not collect, transmit, or store any personal data. It runs entirely on your machine and does not phone home. The network requests it makes are limited to installing and updating the Viv toolchain, syncing reference material, checking public package registries for the latest published Viv component versions, and filing feedback.
 
 ## What the plugin stores locally
 
@@ -25,16 +26,19 @@ This data never leaves your machine. To delete it, remove the two directories ab
 The plugin makes outbound HTTPS requests in the following situations:
 
 - Downloading the Viv source code.
-  - This occurs during `/viv:setup`, and also periodically if Claude detects that the local reference material is out of date, in which case it re-syncs it on your behalf. Re-syncs occur during sessions, with Claude providing updates on the process. The plugin fetches a release tarball from `github.com/siftystudio/viv`. GitHub may log standard request metadata such as IP address and `User-Agent`.
+  - This occurs during `/viv:setup`, and also when you invoke `/viv:sync` to refresh reference material or reconcile drift. The plugin fetches a release tarball from `github.com/siftystudio/viv`. GitHub may log standard request metadata such as IP address and `User-Agent`.
+
+- Checking for new releases of Viv components.
+  - This occurs when you invoke `/viv:sync`. The plugin makes read-only requests to public package registries to retrieve the latest published versions of each Viv component: PyPI (compiler), the npm registry (runtime), the GitHub Releases API (monorepo, Sublime package, and the Claude plugin itself), the VS Code Marketplace (VS Code extension), and the JetBrains Marketplace (JetBrains plugin). These are anonymous version lookups—no user data is sent—and the responses are parsed locally to decide whether any component is behind.
 
 - Installing the Viv compiler.
-  - This occurs during `/viv:setup`. The plugin invokes `pip` to install the `viv-compiler` package from PyPI on your behalf, with your consent.
+  - This occurs during `/viv:setup`, and also during `/viv:sync` if you choose to upgrade the compiler after a version check. The plugin invokes `pip` to install the `viv-compiler` package from PyPI on your behalf, with your consent.
 
 - Installing or updating the Viv JavaScript runtime.
-  - This occurs during `/viv:setup`, and also during a re-sync (see above) if Claude detects that the runtime needs to be updated. The plugin invokes `npm` to install `@siftystudio/viv-runtime` from the npm registry on your behalf, with your consent.
+  - This occurs during `/viv:setup`, and also during `/viv:sync` if Claude detects that the runtime is behind the latest published version. The plugin invokes `npm` to install `@siftystudio/viv-runtime` from the npm registry on your behalf, with your consent.
 
-- Installing editor plugins.
-  - This occurs during `/viv:setup`, and also during re-sync (see above) if Claude detects an installed editor that does not yet have the Viv plugin. Claude invokes the relevant editor's CLI to install the Viv extension from the pertinent marketplace: VS Code Marketplace, the JetBrains Marketplace, or via copy from the local Viv source code for Sublime Text.
+- Installing or updating editor plugins.
+  - This occurs during `/viv:setup`, and also during `/viv:sync` if Claude detects an installed editor that does not yet have the Viv plugin, or if an installed editor plugin is behind the latest published version. Claude invokes the relevant editor's CLI to install the Viv extension from the pertinent marketplace: VS Code Marketplace, the JetBrains Marketplace, or via copy from the local Viv source code for Sublime Text.
 
 - Filing feedback.
   - This occurs when you invoke `/viv:feedback`. The plugin drafts a GitHub issue and, after you explicitly approve the draft, files it on `github.com/siftystudio/viv` via the `gh` CLI you have authenticated.

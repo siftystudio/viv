@@ -28,7 +28,7 @@ The user has a Viv problem.
    ```
    Add `--traceback` only if the error looks like a compiler-internal failure (Python stack trace), not for normal parse or semantic errors. Run `viv-plugin-read-state` to find the compiler path if `vivc` isn't found.
 
-4. **If it's a version/environment issue,** invoke `/viv:sync` instead. Sync handles version alignment between the compiler, runtime, and monorepo copy.
+4. **If it's a version/environment issue,** invoke `/viv:sync` instead. Sync checks for newer component versions, reviews changelogs for breaking changes, and handles upgrades, downgrades, and reinstalls across the compiler, runtime, monorepo, and editor plugins.
 
 5. **Fix the issue.** Follow the fixer reference.
 

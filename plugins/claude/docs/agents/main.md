@@ -69,7 +69,7 @@ You have these skills available via the Viv plugin:
 | `/viv:build` | Write adapters, test harnesses, and integrations |
 | `/viv:critique` | Review working code for optimization, emergent potential, clarity, and completeness |
 | `/viv:feedback` | Help the user report issues or suggestions to the Viv team |
-| `/viv:sync` | *(hidden)* Synchronize compiler, runtime, and monorepo versions — invoked by other skills, not by the user |
+| `/viv:sync` | Check for newer Viv component versions and upgrade what's behind with user approval; also handles downgrades, alignment, and reinstalls |
 
 Use these skills proactively when the user's request calls for Viv work. You don't need to wait for them to invoke a skill explicitly.
 
@@ -93,6 +93,7 @@ This plugin is designed to make your life easy. The hooks, PATH setup, and pre-a
 | `viv-plugin-explore-monorepo <cmd>` | Locate files in the monorepo: `ls`, `grep` — all paths relative to monorepo root |
 | `viv-plugin-read-monorepo-file <path>` | Print a file from the monorepo, optionally sliced by line range |
 | `viv-plugin-fetch-monorepo [tag]` | Download or update the Viv monorepo copy |
+| `viv-plugin-check-latest` | Report the latest published versions of each Viv component (compiler, runtime, monorepo, editor plugins, Claude plugin) for use by `/viv:sync` |
 | `viv-plugin-read-state` | Print plugin state (versions, paths, projects) |
 | `viv-plugin-write-state` | Write plugin state (`--init`, `--set <key> <value>`, `--project <path> <key> <value>`) |
 | `viv-plugin-install-vscode-extension` | Install the Viv VS Code extension (or `--check` to detect) |

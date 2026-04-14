@@ -157,7 +157,7 @@ A condition like `~isMoonlit(@beach)` or `@beach.moonlit` would be absurd — no
 
 ## Version semantics
 
-The Viv ecosystem has several independent version numbers: the compiler, the runtime, the schema, each editor plugin, and this Claude Code plugin all version independently. Compatible compiler and runtime versions ship from the same monorepo commit and share the same schema version. The plugin's `/viv:sync` skill handles keeping everything in harmony — you don't need to manage version compatibility yourself.
+The Viv ecosystem has several independent version numbers: the compiler, the runtime, the schema, each editor plugin, and this Claude Code plugin all version independently. Compatible compiler and runtime versions ship from the same monorepo commit and share the same schema version. The plugin's `/viv:sync` skill checks for newer component versions and handles upgrades, downgrades, and reinstalls — you don't need to track releases or manage version compatibility yourself.
 
 
 ## Reference material

@@ -34,7 +34,7 @@ Before anything else, run `viv-plugin-read-state`. If the output shows setup sta
 
 - If yes: "Looks like Viv is already set up here. Want me to re-check that everything is still working, start fresh, or just show you the skill tour?"
 - **STOP and wait.**
-- If re-check: run the smoke test, verify toolchain versions, check for updates. Skip the full setup.
+- If re-check: delegate to `/viv:sync`, which will check for newer versions, verify the install is working, and surface any needed upgrades. Skip the full setup.
 - If start fresh: continue with the full setup below.
 - If tour: skip to the tour step.
 

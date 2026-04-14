@@ -71,6 +71,9 @@ Also note that you can just talk about Viv with Claude naturally, assuming you'r
 * **`/viv:setup`** (alias `/setup`)
   - Set up Viv in your project. Walks you through installing the compiler and runtime, choosing an editor plugin, and configuring your environment. Run this first on a per-project basis, and do so from a project folder (ideally the project root).
   - *Example: `/setup` (triggers highly structured onboarding flow).*
+* **`/viv:sync`** (alias `/sync`)
+  - Check for newer versions of the Viv compiler, runtime, monorepo, editor plugins, and the Claude plugin itself. Claude reviews each component's changelog for breaking changes, presents the delta, and offers to upgrade what's behind—with your approval. Also handles downgrades, reinstalls, and reconciling drift from changes made outside the plugin.
+  - *Example: `/sync` (triggers an update check across all Viv components).*
 * **`/viv:ask`** (alias `/ask`)
   - Ask anything about Viv: language constructs, authoring workflows, the compiler, the runtime, emergent narrative in general. Claude will look up the answer using the Viv materials copied into its plugin data.
   - *Example: `/ask what's the difference between a query and a sifting pattern`.*
@@ -98,11 +101,15 @@ Also note that you can just talk about Viv with Claude naturally, assuming you'r
 
 ## Compatibility
 
-The plugin downloads a copy of the Viv monorepo that is matched to your installed compiler and runtime versions. If you update your compiler or runtime, Claude will notice the version mismatch and offer to sync its reference material and/or your Viv install to match. It can also detect when your Viv components are out of date and missing helpful new features or fixes.
+The plugin downloads a copy of the Viv monorepo that is matched to your installed compiler and runtime versions. If you update your compiler or runtime outside the plugin, Claude will notice the version mismatch the moment it becomes relevant and offer to run `/viv:sync` to reconcile. You can also run `/viv:sync` directly at any time to check whether your Viv components are behind the latest published versions.
 
 ## Updating
 
-If you [enabled auto-update](#getting-started), the plugin will update automatically. But if auto-update is off, or if the latest version hasn't come through yet, you can still update manually:
+If you [enabled auto-update](#getting-started), the plugin will update automatically. But if auto-update is off, or if the latest version hasn't come through yet, you can update manually in one of two ways.
+
+The easiest is to run `/viv:sync` in a Claude Code session. Sync checks for a newer plugin version alongside the rest of your Viv install (compiler, runtime, editor plugins, monorepo), reviews the relevant changelogs, and walks you through upgrading anything behind—including the plugin itself, via the cache-clear-and-reinstall dance below—with your consent. You'll still need to restart Claude Code afterward for a new plugin version to take effect.
+
+If you'd rather update the plugin by hand:
 
 * Clear the plugin cache and reinstall: `rm -rf ~/.claude/plugins/cache/siftystudio`.
 

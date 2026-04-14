@@ -1,0 +1,226 @@
+#!/usr/bin/env bash
+# bin/viv-plugin-check-latest -- Report the latest published versions of Viv components
+#
+# Queries public package registries and marketplaces for the latest
+# available versions of Viv's components. This script does NOT try to
+# detect installed versions -- that's Claude's job (via vivc --version,
+# viv-plugin-read-state, or component-specific lookups). This script
+# only reports what's currently published.
+#
+# All checks are independent: if one registry is unreachable, the others
+# still report. A failed check reports "(check failed)" for that component
+# so the agent can decide how to proceed.
+#
+# Usage: viv-plugin-check-latest
+#        viv-plugin-check-latest --help
+
+set -uo pipefail
+
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
+    echo ""
+    echo "Usage: viv-plugin-check-latest"
+    echo ""
+    echo "Reports the latest published versions of all Viv components:"
+    echo "  - Compiler         (PyPI:              viv-compiler)"
+    echo "  - Runtime          (npm:               @siftystudio/viv-runtime)"
+    echo "  - Monorepo         (GitHub:            most recent release tag of any flavor)"
+    echo "  - VS Code ext      (VS Code Marketplace: siftystudio.viv)"
+    echo "  - JetBrains plugin (JetBrains Marketplace: plugin 31012)"
+    echo "  - Sublime package  (GitHub:            latest sublime-v* release tag)"
+    echo "  - Claude Code plugin (GitHub:          latest claude-v* release tag)"
+    echo ""
+    echo "This script reports only published versions. To determine whether"
+    echo "the user's install is behind, compare against the installed versions:"
+    echo "  - compiler: run 'vivc --version' or read compiler_path from state.json"
+    echo "  - runtime:  run 'npm list @siftystudio/viv-runtime' in the project"
+    echo "  - monorepo: read monorepo_tag from state.json"
+    echo "  - editors:  use 'viv-plugin-install-*-{extension,plugin,package} --check'"
+    echo "  - Claude Code plugin: no standard detection — check whichever plugin"
+    echo "    management interface Claude Code exposes in the current session"
+    echo ""
+    echo "Requires a network connection. Each check times out after 5 seconds."
+    echo ""
+    exit 0
+fi
+
+TIMEOUT=5
+
+parse_json_field() {
+    # Read JSON from stdin, extract a field path like 'info.version' or 'tag_name'.
+    # Prints empty string and exits 1 on any error.
+    python3 -c '
+import json, sys
+try:
+    data = json.load(sys.stdin)
+    for key in sys.argv[1].split("."):
+        data = data[key]
+    print(data)
+except Exception:
+    sys.exit(1)
+' "$1" 2>/dev/null
+}
+
+check_compiler() {
+    local json version
+    json=$(curl -sf --max-time "$TIMEOUT" "https://pypi.org/pypi/viv-compiler/json" 2>/dev/null) || {
+        echo "compiler: (check failed -- PyPI unreachable)"
+        return
+    }
+    version=$(printf '%s' "$json" | parse_json_field 'info.version') || {
+        echo "compiler: (check failed -- parse error)"
+        return
+    }
+    echo "compiler: $version"
+}
+
+check_runtime() {
+    local json version
+    json=$(curl -sf --max-time "$TIMEOUT" "https://registry.npmjs.org/@siftystudio/viv-runtime/latest" 2>/dev/null) || {
+        echo "runtime: (check failed -- npm registry unreachable)"
+        return
+    }
+    version=$(printf '%s' "$json" | parse_json_field 'version') || {
+        echo "runtime: (check failed -- parse error)"
+        return
+    }
+    echo "runtime: $version"
+}
+
+# Cache the GitHub releases response. Several checks filter this same list,
+# so we fetch once and reuse. Populated on first call to fetch_github_releases;
+# set to "" on fetch failure so callers can surface a graceful error.
+GITHUB_RELEASES_JSON=""
+GITHUB_RELEASES_FETCHED=false
+
+fetch_github_releases() {
+    if [ "$GITHUB_RELEASES_FETCHED" = true ]; then
+        return
+    fi
+    GITHUB_RELEASES_FETCHED=true
+    GITHUB_RELEASES_JSON=$(curl -sf --max-time "$TIMEOUT" "https://api.github.com/repos/siftystudio/viv/releases?per_page=100" 2>/dev/null) || GITHUB_RELEASES_JSON=""
+}
+
+check_monorepo() {
+    # Report the most recent release tag of any flavor. Under the Viv project
+    # invariant that latest components play nice together, the freshest tag
+    # is always a safe fetch target for the default upgrade-to-latest flow.
+    fetch_github_releases
+    if [ -z "$GITHUB_RELEASES_JSON" ]; then
+        echo "monorepo: (check failed -- GitHub unreachable)"
+        return
+    fi
+    local tag
+    tag=$(printf '%s' "$GITHUB_RELEASES_JSON" | python3 -c '
+import json, sys
+data = json.load(sys.stdin)
+if not data:
+    sys.exit(1)
+print(data[0]["tag_name"])
+' 2>/dev/null) || {
+        echo "monorepo: (check failed -- parse error)"
+        return
+    }
+    echo "monorepo: $tag"
+}
+
+# Shared helper: extract the most recent release tag matching a prefix from
+# the cached GitHub releases list. Used by sublime-v* and claude-v* checks.
+check_github_tag_with_prefix() {
+    local label="$1"
+    local prefix="$2"
+    fetch_github_releases
+    if [ -z "$GITHUB_RELEASES_JSON" ]; then
+        echo "${label}: (check failed -- GitHub unreachable)"
+        return
+    fi
+    local tag
+    tag=$(printf '%s' "$GITHUB_RELEASES_JSON" | PREFIX="$prefix" python3 -c '
+import json, os, sys
+data = json.load(sys.stdin)
+prefix = os.environ["PREFIX"]
+for release in data:
+    if release.get("tag_name", "").startswith(prefix):
+        print(release["tag_name"])
+        sys.exit(0)
+sys.exit(1)
+' 2>/dev/null) || {
+        echo "${label}: (check failed -- no ${prefix}* release found)"
+        return
+    }
+    echo "${label}: $tag"
+}
+
+check_vscode_extension() {
+    local json version
+    json=$(curl -sf --max-time "$TIMEOUT" \
+        -X POST \
+        -H 'Content-Type: application/json' \
+        -H 'Accept: application/json;api-version=3.0-preview.1' \
+        -d '{"filters":[{"criteria":[{"filterType":7,"value":"siftystudio.viv"}]}],"flags":103}' \
+        "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery" 2>/dev/null) || {
+        echo "vscode-extension: (check failed -- Marketplace unreachable)"
+        return
+    }
+    version=$(printf '%s' "$json" | python3 -c '
+import json, sys
+try:
+    data = json.load(sys.stdin)
+    print(data["results"][0]["extensions"][0]["versions"][0]["version"])
+except Exception:
+    sys.exit(1)
+' 2>/dev/null) || {
+        echo "vscode-extension: (check failed -- parse error)"
+        return
+    }
+    echo "vscode-extension: $version"
+}
+
+check_jetbrains_plugin() {
+    local json version
+    json=$(curl -sf --max-time "$TIMEOUT" "https://plugins.jetbrains.com/api/plugins/31012/updates?page=1&size=1" 2>/dev/null) || {
+        echo "jetbrains-plugin: (check failed -- JetBrains Marketplace unreachable)"
+        return
+    }
+    version=$(printf '%s' "$json" | python3 -c '
+import json, sys
+try:
+    data = json.load(sys.stdin)
+    print(data[0]["version"])
+except Exception:
+    sys.exit(1)
+' 2>/dev/null) || {
+        echo "jetbrains-plugin: (check failed -- parse error)"
+        return
+    }
+    echo "jetbrains-plugin: $version"
+}
+
+# The Sublime package and the Claude Code plugin itself are published via
+# their own tag families (sublime-v* and claude-v*) in GitHub releases -- not
+# on Package Control or a Claude Code marketplace API. Both use the shared
+# prefix helper, hitting the already-cached releases list.
+check_sublime_package() {
+    check_github_tag_with_prefix "sublime-package" "sublime-v"
+}
+
+check_claude_plugin() {
+    check_github_tag_with_prefix "claude-plugin" "claude-v"
+}
+
+echo ""
+echo "Latest published Viv component versions:"
+echo ""
+check_compiler
+check_runtime
+check_monorepo
+check_vscode_extension
+check_jetbrains_plugin
+check_sublime_package
+check_claude_plugin
+echo ""
+echo "To compare against what's installed, use Claude's judgment:"
+echo "  - compiler: vivc --version (or compiler_path from viv-plugin-read-state)"
+echo "  - runtime:  npm list @siftystudio/viv-runtime in the project"
+echo "  - monorepo: monorepo_tag from viv-plugin-read-state"
+echo "  - editors:  viv-plugin-install-{vscode-extension,webstorm-plugin,sublime-package} --check"
+echo ""

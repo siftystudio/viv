@@ -83,6 +83,12 @@
           },
           {
             "type": "command",
+            "if": "Bash(*viv-plugin-check-latest*)",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin utility auto-approved by plugin\"}}'",
+            "timeout": 5
+          },
+          {
+            "type": "command",
             "if": "Bash(*viv-plugin-get-example*)",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin utility auto-approved by plugin\"}}'",
             "timeout": 5

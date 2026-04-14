@@ -4,17 +4,19 @@ All notable changes to the Viv Claude Code plugin (`viv`) will be documented in 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.11.0]
 
 ### Added
 
 * `-i`, `-l`, and `-c` flags for `viv-plugin-explore-monorepo grep`.
+* Shell command `viv-plugin-check-latest` for retrieving the latest published versions of the Viv components (used by `/viv:sync`).
 
 ### Changed
 
 * Emphasize `vivc --help` as the authoritative compiler reference in writer instructions, instead of enumerating flags that may drift from the installed compiler.
-* Hoist `viv-plugin-explore-monorepo read` into its own command, `viv-plugin-read-monorepo-file`, to delineate exploration (`ls`, `grep`) and reading (`--offset`, `--limit`). 
+* Hoist `viv-plugin-explore-monorepo read` into its own command, `viv-plugin-read-monorepo-file`, to delineate exploration (`ls`, `grep`) and reading (`--offset`, `--limit`).
 * Rename `viv-plugin-get-doc` to `viv-plugin-get-plugin-file` (agents were trying to use it to get monorepo docs).
+* Make `/viv:sync` user-invocable and reframe it around upgrading all Viv components to their latest published versions (with downgrades and other complex syncs being possible but nonstandard usages).
 
 ### Fixed
 
