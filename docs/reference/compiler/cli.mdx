@@ -9,14 +9,25 @@ In addition to the [Python library](/reference/compiler/api/) and the [editor pl
 
 ## Usage
 
+*Exactly one of `--input`, `--string`, `--version`, or `--test` must be provided.*
+
 ```sh
 vivc --input path/to/source.viv [options]
-vivc --string 'source code' [options]
 ```
 
-## Arguments
+```sh
+vivc --string 'source code' [options]
+````
 
-*Exactly one of `--input`, `--string`, `--version`, or `--test` must be provided.*
+```sh
+vivc --version
+````
+
+```sh
+vivc --test
+````
+
+## Arguments
 
 * `-i, --input PATH`
   * Relative or absolute path to the Viv source file (`.viv`) to compile. If you are using `include` statements to import between files, this should be the *entry file*, meaning the top-level file that pulls in all the others, directly or transitively, via `include` statements.
@@ -57,253 +68,253 @@ vivc --string 'source code' [options]
 
 ## Examples
 
-* Run a smoke test to confirm that your compiler installation is wired correctly:
+Run a smoke test to confirm that your compiler installation is wired correctly:
 
+```sh
+vivc --test
+```
+
+```
+* Compiling sample file...
+
+* Smoke test passed
+
+* Viv compiler installation is operational
+```
+  
+Log versions for the compiler, content-bundle schema, and DSL grammar associated with your installation:
+
+```sh
+vivc -V
+```
+
+```
+* Installed versions:
+
+- Compiler Package: 0.10.4
+
+- Schema:  0.10.1
+
+- Grammar: 0.10.0
+```
+
+Run a compile check to confirm that a source file is valid:
+
+```sh
+vivc --input /path/to/my-actions.viv
+```
+
+```sh
+vivc -i /path/to/my-actions.viv
+```
+
+```
+* Compiling source file: my-actions.viv
+
+* Compilation succeeded
+
+* No output file specified
+```
+  
+Compile a source file and write the resulting content bundle to file:
+
+```sh
+vivc -i /path/to/my-actions.viv --output /path/to/myContentBundle.json
+```
+
+```sh
+vivc -i /path/to/my-actions.viv -o /path/to/myContentBundle.json
+```
+
+```
+* Compiling source file: my-actions.viv
+
+* Compilation succeeded
+
+* Wrote output to file: /path/to/myContentBundle.json
+```
+
+Compile a source file and print out a summary listing the contents of the resulting content bundle:
+
+```sh
+vivc -i /path/to/my-actions.viv --list
+```
+
+```sh
+vivc -i /path/to/my-actions.viv -l
+```
+
+```sh
+vivc -i /path/to/my-actions.viv -o /path/to/myContentBundle.json -l
+```
+
+```
+* Compiling source file: my-actions.viv
+
+* Compilation succeeded
+
+* Actions (3):
+
+- hug
+- gossip
+- arson
+
+* Action selectors (0)
+
+* Plans (0)
+
+* Plan selectors (0)
+
+* Queries (0)
+
+* Sifting patterns (0)
+
+* Tropes (1):
+
+- is-unhinged
+
+* Wrote output to file: /path/to/myContentBundle.json
+```
+  
+Compile a source file and log the complete output in the console:
+
+```sh
+vivc -i /path/to/my-actions.viv --print
+```
+
+```sh
+vivc -i /path/to/my-actions.viv -p
+```
+
+```
+* Compiling source file: my-actions.viv
+
+* Compilation succeeded
+
+* Output:
+
+{
+"actionSelectors": {},
+"actions": {},
+"metadata": {
+  "compilerVersion": "0.10.4",
+  "grammarVersion": "0.10.0",
+  "hasEntityDataAssignments": false,
+  "referencedEnums": [
+    "CALM",
+    "FRIGHTENED",
+    "NERVOUS"
+  ],
+  "referencedFunctionNames": [],
+  "schemaVersion": "0.10.1",
+  "timeOfDayParameterizedQueries": [],
+  "timeOfDayParameterizedReactions": []
+},
+"planSelectors": {},
+"plans": {},
+...
+```
+
+Compile a source file and log only a portion of the output in the console:
+
+```sh
+# Print all action definitions
+vivc -i /path/to/my-actions.viv -p actions
+```
+
+```sh
+# Print the definition for the 'hugger' role of the 'hug' action
+vivc -i /path/to/my-actions.viv -p actions.hug.roles.hugger
+```
+
+```
+* Compiling source file: my-actions.viv
+
+* Compilation succeeded
+
+* Output (filtered):
+
+{
+  "anywhere": false,
+  "chance": null,
+  "children": [],
+  "entityType": "character",
+  "max": 1,
+  "mean": null,
+  "min": 1,
+  "name": "hugger",
+  "parent": null,
+  "participationMode": "initiator",
+  "pool": null,
+  "precast": true,
+  "renames": null,
+  "sd": null,
+  "spawn": false,
+  "spawnFunction": null
+}
+
+* No output file specified
+```
+
+Compile a source file and copy the output to your clipboard:
+
+<Tabs>
+<TabItem label="macOS">
   ```sh
-  vivc --test
+  vivc -i /path/to/my-actions.viv -p | pbcopy
   ```
-  
-  ```
-  * Compiling sample file...
-  
-  * Smoke test passed
-  
-  * Viv compiler installation is operational
-  ```
-  
-* Log versions for the compiler, content-bundle schema, and DSL grammar associated with your installation:
-
+</TabItem>
+<TabItem label="Linux (Wayland)">
   ```sh
-  vivc -V
+  vivc -i /path/to/my-actions.viv -p | wl-copy
   ```
-  
-  ```
-  * Installed versions:
-
-  - Compiler Package: 0.10.4
-
-  - Schema:  0.10.1
-
-  - Grammar: 0.10.0
-  ```
-
-* Run a compile check to confirm that a source file is valid:
-
+</TabItem>
+<TabItem label="Linux (X11)">
   ```sh
-  vivc --input /path/to/my-actions.viv
+  vivc -i /path/to/my-actions.viv -p | xclip -selection clipboard
   ```
-
-  ```sh
-  vivc -i /path/to/my-actions.viv
+</TabItem>
+<TabItem label="Windows PowerShell">
+  ```powershell
+  vivc -i C:\path\to\my-actions.viv -p | Set-Clipboard
   ```
-  
-  ```
-  * Compiling source file: my-actions.viv
-  
-  * Compilation succeeded
-  
-  * No output file specified
-  ```
-  
-* Compile a source file and write the resulting content bundle to file:
+</TabItem>
+</Tabs>
 
-  ```sh
-  vivc -i /path/to/my-actions.viv --output /path/to/myContentBundle.json
-  ```
+Compile Viv source code directly from a string:
 
-  ```sh
-  vivc -i /path/to/my-actions.viv -o /path/to/myContentBundle.json
-  ```
-  
-  ```
-  * Compiling source file: my-actions.viv
+```sh
+vivc --string 'action greet:
+  roles:
+      @greeter:
+          as: initiator'
+```
 
-  * Compilation succeeded
+Compile Viv source code directly from a string, and specify an anchor directory to use for resolving relative paths to any included files:
 
-  * Wrote output to file: /path/to/myContentBundle.json
-  ```
+```sh
+vivc --entry-dir ./content/viv --string 'include "helpers.viv"
 
-* Compile a source file and print out a summary listing the contents of the resulting content bundle:
+action greet:
+  roles:
+      @greeter:
+          as: initiator'
+```
 
-  ```sh
-  vivc -i /path/to/my-actions.viv --list
-  ```
+Compile Viv source code generated by another process:
 
-  ```sh
-  vivc -i /path/to/my-actions.viv -l
-  ```
+```sh
+vivc -s "$(./generate_viv_code.py --seed 77)"
+```
 
-  ```sh
-  vivc -i /path/to/my-actions.viv -o /path/to/myContentBundle.json -l
-  ```
-  
-  ```
-  * Compiling source file: my-actions.viv
-  
-  * Compilation succeeded
-  
-  * Actions (3):
-  
-    - hug
-    - gossip
-    - arson
-  
-  * Action selectors (0)
-  
-  * Plans (0)
-  
-  * Plan selectors (0)
-  
-  * Queries (0)
-  
-  * Sifting patterns (0)
-  
-  * Tropes (1):
-  
-    - is-unhinged
-  
-  * Wrote output to file: /path/to/myContentBundle.json
-  ```
-  
-* Compile a source file and log the complete output in the console:
+Compile a source file quietly, suppressing all status output on success (useful in scripts and CI pipelines):
 
-  ```sh
-  vivc -i /path/to/my-actions.viv --print
-  ```
+```sh
+vivc -i /path/to/my-actions.viv -o /path/to/myContentBundle.json -q
+```
 
-  ```sh
-  vivc -i /path/to/my-actions.viv -p
-  ```
-  
-  ```
-  * Compiling source file: my-actions.viv
-
-  * Compilation succeeded
-
-  * Output: 
-
-  {
-    "actionSelectors": {},
-    "actions": {},
-    "metadata": {
-      "compilerVersion": "0.10.4",
-      "grammarVersion": "0.10.0",
-      "hasEntityDataAssignments": false,
-      "referencedEnums": [
-        "CALM",
-        "FRIGHTENED",
-        "NERVOUS"
-      ],
-      "referencedFunctionNames": [],
-      "schemaVersion": "0.10.1",
-      "timeOfDayParameterizedQueries": [],
-      "timeOfDayParameterizedReactions": []
-    },
-    "planSelectors": {},
-    "plans": {},
-    ...
-  ```
-
-* Compile a source file and log only a portion of the output in the console:
-
-  ```sh
-  # Print all action definitions
-  vivc -i /path/to/my-actions.viv -p actions
-  ```
-
-  ```sh
-  # Print the definition for the 'hugger' role of the 'hug' action
-  vivc -i /path/to/my-actions.viv -p actions.hug.roles.hugger
-  ```
-
-  ```
-  * Compiling source file: my-actions.viv
-
-  * Compilation succeeded
-
-  * Output (filtered): 
-
-  {
-      "anywhere": false,
-      "chance": null,
-      "children": [],
-      "entityType": "character",
-      "max": 1,
-      "mean": null,
-      "min": 1,
-      "name": "hugger",
-      "parent": null,
-      "participationMode": "initiator",
-      "pool": null,
-      "precast": true,
-      "renames": null,
-      "sd": null,
-      "spawn": false,
-      "spawnFunction": null
-  }
-
-  * No output file specified
-  ```
-
-* Compile a source file and copy the output to your clipboard:
-
-  <Tabs>
-    <TabItem label="macOS">
-      ```sh
-      vivc -i /path/to/my-actions.viv -p | pbcopy
-      ```
-    </TabItem>
-    <TabItem label="Linux (Wayland)">
-      ```sh
-      vivc -i /path/to/my-actions.viv -p | wl-copy
-      ```
-    </TabItem>
-    <TabItem label="Linux (X11)">
-      ```sh
-      vivc -i /path/to/my-actions.viv -p | xclip -selection clipboard
-      ```
-    </TabItem>
-    <TabItem label="Windows PowerShell">
-      ```powershell
-      vivc -i C:\path\to\my-actions.viv -p | Set-Clipboard
-      ```
-    </TabItem>
-  </Tabs>
-
-* Compile Viv source code directly from a string:
-
-  ```sh
-  vivc --string 'action greet:
-      roles:
-          @greeter:
-              as: initiator'
-  ```
-
-* Compile Viv source code directly from a string, and specify an anchor directory to use for resolving relative paths to any included files:
-
-  ```sh
-  vivc --entry-dir ./content/viv --string 'include "helpers.viv"
-  
-  action greet:
-      roles:
-          @greeter:
-              as: initiator' 
-  ```
-
-* Compile Viv source code generated by another process:
-
-  ```sh
-  vivc -s "$(./generate_viv_code.py --seed 77)"
-  ```
-
-* Compile a source file quietly, suppressing all status output on success (useful in scripts and CI pipelines):
-
-  ```sh
-  vivc -i /path/to/my-actions.viv -o /path/to/myContentBundle.json -q
-  ```
-
-  ```
-  ```
+```
+```
 
 ## Exit Codes
 
@@ -320,7 +331,6 @@ vivc --string 'source code' [options]
 
 * `130` *(interrupted)*
   * Emitted when compilation is interrupted with `Ctrl+C` (`SIGINT`).
-
 
 Any non-zero exit signals a problem, making `vivc` safe to drop into scripts and CI pipelines.
 

@@ -4,7 +4,7 @@ description: Reference documentation for the Viv compiler — command-line inter
 prev: false
 ---
 
-import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+import { CardGrid, LinkCard, Steps } from '@astrojs/starlight/components';
 
 The *compiler* is one of the Viv system's two fundamental components, the other being the runtime, which consumes its output. Its function is to transform `.viv` *source files* into JSON *content bundles* over which any Viv runtime can operate.
 
@@ -68,11 +68,17 @@ In order to use a compiled content bundle in a Viv runtime, there must be compat
 
 Generally, compatibility is not a concern for Viv users, because the respective latest releases of the compiler and the runtimes are always guaranteed to be in sync. That said, here's how compatibility is enforced:
 
-- When the compiler emits a content bundle, it stamps it (at `metadata.schemaVersion`) with the current version number for the schema, which is stored in its copy of the schema.
+<Steps>
 
-	- The schema version for your installed compiler is exposed in the CLI via `vivc -V`, and in the Python package as `viv_compiler.__schema_version__`.
-- Each runtime has an associated schema version, which is stored in its own copy of the schema.
-- When registering a content bundle with a runtime, it will throw an error if the bundle's schema version is incompatible with its own, as governed by semantic versioning.
+1. When the compiler emits a content bundle, it stamps it (at `metadata.schemaVersion`) with the current version number for the schema, which is stored in its copy of the schema.
+
+    The schema version for your installed compiler is exposed in the CLI via `vivc -V`, and in the Python package as `viv_compiler.__schema_version__`.
+
+2. Each runtime has an associated schema version, which is stored in its own copy of the schema.
+
+3. When registering a content bundle with a runtime, it will throw an error if the bundle's schema version is incompatible with its own, as governed by semantic versioning.
+
+</Steps>
 
 If your compiler and runtime fall out of sync, the easiest fix is to update both to their respective latest versions, which are guaranteed to be in sync. You can also rely on the [Viv Claude Code plugin](https://github.com/siftystudio/viv/blob/main/plugins/claude/README.md) to detect such discrepancies and rectify them (with your permission), since this is one of its features. 
 

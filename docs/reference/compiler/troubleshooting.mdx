@@ -4,29 +4,45 @@ description: How to diagnose and fix Viv compilation failures — installation i
 next: false
 ---
 
+import { Steps } from '@astrojs/starlight/components';
+
 This page covers the most common issues you may encounter when installing or using the Viv compiler, including [installation problems](#installation-issues), [syntax errors](#debugging-a-syntax-error), and [semantic errors](#debugging-a-semantic-error). The compiler's error messages are designed to be descriptive and actionable, so in most cases, reading the message carefully will point you directly at the fix. That said, the easiest way to troubleshoot Viv is by using the [Claude Code plugin](https://github.com/siftystudio/viv/blob/main/plugins/claude/README.md), as illustrated [below](#phoning-a-friend).
 
 ## Installation issues
 
-Once you install the compiler, the `vivc` command should be available for use. If this is not the case:
+Once you install the compiler, the `vivc` command should be available for use. If this is not the case, work through the following checks in order:
 
-* **Check your Python version.** The Viv compiler requires Python 3.11 or later. Run `python3 --version` to confirm.
+<Steps>
 
-* **Check your PATH.** If you installed into a virtual environment, make sure that environment is activated. If you installed with `pip install --user`, the `vivc` script may be in `~/.local/bin`, which may not be on your PATH.
+1. **Check your Python version.** The Viv compiler requires Python 3.11 or later. Run `python3 --version` to confirm.
 
-* **Check which `pip` you used.** Running `pip install viv-compiler` installs into whichever Python `pip` is linked to. If you have multiple Python installations, you may have installed into the wrong one. Try `python3 -m pip install viv-compiler` to ensure you're installing into the Python you intend to use.
+2. **Check your PATH.** If you installed into a virtual environment, make sure that environment is activated. If you installed with `pip install --user`, the `vivc` script may be in `~/.local/bin`, which may not be on your PATH.
 
-* **Confirm the installation.** Run `python3 -m viv_compiler --test` to invoke the compiler directly via Python, bypassing any PATH issues. If this works but `vivc` doesn't, the issue is PATH configuration.
+3. **Check which `pip` you used.** Running `pip install viv-compiler` installs into whichever Python `pip` is linked to. If you have multiple Python installations, you may have installed into the wrong one. Try `python3 -m pip install viv-compiler` to ensure you're installing into the Python you intend to use.
 
-* **Deeper issues.** For truly gnarly compiler setups, consider using 
+4. **Confirm the installation.** Run `python3 -m viv_compiler --test` to invoke the compiler directly via Python, bypassing any PATH issues. If this works but `vivc` doesn't, the issue is PATH configuration.
+
+5. **Deeper issues.** For truly gnarly compiler setups, consider using the [Viv Claude Code plugin](https://github.com/siftystudio/viv/blob/main/plugins/claude/README.md). [Phoning a friend
+](#phoning-a-friend) shows a log of a particularly difficult compiler installation administered by the plugin.
+
+</Steps>
+
 
 ## Compilation issues
 
-There are two distinct classes of problems that can prevent Viv source files from being compiled:
+There are two distinct classes of problems that can prevent Viv source files from being compiled: *syntax errors* and *semantic errors*.
 
-* **Syntax errors.** These occur when a source file cannot be parsed due to malformed syntax, such as a typo in a field name. In such cases, a `VivParseError` will be emitted. When invoked via the CLI or an editor plugin, the compiler will display some helpful debugging data (see [Debugging a syntax error](#debugging-a-syntax-error)). For an extremely detailed parsing trace, set the `--verbose-parser` flag, but note that this will write debug files to your working directory.
+<dl>
+  <dt>Syntax errors</dt>
+  <dd>
+    These occur when a source file cannot be parsed due to malformed syntax, such as a typo in a field name. In such cases, a `VivParseError` will be emitted. When invoked via the CLI or an editor plugin, the compiler will display some helpful debugging data (see [Debugging a syntax error](#debugging-a-syntax-error)). For an extremely detailed parsing trace, set the `--verbose-parser` flag, but note that this will write debug files to your working directory.
+  </dd>
 
-* **Semantic errors.** These occur when a source file is parsed, but the compiler's validation module detects an issue in the compiled content bundle, such as an action with no initiator role. In such cases, a `VivCompileError` will be emitted, with an informative message. When invoked via the CLI or an editor plugin, the compiler may also display (alongside an error message) the offending file, line, column, and source code. For the full traceback, pass the `--traceback` CLI flag, though note that this is generally intended to aid development of the compiler, not authoring.
+  <dt>Semantic errors</dt>
+  <dd>
+    These occur when a source file is parsed, but the compiler's validation module detects an issue in the compiled content bundle, such as an action with no initiator role. In such cases, a `VivCompileError` will be emitted, with an informative message. When invoked via the CLI or an editor plugin, the compiler may also display (alongside an error message) the offending file, line, column, and source code. For the full traceback, pass the `--traceback` CLI flag, though note that this is generally intended to aid development of the compiler, not authoring.
+  </dd>
+</dl>
 
 ## Debugging a syntax error
 
@@ -57,7 +73,7 @@ Note that the error message does hint at this exact solution, in that it indicat
 
 ## Debugging a semantic error
 
-Unlike syntax errors, semantic errors are caught by the compiler's validation module after parsing succeeds. Their messages are designed to be self-explanatory—they name the offending construct, describe the issue, and often suggest the fix. Here are a few representative examples.
+Unlike syntax errors, semantic errors are caught by the compiler's validation module after parsing succeeds. Their messages are designed to be self-explanatory—they name the offending construct, describe the issue, and often suggest the fix. What follows are a few representative examples.
 
 An action missing its required initiator role:
 
@@ -96,7 +112,7 @@ location, precast)
 - Line: 52, Col: 9
 ```
 
-In each case, the message tells you exactly what went wrong and where. If the fix isn't obvious from the message alone, the [Viv Claude Code plugin](https://github.com/siftystudio/viv/blob/main/plugins/claude/README.md) can help—see [Phoning a friend](#phoning-a-friend) below.
+In each case, the message tells you exactly what went wrong and where. If the fix isn't obvious from the message alone, the Viv Claude Code plugin can help (see [Phoning a friend](#phoning-a-friend)).
 
 ## Phoning a friend
 

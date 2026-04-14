@@ -46,8 +46,7 @@ compile_from_path(
 
 #### Returns
 
-* `ContentBundle`
-  * The compiled content bundle, as a JSON-serializable `dict` conforming to the `ContentBundle` schema. Typed definitions for this shape and its inner structures (e.g., `ActionDefinition`, `PlanDefinition`) are available via `viv_compiler.external_types`, for advanced use cases, but are not part of the stable public API.
+The compiled content bundle, as a JSON-serializable `dict` conforming to the `ContentBundle` schema. Typed definitions for this shape and its inner structures (e.g., `ActionDefinition`, `PlanDefinition`) are available via `viv_compiler.external_types`, for advanced use cases, but are not part of the stable public API.
 
 #### Raises
 
@@ -84,11 +83,11 @@ compile_from_string(
 
 #### Returns
 
-* Same as [`compile_from_path()`](#compile_from_path).
+Same as [`compile_from_path()`](#compile_from_path).
 
 #### Raises
 
-* Same as [`compile_from_path()`](#compile_from_path).
+Same as [`compile_from_path()`](#compile_from_path).
 
 
 ## Exceptions
@@ -164,105 +163,105 @@ class VivCompileError(Exception):
 
 ## Examples
 
-* Print out versions for the compiler, content-bundle schema, and DSL grammar associated with your installation:
+Print out versions for the compiler, content-bundle schema, and DSL grammar associated with your installation:
 
-  ```python
-  import viv_compiler
+```python
+import viv_compiler
 
-  print(f"Package: {viv_compiler.__version__}")
-  print(f"Schema:  {viv_compiler.__schema_version__}")
-  print(f"Grammar: {viv_compiler.__grammar_version__}")
-  ```
+print(f"Package: {viv_compiler.__version__}")
+print(f"Schema:  {viv_compiler.__schema_version__}")
+print(f"Grammar: {viv_compiler.__grammar_version__}")
+```
 
-* Compile a source file into a dictionary conforming to the `ContentBundle` shape:
+Compile a source file into a dictionary conforming to the `ContentBundle` shape:
 
-  ```python
-  from pathlib import Path
-  from viv_compiler import compile_from_path, VivCompileError, VivParseError
-  from viv_compiler.external_types import ContentBundle
-  
-  try:
-      content_bundle: ContentBundle = compile_from_path(
-          source_file_path=Path("my-actions.viv")
-      )
-      print("Compilation succeeded:", content_bundle)
-  except VivParseError as e:  # Handle first, because it's a subclass of VivCompileError
-      print(e)
-  except VivCompileError as e:
-      print(e)
-  ```
+```python
+from pathlib import Path
+from viv_compiler import compile_from_path, VivCompileError, VivParseError
+from viv_compiler.external_types import ContentBundle
 
-* Compile Viv source code directly from a string:
+try:
+    content_bundle: ContentBundle = compile_from_path(
+        source_file_path=Path("my-actions.viv")
+    )
+    print("Compilation succeeded:", content_bundle)
+except VivParseError as e:  # Handle first, because it's a subclass of VivCompileError
+    print(e)
+except VivCompileError as e:
+    print(e)
+```
 
-  ```python
-  from viv_compiler import compile_from_string
-  
-  source_code = """
+Compile Viv source code directly from a string:
+
+```python
+from viv_compiler import compile_from_string
+
+source_code = """
+action greet:
+    roles:
+        @greeter:
+            as: initiator
+"""
+bundle = compile_from_string(source_code)
+```
+
+Print out a parse error:
+
+```python
+from pathlib import Path
+from viv_compiler import compile_from_path, VivParseError
+
+try:
+    compile_from_path(Path("hamlet.viv"))
+except VivParseError as e:
+    print(e)
+```
+
+```
+Source file could not be parsed:
+
+- File: /Users/vivian/hamlet.viv
+- Position: line 21, col 13
+- Context (failed at *): ...queue [*]plot-reven...
+- Viable next tokens: action, action-selector, plan, plan-selector
+```
+
+Print out a compile error:
+
+```python
+from pathlib import Path
+from viv_compiler import compile_from_path, VivCompileError
+
+try:
+    compile_from_path(Path("hamlet.viv"))
+except VivCompileError as e:
+    print(e)
+```
+
+```
+Action 'greet' has no 'initiator' role (every action requires exactly one role labeled 'as: initiator')
+
+/Users/vivian/hamlet.viv:14:1
+
   action greet:
       roles:
           @greeter:
-              as: initiator
-  """
-  bundle = compile_from_string(source_code)
-  ```
+              as: greeter
+```
 
-* Print out a parse error:
+Inspect an error's structured fields to build a custom diagnostic (e.g., for a CI reporter or editor integration):
 
-  ```python
-  from pathlib import Path
-  from viv_compiler import compile_from_path, VivParseError
+```python
+from pathlib import Path
+from viv_compiler import compile_from_path, VivCompileError
 
-  try:
-      compile_from_path(Path("hamlet.viv"))
-  except VivParseError as e:
-      print(e)
-  ```
-
-  ```
-  Source file could not be parsed:
-
-  - File: /Users/vivian/hamlet.viv
-  - Position: line 21, col 13
-  - Context (failed at *): ...queue [*]plot-reven...
-  - Viable next tokens: action, action-selector, plan, plan-selector
-  ```
-
-* Print out a compile error:
-
-  ```python
-  from pathlib import Path
-  from viv_compiler import compile_from_path, VivCompileError
-
-  try:
-      compile_from_path(Path("hamlet.viv"))
-  except VivCompileError as e:
-      print(e)
-  ```
-
-  ```
-  Action 'greet' has no 'initiator' role (every action requires exactly one role labeled 'as: initiator')
-
-  /Users/vivian/hamlet.viv:14:1
-
-    action greet:
-        roles:
-            @greeter:
-                as: greeter
-  ```
-
-* Inspect an error's structured fields to build a custom diagnostic (e.g., for a CI reporter or editor integration):
-
-  ```python
-  from pathlib import Path
-  from viv_compiler import compile_from_path, VivCompileError
-  
-  try:
-      compile_from_path(Path("hamlet.viv"))
-  except VivCompileError as e:
-      location = f"{e.file_path.name}:{e.line}:{e.column}" if e.file_path else "unknown"
-      print(f"[{location}] {e.msg}")
-      if e.code:
-          print()
-          for line in e.code.splitlines():
-              print(f"  | {line}")
-  ```
+try:
+    compile_from_path(Path("hamlet.viv"))
+except VivCompileError as e:
+    location = f"{e.file_path.name}:{e.line}:{e.column}" if e.file_path else "unknown"
+    print(f"[{location}] {e.msg}")
+    if e.code:
+        print()
+        for line in e.code.splitlines():
+            print(f"  | {line}")
+```
