@@ -25,6 +25,7 @@ Below, you'll find a high-level overview of the project, mostly in the form of l
 
 ## Table of Contents
 
+- [Status](#status)
 - [Requirements](#requirements)
 - [Quickstart](#quickstart)
 - [Packages](#packages)
@@ -33,6 +34,16 @@ Below, you'll find a high-level overview of the project, mostly in the form of l
 - [Monorepo Layout](#monorepo-layout)
 - [Contributing](#contributing)
 - [License](#license)
+
+
+## Status
+
+Viv is in **open beta**. After several months of active development and a few years of more sporadic work, the project is ready for experimentation and real-world use. Here's where things stand:
+
+* Each system [component](#packages) is versioned independently, always under [semantic versioning](https://semver.org/). The respective latest versions of the components will always be compatible with one another.
+* Currently all components are in the `0.x` series and approaching `1.0`, but for the time being I'm leaving the door open for breaking changes. These are expected to be infrequent, small in scope (e.g., a syntax tweak in the DSL), and clearly documented. Most ongoing changes will be additive and driven by feature requests.
+* The system is backed by 1000+ tests across the component test suites, all of which run via CI on every push.
+* Viv currently ships a single [runtime](runtimes/js/README.md), targeting JavaScript (and TypeScript) codebases. A C# runtime tailored for Unity is planned. If you can't run JavaScript in your project, you likely can't use Viv today.
 
 
 ## Requirements
