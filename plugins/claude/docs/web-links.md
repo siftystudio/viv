@@ -26,7 +26,7 @@ URLs are not clickable in Claude Code's terminal. When sharing a link with the u
 | Landing page                                                  | https://viv.sifty.studio |
 | Quickstart                                                    | https://viv.sifty.studio/quickstart/ |
 | Introduction: Overview                                        | https://viv.sifty.studio/introduction/ |
-| Introduction: Tour (revenge walkthrough)                      | https://viv.sifty.studio/introduction/example/ |
+| Introduction: Tour (revenge walkthrough)                      | https://viv.sifty.studio/introduction/tour/ |
 | Language Reference: Preamble                                  | https://viv.sifty.studio/reference/language/00-preamble/ |
 | Language Reference: Actions                                   | https://viv.sifty.studio/reference/language/10-actions/ |
 | Language Reference: Reactions                                 | https://viv.sifty.studio/reference/language/11-reactions/ |

@@ -10,7 +10,7 @@ export const collections = {
                 "index.mdx",
                 "quickstart/quickstart.{md,mdx}",
                 "introduction/overview.{md,mdx}",
-                "introduction/example.md",
+                "introduction/tour.md",
                 "reference/language/*.{md,mdx}",
                 "reference/compiler/**/*.{md,mdx}",
                 "background/history-of-viv.md",
@@ -20,7 +20,6 @@ export const collections = {
                 const slugMap: Record<string, string> = {
                     "quickstart/quickstart": "quickstart",
                     "introduction/overview": "introduction",
-                    "introduction/example": "introduction/example",
                     "reference/compiler/index": "reference/compiler",
                 };
                 return slugMap[id] ?? id;

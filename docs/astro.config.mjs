@@ -100,7 +100,7 @@ export default defineConfig({
                     label: "Introduction",
                     items: [
                         { label: "Overview", slug: "introduction" },
-                        { label: "Tour: A Revenge Story", slug: "introduction/example" },
+                        { label: "Tour: A Revenge Story", slug: "introduction/tour" },
                     ],
                 },
                 {
