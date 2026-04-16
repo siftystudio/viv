@@ -1,12 +1,12 @@
 # Viv Sublime Text Package
 
-`Viv` is the Sublime Text package for [**Viv**](https://viv.sifty.studio), an engine for **emergent narrative** in games and simulations.
+`Viv` is the [Sublime Text](https://www.sublimetext.com) package for [**Viv**](https://viv.sifty.studio), an engine for **emergent narrative** in games and simulations.
 
-The Viv project centers on a rich DSL that authors use to define the **actions** that characters can take in a simulated storyworld, along with material that enables **story sifting**—the task of automatically identifying stories that emerge as the simulation proceeds.
+The Viv project centers on a rich DSL that authors use to define the **actions** that characters can take in a simulated storyworld, along with constructs that drive **story sifting**—the task of automatically identifying stories that emerge as the simulation proceeds.
 
-This package is a lightweight **editor plugin** for the project, providing various forms of language support for the Viv DSL. It's a good tool for quickly viewing or editing Viv code without the overhead entailed in firing up an IDE.
+This package is a lightweight **editor plugin** for the project, providing various forms of language support for the Viv DSL. It's a good tool for quickly viewing or editing Viv code without the overhead of firing up an IDE.
 
-*For more robust alternatives, try the [Viv JetBrains plugin](https://plugins.jetbrains.com/plugin/31012-viv) (recommended) or the [Viv VS Code extension](https://marketplace.visualstudio.com/items?itemName=siftystudio.viv).*
+*For more robust alternatives, try the [JetBrains plugin](https://plugins.jetbrains.com/plugin/31012-viv) (recommended) or the [VS Code extension](https://marketplace.visualstudio.com/items?itemName=siftystudio.viv).*
 
 
 ## Table of Contents
@@ -14,7 +14,7 @@ This package is a lightweight **editor plugin** for the project, providing vario
 - [Features](#features)
 - [Requirements](#requirements)
 - [Getting Started](#getting-started)
-- [Color Themes](#color-themes)
+- [Color Schemes](#color-schemes)
 - [Compiler Integration](#compiler-integration)
 - [Boilerplate Snippets](#boilerplate-snippets)
 - [Updates](#updates)
@@ -73,31 +73,59 @@ This package is a lightweight **editor plugin** for the project, providing vario
 
 * Create or open a `.viv` file in Sublime Text. Syntax highlighting should activate automatically.
 
-* Choose a Viv color theme (see [Color Themes](#color-themes)).
+* Choose a Viv color scheme (see [Color Schemes](#color-schemes)).
 
 
-## Color Themes
+## Color Schemes
 
-While any Sublime Text color scheme will color the Viv syntax, certain semantic distinctions may be collapsed. Instead, we recommend using one of the bundled color schemes designed specifically for Viv. Note that selecting a Viv color scheme will replace your current Sublime Text color scheme globally.
+While any Sublime Text color scheme will color the Viv syntax, certain semantic distinctions may be collapsed. Instead, we recommend using one of the bundled color schemes designed specifically for Viv.
 
-Here are the current themes, all of which come bundled with the Viv Sublime Text package:
+Here are the current color schemes, all of which come bundled with the Viv Sublime Text package:
 
-| Theme | Dark Variant | Light Variant | Description |
-|-------|--------------|---------------|-------------|
+| Color Scheme | Dark Variant | Light Variant | Description |
+|--------------|--------------|---------------|-------------|
 | Viv Warm | x | x | Earthy and rich. |
 | Viv Cool | x | x | Calm and restrained. |
 | Viv Electric | x | x | Bold and saturated. |
 
-To select a theme:
+There are two ways to apply a Viv color scheme in Sublime Text:
+
+*	**[Set it as your global color scheme.](#setting-a-global-color-scheme)** This option replaces any current color scheme that you may have in place, across all file types. It's recommended if you plan to use Sublime Text exclusively for Viv code.
+*	**[Scope it to `.viv` files only.](#scoping-to-viv-files)** This option leaves your current color scheme in place everywhere else, making it ideal if you use Sublime Text to edit other kinds of files too.
+
+### Setting a Global Color Scheme
+
+To set a Viv color scheme as your global color scheme, for all file types:
 
 * In Sublime Text, open `theme-preview.viv`, which is available [here](https://github.com/siftystudio/viv/blob/main/syntax/examples/theme-preview.viv).
-  * This Viv example file showcases the language's syntax highlighting by employing a variety of language features, making it suitable for evaluating color themes.
+  * This Viv example file showcases the language's syntax highlighting by employing a variety of language features, making it suitable for evaluating color schemes.
 
-* Open the command palette (`Cmd+Shift+P` / `Ctrl+Shift+P`), search for `UI: Select Color Scheme`, and select it to turn the command palette into a theme picker.
-* Search for `viv` and browse through the six Viv themes using the arrows keys.
+* Open the command palette (`Cmd+Shift+P` / `Ctrl+Shift+P`), search for `UI: Select Color Scheme`, and select it to turn the command palette into a color-scheme picker.
+* Search for `viv` and browse through the six Viv color schemes using the arrows keys.
   * The preview will update live as you move through them.
 
-* Pick your favorite, and press `Enter` to set it as your new color theme.
+* Pick your favorite, and press `Enter` to set it as your new color scheme.
+  * Our favorite is `Viv Warm (Dark)`, for what it's worth.
+
+### Scoping to Viv Files
+
+To apply a Viv color scheme only when a `.viv` file is active, leaving your global color scheme in place for all other file types:
+
+* Use `UI: Select Color Scheme` to decide on your favorite Viv color scheme.
+
+  * See [Setting a Global Color Scheme](#setting-a-global-color-scheme) for instructions on using `UI: Select Color Scheme`, but stop before the final step, which applies the scheme globally (as opposed to `.viv` files only).
+
+* Open any `.viv` file.
+* With the `.viv` file as your active tab, open the command palette (`Cmd+Shift+P` / `Ctrl+Shift+P`), search for `Preferences: Settings - Syntax Specific`, and select it. This will open a `Viv.sublime-settings` file for you.
+* In the user-settings pane (on the right), add a `color_scheme` entry pointing to your preferred Viv color scheme, using one of the following six options: `Viv Warm (Light)`, `Viv Warm (Dark)`, `Viv Cool (Light)`, `Viv Cool (Dark)`, `Viv Electric (Light)`, or `Viv Electric (Dark)`. Here's an example:
+
+  ```json
+  {
+    "color_scheme": "Packages/Viv/schemes/Viv Warm (Light).sublime-color-scheme"
+  }
+  ```
+
+* Save the file. The Viv color scheme will now apply only to `.viv` files, and your global color scheme will remain in effect everywhere else.
 
 
 ## Compiler Integration

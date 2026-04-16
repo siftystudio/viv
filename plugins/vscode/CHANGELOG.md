@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Changed
 
 * Add generic TextMate scope rules to all color themes, enabling syntax highlighting for non-Viv languages (JavaScript, Python, etc.).
-* Update background color for `Viv Warm (Light)` theme (to match corresponding Sublime Text theme).
+* Update background color for `Viv Warm (Light)` theme (to match corresponding Sublime Text color scheme).
 
 ## [0.10.4] – 2026-03-31
 

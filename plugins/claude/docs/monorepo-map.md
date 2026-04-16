@@ -155,7 +155,7 @@ High-level user-facing documentation for the Viv compiler toolchain — how to i
 | JetBrains autocompletion     | `plugins/jetbrains/src/main/kotlin/studio/sifty/viv/VivCompletionContributor.kt` | Context-aware autocompletion logic. Keywords: autocompletion, completions, JetBrains |
 | JetBrains hover docs         | `plugins/jetbrains/src/main/kotlin/studio/sifty/viv/VivDocumentationProvider.kt` | Hover documentation provider. Keywords: hover, documentation, JetBrains |
 | JetBrains snippets           | `plugins/jetbrains/src/main/resources/liveTemplates/Viv.xml` | Live templates (code snippets). Keywords: snippets, live templates, JetBrains |
-| Sublime Text package         | `plugins/sublime/` | Sublime Text package — syntax, snippets, build system, themes. Keywords: Sublime, package, editor |
+| Sublime Text package         | `plugins/sublime/` | Sublime Text package — syntax, snippets, build system, color schemes. Keywords: Sublime, package, editor |
 | Sublime Text compiler bridge | `plugins/sublime/bridge/compiler_bridge.py` | Python bridge invoking the compiler from Sublime. Keywords: bridge, compiler, Sublime, Python |
 | Sublime Text syntax          | `plugins/sublime/Viv.sublime-syntax` | Native Sublime syntax definition. Keywords: syntax, Sublime, highlighting |
 

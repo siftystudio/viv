@@ -212,7 +212,7 @@ contexts:
     - match: '{{kwpre}}(reserved|template|join){{kwb}}'
       scope: keyword.operator.viv
 
-    # Keyword parameters: partial, none (italic via bundled themes targeting keyword.other.parameter.viv)
+    # Keyword parameters: partial, none (italic via bundled color schemes targeting keyword.other.parameter.viv)
     - match: '{{kwpre}}(partial|none){{kwb}}'
       scope: keyword.other.parameter.viv
 

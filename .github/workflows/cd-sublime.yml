@@ -70,7 +70,7 @@ jobs:
             "Indentation Rules.tmPreferences" \
             bridge/ \
             repository.json \
-            themes/ \
+            schemes/ \
             LICENSE.txt \
             README.md \
             CHANGELOG.md
