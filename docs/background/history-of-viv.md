@@ -5,11 +5,13 @@ next:
   link: /reference/language/00-preamble/
 ---
 
-> *The construction of the system is inevitable.*
+> > *The construction of the system is inevitable.*
+> >
+> > — Sheldon Klein (1972)
 >
-> — Sheldon Klein (1972)
+> — James Ryan (2018)
 
-What follows is a brief account of the Viv project so far.
+What follows is a brief account of the Viv project so far, which I wrote up both to provide intellectual context and to credit folks who have contributed along the way.
 
 ## *World* and *Talk of the Town*
 
@@ -17,11 +19,11 @@ Since I first learned to code, I've been building character simulations. My earl
 
 ## Toward actions
 
-As I was developing (Ryan et al. 2015a) the concept that I later termed *story sifting* (Ryan 2018)—the task of automatically identifying stories that emerge from computer simulations—I became interested in building an engine where the fundamental unit of simulation would be discrete character *actions*.
+As I was developing (Ryan et al. 2015a) the concept that I later termed *story sifting* (Ryan 2018)—the task of automatically identifying stories that emerge from computer simulations—I became interested in building an engine where the fundamental unit of simulation would be discrete character *actions*. (Note that the term 'story sifting' was actually coined by my PhD co-advisor, Michael Mateas, in an offhand conversation.)
 
 In such a system, story sifting could be reduced to the task of matching predefined action patterns against a database of historical actions (what I later called a *chronicle*). This would be much easier than having to first construct such a database by inferring actions from raw state changes—action recognition is hard. I was also interested in developing an action-centric approach to character knowledge phenomena, where characters form memories about actions and can propagate knowledge about them through the performance of subsequent actions. This would produce more interesting character knowledge relative to what was being modeled in *Talk of the Town* (Ryan et al. 2015b).
 
-With this vision in mind, I set out to incorporate the *Ensemble* action system (Samuel et al. 2015) into *Talk of the Town*, with the help of undergraduate student Joyce Scalettar. As I later explained in my thesis (Ryan 2018, 595–609), I found certain aspects of *Ensemble* to be limiting—e.g., every action must involve at least two characters, which precludes single-character introspections. 
+With this vision in mind, I set out to incorporate the *Ensemble* action system (Samuel et al. 2015) into *Talk of the Town*, with the help of undergraduate student Joyce Scalettar. As I later explained in my thesis (Ryan 2018, pp. 595–609), I found certain aspects of *Ensemble* to be limiting—e.g., every action must involve at least two characters, which precludes single-character introspections. 
 
 So I decided to develop my own action formalism, which became the centerpiece of a new simulation engine, *Hennepin*.
 
@@ -33,13 +35,13 @@ In *Hennepin*, I defined character actions directly in Python dictionaries, to t
 
 ## Related work
 
-The action formalism undergirding *Hennepin*, and subsequently that of *Viv*, was influenced by earlier action systems such as *Saga II* (Morse 1960), *MESSY* (Appelbaum and Klein 1976), *Universe* (Lebowitz 1985), *Hap* (Loyall and Bates 1991), *ABL* (Mateas and Stern 2004), *Praxis* (Evans and Short 2013), *Comme il Faut* (McCoy et al. 2014), *Ceptre* (Martens 2015), and especially *Ensemble* (Samuel et al. 2015). Related recent systems include *Felt* (Kreminski et al. 2019) and *Kismet* (Summerville and Samuel 2020), and a detailed comparison between Viv and similar projects will be forthcoming.
+The action formalism undergirding *Hennepin*, and subsequently that of *Viv*, was influenced by earlier action systems such as *Saga II* (Morse 1960), *MESSY* (Appelbaum and Klein 1976), *Universe* (Lebowitz 1985), *Hap* (Loyall and Bates 1991), *ABL* (Mateas and Stern 2004), *Praxis* (Evans and Short 2013), *Comme il Faut* (McCoy et al. 2014), *Ceptre* (Martens 2015), and especially *Ensemble* (Samuel et al. 2015). Related recent systems include *Felt* (Kreminski et al. 2019) and *Kismet* (Summerville and Samuel 2020), and a detailed comparison between Viv and similar projects will be forthcoming. For now, I want to specifically name Max Kreminski, who has led various research efforts in story sifting that have greatly advanced the concept, both technically and socially.
 
 ## Conception
 
 In early 2022, I was a visiting professor at Carleton College, teaching a class on programming languages. This experience inspired me to finally take up Ian Horswill's idea of creating a DSL for defining *Hennepin*-style character actions. For this project, I enlisted the help of two undergraduates, Aiden Chang and Owen Barnett. Working together, the pair developed an initial grammar and parser for the language, working from a set of example actions that I had written in a notation that I designed.
 
-I decided to name the language after my daughter, Vivian, with a nod to the Latin root *-viv-*, whose connotations include *life*, *alive*, *lively*.
+I decided to name the language after my daughter, Vivian, with a nod to the Latin root *-viv-*, whose connotations include *life*, *aliveness*, *liveliness*.
 
 ## Initial development
 
@@ -47,7 +49,7 @@ A few months later, I started working as Narrative Systems Lead at a small compa
 
 While I had originally planned for Viv to compile actions into the format expected by *Hennepin*, for Hexagram I ended up creating a new simulation engine called *Esper*. Central to this engine is an action manager that is based on the one in *Hennepin*, this time written in JavaScript. During this period, *Esper* (and thus also Viv) became central to an ambitious prototype, attached to a really cool IP, that a team of us created. Unfortunately, it was never released nor announced.
 
-One of my colleagues at Hexagram was Aaron A. Reed, a former UCSC labmate, who made countless contributions as the most prolific Viv author, a guinea pig for many early versions of the system, and an occasional direct contributor to the original codebase.
+One of my colleagues at Hexagram was Aaron A. Reed, a former labmate in the Expressive Intelligence Studio at UC Santa Cruz. Aaron made countless contributions as the most prolific Viv author, a guinea pig for many early versions of the system, and an occasional direct contributor to the original codebase.
 
 As I moved on to other systems at Hexagram, and later other companies, the Viv project went on pause beginning at the end of 2023.
 
@@ -65,7 +67,7 @@ The compiler is now published as a PyPI package, the JavaScript runtime as an np
 
 Viv is freely available for non-commercial use, while commercial use requires a license from [Sifty](https://sifty.studio), a boutique software studio that I set up for this very purpose (though additional projects are in the works too).
 
-My hope is that Viv will find use in videogame projects and any other applications where teams seek to produce interesting emergent narrative.
+My hope is that Viv will find use in videogame projects and any other applications where teams seek to produce simulated worlds teeming with emergent storylines.
 
 ## References
 
