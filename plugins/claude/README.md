@@ -15,6 +15,7 @@ Skills include `/setup` for fully automated Viv installation and project setup, 
 - [Compatibility](#compatibility)
 - [Updating](#updating)
 - [Installing a Specific Release](#installing-a-specific-release)
+- [Uninstalling](#uninstalling)
 - [Changelog](#changelog)
 - [Security and Privacy](#security-and-privacy)
 - [License](#license)
@@ -64,66 +65,87 @@ Its copy of the Viv codebase is stored on your machine as part of its own intern
 
 After installing the plugin, the following Viv skills will be globally available to you across all Claude Code sessions.
 
-To list all the skills, type `/viv` in a Claude Code session, which will bring up a scrollable autocomplete dropdown. To use a skill, simply type it in—either in its full form, like `/viv:ask`, or in its abbreviated form, like `/ask`. Most of the Viv skills allow a kind of argument in the form of surrounding prose, but a skill will work however invoked, as long as your message includes it.
+To list all the skills, type `/viv` in a Claude Code session, which will bring up a scrollable autocomplete dropdown. **To use a skill, simply type it in—either in its full form, like `/viv:ask`, or in its abbreviated form, like `/ask`.** Most of the Viv skills allow a kind of argument in the form of surrounding prose, but a skill will work however invoked, as long as your message includes it.
 
 Also note that you can just talk about Viv with Claude naturally, assuming you're in a project where `/viv:setup` has been run, in which case it will automatically select and use the right skill based on what you're doing.
 
-* **`/viv:setup`** (alias `/setup`)
-  - Set up Viv in your project. Walks you through installing the compiler and runtime, choosing an editor plugin, and configuring your environment. Run this first on a per-project basis, and do so from a project folder (ideally the project root).
-  - *Example: `/setup` (triggers highly structured onboarding flow).*
-* **`/viv:sync`** (alias `/sync`)
-  - Check for newer versions of the Viv compiler, runtime, monorepo, editor plugins, and the Claude plugin itself. Claude reviews each component's changelog for breaking changes, presents the delta, and offers to upgrade what's behind—with your approval. Also handles downgrades, reinstalls, and reconciling drift from changes made outside the plugin.
-  - *Example: `/sync` (triggers an update check across all Viv components).*
-* **`/viv:ask`** (alias `/ask`)
-  - Ask anything about Viv: language constructs, authoring workflows, the compiler, the runtime, emergent narrative in general. Claude will look up the answer using the Viv materials copied into its plugin data.
-  - *Example: `/ask what's the difference between a query and a sifting pattern`.*
-* **`/viv:write`** (alias `/write`)
-  - Tell Claude what to make and it will write the Viv code—actions, plans, sifting patterns, tropes, queries, selectors, and more. The code will be compiled and verified before being presented to you.
-  - *Example: `/write a sifting pattern that matches rags-to-riches storylines`.*
-* **`/viv:fix`** (alias `/fix`)
-  - Paste a compiler error, point at a broken file, or describe an unexpected runtime behavior. Claude will diagnose the issue, trace through the compiler and/or runtime source if needed, and propose a fix. If the fix is big, you can use `/viv:write` and/or `/viv:build` to carry it out.
-  - *Example: `/fix the compiler error in mutiny.viv`.*
-* **`/viv:critique`** (alias `/critique`)
-  - Hand Claude your working code and it will review it for optimization opportunities, narrative potential, clarity, completeness, robustness, and style. In lieu of making changes, this skill typically produces a report (which can be handed off to `/viv:write`, `/viv:build`, or `/viv:fix`).
-  - *Example: `/critique all my project Viv code for optimization opportunities`.*
-* **`/viv:study`** (alias `/study`)
-  - Point Claude at a topic and it will carry out a deep dive into the Viv internals, your project's structure, or a specific language feature, returning a detailed briefing.
-  - *Example: `/study how to do parallel tracks in a plan`.*
-* **`/viv:design`** (alias `/design`)
-  - Describe what you want to build—a storyworld, an entity schema, an adapter architecture, a test strategy—and Claude will produce a design document that can be handed off to `/viv:write` and/or `/viv:build`.
-  - *Example: `/design a storyworld around sound system rivalries in 1950s Kingston`.*
-* **`/viv:build`** (alias `/build`)
-  - Claude will write your host adapter, test harness, simulation runner, or other integration code. Just tell it what you're after.
-  - *Example: `/build a Viv adapter for my Express app and a test harness that runs 100 timesteps`.*
-* **`/viv:feedback`** (alias `/feedback`)
-  - Report issues or suggestions to the Viv team, directly from Claude Code. Claude will draft the feedback, search for similar existing issues, and file it on GitHub on your behalf (pending your approval).
-  - *Example: `/feedback` (triggers a structured process for composing and submitting an issue on this GitHub repository).*
+### **`/viv:setup`**
+
+Set up Viv in your project. Walks you through installing the compiler and runtime, choosing an editor plugin, and configuring your environment. Run this first on a per-project basis, and do so from a project folder (ideally the project root).
+
+*Example: `/setup` (triggers highly structured onboarding flow).*
+
+### **`/viv:ask`**
+
+Ask anything about Viv: language constructs, authoring workflows, the compiler, the runtime, emergent narrative in general. Claude will look up the answer using the Viv materials copied into its plugin data.
+
+*Example: `/ask what's the difference between a query and a sifting pattern`.*
+
+### **`/viv:write`**
+
+Tell Claude what to make and it will write the Viv code—actions, plans, sifting patterns, tropes, queries, selectors, and more. The code will be compiled and verified before being presented to you.
+
+*Example: `/write a sifting pattern that matches rags-to-riches storylines`.*
+
+### **`/viv:fix`**
+
+Paste a compiler error, point at a broken file, or describe an unexpected runtime behavior. Claude will diagnose the issue, trace through the compiler and/or runtime source if needed, and propose a fix. If the fix is big, you can use `/viv:write` and/or `/viv:build` to carry it out.
+
+*Example: `/fix the compiler error in mutiny.viv`.*
+
+### **`/viv:critique`**
+
+Hand Claude your working code and it will review it for optimization opportunities, narrative potential, clarity, completeness, robustness, and style. In lieu of making changes, this skill typically produces a report (which can be handed off to `/viv:write`, `/viv:build`, or `/viv:fix`).
+
+*Example: `/critique all my project Viv code for optimization opportunities`.*
+
+### **`/viv:study`**
+
+Point Claude at a topic and it will carry out a deep dive into the Viv internals, your project's structure, or a specific language feature, returning a detailed briefing.
+
+*Example: `/study how to do parallel tracks in a plan`.*
+
+### **`/viv:design`**
+
+Describe what you want to build—a storyworld, an entity schema, an adapter architecture, a test strategy—and Claude will produce a design document that can be handed off to `/viv:write` and/or `/viv:build`.
+
+*Example: `/design a storyworld around sound system rivalries in 1950s Kingston`.*
+
+### **`/viv:build`**
+
+Claude will write your host adapter, test harness, simulation runner, or other integration code. Just tell it what you're after.
+
+*Example: `/build a Viv adapter for my Express app and a test harness that runs 100 timesteps`.*
+
+### **`/viv:sync`**
+
+Check for newer versions of the Viv compiler, runtime, monorepo, editor plugins, and the Claude plugin itself. Claude reviews each component's changelog for breaking changes, presents the delta, and offers to upgrade what's behind (with your approval). This skill also handles downgrades, reinstalls, and reconciling drift from changes made outside the plugin.
+
+Note: You will need to restart Claude Code in order for any update to this plugin itself to take effect.
+
+*Example: `/sync` (triggers an update check across all Viv components).*
+
+### **`/viv:feedback`**
+
+Report issues or suggestions to the Viv team, directly from Claude Code. Claude will draft the feedback, search for similar existing issues, and file it on GitHub on your behalf (pending your approval).
+
+*Example: `/feedback` (triggers a structured process for composing and submitting an issue on this GitHub repository).*
 
 ## Compatibility
 
-The plugin downloads a copy of the Viv monorepo that is matched to your installed compiler and runtime versions. If you update your compiler or runtime outside the plugin, Claude will notice the version mismatch the moment it becomes relevant and offer to run `/viv:sync` to reconcile. You can also run `/viv:sync` directly at any time to check whether your Viv components are behind the latest published versions.
+The plugin downloads a copy of the Viv monorepo that is matched to your installed compiler and runtime versions. If you update your compiler or runtime outside the plugin, Claude will notice the version mismatch the moment it becomes relevant and offer to run `/viv:sync` to reconcile. You can also run `/viv:sync` directly at any time, to check whether your Viv components are behind the latest published versions.
 
 ## Updating
 
-If you [enabled auto-update](#getting-started), the plugin will update automatically. But if auto-update is off, or if the latest version hasn't come through yet, you can update manually in one of two ways.
+If you [enabled auto-update](#getting-started), the plugin will update automatically. But if auto-update is off, or if the latest version hasn't come through yet, you can update in one of two ways.
 
-The easiest is to run `/viv:sync` in a Claude Code session. Sync checks for a newer plugin version alongside the rest of your Viv install (compiler, runtime, editor plugins, monorepo), reviews the relevant changelogs, and walks you through upgrading anything behind—including the plugin itself, via the cache-clear-and-reinstall dance below—with your consent. You'll still need to restart Claude Code afterward for a new plugin version to take effect.
-
-If you'd rather update the plugin by hand:
-
-* Clear the plugin cache and reinstall: `rm -rf ~/.claude/plugins/cache/siftystudio`.
-
-* Restart Claude Code and install again from scratch, following the instructions in [Getting Started](#getting-started).
+The easiest method is to run [`/viv:sync`](#vivsync) in a Claude Code session. If you'd rather update the plugin manually, [uninstall](#uninstalling) it and then [install](#getting-started) again from scratch. In either case, you'll need to restart Claude Code afterward for the new plugin version to take effect.
 
 ## Installing a Specific Release
 
 You can also install a specific version of the plugin, for instance to use an older version.
 
-* If you have a previous install, remove it first:
-
-  ```sh
-  rm -rf ~/.claude/plugins/cache/siftystudio/viv
-  ```
+* If you have a previous install, [uninstall](#uninstalling) it first.
 
 * Download the `.zip` file attached to the pertinent [GitHub release](https://github.com/siftystudio/viv/releases), and unzip it.
 
@@ -133,6 +155,30 @@ You can also install a specific version of the plugin, for instance to use an ol
   claude plugin marketplace add path/to/unzipped/<directory-name>
   claude plugin install viv@siftystudio
   ```
+
+## Uninstalling
+
+To fully remove the plugin:
+
+* Uninstall it via Claude Code:
+
+  ```sh
+  claude plugin uninstall viv@siftystudio
+  ```
+
+* Clear the marketplace cache. (Currently the `uninstall` command removes the plugin from your active install list but leaves the cached marketplace copy behind, which can cause a stale version to be served on future installs.)
+
+  - macOS / Linux:
+
+    ```sh
+    rm -rf ~/.claude/plugins/cache/siftystudio
+    ```
+
+  - Windows (PowerShell):
+
+    ```powershell
+    Remove-Item -Recurse -Force ~/.claude/plugins/cache/siftystudio
+    ```
 
 ## Changelog
 
