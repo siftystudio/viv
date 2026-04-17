@@ -44,7 +44,7 @@ viv-compiler = "viv_compiler.cli:main"
 [project.urls]
 Homepage = "https://viv.sifty.studio"
 Repository = "https://github.com/siftystudio/viv/tree/main/compiler"
-"Bug Tracker" = "https://github.com/siftystudio/viv/issues"
+"Bug Tracker" = "https://github.com/siftystudio/viv/issues?q=is%3Aissue+is%3Aopen+label%3Acompiler"
 Changelog = "https://github.com/siftystudio/viv/blob/main/compiler/CHANGELOG.md"
 
 [tool.poetry]

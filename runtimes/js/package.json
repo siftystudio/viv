@@ -28,7 +28,7 @@
     "directory": "runtimes/js"
   },
   "bugs": {
-    "url": "https://github.com/siftystudio/viv/issues"
+    "url": "https://github.com/siftystudio/viv/issues?q=is%3Aissue+is%3Aopen+label%3Aruntime"
   },
   "license": "SEE LICENSE IN LICENSE.txt",
   "type": "module",

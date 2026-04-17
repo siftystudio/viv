@@ -8,7 +8,7 @@
       "author": "Sifty",
       "homepage": "https://viv.sifty.studio",
       "readme": "https://raw.githubusercontent.com/siftystudio/viv/main/plugins/sublime/README.md",
-      "issues": "https://github.com/siftystudio/viv/issues",
+      "issues": "https://github.com/siftystudio/viv/issues?q=is%3Aissue+is%3Aopen+label%3Asublime",
       "donate": "https://ko-fi.com/siftystudio",
       "labels": ["language", "syntax", "dsl", "narrative", "simulation", "gamedev"],
       "compilerVersion": "0.11",

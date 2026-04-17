@@ -12,7 +12,7 @@
     "theme": "light"
   },
   "homepage": "https://viv.sifty.studio",
-  "bugs": "https://github.com/siftystudio/viv/issues",
+  "bugs": "https://github.com/siftystudio/viv/issues?q=is%3Aissue+is%3Aopen+label%3Avscode",
   "keywords": ["viv", "dsl", "emergent narrative", "game development", "simulation"],
   "repository": {
     "type": "git",
