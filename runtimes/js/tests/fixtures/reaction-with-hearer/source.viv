@@ -1,0 +1,40 @@
+// Action with both hearer-referencing and non-hearer-referencing effects and reactions, exercised via knowledge relay
+
+reserved action greet:
+    roles:
+        @greeter:
+            as: initiator
+        @other:
+            as: partner
+    effects:
+        ~recordHearer(@hearer)
+        ~recordGreeter(@greeter)
+    reactions:
+        queue action acknowledge:
+            with:
+                @acknowledger: @hearer
+        queue action ripple:
+            with:
+                @rippler: @greeter
+
+
+reserved action acknowledge:
+    roles:
+        @acknowledger:
+            as: initiator
+
+
+reserved action ripple:
+    roles:
+        @rippler:
+            as: initiator
+
+
+reserved action gossip:
+    roles:
+        @gossiper:
+            as: initiator
+        @listener:
+            as: partner
+        @incident:
+            as: action, precast

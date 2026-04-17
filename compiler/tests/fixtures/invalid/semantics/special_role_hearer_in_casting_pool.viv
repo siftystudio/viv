@@ -1,0 +1,7 @@
+action greet:
+    roles:
+        @greeter:
+            as: initiator
+        @target:
+            as: partner
+            from: @hearer.friends

@@ -207,7 +207,9 @@ def prevalidate_roles(*, combined_ast: internal_types.CombinedAST) -> None:
         _detect_casting_pool_optional_role_anchor(construct_definition=construct_definition)
         # Detect cycles across the casting pools for the construct roles
         _detect_casting_pool_cycle(construct_definition=construct_definition)
-        # Detect cases of a condition referencing a special role (@this, @hearer)
+        # Detect cases of a casting pool referencing a special role (`@this`, `@hearer`)
+        _detect_special_role_in_casting_pool(construct_definition=construct_definition)
+        # Detect cases of a condition referencing a special role (`@this`, `@hearer`)
         _detect_special_role_in_conditions(construct_definition=construct_definition)
         # Detect cases of a condition referencing multiple optional roles
         _detect_condition_referencing_multiple_optional_roles(construct_definition=construct_definition)
@@ -239,6 +241,41 @@ def _detect_reference_to_undefined_role(
                     f"{utils.CONSTRUCT_LABEL[construct_definition['type']]} '{construct_definition['name']}' "
                     f"references undefined role '{role_name}' in '{field_label[field_name]}' field"
                 )
+
+
+def _detect_special_role_in_casting_pool(
+    *, construct_definition: internal_types.IntermediateConstructDefinition
+) -> None:
+    """Ensure that the given construct definition has no references to special roles in any casting pool.
+
+    Special roles like `@this` and `@hearer` are not available during role casting, since at
+    that time the action has yet to be performed, meaning those concepts don't exist yet.
+
+    Args:
+        construct_definition: An intermediate construct definition.
+
+    Returns:
+        None.
+
+    Raises:
+        VivCompileError: A special role was referenced in a casting pool.
+    """
+    for role_definition in construct_definition['roles'].values():
+        if not role_definition['pool']:
+            continue
+        all_entity_references: list[external_types.EntityReference] = utils.get_all_expressions_of_type(
+            expression_type=external_types.ExpressionDiscriminator.ENTITY_REFERENCE,
+            ast_chunk=role_definition['pool']
+        )
+        for entity_reference in all_entity_references:
+            if entity_reference['value']['anchor'] in config.SPECIAL_ROLE_NAMES:
+                if not entity_reference['value']['local']:
+                    raise errors.VivCompileError(
+                        f"{utils.CONSTRUCT_LABEL[construct_definition['type']]} '{construct_definition['name']}' "
+                        f"references special role '@{entity_reference['value']['anchor']}' in casting pool for "
+                        f"role '{role_definition['name']}' "
+                        f"(special roles are not available during role casting)"
+                    )
 
 
 def _detect_special_role_in_conditions(*, construct_definition: internal_types.IntermediateConstructDefinition) -> None:

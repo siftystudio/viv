@@ -14,6 +14,21 @@ def test_reaction_role_references() -> None:
     assert set(action_reactions[0]["references"]) == {"provoker", "target"}
 
 
+def test_hearer_role_appears_in_references() -> None:
+    """Compile the <action_with_hearer_reaction> fixture and check that `hearer` appears in references.
+
+    The runtime relies on the `hearer` role name appearing in the `references` list of any wrapped
+    effect or reaction whose body references `@hearer`, in order to (a) skip the expression during
+    initial performance (when `@hearer` is unbound), and (b) select it during post-hoc dispatch.
+    """
+    bundle = compile_from_path(source_file_path=VALID_FIXTURES_SUBDIR / "action_with_hearer_reaction.viv")
+    greet = bundle["actions"]["greet"]
+    assert len(greet["effects"]) == 1
+    assert "hearer" in greet["effects"][0]["references"]
+    assert len(greet["reactions"]) == 1
+    assert "hearer" in greet["reactions"][0]["references"]
+
+
 def test_reaction_queue_plan() -> None:
     """Check that a reaction can queue a plan (Bug 4)."""
     bundle = compile_from_path(source_file_path=VALID_FIXTURES_SUBDIR / "action_with_reactions.viv")

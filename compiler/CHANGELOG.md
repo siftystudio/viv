@@ -4,6 +4,16 @@ All notable changes to the Viv compiler (`viv-compiler`) will be documented in t
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.11.2] – 2026-04-17
+
+### Added
+
+* Validation check rejecting references to special roles (`@this`, `@hearer`) in casting pools.
+
+### Fixed
+
+* The `references` field on wrapped effects and reactions omitted the `@hearer` and `@this` special roles, but these are required to be present at runtime.
+
 ## [0.11.1] – 2026-04-14
 
 ### Added

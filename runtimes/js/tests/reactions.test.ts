@@ -16,9 +16,16 @@ import {
     AGGRESSOR_ID,
     TARGET_ID as URG_TARGET_ID,
 } from "./fixtures/reaction-with-urgency/setup";
+import {
+    GREETER_ID as HEARER_GREETER_ID,
+    LISTENER_ID as HEARER_LISTENER_ID,
+    OTHER_ID as HEARER_OTHER_ID,
+    setup as setupHearer,
+} from "./fixtures/reaction-with-hearer/setup";
 
 const bundle = loadBundle("action-with-reactions");
 const urgencyBundle = loadBundle("reaction-with-urgency");
+const hearerBundle = loadBundle("reaction-with-hearer");
 
 describe("reactions", () => {
     beforeEach(() => {
@@ -151,5 +158,79 @@ describe("urgent reactions", () => {
         // Without urgentOnly, it should succeed
         const normalResult = await selectAction({ initiatorID: TARGET_ID });
         expect(normalResult).not.toBeNull();
+    });
+});
+
+describe("hearer reactions and effects", () => {
+    beforeEach(() => {
+        resetActionIDCounter();
+    });
+
+    it("skips hearer-referencing effects and reactions during initial performance", async () => {
+        const { state, adapter, marks } = setupHearer();
+        initializeVivRuntime({
+            contentBundle: hearerBundle,
+            adapter,
+        });
+        // Perform the greet: hearer is unbound during initial performance
+        await attemptAction({
+            actionName: "greet",
+            initiatorID: HEARER_GREETER_ID,
+            precastBindings: {
+                greeter: [HEARER_GREETER_ID],
+                other: [HEARER_OTHER_ID],
+            },
+        });
+        // The non-hearer effect fires; the hearer-referencing effect is skipped
+        expect(marks.greeters).toEqual([HEARER_GREETER_ID]);
+        expect(marks.hearers).toEqual([]);
+        // The non-hearer reaction queued a ripple for the greeter
+        const next = await selectAction({ initiatorID: HEARER_GREETER_ID });
+        expect(next).not.toBeNull();
+        const rippleAction = state.entities[state.actions[state.actions.length - 1]] as any;
+        expect(rippleAction.name).toBe("ripple");
+        // The hearer-referencing reaction was skipped, so no acknowledge is queued for the other
+        const acknowledgeForOther = await selectAction({ initiatorID: HEARER_OTHER_ID });
+        expect(acknowledgeForOther).toBeNull();
+    });
+
+    it("fires hearer-referencing effects and reactions during post-hoc knowledge relay", async () => {
+        const { state, adapter, marks } = setupHearer();
+        initializeVivRuntime({
+            contentBundle: hearerBundle,
+            adapter,
+        });
+        // Perform the greet (initial performance)
+        await attemptAction({
+            actionName: "greet",
+            initiatorID: HEARER_GREETER_ID,
+            precastBindings: {
+                greeter: [HEARER_GREETER_ID],
+                other: [HEARER_OTHER_ID],
+            },
+        });
+        const incidentID = state.actions[0];
+        // Reset marks so the next assertions isolate post-hoc behavior
+        marks.hearers.length = 0;
+        marks.greeters.length = 0;
+        // Gossip to the listener, casting the greet in the `@incident` role to relay knowledge
+        await attemptAction({
+            actionName: "gossip",
+            initiatorID: HEARER_GREETER_ID,
+            precastBindings: {
+                gossiper: [HEARER_GREETER_ID],
+                listener: [HEARER_LISTENER_ID],
+                incident: [incidentID],
+            },
+        });
+        // The hearer-referencing effect fired for the listener, who is bound as `@hearer` post-hoc
+        expect(marks.hearers).toEqual([HEARER_LISTENER_ID]);
+        // The non-hearer effect did not fire again during post-hoc dispatch
+        expect(marks.greeters).toEqual([]);
+        // The hearer-referencing reaction queued an acknowledge for the listener
+        const listenerNext = await selectAction({ initiatorID: HEARER_LISTENER_ID });
+        expect(listenerNext).not.toBeNull();
+        const acknowledgeAction = state.entities[state.actions[state.actions.length - 1]] as any;
+        expect(acknowledgeAction.name).toBe("acknowledge");
     });
 });

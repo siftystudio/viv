@@ -6,7 +6,7 @@ from typing import Any, Callable, Final
 
 from arpeggio import NonTerminal, SemanticActionResults
 
-from viv_compiler import config, external_types, internal_types
+from viv_compiler import external_types, internal_types
 
 
 # A mapping from construct discriminator to a string suitable for identifying the construct type in an error message
@@ -167,8 +167,7 @@ def get_all_referenced_roles(*, ast_chunk: Any) -> list[external_types.RoleName]
         ast_chunk_type = ast_chunk.get('type')
         if ast_chunk_type in reference_discriminators:
             if not ast_chunk['value']['local']:
-                if ast_chunk['value']['anchor'] not in config.SPECIAL_ROLE_NAMES:
-                    roles_referenced_so_far.append(ast_chunk['value']['anchor'])
+                roles_referenced_so_far.append(ast_chunk['value']['anchor'])
         for value in ast_chunk.values():
             roles_referenced_so_far.extend(get_all_referenced_roles(ast_chunk=value))
     return sorted(set(roles_referenced_so_far))

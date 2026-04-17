@@ -1,0 +1,24 @@
+// Action with a hearer-referencing effect and reaction, fired only on knowledge relay
+
+action greet:
+    roles:
+        @greeter:
+            as: initiator
+        @other:
+            as: partner
+    effects:
+        if @hearer == @other:
+            @greeter.notified = true
+        end
+    reactions:
+        if @hearer == @other:
+            queue action acknowledge:
+                with:
+                    @acknowledger: @hearer
+        end
+
+
+action acknowledge:
+    roles:
+        @acknowledger:
+            as: initiator

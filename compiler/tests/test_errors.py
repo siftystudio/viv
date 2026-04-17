@@ -106,6 +106,22 @@ def test_error_message_special_role_this_in_conditions() -> None:
         compile_from_path(source_file_path=INVALID_FIXTURES_SEMANTICS_SUBDIR / "special_role_this_in_conditions.viv")
 
 
+def test_error_message_special_role_hearer_in_casting_pool() -> None:
+    """Check the error message for `@hearer` in a casting pool names the special role and the pool."""
+    with pytest.raises(VivCompileError, match="(?si)special role.*@hearer.*casting pool"):
+        compile_from_path(
+            source_file_path=INVALID_FIXTURES_SEMANTICS_SUBDIR / "special_role_hearer_in_casting_pool.viv"
+        )
+
+
+def test_error_message_special_role_this_in_casting_pool() -> None:
+    """Check the error message for `@this` in a casting pool names the special role and the pool."""
+    with pytest.raises(VivCompileError, match="(?si)special role.*@this.*casting pool"):
+        compile_from_path(
+            source_file_path=INVALID_FIXTURES_SEMANTICS_SUBDIR / "special_role_this_in_casting_pool.viv"
+        )
+
+
 def test_error_message_selector_candidate_missing_initiator() -> None:
     """Check the error message for a selector candidate without an initiator role."""
     with pytest.raises(VivCompileError, match="(?si)initiator"):
