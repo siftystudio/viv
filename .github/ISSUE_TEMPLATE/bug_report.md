@@ -1,7 +1,7 @@
 ---
 name: Bug Report
 about: Report a problem with Viv
-labels: bug
+type: Bug
 ---
 
 **Component** (compiler, runtime, a specific plugin, other):

@@ -1,7 +1,7 @@
 ---
 name: Feature Request
 about: Suggest an improvement or new capability for Viv
-labels: enhancement
+type: Feature
 ---
 
 **Component** (compiler, runtime, a specific plugin, other):
