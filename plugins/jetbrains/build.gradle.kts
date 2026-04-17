@@ -1,3 +1,4 @@
+import org.jetbrains.changelog.Changelog
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 plugins {
@@ -5,6 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.20"
     id("org.jetbrains.intellij.platform") version "2.13.1"
     id("org.jetbrains.grammarkit") version "2022.3.2.2"
+    id("org.jetbrains.changelog") version "2.2.1"
 }
 
 group = providers.gradleProperty("pluginGroup").get()
@@ -40,6 +42,25 @@ intellijPlatform {
         ideaVersion {
             sinceBuild = providers.gradleProperty("pluginSinceBuild")
         }
+
+        // Render the matching CHANGELOG.md section into plugin.xml's <change-notes>
+        // at build time. Users see this in the IDE's "What's New" tab.
+        changeNotes = provider {
+            with(changelog) {
+                renderItem(
+                    (getOrNull(providers.gradleProperty("pluginVersion").get()) ?: getUnreleased())
+                        .withHeader(false)
+                        .withEmptySections(false),
+                    Changelog.OutputType.HTML,
+                )
+            }
+        }
+    }
+
+    signing {
+        certificateChain = providers.environmentVariable("CERTIFICATE_CHAIN")
+        privateKey = providers.environmentVariable("PRIVATE_KEY")
+        password = providers.environmentVariable("PRIVATE_KEY_PASSWORD")
     }
 
     publishing {
@@ -51,6 +72,12 @@ intellijPlatform {
             recommended()
         }
     }
+}
+
+changelog {
+    version = providers.gradleProperty("pluginVersion")
+    path = file("CHANGELOG.md").canonicalPath
+    groups = emptyList()
 }
 
 sourceSets {

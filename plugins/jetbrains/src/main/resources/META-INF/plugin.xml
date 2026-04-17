@@ -30,9 +30,8 @@
     <p>See the <a href="https://github.com/siftystudio/viv/blob/main/plugins/jetbrains/README.md">full documentation</a> for details.</p>
     ]]></description>
 
-    <change-notes><![CDATA[
-    <p>Initial release. See the <a href="https://github.com/siftystudio/viv/blob/main/plugins/jetbrains/CHANGELOG.md">full changelog</a> for details.</p>
-    ]]></change-notes>
+    <!-- <change-notes> is injected at build time by the org.jetbrains.changelog
+         Gradle plugin, which renders the matching section from CHANGELOG.md. -->
 
     <depends>com.intellij.modules.platform</depends>
     <depends>org.jetbrains.plugins.textmate</depends>

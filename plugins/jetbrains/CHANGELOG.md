@@ -4,6 +4,16 @@ All notable changes to the Viv JetBrains plugin (`Viv`) will be documented in th
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.9.10] – 2026-04-17
+
+### Added
+
+* Signed plugin distribution.
+
+### Fixed
+
+* The plugin's `What's New` tab was not updating to show changes.
+
 ## [0.9.9] – 2026-04-10
 
 ### Changed

@@ -73,13 +73,12 @@ It works in all IntelliJ-based IDEs: [WebStorm](https://www.jetbrains.com/websto
 
 * Install the [JetBrains IDE](https://www.jetbrains.com/products/?type=ide) of your choice.
   * If you're using the Viv JavaScript runtime, the natural choice is [WebStorm](https://www.jetbrains.com/webstorm/).
-
-* Install [the plugin](https://plugins.jetbrains.com/plugin/31012-viv).
-  * To install a specific version, see [Installing a Specific Release](#installing-a-specific-release).
+* Install the [Viv plugin](https://plugins.jetbrains.com/plugin/31012-viv).
+  * In your JetBrains IDE, navigate to `Settings > Plugins`, search for `Viv`, and click `Install`.
+  * To install a specific older version, see [Installing a Specific Release](#installing-a-specific-release).
   
-* Install the [Viv compiler](https://pypi.org/project/viv-compiler): `pip install viv-compiler`, or **let the plugin do it for you**:
+* Install the [Viv compiler](https://pypi.org/project/viv-compiler), or **let the plugin do it for you**.
   * If the compiler is not detected, the plugin will offer to install it for you automatically via a notification prompt.
-
 * Create or open a `.viv` file. Syntax highlighting should activate automatically.
 
 ## Color Themes
