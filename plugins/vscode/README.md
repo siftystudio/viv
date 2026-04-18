@@ -16,6 +16,7 @@ The Viv project centers on a rich domain-specific language (DSL) that authors us
 - [Extension Settings](#extension-settings)
 - [Updates](#updates)
 - [Compatibility](#compatibility)
+- [Troubleshooting](#troubleshooting)
 - [Installing a Specific Release](#installing-a-specific-release)
 - [Changelog](#changelog)
 - [Security and Privacy](#security-and-privacy)
@@ -42,8 +43,9 @@ The Viv project centers on a rich domain-specific language (DSL) that authors us
 
 * Install [the extension](https://marketplace.visualstudio.com/items?itemName=siftystudio.viv).
   * To install a specific version, see [Installing a Specific Release](#installing-a-specific-release).
-* Install the [Viv compiler](https://pypi.org/project/viv-compiler): `pip install viv-compiler`.
-  * If the compiler is not detected, because VS Code is using a different Python interpreter, the extension will offer to install it for you automatically (in its associated Python).
+* Install the [Viv compiler](https://pypi.org/project/viv-compiler), or **let the plugin do it for you**.
+  * If the compiler is not detected, the plugin will offer to install it for you automatically via a notification prompt.
+  * If the compiler is installed but the plugin can't find it, see [Troubleshooting](#troubleshooting).
 * Create or open a `.viv` file. Syntax highlighting should activate automatically.
 * **Important:** Open the `Output` tab of the panel (`Cmd+Shift+U` / `Ctrl+Shift+U`) and select `Viv` from the dropdown.
 * Choose a Viv color theme (see [Color Themes](#color-themes)).
@@ -224,6 +226,17 @@ Each release of this extension is built for a specific version of the Viv compil
 If the installed compiler version is **older** than expected, the extension will offer to update it for you automatically (in its associated Python).
 
 If the installed compiler version is **newer** than expected, you need to update your Viv VS Code extension to the latest version.
+
+## Troubleshooting
+
+The plugin normally auto-detects an installed `viv-compiler` and adopts the right Python interpreter on its own. If it doesn't, or if you want to point it at a specific interpreter yourself:
+
+* Run `vivc --version`.
+	- If this doesn't work, you may have installed the compiler in a virtual environment that is not activated, or you may need to to [reinstall the compiler](https://viv.sifty.studio/reference/compiler).
+* Copy the path from the `python` line of the output.
+* Paste it in as your `viv.pythonPath` setting (see [Extension Settings](#extension-settings)).
+
+If you're still stuck, you might consider trying out the [Viv Claude Code plugin](https://github.com/siftystudio/viv/tree/main/plugins/claude). With our plugin installed, Claude will be able to help you get up and running here.
 
 ## Installing a Specific Release
 

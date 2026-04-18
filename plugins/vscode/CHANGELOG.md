@@ -4,6 +4,18 @@ All notable changes to the Viv VS Code extension (`Viv DSL`) will be documented 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.11.0] – 2026-04-18
+
+### Added
+
+* Autodetection of an existing `viv-compiler` installation even when the extension's configured Python interpreter doesn't have it.
+* Troubleshooting section in the README covering the case where the extension can't find `viv-compiler` and the user needs to set `viv.pythonPath` manually. Editor links to this when applicable. 
+
+### Changed
+
+* Streamline compiler-installation flows.
+* Bump compatible compiler version to `0.12`.
+
 ## [0.10.6] – 2026-04-10
 
 ### Changed

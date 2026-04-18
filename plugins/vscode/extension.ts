@@ -1,8 +1,12 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as childProcess from "child_process";
+import { promisify } from "util";
 
 import type { ExecFileException } from "child_process";
+
+/** Promisified `execFile` for use with async/await. */
+const execFileAsync = promisify(childProcess.execFile);
 
 /**
  * Activates the Viv extension.
@@ -197,7 +201,7 @@ function invokeCompiler(state: ExtensionState, sourcePath: string, outputPath?: 
     const timeoutMs = vscode.workspace.getConfiguration("viv").get<number>("compileTimeout", 120) * 1000;
     childProcess.execFile(
         pythonPath, args, { timeout: timeoutMs },
-        (execError: ExecFileException | null, stdout: string, stderr: string) => {
+        async (execError: ExecFileException | null, stdout: string, stderr: string) => {
         // If a newer compilation has been launched, discard this result
         if (thisGeneration !== compileGeneration) {
             return;
@@ -216,19 +220,47 @@ function invokeCompiler(state: ExtensionState, sourcePath: string, outputPath?: 
             state.diagnostics.clear();
             return;
         }
-        // If the compiler is not installed, offer to install it
+        // If the compiler is not installed, first try to autodetect an existing `vivc` on
+        // the user's shell PATH, adopting it silently; otherwise offer to install locally
         if (result.errorType === "not_installed") {
             showErrorIndicator(state, result.message ?? "Viv compiler is not installed");
-            promptCompilerInstall(pythonPath, state, sourcePath);
+            const detectedPath = await detectCompilerInterpreter();
+            if (detectedPath !== null && detectedPath !== pythonPath) {
+                void adoptDetectedInterpreter(detectedPath, state, sourcePath);
+            } else {
+                void promptCompilerInstall(pythonPath, state, sourcePath);
+            }
             return;
         }
         // If the compiler is outdated, offer to update it (once per session)
         if (result.warningType === "compiler_outdated" && !compilerUpdatePrompted) {
             compilerUpdatePrompted = true;
-            promptCompilerUpdate(pythonPath, state, sourcePath);
+            void promptCompilerUpdate(pythonPath, state, sourcePath);
         }
         handleCompileResult(state, result, sourcePath);
     });
+}
+
+/**
+ * Adopts an autodetected Python interpreter that already has `viv-compiler` installed.
+ *
+ * Writes the detected path to `viv.pythonPath` in user settings, notifies the user,
+ * and re-invokes compilation. Called from {@link invokeCompiler} when
+ * {@link detectCompilerInterpreter} finds a working `vivc` elsewhere on the shell PATH.
+ *
+ * @param detectedPath - Absolute path to the Python interpreter owning the detected `vivc`.
+ * @param state - The shared extension state.
+ * @param sourcePath - Absolute path to the source file that triggered autodetection.
+ */
+async function adoptDetectedInterpreter(
+        detectedPath: string, state: ExtensionState, sourcePath: string): Promise<void> {
+    await vscode.workspace.getConfiguration("viv").update(
+        "pythonPath", detectedPath, vscode.ConfigurationTarget.Global
+    );
+    vscode.window.showInformationMessage(
+        "Detected installed Viv compiler. You're all set to compile Viv code directly in VS Code."
+    );
+    invokeCompiler(state, sourcePath);
 }
 
 /**
@@ -258,25 +290,34 @@ async function promptCompilerInstall(
             cancellable: false
         },
         async () => {
-            // First attempt: standard pip install
-            const installed = await tryPipInstall(pythonPath, ["-m", "pip", "install", "viv-compiler"]);
-            if (!installed) {
-                // Second attempt: bypass externally managed environment restriction
-                const installedWithFlag = await tryPipInstall(
-                    pythonPath,
-                    ["-m", "pip", "install", "--break-system-packages", "viv-compiler"]
-                );
-                if (!installedWithFlag) {
-                    vscode.window.showErrorMessage(
-                        "Could not install viv-compiler automatically. VS Code is using the Python interpreter at "
-                        + `${pythonPath}. Please install viv-compiler for this interpreter manually, or set `
-                        + "viv.pythonPath to a different interpreter that has it installed."
-                    );
-                    return;
-                }
+            // Run both pip attempts, ignoring their exit codes — Homebrew Python on macOS
+            // can exit non-zero even on a successful install (PEP 668 warnings, deprecation
+            // notices, etc.). Ground truth is whether `viv_compiler` becomes importable.
+            await tryPipInstall(pythonPath, ["-m", "pip", "install", "viv-compiler"]);
+            if (await verifyCompilerImport(pythonPath)) {
+                vscode.window.showInformationMessage("Viv compiler installed successfully.");
+                invokeCompiler(state, sourcePath);
+                return;
             }
-            vscode.window.showInformationMessage("Viv compiler installed successfully.");
-            invokeCompiler(state, sourcePath);
+            await tryPipInstall(
+                pythonPath,
+                ["-m", "pip", "install", "--break-system-packages", "viv-compiler"]
+            );
+            if (await verifyCompilerImport(pythonPath)) {
+                vscode.window.showInformationMessage("Viv compiler installed successfully.");
+                invokeCompiler(state, sourcePath);
+                return;
+            }
+            const action = await vscode.window.showErrorMessage(
+                "Could not install viv-compiler automatically. You'll need to install it for another Python "
+                + "via pip, then set `viv.pythonPath` to that Python.",
+                "Show Troubleshooting"
+            );
+            if (action === "Show Troubleshooting") {
+                void vscode.env.openExternal(vscode.Uri.parse(
+                    "https://github.com/siftystudio/viv/blob/main/plugins/vscode/README.md#troubleshooting"
+                ));
+            }
         }
     );
 }
@@ -333,18 +374,36 @@ async function promptCompilerUpdate(
 }
 
 /**
+ * Returns whether the `viv_compiler` module can be imported by the given Python
+ * interpreter. Used as ground truth for "did the install work" after pip attempts,
+ * sidestepping pip's unreliable exit codes on Homebrew Python.
+ *
+ * @param pythonPath - The Python interpreter to probe.
+ * @returns Whether `viv_compiler` imports successfully under that interpreter.
+ */
+async function verifyCompilerImport(pythonPath: string): Promise<boolean> {
+    try {
+        await execFileAsync(pythonPath, ["-c", "import viv_compiler"], { timeout: 10_000 });
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+/**
  * Attempts to install a package via pip.
  *
  * @param pythonPath - The Python interpreter to use.
  * @param args - The full argument list (e.g., `["-m", "pip", "install", "viv-compiler"]`).
  * @returns Whether the install succeeded.
  */
-function tryPipInstall(pythonPath: string, args: readonly string[]): Promise<boolean> {
-    return new Promise((resolve) => {
-        childProcess.execFile(pythonPath, [...args], { timeout: 120000 }, (error) => {
-            resolve(error == null);
-        });
-    });
+async function tryPipInstall(pythonPath: string, args: readonly string[]): Promise<boolean> {
+    try {
+        await execFileAsync(pythonPath, [...args], { timeout: 120_000 });
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 /**
@@ -374,6 +433,42 @@ function resolvePythonPath(): string {
         }
     }
     return "python3";
+}
+
+/**
+ * Attempts to detect an existing `vivc` installation on the user's shell PATH and
+ * returns the absolute path of the Python interpreter that owns it.
+ *
+ * VS Code processes inherit a narrow PATH from whatever launched VS Code (typically
+ * Finder/Dock on macOS), which often misses Homebrew and user-local bin directories
+ * where `vivc` may live. Spawning a login shell (`$SHELL -lc ...`) makes the shell
+ * source the user's config files and inherit their full PATH, so `vivc` becomes
+ * reachable if it's installed anywhere the user's own shell can see it.
+ *
+ * Parses the `python` line from `vivc --version` output (introduced in compiler
+ * `0.12.0`) to extract the interpreter path.
+ *
+ * @returns The absolute interpreter path, or `null` if detection fails (`vivc` not
+ *          found, unexpected output format, missing `python` line, etc.).
+ */
+async function detectCompilerInterpreter(): Promise<string | null> {
+    const isWindows = process.platform === "win32";
+    const shell = isWindows ? "cmd" : (process.env.SHELL ?? "/bin/sh");
+    const args = isWindows ? ["/c", "vivc --version"] : ["-lc", "vivc --version"];
+    try {
+        const { stdout } = await execFileAsync(shell, args, { timeout: 10_000 });
+        const pythonLine = stdout.split("\n").find((line) => line.startsWith("python "));
+        if (pythonLine === undefined) {
+            return null;
+        }
+        const detectedPath = pythonLine.slice("python ".length).trim();
+        if (detectedPath === "" || !path.isAbsolute(detectedPath)) {
+            return null;
+        }
+        return detectedPath;
+    } catch {
+        return null;
+    }
 }
 
 /**
