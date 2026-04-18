@@ -11,12 +11,12 @@
       "issues": "https://github.com/siftystudio/viv/issues?q=is%3Aissue+is%3Aopen+label%3Asublime",
       "donate": "https://ko-fi.com/siftystudio",
       "labels": ["language", "syntax", "dsl", "narrative", "simulation", "gamedev"],
-      "compilerVersion": "0.11",
+      "compilerVersion": "0.12",
       "releases": [
         {
-          "version": "0.10.0",
-          "date": "2026-04-16",
-          "url": "https://github.com/siftystudio/viv/releases/download/sublime-v0.10.0/Viv.sublime-package",
+          "version": "0.10.1",
+          "date": "2026-04-18",
+          "url": "https://github.com/siftystudio/viv/releases/download/sublime-v0.10.1/Viv.sublime-package",
           "sublime_text": ">=3149"
         }
       ]
