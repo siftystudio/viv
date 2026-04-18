@@ -30,15 +30,21 @@ class VivCompilerService {
     @Volatile private var lastResult: Pair<String, CompileResult>? = null
 
     /**
-     * Compile-checks a single Viv source file. Caches the result so that the
-     * [VivExternalAnnotator] can retrieve it without a redundant compiler invocation.
+     * Compile-checks a single Viv source file. Caches successful results so that the
+     * [VivExternalAnnotator] can retrieve them without a redundant compiler invocation.
+     *
+     * Failures (compile errors, environmental problems like `not_installed`, etc.) are
+     * intentionally not cached — they're cheap to recompute and replaying them would
+     * mask any subsequent fix (e.g., an interpreter path change from autodetection).
      *
      * @param sourcePath Absolute path to the `.viv` file.
      * @return The parsed compilation result.
      */
     fun compile(sourcePath: String): CompileResult {
         val result = invokeBridge(sourcePath, outputPath = null)
-        lastResult = Pair(sourcePath, result)
+        if (result.status == "success") {
+            lastResult = Pair(sourcePath, result)
+        }
         return result
     }
 
@@ -51,6 +57,16 @@ class VivCompilerService {
         if (cached.first != sourcePath) return null
         lastResult = null
         return cached.second
+    }
+
+    /**
+     * Clears any cached compilation result. Call this when external state that affects
+     * compilation has changed (e.g., after autodetection adopts a new Python interpreter)
+     * to ensure the next annotator pass re-invokes the compiler rather than replaying a
+     * stale result.
+     */
+    fun invalidateCache() {
+        lastResult = null
     }
 
     /**

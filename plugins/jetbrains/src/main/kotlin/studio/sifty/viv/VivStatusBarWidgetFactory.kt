@@ -86,7 +86,7 @@ private class VivStatusBarWidget : StatusBarWidget, StatusBarWidget.IconPresenta
         if (result.status == "success") {
             icon = AllIcons.General.InspectionsOK
             tooltip = if (result.outputPath != null) "Content bundle saved: ${result.outputPath}"
-                      else "Compilation succeeded"
+                      else "No compile errors"
         } else {
             icon = AllIcons.General.Error
             tooltip = result.message ?: "Compilation failed"

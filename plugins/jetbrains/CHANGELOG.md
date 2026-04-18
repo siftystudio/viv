@@ -4,6 +4,22 @@ All notable changes to the Viv JetBrains plugin (`Viv`) will be documented in th
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.10.0] – 2026-04-18
+
+### Added
+
+* Autodetection of an existing `viv-compiler` installation even when the plugin's configured Python interpreter doesn't have it.
+* Troubleshooting section in the README covering the case where the plugin can't find `viv-compiler` and the user needs to change the `Python interpreter` setting manually.
+
+### Changed
+
+* Streamline compiler-installation flows.
+* Bump compatible compiler version to `0.12`.
+
+### Fixed
+
+* Update-failure notification incorrectly titled "Viv compiler installation failed" (now correctly says "Viv compiler update failed").
+
 ## [0.9.10] – 2026-04-17
 
 ### Added

@@ -46,7 +46,9 @@ class VivExternalAnnotator : ExternalAnnotator<VivExternalAnnotator.Info, Compil
         VivToolWindowFactory.updateText(file.project, VivCompileResultFormatter.format(result))
         // Trigger install/update notifications based on structured error/warning types
         if (result.errorType == "not_installed") {
-            VivNotifications.promptInstall(file.project)
+            // Environment issue, not a code issue — route to balloon/prompt instead of Problems pane
+            VivNotifications.autodetectOrPromptInstall(file.project)
+            return
         }
         if (result.warningType == "compiler_outdated") {
             VivNotifications.promptUpdate(file.project)

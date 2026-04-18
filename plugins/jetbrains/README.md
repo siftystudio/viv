@@ -18,6 +18,7 @@ It works in all IntelliJ-based IDEs: [WebStorm](https://www.jetbrains.com/websto
 - [Plugin Settings](#plugin-settings)
 - [Updates](#updates)
 - [Compatibility](#compatibility)
+- [Troubleshooting](#troubleshooting)
 - [Installing a Specific Release](#installing-a-specific-release)
 - [Building from Source](#building-from-source)
 - [Changelog](#changelog)
@@ -79,6 +80,7 @@ It works in all IntelliJ-based IDEs: [WebStorm](https://www.jetbrains.com/websto
   
 * Install the [Viv compiler](https://pypi.org/project/viv-compiler), or **let the plugin do it for you**.
   * If the compiler is not detected, the plugin will offer to install it for you automatically via a notification prompt.
+  * If the compiler is installed but the plugin can't find it, see [Troubleshooting](#troubleshooting).
 * Create or open a `.viv` file. Syntax highlighting should activate automatically.
 
 ## Color Themes
@@ -253,6 +255,17 @@ Each release of this plugin is built for a specific version of the Viv compiler,
 If the installed compiler version is **older** than expected, the plugin will offer to update it for you automatically via a notification prompt.
 
 If the installed compiler version is **newer** than expected, you need to update your Viv JetBrains plugin to the latest version.
+
+## Troubleshooting
+
+The plugin normally auto-detects an installed `viv-compiler` and adopts the right Python interpreter on its own. If it doesn't, or if you want to point it at a specific interpreter yourself:
+
+* Run `vivc --version` in a shell.
+   - If this command doesn't work, you may have installed the compiler in a virtual environment that is not activated, or you may need to to [reinstall the compiler](https://viv.sifty.studio/reference/compiler).
+* Copy the path from the `python` line of the output.
+* Paste it as as your `Python interpreter` setting (in `Settings > Tools > Viv`).
+
+If you're still stuck, you might consider trying out the [Viv Claude Code plugin](https://github.com/siftystudio/viv/tree/main/plugins/claude). With our plugin installed, Claude will be able to help you get up and running here.
 
 ## Installing a Specific Release
 
