@@ -60,21 +60,24 @@ def check_compiler_version_in_plugins() -> bool:
         return False
     jetbrains_version = jetbrains_match.group(1).strip()
     jetbrains_major_minor = ".".join(jetbrains_version.split(".")[:2])
-    # All major.minor values must agree
+    # All major.minor values must agree -- accumulate failures so every
+    # mismatched plugin is reported in a single preflight run.
+    all_passed = True
     if sublime_major_minor != compiler_major_minor:
         print(f"FAIL [compiler version in plugins]: "
               f"Sublime compilerVersion {sublime_version} does not match compiler {compiler_match.group(1)} (major.minor)")
-        return False
+        all_passed = False
     if vscode_major_minor != compiler_major_minor:
         print(f"FAIL [compiler version in plugins]: "
               f"VS Code compilerVersion {vscode_version} does not match compiler {compiler_match.group(1)} (major.minor)")
-        return False
+        all_passed = False
     if jetbrains_major_minor != compiler_major_minor:
         print(f"FAIL [compiler version in plugins]: "
               f"JetBrains compilerVersion {jetbrains_version} does not match compiler {compiler_match.group(1)} (major.minor)")
-        return False
-    print(f"PASS [compiler version in plugins]: {compiler_major_minor}")
-    return True
+        all_passed = False
+    if all_passed:
+        print(f"PASS [compiler version in plugins]: {compiler_major_minor}")
+    return all_passed
 
 
 def _extract_grammar_keywords() -> set[str]:
