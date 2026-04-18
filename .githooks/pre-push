@@ -13,5 +13,19 @@
 
 set -euo pipefail
 
+# Skip preflight for tag-only pushes. Tags are cut from commits that have
+# already passed preflight (via a prior push) and CI, so rerunning the
+# multi-minute suite would only stall the release.
+all_tags=true
+while read -r local_ref _local_sha _remote_ref _remote_sha; do
+    if [[ "$local_ref" != refs/tags/* ]]; then
+        all_tags=false
+    fi
+done
+if [ "$all_tags" = true ]; then
+    echo "Skipping preflight (tag-only push)"
+    exit 0
+fi
+
 cd "$(git rev-parse --show-toplevel)"
 make preflight
