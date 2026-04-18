@@ -7,7 +7,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Final
+from typing import Any, Final
 
 
 # Absolute path to the monorepo root
@@ -161,6 +161,83 @@ def check_sublime_repository_url() -> bool:
         print(f"FAIL [sublime repository URL]: version is {version} but URL is {url}")
         return False
     print(f"PASS [sublime repository URL]: URL matches version {version}")
+    return True
+
+
+def check_sublime_no_package_marker() -> bool:
+    """Verify that the `.no-sublime-package` marker exists in the Sublime plugin."""
+    marker_path = ROOT / "plugins/sublime/.no-sublime-package"
+    if not marker_path.exists():
+        print("FAIL [sublime no-sublime-package marker]: "
+              ".no-sublime-package not found in plugins/sublime/")
+        return False
+    print("PASS [sublime no-sublime-package marker]: marker present")
+    return True
+
+
+def check_sublime_build_bridge_path() -> bool:
+    """Verify that bridge-script paths in `Viv.sublime-build` resolve to existing files."""
+    build = json.loads((ROOT / "plugins/sublime/Viv.sublime-build").read_text())
+    # Collect every .py path from every cmd array (top-level and platform-specific blocks)
+    script_paths = []
+    def _walk(node: Any) -> None:
+        """Recurse into dict values, collecting .py paths from any `cmd` array."""
+        if isinstance(node, dict):
+            cmd = node.get("cmd")
+            if isinstance(cmd, list):
+                script_paths.extend(
+                    arg for arg in cmd if isinstance(arg, str) and arg.endswith(".py")
+                )
+            for value in node.values():
+                _walk(value)
+    _walk(build)
+    if not script_paths:
+        print("FAIL [sublime build bridge path]: "
+              "no .py script referenced in Viv.sublime-build")
+        return False
+    all_passed = True
+    for script_arg in script_paths:
+        if not script_arg.startswith("$packages/Viv/"):
+            print(f"FAIL [sublime build bridge path]: "
+                  f"unexpected path format: {script_arg}")
+            all_passed = False
+            continue
+        actual_path = ROOT / "plugins/sublime" / script_arg[len("$packages/Viv/"):]
+        if not actual_path.exists():
+            print(f"FAIL [sublime build bridge path]: "
+                  f"{script_arg} does not resolve "
+                  f"({actual_path.relative_to(ROOT)} missing)")
+            all_passed = False
+    if all_passed:
+        print(f"PASS [sublime build bridge path]: "
+              f"all {len(script_paths)} path(s) resolve")
+    return all_passed
+
+
+def check_sublime_bundled_schemes() -> bool:
+    """Verify that the Sublime plugin bundles all six expected color schemes."""
+    expected = {
+        "Viv Warm (Dark).sublime-color-scheme",
+        "Viv Warm (Light).sublime-color-scheme",
+        "Viv Cool (Dark).sublime-color-scheme",
+        "Viv Cool (Light).sublime-color-scheme",
+        "Viv Electric (Dark).sublime-color-scheme",
+        "Viv Electric (Light).sublime-color-scheme",
+    }
+    schemes_dir = ROOT / "plugins/sublime/schemes"
+    if not schemes_dir.is_dir():
+        print(f"FAIL [sublime bundled schemes]: directory missing at "
+              f"{schemes_dir.relative_to(ROOT)}")
+        return False
+    actual = {path.name for path in schemes_dir.iterdir() if path.is_file()}
+    missing = expected - actual
+    if missing:
+        print(f"FAIL [sublime bundled schemes]: "
+              f"{len(missing)} expected scheme(s) missing:")
+        for name in sorted(missing):
+            print(f"  - {name}")
+        return False
+    print(f"PASS [sublime bundled schemes]: all {len(expected)} schemes present")
     return True
 
 
@@ -376,6 +453,9 @@ def main() -> None:
         check_compiler_version_in_plugins,
         check_keywords,
         check_sublime_repository_url,
+        check_sublime_no_package_marker,
+        check_sublime_build_bridge_path,
+        check_sublime_bundled_schemes,
         check_vscode_package_lock_version,
         check_changelog_manifest_parity,
         *[_make_named_check(f"check_{ex.replace('-', '_')}_runtime_dep", _check_hello_viv_runtime_dep, ex)
