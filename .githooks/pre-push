@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# .githooks/pre-push -- run preflight sync checks before pushing
+#
+# Rejects the push if `make preflight` fails. This catches cross-component
+# inconsistencies before they reach CI (e.g., compiler version bumped
+# without updating plugin `compilerVersion` pins)
+#
+# To enable, run once per clone:
+#   git config core.hooksPath .githooks
+#
+# Bypass with `git push --no-verify` when a push genuinely needs to skip
+# this check.
+
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)"
+make preflight
