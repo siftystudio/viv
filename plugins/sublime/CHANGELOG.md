@@ -4,6 +4,12 @@ All notable changes to the Viv Sublime Text package (`Viv`) will be documented i
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.11.0] – 2026-04-18
+
+### Changed
+
+* Invoke `py -3` (the Python launcher) instead of `python` on Windows (more reliable).
+
 ## [0.10.1] – 2026-04-18
 
 ### Changed
