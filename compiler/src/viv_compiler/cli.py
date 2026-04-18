@@ -90,7 +90,7 @@ def _build_parser() -> argparse.ArgumentParser:
         '-V',
         '--version',
         action='store_true',
-        help='print compiler, schema, and grammar versions and exit'
+        help='print compiler versions and associated Python interpreter, and exit'
     )
     mode_group.add_argument(
         '--test',
@@ -200,17 +200,19 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def _print_versions() -> None:
-    """Print version numbers for the compiler package, content-bundle schema, and DSL grammar."""
-    versions = (
-        "\n* Installed versions:"
-        # Version number for the `viv_compiler` package itself
-        f"\n\n  - Compiler Package: {__version__}"
-        # Version number for the content-bundle schema
-        f"\n\n  - Schema:  {__schema_version__}"
-        # Version number for the Viv DSL grammar (editor plugins assume compatibility)
-        f"\n\n  - Grammar: {__grammar_version__}\n"
+    """Print version numbers for the compiler package, content-bundle schema, and DSL grammar,
+    plus the absolute path of the Python interpreter running the compiler.
+
+    The idea here is to support programmatic use, namely by the editor plugins during
+    automatic detection of which Python interpreter to invoke.
+    """
+    lines = (
+        f"vivc {__version__}",
+        f"schema {__schema_version__}",
+        f"grammar {__grammar_version__}",
+        f"python {sys.executable}"
     )
-    print(_cyan(text=versions))
+    print("\n".join(lines))
 
 
 def _run_smoke_test() -> None:

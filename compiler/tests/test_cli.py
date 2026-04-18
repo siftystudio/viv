@@ -192,14 +192,22 @@ def test_cli_traceback_flag() -> None:
 
 
 def test_cli_version_flag() -> None:
-    """Run the `-V` version flag."""
+    """Run the `-V` version flag and verify the machine-parseable output format."""
     result = subprocess.run(
         [*VIVC, "-V"],
         capture_output=True,
         text=True,
     )
     assert result.returncode == 0
-    assert result.stdout.strip() != ""
+    lines = result.stdout.strip().splitlines()
+    # Each line is `<key> <value>`, and keys appear in a fixed order.
+    keys = [line.split(" ", 1)[0] for line in lines]
+    assert keys == ["vivc", "schema", "grammar", "python"]
+    # The `python` line carries an absolute interpreter path.
+    python_line = next(line for line in lines if line.startswith("python "))
+    python_path = python_line.split(" ", 1)[1]
+    assert Path(python_path).is_absolute()
+    assert Path(python_path).exists()
 
 
 def test_cli_quiet_flag_suppresses_output(tmp_path: Path) -> None:

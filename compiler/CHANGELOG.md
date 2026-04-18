@@ -4,6 +4,16 @@ All notable changes to the Viv compiler (`viv-compiler`) will be documented in t
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.12.0] – 2026-04-18
+
+### Added
+
+* `python` line in `--version` output, carrying the absolute path of the Python interpreter running the compiler (allows editor plugins to auto-detect which interpreter to invoke).
+
+### Changed
+
+* Restructure `--version` output to one machine-parseable `<key> <value>` field per line, replacing the previous stylized multi-line format.
+
 ## [0.11.2] – 2026-04-17
 
 ### Added

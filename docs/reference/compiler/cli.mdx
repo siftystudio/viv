@@ -43,7 +43,7 @@ vivc --test
 * `-h, --help`
   * Show help message and exit.
 * `-V, --version`
-  * Print versions for the compiler package and its associated content-bundle schema and DSL grammar, and then exit.
+  * Print versions for the compiler package and its associated content-bundle schema and DSL grammar, plus the absolute path of the Python interpreter running the compiler, and then exit. The output format is one `<key> <value>` field per line, suitable for both human reading and `grep`-based parsing.
 * `-p, --print`
   * After compilation, pretty-print the compiled content bundle JSON (to `stdout`). If an optional dot-notation *filter* is provided (e.g., `actions.hug.roles.hugger`), the value at the specified path (in the content bundle JSON) will be pretty-printed instead.
 * `-l, --list`
@@ -82,20 +82,17 @@ vivc --test
 * Viv compiler installation is operational
 ```
   
-Log versions for the compiler, content-bundle schema, and DSL grammar associated with your installation:
+Log versions for the compiler, content-bundle schema, and DSL grammar associated with your installation, plus the absolute path of the Python interpreter running the compiler:
 
 ```sh
 vivc -V
 ```
 
 ```
-* Installed versions:
-
-- Compiler Package: 0.10.4
-
-- Schema:  0.10.1
-
-- Grammar: 0.10.0
+vivc 0.12.0
+schema 0.10.1
+grammar 0.10.0
+python /opt/homebrew/bin/python3.13
 ```
 
 Run a compile check to confirm that a source file is valid:
