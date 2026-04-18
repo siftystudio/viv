@@ -7,6 +7,7 @@ import sys
 import json
 import argparse
 import traceback
+from collections.abc import Iterator
 from contextlib import contextmanager
 from importlib import resources
 from pathlib import Path
@@ -269,7 +270,7 @@ def _invoke_compiler(*, args: argparse.Namespace) -> external_types.ContentBundl
 
 
 @contextmanager
-def _handle_compiler_errors(*, show_traceback: bool):
+def _handle_compiler_errors(show_traceback: bool) -> Iterator[None]:
     """Context manager that catches and formats compiler errors for CLI output."""
     # User interrupts
     try:
