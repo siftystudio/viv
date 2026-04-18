@@ -166,8 +166,8 @@ action confront from mansion-encounter:
 action seance from mansion-encounter:
     join roles:
         @medium:
-            as: character
-            is: @initiator
+            as: partner
+            is: @initiator.companion
         @participants*:
             as: partner
             n: 2-5 [~3]
@@ -335,7 +335,7 @@ reserved action-selector pick-retort:
         @defendant:
             as: initiator
         @accuser:
-            as: character
+            as: recipient
     target with weights:
         (5) confront:
             with partial:
@@ -550,6 +550,13 @@ action paranormal-encounter:
     roles:
         @subject:
             as: initiator
+        @relic:
+            as: item
+            from: @subject.inventory
+        @precedent:
+            as: action
+            from: search:
+                over: @subject
         &omen:
             as: symbol
             from: @subject.omens
@@ -647,8 +654,8 @@ action paranormal-encounter:
         @subject.title = '{@subject.name} the {@subject.role}'
         @subject.warning = "Beware, {&omen.label}!"
         // Inscribe / inspect
-        @subject inscribe &omen
-        @subject inspect &omen
+        @relic inscribe @precedent
+        @subject inspect @relic
         // Reference paths: property, pointer, lookup
         @subject.location.name = "Conservatory"
         @subject.allegiance->loyalty = &omen
