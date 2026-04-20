@@ -19,6 +19,7 @@ This package is a lightweight **editor plugin** for the project, providing vario
 - [Boilerplate Snippets](#boilerplate-snippets)
 - [Updates](#updates)
 - [Compatibility](#compatibility)
+- [Troubleshooting](#troubleshooting)
 - [Installing a Specific Release](#installing-a-specific-release)
 - [Changelog](#changelog)
 - [Security and Privacy](#security-and-privacy)
@@ -50,26 +51,19 @@ This package is a lightweight **editor plugin** for the project, providing vario
 ## Getting Started
 
 * Install [Package Control](https://packagecontrol.io/installation), the Sublime Text package manager.
+  * macOS users: if you don't see `Package Control:` commands in the command palette after restarting Sublime Text, see [Troubleshooting](#package-control-commands-dont-appear-macos).
 
 * In Sublime Text, open the *command palette* (`Cmd+Shift+P` / `Ctrl+Shift+P`).
-
-* In the command palette, search for `Package Control: Add Repository` and select it.
-
-* In the input box that pops up, enter the following URL:
-
-  ```
-  https://raw.githubusercontent.com/siftystudio/viv/main/plugins/sublime/repository.json
-  ```
-
-* Re-open the command palette (`Cmd+Shift+P` / `Ctrl+Shift+P`).
 
 * Search for `Package Control: Install Package` and select it.
 
 * Search for `Viv`, and install the package.
+  * If Viv doesn't appear in the search results, see [Troubleshooting](#viv-doesnt-appear-in-package-control-install-package-results).
   * To install a specific version, see [Installing a Specific Release](#installing-a-specific-release).
 
 * Install the [Viv compiler](https://pypi.org/project/viv-compiler): `pip install viv-compiler`.
-  * On macOS and Linux, the compiler must be accessible via `python3`. On Windows, it must be accessible via `py -3` (the Python launcher). If you installed the compiler into a virtual environment, you will need to ensure that the interpreter invoked by Sublime Text can find it. If you' get stuck here, you might consider trying out the [Viv Claude Code plugin](https://github.com/siftystudio/viv/tree/main/plugins/claude). With our plugin installed, Claude will be able to help you get up and running.
+  * On macOS and Linux, the compiler must be accessible via `python3`. On Windows, it must be accessible via `py -3` (the Python launcher). If you installed the compiler into a virtual environment, you will need to ensure that the interpreter invoked by Sublime Text can find it.
+  * If you get stuck here, you might consider trying out the [Viv Claude Code plugin](https://github.com/siftystudio/viv/tree/main/plugins/claude). With our plugin installed, Claude will be able to help you get up and running.
 
 * Create or open a `.viv` file in Sublime Text. Syntax highlighting should activate automatically.
 
@@ -249,15 +243,61 @@ Each release of this package is built for a specific version of the Viv compiler
 To resolve a compatibility issue, update both the package and the compiler to their latest versions.
 
 
+## Troubleshooting
+
+There are currently a few known Package Control issues that can interfere with installing Viv. Each is described below, along with a workaround.
+
+### Package Control commands don't appear (macOS)
+
+On recent macOS versions, Sublime's built-in `Install Package Control` command installs a legacy version of Package Control (`3.4.1`) that silently fails to load due to a missing OpenSSL symbol. The symptom is that no `Package Control:` commands appear in the command palette after restarting Sublime Text.
+
+To work around this, you'll need to install the latest Package Control manually:
+
+* Open the Sublime Text console with `` Ctrl+` ``.
+
+* Paste in this command (and hit `Enter`):
+
+   ```python
+   from urllib.request import urlretrieve; urlretrieve(url="https://github.com/wbond/package_control/releases/latest/download/Package.Control.sublime-package", filename=sublime.installed_packages_path() + '/Package Control.sublime-package')
+   ```
+
+* Fully quit and reopen Sublime Text. The `Package Control:` commands should now appear in the command palette.
+
+### Viv doesn't appear in `Package Control: Install Package` results
+
+If Viv currently doesn't appear in the `Package Control: Install Package` search results, due to an upstream Package Control configuration issue, you can still add our repository to Package Control directly:
+
+* Open the command palette (`Cmd+Shift+P` / `Ctrl+Shift+P`), search for `Package Control: Add Repository`, and select it.
+* In the input box that pops up, enter the following URL:
+
+  ```
+  https://raw.githubusercontent.com/siftystudio/viv/main/plugins/sublime/repository.json
+  ```
+
+* Re-open the command palette, search for `Package Control: Install Package`, and search for `Viv` again. It should now appear.
+
+
 ## Installing a Specific Release
 
 You can also install a specific version of the plugin, for instance to use an older version.
 
-* Download `Viv.sublime-package` from the pertinent [GitHub release](https://github.com/siftystudio/viv/releases).
-* Place it in the `Installed Packages` directory.
-  * Select `Preferences > Browse Packages...`, and then go up one level to find `Installed Packages`.
+* Visit our [GitHub releases page](https://github.com/siftystudio/viv/releases) and find the version you want. Right-click the `Viv.sublime-package` asset for that release and copy its download URL.
 
-* Restart Sublime Text.
+* Open the Sublime Text console with `` Ctrl+` ``.
+
+* Paste in this command, replacing `<url>` with the release URL you just copied (and hit `Enter`):
+
+   ```python
+   from urllib.request import urlretrieve; from zipfile import ZipFile; zip_path = sublime.installed_packages_path() + '/Viv.sublime-package'; urlretrieve("<url>", zip_path); ZipFile(zip_path).extractall(sublime.packages_path() + '/Viv')
+   ```
+
+   * Here's an example:
+
+      ```python
+      from urllib.request import urlretrieve; from zipfile import ZipFile; zip_path = sublime.installed_packages_path() + '/Viv.sublime-package'; urlretrieve("https://github.com/siftystudio/viv/releases/download/sublime-v0.11.0/Viv.sublime-package", zip_path); ZipFile(zip_path).extractall(sublime.packages_path() + '/Viv')
+      ```
+
+* Fully quit and reopen Sublime Text.
 
 
 ## Changelog

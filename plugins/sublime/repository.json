@@ -10,7 +10,7 @@
       "readme": "https://raw.githubusercontent.com/siftystudio/viv/main/plugins/sublime/README.md",
       "issues": "https://github.com/siftystudio/viv/issues?q=is%3Aissue+is%3Aopen+label%3Asublime",
       "donate": "https://ko-fi.com/siftystudio",
-      "labels": ["language", "syntax", "dsl", "narrative", "simulation", "gamedev"],
+      "labels": ["language syntax", "build system", "completions", "snippets", "color scheme", "dsl", "narrative", "simulation", "gamedev"],
       "compilerVersion": "0.12",
       "releases": [
         {

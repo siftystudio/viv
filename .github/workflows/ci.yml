@@ -76,13 +76,6 @@ jobs:
       - name: Run TextMate grammar tests
         run: npm --workspace syntax test
 
-      - name: Run Sublime syntax tests
-        uses: SublimeText/syntax-test-action@v2
-        with:
-          build: latest
-          package_root: plugins/sublime
-          package_name: Viv
-
   sync:
     runs-on: ubuntu-latest
     steps:
@@ -142,6 +135,29 @@ jobs:
           java-version: '21'
       - name: Build and test
         run: ./gradlew buildPlugin test
+
+  sublime:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pytest
+        run: pip install pytest
+
+      - name: Run syntax highlighting tests
+        uses: SublimeText/syntax-test-action@v2
+        with:
+          build: latest
+          package_root: plugins/sublime
+          package_name: Viv
+
+      - name: Run Python bridge tests
+        working-directory: plugins/sublime
+        run: python -m pytest test/python
 
   vscode:
     runs-on: ubuntu-latest
@@ -220,7 +236,7 @@ jobs:
         run: /tmp/bash3/bin/bash plugins/claude/tests/run-tests.sh
 
   ci:
-    needs: [compiler, runtime, syntax, sync, jetbrains, vscode, claude, examples]
+    needs: [compiler, runtime, syntax, sync, jetbrains, sublime, vscode, claude, examples]
     runs-on: ubuntu-latest
     steps:
       - run: echo "All checks passed"
