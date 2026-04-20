@@ -1,10 +1,12 @@
 # Viv: An Engine for Emergent Narrative
 
+[![last release][last-release-badge]][last-release-link] [![last commit][last-commit-badge]][last-commit-link] [![CI][ci-badge]][ci-link]
+
+[![docs][docs-badge]][docs-link] [![license][license-badge]][license-link] [![mailing list][mailing-list-badge]][mailing-list-link]
+
 [![pypi][pypi-badge]][pypi-link] [![npm][npm-badge]][npm-link] [![claude code][claude-badge]][claude-link]
 
 [![jetbrains][jetbrains-badge]][jetbrains-link] [![vs code][vscode-badge]][vscode-link] [![sublime text][sublime-badge]][sublime-link]
-
-[![docs][docs-badge]][docs-link] [![CI][ci-badge]][ci-link] [![last release][last-release-badge]][last-release-link] [![last commit][last-commit-badge]][last-commit-link] [![license][license-badge]][license-link]
 
 ## Welcome
 
@@ -187,6 +189,8 @@ Viv is freely available for non-commercial use, while commercial use requires a 
 [last-commit-link]: https://github.com/siftystudio/viv/commits/main
 [license-badge]: https://img.shields.io/badge/license-source--available-blue?logo=data:image/svg%2Bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xMiAzdjE4Ii8%2BPHBhdGggZD0iTTMgN2w5LTQgOSA0Ii8%2BPHBhdGggZD0iTTMgMTNsMi02aDBsMiA2Ii8%2BPHBhdGggZD0iTTMgMTNoNCIvPjxwYXRoIGQ9Ik0xNyAxM2wyLTZoMGwyIDYiLz48cGF0aCBkPSJNMTcgMTNoNCIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iMjEiIHI9IjEiLz48L3N2Zz4%3D
 [license-link]: https://github.com/siftystudio/viv/blob/main/LICENSE.txt
+[mailing-list-badge]: https://img.shields.io/badge/mailing%20list-subscribe-blue?logo=data:image/svg%2Bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxyZWN0IHg9IjMiIHk9IjUiIHdpZHRoPSIxOCIgaGVpZ2h0PSIxNCIgcng9IjIiLz48cGF0aCBkPSJNMyA3bDkgNiA5LTYiLz48L3N2Zz4%3D
+[mailing-list-link]: https://siftystudio.kit.com/
 [pypi-badge]: https://img.shields.io/pypi/v/viv-compiler?logo=python&logoColor=white
 [pypi-link]: https://pypi.org/project/viv-compiler/
 [npm-badge]: https://img.shields.io/npm/v/%40siftystudio%2Fviv-runtime?logo=npm&logoColor=white
