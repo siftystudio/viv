@@ -797,8 +797,8 @@ string_literal =
     '"' r'[^"\n]*' '"' /
     "'" r"[^'\n]*" "'"
 template_string =
-    '"' ( template_gap / r'[^"{}@*&$_]+' )+ '"' /
-    "'" ( template_gap / r"[^'{}@*&$_]+" )+ "'"
+    '"' ( template_gap / r'[^"{}@*&$_\n]+' )+ '"' /
+    "'" ( template_gap / r"[^'{}@*&$_\n]+" )+ "'"
 template_gap =  // Note: Visitor relies on this exact name currently
     "{" expression "}" / reference
 

@@ -4,6 +4,12 @@ All notable changes to the Viv compiler (`viv-compiler`) will be documented in t
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.12.1] – 2026-04-19
+
+### Fixed
+
+* Newlines inside strings were parsed but not actually included in the compiled string expression. Now they are rejected with an error.
+
 ## [0.12.0] – 2026-04-18
 
 ### Added

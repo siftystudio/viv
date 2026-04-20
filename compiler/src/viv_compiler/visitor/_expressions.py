@@ -411,6 +411,13 @@ class VisitorMixinExpressions(PTNodeVisitor):
     @staticmethod
     def visit_template_string(node: NonTerminal, children: list[Any]) -> external_types.TemplateStringField:
         """Visit a <template_string> node."""
+        # Strings are strictly single-line in Viv, but Arpeggio's global whitespace skipping lets
+        # `template_string` quietly parse newlines between the `+` iterations of the char class,
+        # producing a single-line string from multi-line source. To reject this, we'll search in
+        # the raw source for a newline, raising an error if one is found.
+        source = utils.derive_source_annotations(node=node)
+        if "\n" in source["code"]:
+            raise errors.VivCompileError("String literal cannot span multiple lines.", source=source)
         # Because Arpeggio skips whitespace by default, a relatively elaborate procedure is required here
         # to maintain any whitespace embedded in the static portion of the template string. We'll do this
         # by walking the raw nodes associated with the children of this one, handling both gaps and static
@@ -449,7 +456,7 @@ class VisitorMixinExpressions(PTNodeVisitor):
         template_string_field = external_types.TemplateStringField(
             type=external_types.ExpressionDiscriminator.TEMPLATE_STRING,
             value=template,
-            source=utils.derive_source_annotations(node=node)
+            source=source
         )
         return template_string_field
 

@@ -1,0 +1,8 @@
+// Invalid: raw newlines are not permitted inside a string
+
+action tell-story:
+    roles:
+        @hero:
+            as: initiator
+    gloss: "line one
+line two"

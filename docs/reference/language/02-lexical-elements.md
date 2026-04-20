@@ -359,7 +359,7 @@ Viv *string literals* may be single-quoted (`'Hello!'`) or double-quoted (`"Good
 template_string = '"' ( template_gap | template_char )+ '"'
                 | "'" ( template_gap | template_char )+ "'" .
 template_gap    = "{" expression "}" | reference .
-template_char   = (* any character except '"', '{', '}', and sigil characters *) .
+template_char   = (* any character except '"', '{', '}', newline, and sigil characters *) .
 ```
 </details>
 
@@ -382,6 +382,8 @@ Note that the preceding example is just syntactic sugar for this:
 ```
 
 A string is parsed as a template string (rather than a plain string literal) when it contains a *template gap*: an expression contained in curly braces, or else a bare reference beginning with a [sigil](#sigils). For more information on how template strings will be rendered by a runtime, see the section on [rendering template strings](20-runtime-model.md#rendering-template-strings).
+
+Viv strings, both plain and template, cannot span multiple lines currently. A raw newline inside a string is a compile error, and there is no escape syntax (e.g., `\n`) for embedding one.
 
 ### Lists
 
