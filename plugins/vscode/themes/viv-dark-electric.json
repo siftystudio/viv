@@ -1,6 +1,10 @@
 {
   "name": "Viv Electric (Dark)",
   "type": "dark",
+  "colors": {
+    "editor.background": "#282A36",
+    "editor.foreground": "#F8F8F2"
+  },
   "tokenColors": [
     {
       "name": "Operators, keywords, control flow, brackets",
@@ -105,8 +109,7 @@
         "keyword.operator.expression",
         "keyword.operator.logical",
         "keyword.operator.assignment",
-        "keyword.operator.comparison",
-        "keyword.operator.new"
+        "keyword.operator.comparison"
       ],
       "settings": {"foreground": "#FF79C6"}
     },
@@ -197,8 +200,7 @@
     {
       "name": "Tags (HTML, XML, JSX)",
       "scope": [
-        "entity.name.tag",
-        "punctuation.definition.tag"
+        "entity.name.tag"
       ],
       "settings": {"foreground": "#FF79C6"}
     },

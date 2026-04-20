@@ -10,3 +10,6 @@ out/
 
 # Dependencies
 node_modules/
+
+# @vscode/test-electron download cache (large; CI caches separately)
+.vscode-test/

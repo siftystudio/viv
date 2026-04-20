@@ -40,6 +40,7 @@ help:
 #   Compiler tests      →  fix the failing test or the code it exercises
 #   Runtime tests       →  fix the failing test or the code it exercises
 #   Build runtime       →  fix the build error
+#   VS Code plugin      →  fix the failing test or the code it exercises
 #   Claude Code plugin  →  heed the FAIL message indicating which contract drifted
 preflight:
 	@echo "◌ Checking compiler lock file..." && \
@@ -72,6 +73,9 @@ preflight:
 	echo "◌ Building JetBrains plugin..." && \
 	cd plugins/jetbrains && ./gradlew buildPlugin -q && cd ../.. && \
 	echo "  ✓ JetBrains plugin built" && \
+	echo "◌ Testing VS Code plugin..." && \
+	cd plugins/vscode && npm test && cd ../.. && \
+	echo "  ✓ VS Code plugin tests passed" && \
 	echo "◌ Testing Claude Code plugin..." && \
 	bash plugins/claude/tests/run-tests.sh && \
 	echo "  ✓ Claude Code plugin tests passed" && \

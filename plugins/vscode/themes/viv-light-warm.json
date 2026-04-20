@@ -109,8 +109,7 @@
         "keyword.operator.expression",
         "keyword.operator.logical",
         "keyword.operator.assignment",
-        "keyword.operator.comparison",
-        "keyword.operator.new"
+        "keyword.operator.comparison"
       ],
       "settings": {"foreground": "#C75F00"}
     },
@@ -201,8 +200,7 @@
     {
       "name": "Tags (HTML, XML, JSX)",
       "scope": [
-        "entity.name.tag",
-        "punctuation.definition.tag"
+        "entity.name.tag"
       ],
       "settings": {"foreground": "#D03E3E"}
     },

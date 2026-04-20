@@ -3,6 +3,13 @@
 .gitignore
 *.ts
 tsconfig.json
+tsconfig.test.json
 *.vsix
 .DS_Store
 package-lock.json
+test/
+out/test/
+.mocharc*.json
+.vscode-test/
+coverage/
+.nyc_output/

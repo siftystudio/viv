@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "./out",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "types": ["node", "mocha", "chai"]
+  },
+  "include": ["extension.ts", "test/**/*.ts"],
+  "exclude": ["node_modules", "out", "test/python"]
+}

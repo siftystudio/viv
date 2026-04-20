@@ -1,12 +1,32 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as childProcess from "child_process";
-import { promisify } from "util";
 
 import type { ExecFileException } from "child_process";
 
-/** Promisified `execFile` for use with async/await. */
-const execFileAsync = promisify(childProcess.execFile);
+/**
+ * Promisified `execFile` wrapper that looks up `childProcess.execFile` at call
+ * time (rather than capturing it at module load, as `util.promisify` would).
+ * This preserves the ability to stub `childProcess.execFile` from tests after
+ * this module has already loaded.
+ */
+function execFileAsync(
+        file: string,
+        args: readonly string[],
+        options: childProcess.ExecFileOptions = {}): Promise<{ stdout: string; stderr: string }> {
+    return new Promise((resolve, reject) => {
+        childProcess.execFile(file, args as string[], options, (error, stdout, stderr) => {
+            if (error != null) {
+                reject(error);
+            } else {
+                resolve({
+                    stdout: typeof stdout === "string" ? stdout : stdout.toString("utf8"),
+                    stderr: typeof stderr === "string" ? stderr : stderr.toString("utf8"),
+                });
+            }
+        });
+    });
+}
 
 /**
  * Activates the Viv extension.
@@ -42,7 +62,7 @@ export function activate(context: vscode.ExtensionContext): void {
  * @param context - The extension context.
  * @returns The initialized extension state.
  */
-function initializeState(context: vscode.ExtensionContext): ExtensionState {
+export function initializeState(context: vscode.ExtensionContext): ExtensionState {
     const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
     statusBarItem.command = "workbench.action.problems.focus";
     context.subscriptions.push(statusBarItem);
@@ -418,7 +438,7 @@ async function tryPipInstall(pythonPath: string, args: readonly string[]): Promi
  *
  * @returns The resolved Python interpreter path.
  */
-function resolvePythonPath(): string {
+export function resolvePythonPath(): string {
     const vivPython =
         vscode.workspace.getConfiguration("viv").get<string>("pythonPath");
     if (vivPython != null && vivPython !== "") {
@@ -483,7 +503,7 @@ async function detectCompilerInterpreter(): Promise<string | null> {
  * @param sourcePath - Absolute path to the compiled source file, used as a fallback
  *     location for errors without source annotations.
  */
-function handleCompileResult(state: ExtensionState, result: CompileResult, sourcePath: string): void {
+export function handleCompileResult(state: ExtensionState, result: CompileResult, sourcePath: string): void {
     // Build a version-mismatch warning diagnostic if the bridge reported one
     const warningDiagnostic = createWarningDiagnostic(result.warning, sourcePath);
     // If compilation succeeded, clear any previous diagnostics, indicate success,
@@ -554,7 +574,7 @@ function handleCompileResult(state: ExtensionState, result: CompileResult, sourc
  * @param sourcePath - Absolute path to the compiled source file.
  * @returns The warning diagnostic, or null if there is no warning.
  */
-function createWarningDiagnostic(warning: string | null | undefined, sourcePath: string): vscode.Diagnostic | null {
+export function createWarningDiagnostic(warning: string | null | undefined, sourcePath: string): vscode.Diagnostic | null {
     if (warning == null) {
         return null;
     }
@@ -580,7 +600,7 @@ function createWarningDiagnostic(warning: string | null | undefined, sourcePath:
  * @param constructs - Mapping from construct type keys to sorted name arrays.
  * @returns The formatted summary string.
  */
-function formatConstructSummary(constructs: Record<string, string[]>): string {
+export function formatConstructSummary(constructs: Record<string, string[]>): string {
     const lines: string[] = [];
     for (const { key, label } of CONSTRUCT_SECTIONS) {
         const constructNames = constructs[key] ?? [];
@@ -631,7 +651,7 @@ export function deactivate(): void {}
 /**
  * Result emitted by the compiler bridge (as a JSON object on stdout).
  */
-interface CompileResult {
+export interface CompileResult {
     /**
      * Whether compilation succeeded.
      */
@@ -710,7 +730,7 @@ interface PythonExtensionApi {
 /**
  * Shared state for the extension's UI components.
  */
-interface ExtensionState {
+export interface ExtensionState {
     /**
      * Status bar item showing the current compilation state.
      */

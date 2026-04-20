@@ -2,7 +2,7 @@
   "name": "viv",
   "displayName": "Viv DSL",
   "description": "Language support for the Viv engine for emergent narrative in games and simulations.",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "compilerVersion": "0.12",
   "publisher": "siftystudio",
   "license": "SEE LICENSE IN LICENSE.txt",
@@ -134,12 +134,29 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "tsc && cp ../../syntax/viv.tmLanguage.json ./viv.tmLanguage.json && cp ../../assets/viv-icon-light-256.png ./icon.png"
+    "vscode:prepublish": "tsc && cp ../../syntax/viv.tmLanguage.json ./viv.tmLanguage.json && cp ../../assets/viv-icon-light-256.png ./icon.png",
+    "compile:test": "tsc -p ./tsconfig.test.json && cp ../../syntax/viv.tmLanguage.json ./viv.tmLanguage.json",
+    "pretest": "npm run compile:test",
+    "test:unit": "mocha --config .mocharc.unit.json",
+    "test:integration": "node ./out/test/integration/runFiltered.js",
+    "test:python": "python3 -m pytest test/python",
+    "test": "npm run test:unit && npm run test:integration && npm run test:python"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.16",
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.6",
     "@types/node": "^20.0.0",
+    "@types/sinon": "^17.0.3",
     "@types/vscode": "^1.75.0",
-    "typescript": "^5.0.0"
+    "@vscode/test-electron": "^2.4.0",
+    "chai": "^4.4.1",
+    "glob": "^11.0.0",
+    "mocha": "^10.7.0",
+    "sinon": "^18.0.0",
+    "typescript": "^5.0.0",
+    "vscode-oniguruma": "^2.0.1",
+    "vscode-textmate": "^9.1.0"
   },
   "vsce": {
     "dependencies": false

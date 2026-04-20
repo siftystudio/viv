@@ -1,0 +1,8 @@
+action greet:
+    roles:
+        @greeter:
+            as: character, initiator
+        @greetee:
+            as: character, recipient
+    effects:
+        @greeter said "hello" to @greetee
