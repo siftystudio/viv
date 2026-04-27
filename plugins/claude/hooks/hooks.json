@@ -6,13 +6,13 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Read(*/plugins/claude/*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin reading its own files\"}}'",
+            "if": "Read(*/.claude/plugins/cache/siftystudio/viv/*)",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin reading its own installed files\"}}'",
             "timeout": 5
           },
           {
             "type": "command",
-            "if": "Read(*/plugins/data/viv-*/*)",
+            "if": "Read(*/.claude/plugins/data/viv-siftystudio/*)",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin reading its own data\"}}'",
             "timeout": 5
           }
@@ -23,110 +23,7 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Bash(*vivc*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv compiler auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*viv_compiler*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv compiler auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*viv-plugin-get-plugin-file*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin utility auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*viv-plugin-fetch-monorepo*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin utility auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*viv-plugin-read-state*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin utility auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*viv-plugin-write-state*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin utility auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*viv-plugin-install-runtime*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin utility auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*viv-plugin-orient*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin utility auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*viv-plugin-explore-monorepo*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin utility auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*viv-plugin-read-monorepo-file*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin utility auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*viv-plugin-check-latest*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin utility auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*viv-plugin-get-example*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin utility auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*viv-plugin-help*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv plugin utility auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*viv-plugin-install-vscode-extension*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv editor plugin install auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*viv-plugin-install-webstorm-plugin*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv editor plugin install auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*viv-plugin-install-sublime-package*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv editor plugin install auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*npm install @siftystudio/viv-runtime*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv runtime install auto-approved by plugin\"}}'",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "if": "Bash(*npm init -y*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Viv runtime install auto-approved by plugin (npm init -y for missing package.json)\"}}'",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/bash-guard.py",
             "timeout": 5
           }
         ]

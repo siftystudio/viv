@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# bin/viv-plugin-version -- Print the running plugin's version
+#
+# Reads the version field from the plugin's own .claude-plugin/plugin.json,
+# resolved relative to this script's location. This reports the version that
+# is actually executing, which may differ from the latest-installed version
+# reported by viv-plugin-check-latest due to a known Claude Code caching bug
+# (new versions land in the cache but the oldest cached version runs).
+#
+# Usage: viv-plugin-version
+
+set -euo pipefail
+
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
+    echo ""
+    echo "Usage: viv-plugin-version"
+    echo ""
+    echo "Print the version of the Viv plugin that is currently running."
+    echo ""
+    echo "If this differs from what viv-plugin-check-latest reports for"
+    echo "claude-plugin, a new version has been cached but isn't running yet."
+    echo "Run /viv:sync to resolve the drift."
+    echo ""
+    exit 0
+fi
+
+# Resolve the script's real path so invocation via a symlink still
+# reports the underlying plugin's version, not whatever sits next to
+# the symlink.
+SCRIPT_REAL="$(python3 -c 'import os, sys; print(os.path.realpath(sys.argv[1]))' "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_REAL")" && pwd)"
+PLUGIN_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+MANIFEST="$PLUGIN_ROOT/.claude-plugin/plugin.json"
+
+if [ ! -f "$MANIFEST" ]; then
+    echo "Plugin manifest not found at $MANIFEST" >&2
+    exit 1
+fi
+
+# Parse the version field. Use grep + sed to avoid a python3 dependency --
+# this one script should work even if python3 isn't on PATH.
+version=$(grep -E '"version"[[:space:]]*:' "$MANIFEST" | head -1 | sed -E 's/.*"version"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/')
+
+if [ -z "$version" ]; then
+    echo "Could not parse version from $MANIFEST" >&2
+    exit 1
+fi
+
+echo "$version"

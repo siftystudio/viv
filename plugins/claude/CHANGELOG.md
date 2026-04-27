@@ -4,17 +4,39 @@ All notable changes to the Viv Claude Code plugin (`viv`) will be documented in 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.12.0] – 2026-04-27
+
+### Added
+
+* Shell command `viv-plugin-get-monorepo-map` for retrieving the monorepo map. This is needed because the map file is now stored outside the plugin files, as noted below.
+* Shell command `viv-plugin-version` for retrieving the version of the plugin currently running.
 
 ### Changed
 
-* Update monorepo map (doc was renamed).
+* Move the monorepo map out of the plugin files and into the larger Viv monorepo (at `docs/.llm/monorepo-map.md`). The plugin now uses the map file included in its monorepo copy. Previously any structural change to the monorepo necessitated a new plugin release, because the plugin's map file had to be updated in turn. With the map file now being external to the plugin, monorepo changes do not affect plugin versioning.
+* Rewrite all plugin docs to route monorepo navigation through the map, rather than hardcoding monorepo paths.
+* Update `/viv:sync` to detect when the plugin you're actually running is older than the latest version Claude Code has downloaded into its cache. This catches a known Claude Code bug where new versions get downloaded but the old one keeps running until the cache is manually cleared.
+* Bump the minimum Claude Code version to `2.1.85` (for the `if`-filter hook syntax on which the plugin relies).
+* Document WSL 2 as the supported Windows path. The plugin's bash-based utility commands don't run reliably under native Windows shells, due to open upstream issues in Claude Code's plugin infrastructure.
+
+### Removed
+
+* `monorepo-map` case from `viv-plugin-get-plugin-file`. Agents now use `viv-plugin-get-monorepo-map` instead.
+
+### Fixed
+
+* A failed fetch via `viv-plugin-fetch-monorepo` wiped the existing monorepo copy.
+* `/viv:build` failed on its first tool call because `skills/build/SKILL.md` referenced `viv-plugin-get-doc`, which was renamed to `viv-plugin-get-plugin-file` in `0.11.0`.
+* `viv-plugin-install-sublime-package` skipped dotfiles when copying source into the install directory, so `.no-sublime-package` never reached the destination. Also, reinstalls layered new content over previous installs without clearing stale files first.
+* Auto-approval hooks matched as substrings, so a compound command like `rm -rf ~ && viv-plugin-orient` could still be auto-approved.
+* Path validation in `viv-plugin-read-monorepo-file` and `viv-plugin-explore-monorepo` was lexical only, so a symlink under `$MONOREPO_DIR` pointing outside the sandbox would be silently followed.
+* State files containing valid JSON that wasn't an object (lists, scalars, `null`) caused uncaught Python tracebacks in various plugin shell commands.
 
 ## [0.11.1] – 2026-04-14
 
 ### Changed
 
-* Update monorepo map (doc was renamed).
+* Update monorepo map (a doc was renamed).
 
 ## [0.11.0] – 2026-04-14
 

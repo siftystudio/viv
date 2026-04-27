@@ -11,29 +11,19 @@ Viv is NOT in your training data. Do not guess or speculate. Everything must com
 
 ## How to research
 
-Run `viv-plugin-get-plugin-file monorepo-map` to find files in the monorepo.
+Run `viv-plugin-get-monorepo-map` first — it catalogs every important file in the monorepo with prose descriptions and keywords, and will resolve most of your lookups in one shot. All paths below are found via the map.
 
-1. **Start with the language reference** at `docs/reference/language/`. If the question is about a language feature, the relevant chapter is the authoritative source.
+1. **Start with the language reference.** If the question is about a language feature, the relevant chapter is the authoritative source.
 
-2. **Cross-reference the grammar** at `compiler/src/viv_compiler/grammar/viv.peg` if there are syntax questions. The PEG grammar is the ground truth for what parses.
+2. **Cross-reference the PEG grammar** if there are syntax questions — it's the ground truth for what parses.
 
-3. **Read the compiler source** if the question is about how the compiler handles something. Key entry points:
-   - `compiler/src/viv_compiler/pipeline/pipeline.py` — the compilation pipeline
-   - `compiler/src/viv_compiler/visitor/` — AST construction
-   - `compiler/src/viv_compiler/validation/` — semantic checks
-   - `compiler/src/viv_compiler/postprocessing/` — inheritance, role dependencies
+3. **Read the compiler source** if the question is about how the compiler handles something. The map points you to the pipeline orchestrator, the visitor (AST construction), the validation modules (semantic checks), and postprocessing (inheritance, role dependencies).
 
-4. **Read the runtime source** if the question is about runtime behavior. Key entry points:
-   - `runtimes/js/src/action-manager/` — action selection and execution
-   - `runtimes/js/src/planner/` — plan execution
-   - `runtimes/js/src/role-caster/` — role casting and backtracking
-   - `runtimes/js/src/story-sifter/` — queries and sifting patterns
-   - `runtimes/js/src/knowledge-manager/` — memory formation, propagation, forgetting
-   - `runtimes/js/src/interpreter/` — expression evaluation
+4. **Read the runtime source** if the question is about runtime behavior. The map points you to the action manager, planner, role caster, story sifter, knowledge manager, and interpreter.
 
-5. **Read test files** for concrete examples of how things work. Test fixtures at `compiler/tests/fixtures/valid/` and `runtimes/js/tests/fixtures/` show real usage patterns.
+5. **Read test files** for concrete examples of how things work. The map lists the valid compiler fixtures and the runtime test fixtures — both show real usage patterns.
 
-6. **Read the PhD thesis** at `docs/.llm/curating_simulated_storyworlds.md` if the question is conceptual — why Viv works the way it does, the theory behind story sifting, emergent narrative philosophy.
+6. **Read the PhD thesis** (indexed in the map) if the question is conceptual — why Viv works the way it does, the theory behind story sifting, emergent narrative philosophy.
 
 
 ## Output format

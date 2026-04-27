@@ -11,15 +11,15 @@ Viv is NOT in your training data. Do not guess what's possible. Look things up.
 
 ## Understanding Viv's capabilities
 
-Before designing, make sure you understand what Viv can and cannot do. Run `viv-plugin-get-plugin-file monorepo-map` to find the right reference files.
+Before designing, make sure you understand what Viv can and cannot do. Run `viv-plugin-get-monorepo-map` to find the right reference files — it indexes all of these with searchable descriptions.
 
 Key references for design work:
-- Language reference at `docs/reference/language/` — what constructs exist and how they work
-- Syntax examples at `syntax/examples/` — what real Viv code looks like
-- Valid test fixtures at `compiler/tests/fixtures/valid/` — idiomatic patterns
-- The introduction tour at `docs/introduction/tour.md` — the revenge story walkthrough shows how constructs compose
-- Runtime API at `runtimes/js/src/api/` — what the runtime can do
-- Example projects at `examples/` — how integration works end to end
+- **Language reference** — what constructs exist and how they work
+- **Syntax examples** — what real Viv code looks like
+- **Valid compiler test fixtures** — idiomatic patterns
+- **Introduction tour** — the revenge story walkthrough shows how constructs compose
+- **Runtime API** — what the runtime can do
+- **Example projects** — how integration works end to end
 
 
 ## Design principles

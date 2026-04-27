@@ -10,7 +10,7 @@
 
 set -euo pipefail
 
-if [ "${1:-}" = "--help" ]; then
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
     echo ""
     echo "Usage: viv-plugin-orient"
     echo ""
@@ -35,8 +35,18 @@ if [ ! -d "$CACHE_DIR" ]; then
     exit 1
 fi
 
-# Resolve latest installed version
-LATEST=$(ls -1 "$CACHE_DIR" | sort -t. -k1,1n -k2,2n -k3,3n | tail -1)
+# Resolve latest installed version. Strict X.Y.Z filter prevents numeric
+# sort from picking `99abc` (coerced to 99) or pre-release suffixes
+# (which sort above their stable counterparts).
+LATEST=$(
+    for entry in "$CACHE_DIR"/*/; do
+        name="${entry%/}"
+        name="${name##*/}"
+        if [[ "$name" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "$name"
+        fi
+    done | sort -t. -k1,1n -k2,2n -k3,3n | tail -1
+)
 
 if [ -z "$LATEST" ]; then
     echo "" >&2
@@ -80,6 +90,10 @@ try:
         state = json.load(f)
 except json.JSONDecodeError as e:
     print(f"State file is corrupted: {e}", file=sys.stderr)
+    print(f"Edit or remove {state_file} to recover.", file=sys.stderr)
+    sys.exit(1)
+if not isinstance(state, dict):
+    print(f"State file is corrupted: expected a JSON object, got {type(state).__name__}.", file=sys.stderr)
     print(f"Edit or remove {state_file} to recover.", file=sys.stderr)
     sys.exit(1)
 print(f'Compiler:  v{state.get("compiler_version", "unknown")} ({state.get("compiler_path", "unknown")})')

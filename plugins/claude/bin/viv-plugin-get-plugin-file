@@ -10,11 +10,14 @@
 #
 # Usage: viv-plugin-get-plugin-file <name>
 #
-# Files: main, primer, monorepo-map, web-links, writer, fixer, designer, researcher, engineer, critic
+# Files: main, primer, web-links, writer, fixer, designer, researcher, engineer, critic
+#
+# For the monorepo map, use viv-plugin-get-monorepo-map -- it now lives
+# in the monorepo (at docs/.llm/monorepo-map.md), not in the plugin.
 
 set -euo pipefail
 
-if [ $# -eq 0 ] || [ "${1:-}" = "--help" ]; then
+if [ $# -eq 0 ] || [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
     echo ""
     echo "Usage: viv-plugin-get-plugin-file <name>"
     echo ""
@@ -24,8 +27,9 @@ if [ $# -eq 0 ] || [ "${1:-}" = "--help" ]; then
     echo "Files:"
     echo "  main          Viv plugin guide -- how to operate as a Viv partner"
     echo "  primer        Viv primer -- language overview, constructs, concepts"
-    echo "  monorepo-map  File index for the Viv monorepo"
     echo "  web-links     External URLs (docs, registries, marketplaces)"
+    echo ""
+    echo "For the monorepo map, use viv-plugin-get-monorepo-map."
     echo ""
     echo "Skill references:"
     echo "  writer        Writing Viv code"
@@ -41,6 +45,18 @@ if [ $# -eq 0 ] || [ "${1:-}" = "--help" ]; then
     exit 0
 fi
 
+# Handle the deprecated `monorepo-map` name before the cache-population
+# checks, so an agent calling the old name on a fresh install still gets
+# the redirect to viv-plugin-get-monorepo-map rather than a generic
+# "plugin not installed" error.
+if [ "$1" = "monorepo-map" ]; then
+    echo "" >&2
+    echo "The monorepo map is no longer a plugin-bundled file." >&2
+    echo "Use viv-plugin-get-monorepo-map instead." >&2
+    echo "" >&2
+    exit 1
+fi
+
 CACHE_DIR="$HOME/.claude/plugins/cache/siftystudio/viv"
 
 if [ ! -d "$CACHE_DIR" ]; then
@@ -50,8 +66,18 @@ if [ ! -d "$CACHE_DIR" ]; then
     exit 1
 fi
 
-# Find the highest semver version directory
-LATEST=$(ls -1 "$CACHE_DIR" | sort -t. -k1,1n -k2,2n -k3,3n | tail -1)
+# Find the highest semver version directory. Strict X.Y.Z filter prevents
+# numeric sort from picking `99abc` (coerced to 99) or pre-release
+# suffixes (which sort above their stable counterparts).
+LATEST=$(
+    for entry in "$CACHE_DIR"/*/; do
+        name="${entry%/}"
+        name="${name##*/}"
+        if [[ "$name" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "$name"
+        fi
+    done | sort -t. -k1,1n -k2,2n -k3,3n | tail -1
+)
 
 if [ -z "$LATEST" ]; then
     echo "" >&2
@@ -68,9 +94,6 @@ case "$1" in
         ;;
     primer)
         cat "$DOC_ROOT/docs/primer.md"
-        ;;
-    monorepo-map)
-        cat "$DOC_ROOT/docs/monorepo-map.md"
         ;;
     web-links)
         cat "$DOC_ROOT/docs/web-links.md"

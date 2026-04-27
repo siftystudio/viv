@@ -41,10 +41,10 @@ check_monorepo() {
     fi
 }
 
-# Reject relpaths containing `..` segments or absolute paths. Lexical check
-# (no canonicalization), so legal filenames like `foo..bar` are still allowed
-# while `..`, `../etc/passwd`, and `/etc/passwd` are refused. Symlinks inside
-# the monorepo are not followed -- that's enforced by `viv-plugin-fetch-monorepo`.
+# Reject relpaths containing `..` segments or absolute paths, then canonicalize
+# the resolved target and confirm it stays inside $MONOREPO_DIR. The lexical
+# check catches literal traversal; the canonicalization check catches symlink
+# escape (a symlink under the monorepo pointing at /etc/passwd, for instance).
 validate_relpath() {
     local relpath="$1"
     case "$relpath" in
@@ -54,6 +54,21 @@ validate_relpath() {
             ;;
         /*)
             echo "Refusing absolute path: $relpath" >&2
+            exit 1
+            ;;
+    esac
+    local target="$MONOREPO_DIR/$relpath"
+    local resolved_root resolved_target
+    resolved_root=$(python3 -c 'import os, sys; print(os.path.realpath(sys.argv[1]))' "$MONOREPO_DIR" 2>/dev/null || true)
+    resolved_target=$(python3 -c 'import os, sys; print(os.path.realpath(sys.argv[1]))' "$target" 2>/dev/null || true)
+    if [ -z "$resolved_root" ] || [ -z "$resolved_target" ]; then
+        echo "Refusing path (could not canonicalize): $relpath" >&2
+        exit 1
+    fi
+    case "$resolved_target" in
+        "$resolved_root"|"$resolved_root"/*) ;;
+        *)
+            echo "Refusing symlink escape: $relpath resolves outside the monorepo" >&2
             exit 1
             ;;
     esac
@@ -123,11 +138,11 @@ if [ "$use_flags" = false ] && [ ${#positionals[@]} -gt 3 ]; then
     exit 1
 fi
 if [ "$use_flags" = true ]; then
-    if [ -n "$offset" ] && ! [[ "$offset" =~ ^[0-9]+$ ]]; then
+    if [ -n "$offset" ] && ! [[ "$offset" =~ ^[1-9][0-9]*$ ]]; then
         echo "Invalid --offset: $offset (must be a positive integer)" >&2
         exit 1
     fi
-    if [ -n "$limit" ] && ! [[ "$limit" =~ ^[0-9]+$ ]]; then
+    if [ -n "$limit" ] && ! [[ "$limit" =~ ^[1-9][0-9]*$ ]]; then
         echo "Invalid --limit: $limit (must be a positive integer)" >&2
         exit 1
     fi
@@ -144,6 +159,16 @@ if [ "$use_flags" = true ]; then
 else
     start="${positionals[1]:-}"
     end="${positionals[2]:-}"
+    # Reject explicit empty-string positionals so we don't silently fall
+    # back to whole-file cat when the caller passed `""` on purpose.
+    if [ ${#positionals[@]} -ge 2 ] && [ -z "${positionals[1]}" ]; then
+        echo "Invalid start line: empty string" >&2
+        exit 1
+    fi
+    if [ ${#positionals[@]} -ge 3 ] && [ -z "${positionals[2]}" ]; then
+        echo "Invalid end line: empty string" >&2
+        exit 1
+    fi
 fi
 validate_relpath "$relpath"
 target="$MONOREPO_DIR/$relpath"
@@ -151,11 +176,11 @@ if [ ! -f "$target" ]; then
     echo "Not found: $relpath" >&2
     exit 1
 fi
-if [ -n "$start" ] && ! [[ "$start" =~ ^[0-9]+$ ]]; then
+if [ -n "$start" ] && ! [[ "$start" =~ ^[1-9][0-9]*$ ]]; then
     echo "Invalid start line: $start (must be a positive integer)" >&2
     exit 1
 fi
-if [ -n "$end" ] && ! [[ "$end" =~ ^[0-9]+$ ]]; then
+if [ -n "$end" ] && ! [[ "$end" =~ ^[1-9][0-9]*$ ]]; then
     echo "Invalid end line: $end (must be a positive integer)" >&2
     exit 1
 fi

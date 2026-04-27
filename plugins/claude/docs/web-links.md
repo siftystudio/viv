@@ -16,6 +16,7 @@ URLs are not clickable in Claude Code's terminal. When sharing a link with the u
 | Sifty (company) | https://sifty.studio |
 | Licensing | https://sifty.studio/licensing |
 | Author (James Ryan) | https://jamesryan.ai |
+| Sifty mailing list | https://siftystudio.kit.com/ |
 | Ko-fi (donations) | https://ko-fi.com/siftystudio |
 
 

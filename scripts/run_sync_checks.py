@@ -32,7 +32,7 @@ def check_content_bundle_schema() -> bool:
 
 
 def check_compiler_version_in_plugins() -> bool:
-    """Verify that all plugins' `compilerVersion` major.minor matches the compiler's and each other's."""
+    """Verify correspondence between the compiler version and all plugin compiler versions."""
     # Read the compiler's own version
     pyproject_text = (ROOT / "compiler/pyproject.toml").read_text()
     compiler_match = re.search(r'version\s*=\s*"([^"]+)"', pyproject_text)
@@ -64,16 +64,22 @@ def check_compiler_version_in_plugins() -> bool:
     # mismatched plugin is reported in a single preflight run.
     all_passed = True
     if sublime_major_minor != compiler_major_minor:
-        print(f"FAIL [compiler version in plugins]: "
-              f"Sublime compilerVersion {sublime_version} does not match compiler {compiler_match.group(1)} (major.minor)")
+        print(
+            f"FAIL [compiler version in plugins]: Sublime compilerVersion {sublime_version} "
+            f"does not match compiler {compiler_match.group(1)} (major.minor)"
+        )
         all_passed = False
     if vscode_major_minor != compiler_major_minor:
-        print(f"FAIL [compiler version in plugins]: "
-              f"VS Code compilerVersion {vscode_version} does not match compiler {compiler_match.group(1)} (major.minor)")
+        print(
+            f"FAIL [compiler version in plugins]: VS Code compilerVersion {vscode_version} "
+            f"does not match compiler {compiler_match.group(1)} (major.minor)"
+        )
         all_passed = False
     if jetbrains_major_minor != compiler_major_minor:
-        print(f"FAIL [compiler version in plugins]: "
-              f"JetBrains compilerVersion {jetbrains_version} does not match compiler {compiler_match.group(1)} (major.minor)")
+        print(
+            f"FAIL [compiler version in plugins]: JetBrains compilerVersion {jetbrains_version} "
+            "does not match compiler {compiler_match.group(1)} (major.minor)"
+        )
         all_passed = False
     if all_passed:
         print(f"PASS [compiler version in plugins]: {compiler_major_minor}")
@@ -252,7 +258,10 @@ def check_vscode_package_lock_version() -> bool:
         print(f"FAIL [vscode package lock]: package.json is {package_version} but package-lock.json is {lock_version}")
         return False
     if package_version != lock_root_version:
-        print(f"FAIL [vscode package lock]: package.json is {package_version} but package-lock.json packages[''] is {lock_root_version}")
+        print(
+            f"FAIL [vscode package lock]: package.json is {package_version} "
+            f"but package-lock.json packages[''] is {lock_root_version}"
+        )
         return False
     print(f"PASS [vscode package lock]: versions match ({package_version})")
     return True
@@ -391,17 +400,35 @@ def check_language_reference_version() -> bool:
 
 
 def check_monorepo_map_paths() -> bool:
-    """Verify that all paths in the Claude Code plugin's monorepo map resolve to existing files."""
-    map_path = ROOT / "plugins/claude/docs/monorepo-map.md"
-    text = map_path.read_text()
-    # Extract paths from the `Where` column of markdown tables: | ... | `path/to/file` | ... |
-    paths = re.findall(r"\|\s*`([^`]+)`\s*\|", text)
+    """Verify that all paths in the monorepo map resolve to existing files.
+
+    The map uses Markdown tables of the form "| What | `path` | Description |", which we parse by
+    splitting each table row on `|` and scanning every cell for backticked content that looks
+    path-like (contains a `/` or ends with `/`). This handles rows with multiple backticked
+    cells, which a non-overlapping regex would miss.
+    """
+    map_path = ROOT / "docs/.llm/monorepo-map.md"
+    if not map_path.is_file():
+        print(f"FAIL [monorepo map paths]: map not found at {map_path}")
+        return False
+    paths: list[str] = []
+    for line in map_path.read_text().splitlines():
+        if not line.startswith("|"):
+            continue
+        for cell in line.split("|"):
+            cell = cell.strip()
+            match = re.fullmatch(r"`([^`]+)`", cell)
+            if not match:
+                continue
+            candidate = match.group(1)
+            if "/" not in candidate:
+                continue
+            paths.append(candidate)
     if not paths:
         print("PASS [monorepo map paths]: no paths found")
         return True
-    missing = []
+    missing: list[str] = []
     for rel_path in paths:
-        # Handle directory references (trailing /) and wildcards
         if rel_path.endswith("/"):
             if not (ROOT / rel_path).is_dir():
                 missing.append(rel_path)
@@ -421,7 +448,7 @@ def check_changelog_paths() -> bool:
     """Verify that relative Markdown links in the root `CHANGELOG.md` resolve to existing files."""
     changelog_path = ROOT / "CHANGELOG.md"
     text = changelog_path.read_text()
-    # Match relative paths in markdown links, excluding URLs
+    # Match relative paths in Markdown links, excluding URLs
     paths = re.findall(r"\]\((?!\w+://)(?:\./)?([^)]+)\)", text)
     if not paths:
         print("PASS [changelog paths]: no relative paths found")

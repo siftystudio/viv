@@ -7,6 +7,10 @@
 # If a tag is provided, downloads that specific release; otherwise downloads
 # the main branch.
 #
+# Download is atomic: the new monorepo is extracted to a sibling staging
+# directory and swapped into place only after extraction succeeds. A failed
+# download therefore leaves any existing clone intact.
+#
 # Usage: viv-plugin-fetch-monorepo [tag]
 #
 # Examples:
@@ -20,7 +24,6 @@ if [ "${1:-}" = "--check" ]; then
         echo "Monorepo: installed"
     else
         echo "Monorepo: not installed"
-        exit 0
     fi
     exit 0
 fi
@@ -30,7 +33,7 @@ if [ "${1:-}" = "--path" ]; then
     exit 0
 fi
 
-if [ "${1:-}" = "--help" ]; then
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
     echo ""
     echo "Usage: viv-plugin-fetch-monorepo [tag]"
     echo "       viv-plugin-fetch-monorepo --check"
@@ -50,9 +53,21 @@ fi
 
 DATA_DIR="$HOME/.claude/plugins/data/viv-siftystudio"
 MONOREPO_DIR="$DATA_DIR/viv-monorepo"
+STAGING_DIR="$DATA_DIR/viv-monorepo.staging"
 STATE_FILE="$DATA_DIR/state.json"
 TAG="${1:-main}"
 TODAY=$(date +%Y-%m-%d)
+
+# Validate the tag against a conservative character set. Refs only use
+# letters, digits, dots, underscores, and hyphens; any other character
+# would either be a malformed tag or a path-injection attempt.
+if [ "$TAG" != "main" ] && ! printf '%s' "$TAG" | grep -qE '^[a-zA-Z0-9._-]+$'; then
+    echo "" >&2
+    echo "Refusing tag with disallowed characters: $TAG" >&2
+    echo "Tags may only contain letters, digits, dots, underscores, and hyphens." >&2
+    echo "" >&2
+    exit 1
+fi
 
 if [ "$TAG" = "main" ]; then
     URL="https://github.com/siftystudio/viv/archive/refs/heads/main.tar.gz"
@@ -61,28 +76,53 @@ else
 fi
 
 echo ""
+# The TAG was already validated against [a-zA-Z0-9._-]+ above, so it is
+# safe to echo verbatim; no ANSI escapes or newlines can sneak through.
 echo "Downloading Viv monorepo ($TAG)..."
 
-# Clear any previous extraction so a failed download doesn't leave stale files
-# mixed in with new ones.
-rm -rf "$MONOREPO_DIR"
-mkdir -p "$MONOREPO_DIR"
-if ! curl -sL "$URL" | tar xz --strip-components=1 -C "$MONOREPO_DIR" 2>&1; then
+# Extract into a staging sibling first. This keeps any existing clone
+# intact if the download or extraction fails.
+rm -rf "$STAGING_DIR"
+mkdir -p "$STAGING_DIR"
+if ! curl -sfL "$URL" | tar xz --strip-components=1 -C "$STAGING_DIR" 2>&1; then
     echo "" >&2
     echo "Download failed -- check the tag name and your network connection." >&2
     echo "" >&2
+    rm -rf "$STAGING_DIR"
     exit 1
 fi
 
-# Defensive: scrub any symlinks introduced by the tarball. The Viv monorepo
-# has none, so anything found here would be a malicious or corrupted upstream.
-find "$MONOREPO_DIR" -type l -delete 2>/dev/null || true
+# Defensive: scrub any symlinks introduced by the tarball. The Viv
+# monorepo has none, so anything found here would be a malicious or
+# corrupted upstream.
+find "$STAGING_DIR" -type l -delete 2>/dev/null || true
+
+# Swap the staged tree into place atomically enough for our purposes.
+# Rename the old tree aside, move the staged tree into its place, then
+# remove the old tree. If the swap itself fails we exit with the old
+# tree restored.
+mkdir -p "$DATA_DIR"
+OLD_BACKUP="$DATA_DIR/viv-monorepo.old"
+rm -rf "$OLD_BACKUP"
+if [ -d "$MONOREPO_DIR" ]; then
+    mv "$MONOREPO_DIR" "$OLD_BACKUP"
+fi
+if ! mv "$STAGING_DIR" "$MONOREPO_DIR"; then
+    echo "" >&2
+    echo "Failed to move staged monorepo into place." >&2
+    if [ -d "$OLD_BACKUP" ]; then
+        mv "$OLD_BACKUP" "$MONOREPO_DIR"
+        echo "Previous clone restored." >&2
+    fi
+    rm -rf "$STAGING_DIR"
+    exit 1
+fi
+rm -rf "$OLD_BACKUP"
 
 echo "Done -- monorepo is at $MONOREPO_DIR"
 
-# Update state.json with monorepo fields. Always populate (creating the file
-# if it doesn't exist) so a fresh setup gets a usable state file.
-mkdir -p "$DATA_DIR"
+# Update state.json with monorepo fields. Always populate (creating the
+# file if it doesn't exist) so a fresh setup gets a usable state file.
 STATE_FILE="$STATE_FILE" TAG="$TAG" TODAY="$TODAY" python3 <<'PY'
 import json
 import os
@@ -95,6 +135,10 @@ if os.path.exists(state_file):
             state = json.load(f)
     except json.JSONDecodeError as e:
         print(f"State file is corrupted: {e}", file=sys.stderr)
+        print(f"Edit or remove {state_file} to recover.", file=sys.stderr)
+        sys.exit(1)
+    if not isinstance(state, dict):
+        print(f"State file is corrupted: expected a JSON object, got {type(state).__name__}.", file=sys.stderr)
         print(f"Edit or remove {state_file} to recover.", file=sys.stderr)
         sys.exit(1)
 state['monorepo_tag'] = os.environ['TAG']

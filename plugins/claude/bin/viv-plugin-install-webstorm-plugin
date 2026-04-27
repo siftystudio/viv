@@ -9,7 +9,7 @@
 
 set -euo pipefail
 
-if [ "${1:-}" = "--help" ]; then
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
     echo ""
     echo "Usage: viv-plugin-install-webstorm-plugin"
     echo "       viv-plugin-install-webstorm-plugin --check"
@@ -18,6 +18,12 @@ if [ "${1:-}" = "--help" ]; then
     echo "Use --check to see if WebStorm and the plugin are installed."
     echo ""
     exit 0
+fi
+
+if [ $# -gt 0 ] && [ "${1:-}" != "--check" ]; then
+    echo "Unexpected argument: $1" >&2
+    echo "Usage: viv-plugin-install-webstorm-plugin [--check | --help]" >&2
+    exit 1
 fi
 
 # Resolve WebStorm CLI

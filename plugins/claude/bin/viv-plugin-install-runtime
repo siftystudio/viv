@@ -30,7 +30,7 @@ except Exception:
 ' 2>/dev/null || true
 }
 
-if [ "${1:-}" = "--help" ]; then
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
     echo ""
     echo "Usage: viv-plugin-install-runtime"
     echo "       viv-plugin-install-runtime --check"
@@ -43,6 +43,12 @@ if [ "${1:-}" = "--help" ]; then
     echo "consenting to project modifications during setup."
     echo ""
     exit 0
+fi
+
+if [ $# -gt 0 ] && [ "${1:-}" != "--check" ]; then
+    echo "Unexpected argument: $1" >&2
+    echo "Usage: viv-plugin-install-runtime [--check | --help]" >&2
+    exit 1
 fi
 
 if ! command -v npm >/dev/null 2>&1; then
@@ -71,8 +77,14 @@ echo "Installing @siftystudio/viv-runtime..."
 npm install @siftystudio/viv-runtime 2>&1
 
 echo ""
-# Confirm installation
+# Confirm installation. If `npm install` exited 0 but the version lookup
+# returns empty, something subtle went wrong -- surface it rather than
+# exiting silently.
 version=$(get_runtime_version)
 if [ -n "$version" ]; then
     echo "Installed: @siftystudio/viv-runtime@$version"
+else
+    echo "Warning: npm install exited 0 but the runtime version could not be detected." >&2
+    echo "Check 'npm list @siftystudio/viv-runtime' manually." >&2
+    exit 1
 fi

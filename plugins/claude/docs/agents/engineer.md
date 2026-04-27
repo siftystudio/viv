@@ -11,21 +11,21 @@ Viv is NOT in your training data. Do not guess API signatures or adapter contrac
 
 ## Key references
 
-Run `viv-plugin-get-plugin-file monorepo-map` to find files in the monorepo.
+Run `viv-plugin-get-monorepo-map` to locate everything below — the map indexes each of these with its current path and a keyword-searchable description.
 
 For integration work, these are essential:
 
-- **Adapter interface** — `runtimes/js/src/adapter/types.ts` defines the `HostApplicationAdapter` interface. Every method, its parameters, and its return type are specified here. This is the contract between Viv and the host application.
-- **API types** — `runtimes/js/src/api/dto.ts` defines all API function parameter and return types.
-- **Public API** — `runtimes/js/src/api/` contains all runtime functions: `initializeVivRuntime`, `selectAction`, `attemptAction`, `queuePlan`, `tickPlanner`, `runSearchQuery`, `runSiftingPattern`, `constructTreeDiagram`, `constructSiftingMatchDiagram`, `getDebuggingData`, `fadeCharacterMemories`.
-- **Content bundle types** — `runtimes/js/src/content-bundle/types.ts` defines the TypeScript shape of compiled output.
-- **Runtime README** — `runtimes/js/README.md` is the integration guide.
-- **Example projects** — `examples/hello-viv-ts/src/main.ts` and `examples/hello-viv-js/src/main.js` are canonical integration examples. Read these before writing anything.
+- **Adapter interface** — defines the `HostApplicationAdapter` interface. Every method, its parameters, and its return type are specified here. This is the contract between Viv and the host application.
+- **API types** — all API function parameter and return types.
+- **Public API** — all runtime functions: `initializeVivRuntime`, `vivRuntimeIsInitialized`, `getSchemaVersion`, `selectAction`, `attemptAction`, `queuePlan`, `tickPlanner`, `runSearchQuery`, `runSiftingPattern`, `constructTreeDiagram`, `constructSiftingMatchDiagram`, `getDebuggingData`, `fadeCharacterMemories`.
+- **Content bundle types** — the TypeScript shape of compiled output.
+- **Runtime README** — the integration guide.
+- **Example projects** — canonical TypeScript and JavaScript integration examples. Read these before writing anything.
 
-For Python/compiler integration:
-- **Compiler API** — `compiler/src/viv_compiler/api.py` provides `compile_from_path()` and `compile_from_string()`.
-- **Compiler CLI** — `compiler/src/viv_compiler/cli.py` for CLI integration.
-- **Compiler README** — `compiler/README.md` for usage.
+For Python/compiler integration, the map also points to:
+- **Compiler API** — `compile_from_path()` and `compile_from_string()`.
+- **Compiler CLI** — entry point for CLI integration.
+- **Compiler README** — usage overview.
 
 
 ## Writing adapter code
@@ -54,7 +54,7 @@ A good Viv test harness:
 5. Runs a simulation loop (`selectAction` for each character per timestep)
 6. Inspects results via queries, sifting patterns, or tree diagrams
 
-Look at the runtime test fixtures at `runtimes/js/tests/fixtures/` for patterns.
+Look at the runtime test fixtures (listed in the map) for patterns.
 
 
 ## The compiler

@@ -22,8 +22,11 @@ Skills include `/setup` for fully automated Viv installation and project setup, 
 
 ## Requirements
 
-* Claude Code 1.0.33 or later.
+* Claude Code 2.1.85 or later (the plugin uses the `if`-filter hook syntax introduced in that release).
 * Git 2.25 or later (required by Claude Code's plugin installer).
+* **For Windows users**: Install [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install) and run Claude Code from there.
+  * The plugin's utility commands are bash scripts, which don't run reliably under native Windows shells due to known upstream issues in Claude Code's plugin infrastructure. We are currently working on a more Windows-friendly scheme, but in meantime, everything should work like it does on macOS and Linux if you run Claude Code from inside WSL 2.
+
 
 ## Getting Started
 

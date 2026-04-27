@@ -5,16 +5,26 @@
 
 set -euo pipefail
 
+if [ $# -gt 0 ] && [ "${1:-}" != "--help" ] && [ "${1:-}" != "-h" ]; then
+    echo "Unexpected argument: $1" >&2
+    echo "Usage: viv-plugin-help" >&2
+    exit 1
+fi
+
 echo ""
 echo "Viv Plugin Commands"
 echo "==================="
 echo ""
-echo "Plugin files (atomic fetch):"
-echo "  viv-plugin-get-plugin-file <name>        Fetch a plugin-bundled file (primer, writer, monorepo-map, ...)"
-echo "  viv-plugin-get-example [name]            List or fetch idiomatic example Viv files"
+echo "Discovery:"
+echo "  viv-plugin-help                          List every plugin command (this output)"
 echo "  viv-plugin-orient                        Load primer + guide + state in one call"
 echo ""
+echo "Plugin files (atomic fetch):"
+echo "  viv-plugin-get-plugin-file <name>        Fetch a plugin-bundled file (primer, writer, ...)"
+echo "  viv-plugin-get-example [name|--all]      List or fetch idiomatic example Viv files (or --all to print every example)"
+echo ""
 echo "Monorepo:"
+echo "  viv-plugin-get-monorepo-map              Print the monorepo map (keyword-searchable file index)"
 echo "  viv-plugin-explore-monorepo ls [path]    List a directory in the monorepo"
 echo "  viv-plugin-explore-monorepo grep <pat>   Search the monorepo for a pattern"
 echo "  viv-plugin-read-monorepo-file <path>     Print a file from the monorepo"
@@ -24,6 +34,7 @@ echo "  viv-plugin-fetch-monorepo --check        Check if monorepo is downloaded
 echo "  viv-plugin-fetch-monorepo --path         Print the monorepo directory path"
 echo ""
 echo "Version checks:"
+echo "  viv-plugin-version                       Report the version of the plugin currently running"
 echo "  viv-plugin-check-latest                  Report latest published versions of all Viv components"
 echo ""
 echo "State:"

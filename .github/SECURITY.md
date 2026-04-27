@@ -1,5 +1,7 @@
 # Security Policy
 
+> ***Last updated:** April 27, 2026*
+
 Due to its structure and use cases, Viv has a minimal security surface. That said, it's worth describing each of the Viv components in terms of their security concerns.
 
 ## Compiler and runtime
@@ -12,7 +14,9 @@ The Viv editor plugins comprise a [VS Code extension](https://marketplace.visual
 
 ## Claude Code plugin
 
-The [Viv Claude Code plugin](https://github.com/siftystudio/viv/tree/main/plugins/claude) has the most pronounced security surface, because there's an LLM in the loop. It enables Claude to download release tarballs from this GitHub repository (i.e., the Viv monorepo), and to handle installations of the Viv compiler, Viv JavaScript runtime, and the applicable editor plugins. It also reads and modifies files in the user's project, and reads and modifies its own plugin data. All of this is done with user consent, and the plugin handles these operations defensively: path traversal is rejected on all lookups, symlinks are scrubbed from extracted tarballs, project modifications are gated on explicit user consent, and state writes are atomic.
+The [Viv Claude Code plugin](https://github.com/siftystudio/viv/tree/main/plugins/claude) has the most pronounced security surface, because there's an LLM in the loop. It enables Claude to download release tarballs from this GitHub repository (i.e., the Viv monorepo), and to handle installations of the Viv compiler, Viv JavaScript runtime, and the applicable editor plugins. It also reads and modifies files in the user's project, and reads and modifies its own plugin data. All of this is done with user consent, and the plugin handles these operations defensively: path traversal is rejected on all lookups, symlinks are scrubbed from extracted tarballs, shell commands invoked by the plugin run against an explicit allow-list, and project modifications are gated on explicit user consent.
+
+That said, because an LLM is in the loop, the plugin is exposed to prompt-injection risks from any content loaded into Claude's context, namely: `.viv` files, files Claude reads on behalf of the user, and material downloaded from the Viv monorepo. The defenses above are designed to contain the blast radius if injection succeeds—without user consent, even a manipulated Claude cannot run shell commands outside the allow-list, read files outside the monorepo sandbox, or modify project files—but outright prevention of prompt injection is not possible. Users should exercise caution with `.viv` files and other content from unfamiliar sources.
 
 ## How to report an issue
 

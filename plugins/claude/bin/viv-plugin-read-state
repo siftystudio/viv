@@ -11,7 +11,7 @@ set -euo pipefail
 DATA_DIR="$HOME/.claude/plugins/data/viv-siftystudio"
 STATE_FILE="$DATA_DIR/state.json"
 
-if [ "${1:-}" = "--help" ]; then
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
     echo ""
     echo "Usage: viv-plugin-read-state"
     echo ""
@@ -37,6 +37,10 @@ try:
         state = json.load(f)
 except json.JSONDecodeError as e:
     print(f"State file is corrupted: {e}", file=sys.stderr)
+    print(f"Edit or remove {state_file} to recover.", file=sys.stderr)
+    sys.exit(1)
+if not isinstance(state, dict):
+    print(f"State file is corrupted: expected a JSON object, got {type(state).__name__}.", file=sys.stderr)
     print(f"Edit or remove {state_file} to recover.", file=sys.stderr)
     sys.exit(1)
 print()

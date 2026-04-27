@@ -1,20 +1,21 @@
 #!/usr/bin/env bash
 # bin/viv-plugin-install-sublime-package -- Install the Viv Sublime Text package
 #
-# Downloads the latest Viv.sublime-package from GitHub Releases and places
-# it in Sublime Text's Installed Packages directory.
+# Copies the Sublime package source from the plugin's cloned monorepo
+# (plugins/sublime/) into Sublime Text's Packages/Viv/ directory.
 #
 # Usage: viv-plugin-install-sublime-package
 #        viv-plugin-install-sublime-package --check
 
 set -euo pipefail
 
-if [ "${1:-}" = "--help" ]; then
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
     echo ""
     echo "Usage: viv-plugin-install-sublime-package"
     echo "       viv-plugin-install-sublime-package --check"
     echo ""
-    echo "Downloads and installs the Viv Sublime Text package from GitHub Releases."
+    echo "Installs the Viv Sublime Text package by copying its source from"
+    echo "the plugin's cloned monorepo into Sublime's Packages/Viv/ directory."
     echo "Use --check to see if Sublime Text and the package are installed."
     echo ""
     exit 0
@@ -46,6 +47,12 @@ if [ "${1:-}" = "--check" ]; then
     exit 0
 fi
 
+if [ $# -gt 0 ]; then
+    echo "Unexpected argument: $1" >&2
+    echo "Usage: viv-plugin-install-sublime-package [--check | --help]" >&2
+    exit 1
+fi
+
 if [ -z "$DEST" ]; then
     echo "" >&2
     echo "Could not find Sublime Text's Installed Packages directory." >&2
@@ -68,12 +75,18 @@ fi
 
 echo ""
 echo "Installing Viv Sublime Text package from monorepo..."
+# Clear any prior install so renamed or deleted files don't linger as
+# stale state. Mirrors the clean-then-extract pattern in viv-plugin-fetch-monorepo.
+rm -rf "$EXTRACT_DIR"
 mkdir -p "$EXTRACT_DIR"
+# Use the `/.` suffix to copy every entry including dotfiles. `cp -rP src/* dst`
+# would skip dotfiles like `.no-sublime-package`, which Sublime requires to
+# keep the extracted directory as-is rather than repacking it into a zip.
 # -P preserves symlinks instead of following them. The monorepo download
 # already scrubs symlinks, so this is defensive: any symlinks that somehow
 # survive would be copied as broken links rather than dereferenced into the
 # user's editor plugin directory.
-cp -rP "$MONOREPO_SRC"/* "$EXTRACT_DIR/"
+cp -rP "$MONOREPO_SRC"/. "$EXTRACT_DIR/"
 
 if [ -f "$EXTRACT_DIR/Viv.sublime-syntax" ]; then
     echo "Installed to $EXTRACT_DIR"

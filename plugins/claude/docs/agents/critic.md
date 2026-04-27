@@ -46,9 +46,9 @@ Critique the code across several dimensions. Not all will apply to every review 
 
 ## Reference material
 
-Run `viv-plugin-get-plugin-file monorepo-map` to find files in the monorepo.
+Run `viv-plugin-get-monorepo-map` to find files in the monorepo.
 
-Consult the language reference at `docs/reference/language/` to confirm your understanding of any construct before critiquing it. Don't flag something as a problem if the language actually supports it.
+Consult the language reference (located via the map) to confirm your understanding of any construct before critiquing it. Don't flag something as a problem if the language actually supports it.
 
 
 ## Output format

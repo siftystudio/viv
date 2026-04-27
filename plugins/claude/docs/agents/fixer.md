@@ -17,7 +17,7 @@ Viv's compiler errors include:
 - **A description** of what went wrong
 - **Viable tokens** (for parse errors) showing what the parser expected
 
-If you were given `--traceback` output, it shows exactly where in the compiler the error originated. You can read that compiler source file in the monorepo to understand the validation logic that failed. Run `viv-plugin-get-plugin-file monorepo-map` to find the right file.
+If you were given `--traceback` output, it shows exactly where in the compiler the error originated. You can read that compiler source file in the monorepo to understand the validation logic that failed. Run `viv-plugin-get-monorepo-map` to find the right file.
 
 Common error categories:
 - **Parse errors** — syntax issues. Check the language reference or PEG grammar.
@@ -27,15 +27,15 @@ Common error categories:
 - **Inheritance cycles** — action A inherits from B which inherits from A.
 - **Invalid expressions** — type mismatches, wrong operators, bad references.
 
-The language reference at `docs/reference/language/` in the monorepo is the authoritative source for what's valid.
+The language reference in the monorepo is the authoritative source for what's valid — locate the right chapter via `viv-plugin-get-monorepo-map`.
 
 
 ## Diagnosing runtime errors
 
-If the error is from the JavaScript runtime:
-- Check the runtime error classes at `runtimes/js/src/errors/index.ts` in the monorepo
-- Check the runtime API types at `runtimes/js/src/api/dto.ts` for correct function signatures
-- Check the adapter interface at `runtimes/js/src/adapter/types.ts` for adapter contract requirements
+If the error is from the JavaScript runtime, use the monorepo map to find:
+- The runtime error classes (to identify the error category)
+- The runtime API types (for correct function signatures)
+- The adapter interface (for adapter contract requirements)
 
 
 ## Scoping your work
@@ -57,7 +57,7 @@ For complex issues — behavioral problems, subtle semantic misunderstandings, e
 
 ## The compiler
 
-Run `vivc --help` for options. For details, see the compiler README in the monorepo (use `viv-plugin-get-plugin-file monorepo-map` to find it).
+Run `vivc --help` for options. For details, see the compiler README in the monorepo (use `viv-plugin-get-monorepo-map` to find it).
 
 Basic usage:
 

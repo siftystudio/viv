@@ -6,7 +6,7 @@ argument-hint: "[what to build]"
 
 # Build Viv Integrations
 
-You are the user's Viv partner. If you haven't run `viv-plugin-orient` yet this session, run it now. If you haven't run `viv-plugin-get-doc engineer` yet this session, run it now to load the engineer reference. Follow its instructions throughout.
+You are the user's Viv partner. If you haven't run `viv-plugin-orient` yet this session, run it now. If you haven't run `viv-plugin-get-plugin-file engineer` yet this session, run it now to load the engineer reference. Follow its instructions throughout.
 
 The user wants integration code written — not `.viv` files, but the TypeScript/JavaScript/Python code that works with Viv.
 

@@ -34,7 +34,7 @@ if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
     echo "  - compiler: run 'vivc --version' or read compiler_path from state.json"
     echo "  - runtime:  run 'npm list @siftystudio/viv-runtime' in the project"
     echo "  - monorepo: read monorepo_tag from state.json"
-    echo "  - editors:  use 'viv-plugin-install-*-{extension,plugin,package} --check'"
+    echo "  - editors:  viv-plugin-install-{vscode-extension,webstorm-plugin,sublime-package} --check"
     echo "  - Claude Code plugin: no standard detection — check whichever plugin"
     echo "    management interface Claude Code exposes in the current session"
     echo ""

@@ -64,9 +64,17 @@ Viv code is composed of seven construct types:
 
 ## What Viv looks like
 
-Here is a real Viv action — a character writes a gossip note about an embarrassing past event:
+Here is a real Viv action — a character contemplates their repeated mistreatment by another character:
 
 ```viv
+// A trope for characters who tend to ruminate
+trope ruminative:
+    roles:
+        @thinker:
+            as: character
+    conditions:
+        @thinker.personality.ruminative
+
 // A character processes their repeated mistreatment by another character
 action contemplate-mistreatment:
     gloss: "@thinker recalls cases in which @subject has mistreated them"
@@ -84,6 +92,8 @@ action contemplate-mistreatment:
                     with:
                         @perpetrator: @subject
                         @victim: @thinker
+    conditions:
+        <@thinker> fits trope ruminative
     effects:
         // Affinity isn't modeled in Viv, but you can read and write arbitrary sim data
         @thinker.affinity[@subject] -= #BIG
@@ -94,9 +104,15 @@ action contemplate-mistreatment:
                     @plotter: @thinker
                     @target: @subject
         end
+        if @hearer == @subject:
+            queue action further-mistreatment:  // Defined elsewhere: the mistreater escalates once they learn of the rumination
+                with:
+                    @mistreater: @hearer
+                    @target: @thinker
+        end
 ```
 
-This shows the basic shape: a construct keyword (`action`), a name, then indented fields (`roles`, `conditions`, `effects`, `reactions`). Roles use the `@` sigil. Conditions are boolean expressions. Effects mutate state. Reactions queue follow-up constructs. The `@hearer` is a special reference automatically bound when a character learns about this action after the fact.
+This shows the basic shape: a construct keyword (here `trope` and `action`), a name, then indented fields (`roles`, `conditions`, `effects`, `reactions`). Roles use the `@` sigil. Conditions are boolean expressions, including trope tests via `fits trope`. Effects mutate state. Reactions queue follow-up constructs. The `@hearer` is a special reference automatically bound when a character learns about this action after the fact — here, when `@subject` hears about the rumination (they're `anywhere`, so they only ever learn via propagation), they retaliate by mistreating `@thinker` further.
 
 Do NOT attempt to write Viv code from this example alone. Always consult the language reference for the full syntax and semantics of any construct.
 
@@ -162,20 +178,21 @@ The Viv ecosystem has several independent version numbers: the compiler, the run
 
 ## Reference material
 
-A local copy of the Viv monorepo is available. Use `viv-plugin-explore-monorepo` (`ls`, `grep`) to locate files, and `viv-plugin-read-monorepo-file <path>` to read them. All paths are relative to the monorepo root. If the monorepo is not downloaded yet, suggest the user run `/viv:setup`. Use `viv-plugin-get-plugin-file monorepo-map` to load a curated guide to the most important files.
+A local copy of the Viv monorepo is available. Use `viv-plugin-explore-monorepo` (`ls`, `grep`) to locate files, and `viv-plugin-read-monorepo-file <path>` to read them. All paths are relative to the monorepo root. If the monorepo is not downloaded yet, suggest the user run `/viv:setup`.
 
-Key starting points within the monorepo:
+**For navigation, always start with `viv-plugin-get-monorepo-map`.** It's a keyword-searchable catalog of every important file in the monorepo, with prose descriptions of what each one contains. Search it for a concept, get a path, read the file. Headings in the map:
 
-- **Language reference** — `docs/reference/language/` (23 chapters, one per topic). This is the authoritative source for how any construct works. When you need to understand actions, read chapter 10. Sifting patterns, chapter 16. Plans, chapter 17. Etc.
-- **Glossary** — `docs/reference/language/22-glossary.mdx` — alphabetized definitions of all Viv terminology, with links to where each term is introduced.
-- **Compiler reference** — `docs/reference/compiler/` — user-facing docs for the compiler toolchain (CLI, Python API, troubleshooting). Complements the language reference above.
-- **Monorepo README** — `README.md` — project overview with quickstart, package links, and monorepo layout
-- **Introduction: Overview** — `docs/introduction/overview.mdx` — features, design philosophy, and licensing
-- **Introduction: Tour** — `docs/introduction/tour.md` — extensive revenge-story walkthrough of the language
-- **Quickstart** — `docs/quickstart/quickstart.mdx` — getting started guide for LLM and non-LLM workflows
-- **Runtime README** — `runtimes/js/README.md` — integration guide and adapter setup
-- **Hello Viv example** — `examples/hello-viv-ts/src/main.ts` — canonical TypeScript integration
-- **License** — `LICENSE.txt` — freely available for non-commercial use; commercial use requires a license from Sifty
+- **Background and documentation** — project overview, landing page, introduction and tour, history, PhD thesis, license
+- **Language reference** — the authoritative chapter-by-chapter specification of the Viv language
+- **Compiler reference** — user-facing compiler toolchain docs (CLI, Python API, troubleshooting)
+- **Compiler** — internal compiler source
+- **Runtime (JavaScript/TypeScript)** — runtime source, API, adapter interface
+- **Examples** — canonical integration examples (TypeScript and JavaScript)
+- **Syntax and editor plugins** — TextMate grammar, editor packages
+- **Build and CI** — build config, sync checks, schema generation
+- **Wizard** — the fine-tuned LLM pipeline
+
+The map resolves concepts to paths; you should rarely hardcode a monorepo path yourself.
 
 
 ## What Viv is not

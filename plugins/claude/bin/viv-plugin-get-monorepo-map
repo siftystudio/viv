@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# bin/viv-plugin-get-monorepo-map -- Print the Viv monorepo map
+#
+# The monorepo map is a hand-curated catalog of key files in the Viv
+# monorepo, with prose descriptions and searchable keywords. It lives in
+# the monorepo itself (at docs/.llm/monorepo-map.md), so it stays in sync
+# with the code it describes without requiring a plugin version bump.
+#
+# Usage: viv-plugin-get-monorepo-map
+
+set -euo pipefail
+
+MONOREPO_DIR="$HOME/.claude/plugins/data/viv-siftystudio/viv-monorepo"
+MAP_RELPATH="docs/.llm/monorepo-map.md"
+
+if [ $# -gt 0 ]; then
+    case "$1" in
+        --help|-h)
+            echo ""
+            echo "Usage: viv-plugin-get-monorepo-map"
+            echo ""
+            echo "Print the Viv monorepo map: a keyword-searchable catalog of"
+            echo "key files in the monorepo. Use the map to locate files,"
+            echo "then read them with viv-plugin-read-monorepo-file."
+            echo ""
+            exit 0
+            ;;
+        *)
+            echo "Unexpected argument: $1" >&2
+            echo "Usage: viv-plugin-get-monorepo-map" >&2
+            exit 1
+            ;;
+    esac
+fi
+
+# Absent conditions are not errors -- they're initial states Claude needs
+# to act on. Exit 0 with prose on stdout so the output reads as a normal
+# response rather than an alarming failure.
+
+if [ ! -d "$MONOREPO_DIR" ]; then
+    cat <<'EOF'
+Monorepo clone not found. This plugin needs a local copy of the Viv
+monorepo to resolve paths.
+
+Suggest the user run /viv:setup to install Viv and fetch the monorepo.
+EOF
+    exit 0
+fi
+
+MAP_PATH="$MONOREPO_DIR/$MAP_RELPATH"
+
+if [ ! -f "$MAP_PATH" ]; then
+    cat <<'EOF'
+Monorepo clone is present but does not contain the map at
+docs/.llm/monorepo-map.md. This usually means the clone predates the map
+(the map moved from the Claude plugin into the monorepo itself).
+
+Run viv-plugin-fetch-monorepo to update the clone, then retry this
+command. If the user has asked you not to re-fetch, surface the situation
+to them before acting.
+EOF
+    exit 0
+fi
+
+if [ ! -r "$MAP_PATH" ]; then
+    cat <<EOF
+Monorepo map exists but is not readable: $MAP_PATH
+
+This usually means the file's permissions were tampered with. Check
+and restore read permission, then retry.
+EOF
+    exit 0
+fi
+
+cat "$MAP_PATH"

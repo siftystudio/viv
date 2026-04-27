@@ -1,5 +1,7 @@
 # Viv Monorepo Map
 
+> This file is intended for use by the [Viv Claude Code plugin](https://github.com/siftystudio/viv/tree/main/plugins/claude), which fetches it via `viv-plugin-get-monorepo-map`. The `viv-plugin-*` commands referenced below are only available inside a Claude Code session with the plugin installed. That said, humans and other agents are welcome to browse, since it's a reasonable index of the monorepo in any event.
+
 A curated guide to key files and directories in the Viv monorepo. Use this map to find what you need, then use `viv-plugin-read-monorepo-file` to read a file, or `viv-plugin-explore-monorepo` (`ls`, `grep`) to poke around further. All paths here are relative to the monorepo root.
 
 Workflow: search this map for relevant terms → find the path → `viv-plugin-read-monorepo-file <path>`. Use `viv-plugin-explore-monorepo ls` to list directories or `viv-plugin-explore-monorepo grep` to search for patterns. Run either command with `--help` for the full reference.
@@ -16,8 +18,10 @@ Workflow: search this map for relevant terms → find the path → `viv-plugin-r
 | Quickstart | `docs/quickstart/quickstart.mdx` | Getting started guide covering requirements, installation, and both LLM and non-LLM workflows. Keywords: quickstart, getting started, installation, requirements, setup, new project |
 | History of Viv | `docs/background/history-of-viv.md` | Background and motivation for the project. Keywords: history, background, motivation, origins |
 | PhD thesis | `docs/.llm/curating_simulated_storyworlds.md` | James Ryan's thesis on emergent narrative introducing story sifting and causal bookkeeping as concepts. Keywords: thesis, emergent narrative, curation, theory, academic, story sifting origins |
+| Monorepo map (this file) | `docs/.llm/monorepo-map.md` | Curated, keyword-searchable catalog of every key file in the monorepo. The Claude plugin fetches this via `viv-plugin-get-monorepo-map`. Keywords: map, index, catalog, navigation, LLM reference |
 | License | `LICENSE.txt` | Project license terms. Freely available for non-commercial use; commercial use requires a license from Sifty. Keywords: license, pricing, cost, free, open source, commercial |
 | Citation | `CITATION.cff` | Standard citation metadata: author, repository, license, release date. Keywords: citation, cite, author, credits, academic, reference |
+| Changelog index | `CHANGELOG.md` | Top-level index that links to every component's CHANGELOG (compiler, runtime, Claude plugin, VS Code extension, JetBrains plugin, Sublime package, wizard). Start here to find release notes for any Viv package. Keywords: changelog, release notes, versions, history, updates, releases |
 
 
 ## Language reference
@@ -96,7 +100,7 @@ High-level user-facing documentation for the Viv compiler toolchain — how to i
 |------|-------|-------------|
 | Runtime README | `runtimes/js/README.md` | Installation, adapter setup, API reference, integration guide. Keywords: install, npm, adapter, integration, setup |
 | Public exports | `runtimes/js/src/index.ts` | All public functions and types exported by the runtime. Keywords: exports, public API, index |
-| API functions | `runtimes/js/src/api/` | All runtime API functions — `initializeVivRuntime`, `selectAction`, `attemptAction`, `queuePlan`, `tickPlanner`, `runSearchQuery`, `runSiftingPattern`, `constructTreeDiagram`, `constructSiftingMatchDiagram`, `getDebuggingData`, `fadeCharacterMemories`. Keywords: API, functions, selectAction, queuePlan, sifting, tree diagram |
+| API functions | `runtimes/js/src/api/` | All runtime API functions — `initializeVivRuntime`, `vivRuntimeIsInitialized`, `getSchemaVersion`, `selectAction`, `attemptAction`, `queuePlan`, `tickPlanner`, `runSearchQuery`, `runSiftingPattern`, `constructTreeDiagram`, `constructSiftingMatchDiagram`, `getDebuggingData`, `fadeCharacterMemories`. Keywords: API, functions, selectAction, queuePlan, sifting, tree diagram, initialization, schema version |
 | API parameter/return types | `runtimes/js/src/api/dto.ts` | TypeScript interfaces for all API function arguments and return values. Keywords: types, DTOs, parameters, return types, interfaces |
 | Adapter interface | `runtimes/js/src/adapter/types.ts` | `HostApplicationAdapter` — the contract between Viv and the host application. Every required and optional method. Keywords: adapter, HostApplicationAdapter, contract, interface, bridge, host application |
 | Adapter registration | `runtimes/js/src/adapter/registration.ts` | How adapters are registered with the runtime. Keywords: adapter, registration, setup |
@@ -109,6 +113,7 @@ High-level user-facing documentation for the Viv compiler toolchain — how to i
 | Knowledge: formation | `runtimes/js/src/knowledge-manager/formation.ts` | How characters form memories of actions they experience or witness. Keywords: knowledge, memory formation, witnessing, experiencing |
 | Knowledge: propagation | `runtimes/js/src/knowledge-manager/propagation.ts` | How knowledge spreads between characters automatically. Keywords: knowledge, propagation, spreading, learning, hearing |
 | Knowledge: forgetting | `runtimes/js/src/knowledge-manager/forgetting.ts` | How character memory saliences decay over time. Keywords: forgetting, salience decay, memory fade |
+| Knowledge: inscription | `runtimes/js/src/knowledge-manager/inscription.ts` | Item inscription and inspection — `inscribeItem` writes knowledge of an action into an item; `inspectItem` has a character read those inscriptions and learn. How knowledge persists in the world between characters. Keywords: inscription, inspection, items, learning, knowledge in objects, inscribeItem, inspectItem |
 | Queue manager | `runtimes/js/src/queue-manager/index.ts` | Manages queued actions and plans awaiting execution. Keywords: queue, pending, scheduled, reactions |
 | Expression interpreter | `runtimes/js/src/interpreter/interpreter.ts` | Evaluates Viv expressions at runtime. Keywords: interpreter, expressions, evaluation |
 | Debugger | `runtimes/js/src/debugger/debugger.ts` | Watchlists, targeting events, condition test results. Keywords: debugger, watchlists, targeting, debugging, diagnostics |
@@ -132,9 +137,11 @@ High-level user-facing documentation for the Viv compiler toolchain — how to i
 
 | What | Where | Description |
 |------|-------|-------------|
+| Hello Viv (TypeScript) — README | `examples/hello-viv-ts/README.md` | Setup and run instructions for the canonical TypeScript integration example. Start here before reading the code. Keywords: example, TypeScript, readme, quickstart, hello world, setup, run |
 | Hello Viv (TypeScript) — main | `examples/hello-viv-ts/src/main.ts` | Canonical integration example — creates adapter, runs simulation loop, demonstrates all API functions. Keywords: example, TypeScript, adapter, simulation, hello world |
 | Hello Viv (TypeScript) — Viv source | `examples/hello-viv-ts/src/content/source.viv` | Simple `.viv` file used by the example project. Keywords: example, source, viv file |
 | Hello Viv (TypeScript) — bundle | `examples/hello-viv-ts/src/content/compiled_content_bundle.json` | Pre-compiled content bundle showing the compiled output format. Keywords: compiled, bundle, JSON, output |
+| Hello Viv (JavaScript) — README | `examples/hello-viv-js/README.md` | Setup and run instructions for the plain-JavaScript integration example. Keywords: example, JavaScript, readme, quickstart, hello world, setup, run |
 | Hello Viv (JavaScript) — main | `examples/hello-viv-js/src/main.js` | Same example in plain JavaScript. Keywords: example, JavaScript, adapter, simulation |
 | Hello Viv (JavaScript) — Viv source | `examples/hello-viv-js/src/content/source.viv` | Simple `.viv` file for the JS example. Keywords: example, source, viv file |
 
@@ -148,14 +155,18 @@ High-level user-facing documentation for the Viv compiler toolchain — how to i
 | Syntax tests                 | `syntax/tests/syntax_test_viv.viv` | 43K test file with inline assertions checking every token receives the correct TextMate scope. Keywords: syntax tests, TextMate, scopes, assertions, grammar tests |
 | Syntax examples              | `syntax/examples/` | Example `.viv` files showcasing language features and color themes. Keywords: examples, showcase, syntax, color themes |
 | VS Code extension            | `plugins/vscode/` | Full VS Code extension — syntax, diagnostics, compile on save, snippets, themes. Keywords: VS Code, extension, editor |
+| VS Code README               | `plugins/vscode/README.md` | User-facing docs for the VS Code extension — features, installation, settings, troubleshooting. Keywords: VS Code, readme, install, features, settings, troubleshooting |
 | VS Code entry point          | `plugins/vscode/extension.ts` | Extension activation, compiler integration, diagnostics provider. Keywords: VS Code, extension, TypeScript, activation |
 | VS Code compiler bridge      | `plugins/vscode/compiler_bridge.py` | Python bridge invoking the compiler from VS Code. Keywords: bridge, compiler, VS Code, Python |
 | VS Code snippets             | `plugins/vscode/snippets/viv.json` | Boilerplate snippets for all construct types — good reference for construct structure. Keywords: snippets, boilerplate, templates, constructs |
 | JetBrains plugin             | `plugins/jetbrains/` | Full JetBrains plugin — syntax, rename, go-to-def, autocompletion, hover docs, structure view. Keywords: JetBrains, IntelliJ, plugin, IDE |
+| JetBrains README             | `plugins/jetbrains/README.md` | User-facing docs for the JetBrains plugin — features, installation, settings, troubleshooting. Keywords: JetBrains, readme, install, features, settings, troubleshooting |
 | JetBrains autocompletion     | `plugins/jetbrains/src/main/kotlin/studio/sifty/viv/VivCompletionContributor.kt` | Context-aware autocompletion logic. Keywords: autocompletion, completions, JetBrains |
 | JetBrains hover docs         | `plugins/jetbrains/src/main/kotlin/studio/sifty/viv/VivDocumentationProvider.kt` | Hover documentation provider. Keywords: hover, documentation, JetBrains |
 | JetBrains snippets           | `plugins/jetbrains/src/main/resources/liveTemplates/Viv.xml` | Live templates (code snippets). Keywords: snippets, live templates, JetBrains |
 | Sublime Text package         | `plugins/sublime/` | Sublime Text package — syntax, snippets, build system, color schemes. Keywords: Sublime, package, editor |
+| Sublime Text README          | `plugins/sublime/README.md` | User-facing docs for the Sublime Text package — features, installation, settings, troubleshooting. Keywords: Sublime, readme, install, features, settings, troubleshooting |
+| Sublime Text build system    | `plugins/sublime/Viv.sublime-build` | Sublime build-system definition wiring Cmd/Ctrl+B to the Python compiler bridge. The key file for Sublime compile-on-build behavior. Keywords: Sublime, build system, compile, build command, bridge |
 | Sublime Text compiler bridge | `plugins/sublime/bridge/compiler_bridge.py` | Python bridge invoking the compiler from Sublime. Keywords: bridge, compiler, Sublime, Python |
 | Sublime Text syntax          | `plugins/sublime/Viv.sublime-syntax` | Native Sublime syntax definition. Keywords: syntax, Sublime, highlighting |
 
@@ -165,9 +176,13 @@ High-level user-facing documentation for the Viv compiler toolchain — how to i
 | What | Where | Description |
 |------|-------|-------------|
 | Makefile | `Makefile` | Schema generation, preflight checks, clean targets. Keywords: make, build, schemas, preflight |
-| Sync checks | `scripts/run_sync_checks.py` | CI script enforcing cross-component invariants: schema identity between compiler and runtime, compiler version agreement across plugins, keyword completeness across syntax definitions, example project compatibility, language reference version parity. Keywords: sync checks, invariants, CI, cross-component, keywords, schema, version, compatibility |
+| Monorepo package config | `package.json` | npm workspaces root declaring which directories participate in the workspace (`runtimes/js`, `examples/hello-viv-ts`, `examples/hello-viv-js`, `docs`, `syntax`). Required Node.js version. Keywords: npm, workspaces, monorepo, Node, package.json, root config |
+| Sync checks | `scripts/run_sync_checks.py` | CI script enforcing cross-component invariants: schema identity between compiler and runtime, compiler version agreement across plugins, keyword completeness across syntax definitions, example project compatibility, language reference version parity, monorepo map path resolution, changelog paths, and various package-specific constraints. Runs as part of the Makefile `preflight` target. Keywords: sync checks, invariants, CI, cross-component, keywords, schema, version, compatibility, preflight |
+| Release orchestrator | `scripts/release.sh` | Release-tagging script — verifies package manifest versions against changelog entries, creates annotated git tags, and pushes to trigger CD workflows. The authoritative way to cut a release. Keywords: release, tag, push, CD, publishing |
 | Changelog extractor | `scripts/extract-changelog.sh` | Extracts a version's entry from a Keep a Changelog file. Used by all CD workflows. Keywords: changelog, extraction, release, CD |
 | Semver bumper | `scripts/bump-semver-string.sh` | Bumps a semver string by patch/minor/major. Used by Makefile. Keywords: semver, bump, version, release |
+| GitHub Actions workflows | `.github/workflows/` | All CI and CD workflows: `ci.yml` (preflight on every push), `deploy-docs.yml` (Starlight site deploy to GitHub Pages on main), and per-package CD workflows (`cd-compiler.yml`, `cd-runtime.yml`, `cd-vscode.yml`, `cd-jetbrains.yml`, `cd-sublime.yml`, `cd-claude.yml`). Keywords: workflows, GitHub Actions, CI, CD, release automation, deploy, pages |
+| Security policy | `.github/SECURITY.md` | Security policy and vulnerability reporting guidelines per component. Keywords: security, vulnerability, disclosure, reporting |
 | Runtime build config | `runtimes/js/rollup.config.js` | Rollup bundle configuration: ESM and CJS bundles, externalized dependencies. Keywords: rollup, build, bundle, ESM, CJS, configuration |
 | TypeDoc config | `runtimes/js/typedoc.json` | API docs configuration: category ordering, intentionally not-exported types, custom CSS. Keywords: TypeDoc, API docs, categories, configuration |
 | API Extractor config | `runtimes/js/api-extractor.json` | Generates d.ts rollup, tracks API surface in `etc/viv-runtime.api.md`. Keywords: api-extractor, d.ts rollup, API surface |
@@ -182,3 +197,4 @@ High-level user-facing documentation for the Viv compiler toolchain — how to i
 | Synthesis pipeline | `wizard/dapt/synthesis/` | Multi-agent pipeline for generating training data: orchestrator, author, reviewer, and consultant agents. Keywords: synthesis, training data, orchestrator, author, reviewer, consultant |
 | Aggregation | `wizard/dapt/aggregation/` | Packages reference material into training examples. Keywords: aggregation, reference material, training data |
 | Training loop | `wizard/dapt/pipeline/` | PyTorch training loop with checkpointing and validation. Keywords: training loop, PyTorch, checkpointing, validation |
+| Evaluation | `wizard/dapt/eval/` | Post-training evaluation — compares base-model vs. adapter perplexity on held-out validation data to measure DAPT transfer. Invokable via `python -m wizard.dapt.eval`. Keywords: evaluation, perplexity, DAPT, validation, adapter, assessment |

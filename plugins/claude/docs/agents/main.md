@@ -16,6 +16,13 @@ You should already have plugin state loaded — `viv-plugin-orient` prints it al
 State is a snapshot, not a live check. If you suspect drift between state and reality (e.g., the compiler isn't behaving as expected), invoke `/viv:sync` to reconcile.
 
 
+## When commands behave unexpectedly
+
+If a `viv-plugin-*` command fails with "command not found," with "No such file or directory" for a path you'd expect to exist, or with output that references a command name you don't have on PATH, the most likely cause is a known Claude Code caching bug — Claude Code is running an outdated cached version of this plugin even though a newer version is downloaded.
+
+Tell the user this and recommend `/viv:sync`, which clears the cache and reinstalls cleanly. Don't try to work around the issue with raw filesystem commands; `/viv:sync` is the supported recovery path.
+
+
 ## Critical: Viv is not in your training data
 
 Viv is a brand-new domain-specific language. You have never seen it before. Do not guess syntax, semantics, or API details. When you need to know something about Viv, consult the primer (already loaded via orient) and then look it up in the reference material.
@@ -25,7 +32,7 @@ Viv is a brand-new domain-specific language. You have never seen it before. Do n
 
 The Viv monorepo is cloned locally. Check with `viv-plugin-fetch-monorepo --check`. If not installed, run `/viv:setup`.
 
-**When you need to find anything in the monorepo, load the map first:** `viv-plugin-get-plugin-file monorepo-map`
+**When you need to find anything in the monorepo, load the map first:** `viv-plugin-get-monorepo-map`
 
 The map indexes every important file in the Viv monorepo — not just directories, but individual scripts, bridge files, schemas, test fixtures, and config files — with a prose description and searchable keywords per entry.
 
@@ -87,12 +94,15 @@ This plugin is designed to make your life easy. The hooks, PATH setup, and pre-a
 
 | Script | What it does |
 |--------|-------------|
+| `viv-plugin-help` | List every plugin command with a one-liner — useful when you've forgotten what's available |
 | `viv-plugin-orient` | Print primer + guide + state — everything you need to start a session |
-| `viv-plugin-get-plugin-file <name>` | Fetch a plugin-bundled file atomically (main, primer, monorepo-map, web-links, writer, fixer, designer, researcher, engineer, critic) from the latest installed version |
+| `viv-plugin-get-plugin-file <name>` | Fetch a plugin-bundled file atomically (main, primer, web-links, writer, fixer, designer, researcher, engineer, critic) from the latest installed version |
+| `viv-plugin-get-monorepo-map` | Print the monorepo map — a keyword-searchable catalog of key files in the monorepo |
 | `viv-plugin-get-example [name]` | List or fetch idiomatic example Viv files |
 | `viv-plugin-explore-monorepo <cmd>` | Locate files in the monorepo: `ls`, `grep` — all paths relative to monorepo root |
 | `viv-plugin-read-monorepo-file <path>` | Print a file from the monorepo, optionally sliced by line range |
 | `viv-plugin-fetch-monorepo [tag]` | Download or update the Viv monorepo copy |
+| `viv-plugin-version` | Report the version of the Viv plugin currently running — compare against `viv-plugin-check-latest`'s `claude-plugin` entry to detect stale-cache drift |
 | `viv-plugin-check-latest` | Report the latest published versions of each Viv component (compiler, runtime, monorepo, editor plugins, Claude plugin) for use by `/viv:sync` |
 | `viv-plugin-read-state` | Print plugin state (versions, paths, projects) |
 | `viv-plugin-write-state` | Write plugin state (`--init`, `--set <key> <value>`, `--project <path> <key> <value>`) |

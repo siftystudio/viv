@@ -58,7 +58,15 @@ if [ ! -d "$CACHE_DIR" ]; then
 fi
 
 # Find the highest semver version directory
-LATEST=$(ls -1 "$CACHE_DIR" | sort -t. -k1,1n -k2,2n -k3,3n | tail -1)
+LATEST=$(
+    for entry in "$CACHE_DIR"/*/; do
+        name="${entry%/}"
+        name="${name##*/}"
+        if [[ "$name" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "$name"
+        fi
+    done | sort -t. -k1,1n -k2,2n -k3,3n | tail -1
+)
 
 if [ -z "$LATEST" ]; then
     echo "" >&2
@@ -71,7 +79,14 @@ EXAMPLES_DIR="$CACHE_DIR/$LATEST/docs/examples"
 
 case "$1" in
     --all)
-        for file in "$EXAMPLES_DIR"/*.viv; do
+        shopt -s nullglob
+        examples=("$EXAMPLES_DIR"/*.viv)
+        shopt -u nullglob
+        if [ ${#examples[@]} -eq 0 ]; then
+            echo "No example files found at $EXAMPLES_DIR" >&2
+            exit 1
+        fi
+        for file in "${examples[@]}"; do
             echo "===== $(basename "$file") ====="
             echo ""
             cat "$file"

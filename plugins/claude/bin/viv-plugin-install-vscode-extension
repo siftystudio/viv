@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-if [ "${1:-}" = "--help" ]; then
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
     echo ""
     echo "Usage: viv-plugin-install-vscode-extension"
     echo "       viv-plugin-install-vscode-extension --check"
@@ -24,9 +24,11 @@ if [ "${1:-}" = "--check" ]; then
         echo "VS Code: not installed"
         exit 0
     fi
-    installed=$(code --list-extensions 2>/dev/null | grep -i "siftystudio.viv" || true)
+    # Use fixed-string matching so the `.` in siftystudio.viv is not treated as
+    # a regex wildcard.
+    installed=$(code --list-extensions 2>/dev/null | grep -iF "siftystudio.viv" || true)
     if [ -n "$installed" ]; then
-        version=$(code --list-extensions --show-versions 2>/dev/null | grep -i "siftystudio.viv" | cut -d@ -f2 || echo "unknown")
+        version=$(code --list-extensions --show-versions 2>/dev/null | grep -iF "siftystudio.viv" | cut -d@ -f2 || echo "unknown")
         echo "VS Code: installed"
         echo "Viv extension: v$version"
     else
@@ -34,6 +36,12 @@ if [ "${1:-}" = "--check" ]; then
         echo "Viv extension: not installed"
     fi
     exit 0
+fi
+
+if [ $# -gt 0 ]; then
+    echo "Unexpected argument: $1" >&2
+    echo "Usage: viv-plugin-install-vscode-extension [--check | --help]" >&2
+    exit 1
 fi
 
 if ! command -v code &>/dev/null; then

@@ -1,6 +1,7 @@
 ---
 name: sync
 description: "Sync the Viv install. Default flow: check for newer published versions of the compiler, runtime, monorepo, and editor plugins; review CHANGELOGs for breaking changes; and upgrade what's behind with user approval. Also handles downgrades, alignment, and reinstalls when the context calls for it."
+argument-hint: "[optional direction — e.g., 'downgrade the compiler', 'align to compiler v0.11.3', 'reinstall everything']"
 user-invocable: true
 ---
 
@@ -34,7 +35,7 @@ Use your judgment. The right command depends on the component:
 - **Runtime:** `npm list @siftystudio/viv-runtime` in the project directory.
 - **Monorepo:** read `monorepo_tag` from `viv-plugin-read-state`.
 - **Editors:** the corresponding `viv-plugin-install-*-{extension,plugin,package} --check`.
-- **Claude Code plugin:** list `~/.claude/plugins/cache/siftystudio/viv/` and take the highest-semver subdirectory — that's the latest installed plugin version.
+- **Claude Code plugin:** call `viv-plugin-version` for the version that's *actually running* in this session, then list `~/.claude/plugins/cache/siftystudio/viv/` for the version that's been *cached* (highest semver subdirectory). If the running version is older than the cached version, that's the well-known Claude Code cache-staleness bug — surface it to the user explicitly and recommend a manual cache clear + reinstall (handled by the upgrade flow in step 5). Do not rely solely on the cache directory listing — it tells you the latest *available* on disk, not what's actually executing.
 
 ### 3. Check CHANGELOGs before recommending anything
 
