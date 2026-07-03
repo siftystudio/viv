@@ -10,11 +10,9 @@
 
 ## Welcome
 
-Welcome to the **monorepo** for Viv, an engine for emergent narrative in games and simulations.
+Welcome to the **monorepo** for Viv, an engine for emergent narrative in games and simulations. If you're new to Viv, check out the [**homepage**](https://viv.sifty.studio) for a proper introduction.
 
 In *emergent narrative*, stories arise from the bottom up, as characters take action in a simulated storyworld, rather than being authored from the top down. Viv offers (aspiring) narrative designers a custom programming language affording rich specifications of character actions, as well as constructs to drive *story sifting*—the task of identifying emergent storylines in a given simulation instance, such as a videogame playthrough.
-
-If you're new to Viv, check out the [**homepage**](https://viv.sifty.studio) for a proper introduction.
 
 Viv is a **source-available project**, which means that:
 
