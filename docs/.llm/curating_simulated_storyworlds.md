@@ -9,7 +9,7 @@
 > **How to navigate this document:**
 > - The thesis is organized into 14 chapters using `#` headings, with `##`/`###`/`####` for sections and subsections. Grep for `^# ` to jump between chapters.
 > - Cross-references have been resolved to their actual numbers (e.g., "Section 3.1.1", "Chapter 5"), so you can search for the heading with that number.
-> - Citations appear inline as bracketed keys like `[ryan2015exag]` or `[mateas2002towards, p. 223]`. Every key has a corresponding entry in the **Bibliography** chapter at the end, formatted as `- **[key]** Author. Title. Venue, Year.`
+> - Citations appear inline as bracketed keys like `[ryan2017grimes]` or `[mateas2002towards, p. 223]`. Every key has a corresponding entry in the **Bibliography** chapter at the end, formatted as `- **[key]** Author. Title. Venue, Year.`
 > - Footnotes are rendered inline as `[Note: ...]` annotations. They contain valuable context but can be skipped without losing the main argument.
 >
 > **Known limitations of the conversion:**
@@ -2667,7 +2667,7 @@ As with *World*, modeling this initial scenario requires some retroactive simula
 
 As I will explain more thoroughly in Section 9.2.7, the entire procedure of creating an initial set of characters to live in the town is driven in a elegant way by the simple instantiation of a new business. For example, consider the following block of Python code:
 
-> ```
+```
 Create character
 farmer = PersonExNihilo(
     sim=self, job_opportunity=‘farmer'
@@ -2677,7 +2677,7 @@ farmer = PersonExNihilo(
 
 Here is the next line of code that will be executed in the procedure that is enacted to set up the town:
 
-> ```
+```
 Have that character start a farm in town
 Farm(owner=farmer)
 ```
@@ -2833,7 +2833,7 @@ Unfortunately, *Talk of the Town* does not model the romantic lives of character
 
 In *Talk of the Town*, a social interaction between two characters may trigger either a marriage event or a divorce event. The mechanism that handles this is embarrassingly simple given the importance of such life events, especially in the domain of an American small town. To that point, a comment above the code block that handles this behavior states:
 
-> ```
+```
 # TODO fix currently dumb way of ‘proposing'
 and divorcing
 ```
@@ -3023,7 +3023,7 @@ The simulation of character knowledge phenomena is computationally expensive. If
 
 Thus, in *Bad News*, this simulation detail is not worth the time and computation, and so the system approximates the history of character knowledge phenomena using a procedure of *knowledge implantation*. By this pattern, world generation employs all aspects of the simulation besides ones related to character knowledge—characters still form relationships, start businesses, and so forth—and then terminates one week prior to the specified end date in the summer of 1979. At this point, however, living characters have no knowledge at all. To resolve this, the module employs a procedure that *implants* into each character's mind the knowledge that would believably be ingrained in them. The following pseudocode illustrates this procedure:
 
-> ```
+```
 for resident in town
     implants = []
     for immediate family member of resident
@@ -3378,7 +3378,7 @@ The following example of *Bad News* curation transpired in the course of a perfo
 
 As I explained in Section 10.2.4, a *Bad News* performance begins with the wizard (me) carrying out a process of initial *story sifting*, whereby a set of narratively potent emergent scenarios may be identified for delivery to the actor. Before I can do this, however, I need to find out who the deceased character and next of kin are, and then relay that information to Ben. At the start of a new performance, neither of us know anything about the storyworld, because it did not even exist until that moment. In this performance, a young deli cashier named Ronald Zeise has died, and there are a record *twelve* next of kin: [Note: As I noted above, in *Bad News* the next of kin is the closest living familial relation in town, and if there are several characters related to the deceased character by the same degree, then each is treated as a next of kin. Notifying any single one of these individuals suffices. In the code examples in this section, the variable ‘d‘ is bound to the deceased character, while ‘nok‘ is bound to a list containing all of the next-of-kin characters.]
 
-> ```
+```
 >>> print d
 Ronald Zeise, 1954-None
 >>> print d.occupations
@@ -3439,7 +3439,7 @@ Actor: WHAT
 
 At this point, the player is still in a preliminary session with the guide, who is explaining how the experience works. Upon further hasty exploration, I encounter an interesting nugget—the deceased's great-great-grandfather was a founder of the town who had worked at night as the cemetery groundskeeper for nearly fifty years:
 
-> ```
+```
 >>> print d.father
 Edward Zeise, left city in 1973
 >>> print d.father.father
@@ -3509,7 +3509,7 @@ Wizard: love it
 
 Shortly after this exchange, the player is led into the gameplay area and the mortician's scene commences. This means Ben is not available to continue chatting, but this scene does not require maintenance of the player and actor interfaces, which allows me to continue story sifting without hindrance. In the course of searching more through the emergent material pertaining to the deceased's ancestors, I encounter a remarkable case of a restaurant named Zilencio that had operated for 131 years but recently had shut down (recall that the year is 1979):
 
-> ```
+```
 >>> print list(d.ancestors)[2].occupations
 [<occupation.Waiter object at 0x103d52cd0>,
 <occupation.Farmer object at 0x104d24b50>]
@@ -3525,7 +3525,7 @@ Zilencio, 317 Steele Creek Avenue (1844-1975)
 ```
  I now become curious about the circumstances of Zilencio's recent closure, so I sift further to see who owned it last:
 
-> ```
+```
 >>> print zil
 Zilencio, 317 Steele Creek Avenue (1844-1975)
 >>> print zil.owner
@@ -3535,7 +3535,7 @@ Douglas Salva, 31 years old
 ```
  Apparently a character named Douglas Salva was Zilencio's final owner, and he had only been in charge for two years before its remarkable closure. Digging deeper, I learn that Salva had originally been a waiter at the restaurant, but was now a stocker at a department store:
 
-> ```
+```
 >>> doug = zil.owner.person
 >>> print doug
 Douglas Salva, 31 years old
@@ -3552,7 +3552,7 @@ Stocker at Flom Department Store since 1977
 ```
  I wondered why a waiter would become the owner of a restaurant, since I know that in-house promotion in *Talk of the Town* tends to elevate employees with a occupational status immediately below the open position (in this case, a restaurant manager). As I explained in Section 9.2.7, however, in addition to favoring current employees for open positions, characters also prefer to hire family members, and so candidates meeting both criteria score highly in the utility procedure that drives the hiring process. As such, I now suspect nepotism, and my sifting confirms this:
 
-> ```
+```
 >>> print doug.occupations[1].preceded_by
 Proprietor at Zilencio 1964-1973
 >>> print doug.occupations[1].preceded_by.person
@@ -3563,7 +3563,7 @@ nephew
 ```
 More intriguingly still, I find a connection to the deceased character. Apparently the late Ronald Zeise was a cashier at a deli that now stands on the former site of Zilencio, and moreover he had actually been a cook at the latter during the brief period of Salva's ownership:
 
-> ```
+```
 >>> print zil.lot
 A lot at 317 Steele Creek Avenue on which Steele Creek
 Avenue Delicatessen has been erected
@@ -4042,7 +4042,7 @@ Toward the end of my development work on *Talk of the Town*, I became interested
 
 As a first move in my investigation of automatic story sifting, I wrote up little functions that could be used to search over a town's history to identify particular scenarios that tend to emerge in *Talk of the Town* towns. For example, here is some Python code that can be used to automatically excavate cases of unrequited love (and package them up as objects of an ‘UnrequitedLove‘ class, whose definition is not included here):
 
-> ```
+```
 def excavate_unrequited_love_cases(town):
     """Sift for cases of unrequited love."""
     unrequited_love_cases = []
@@ -4059,7 +4059,7 @@ def excavate_unrequited_love_cases(town):
 ```
  In this code, the attribute ‘loves‘ resolves to a list containing all the other characters with whom one is in love, where being in love is operationalized as holding a spark value above a certain threshold. As the listing expresses, the function would not just excavate a single case of unrequited love, but every single case in the town's history. Here is another function that sifts through this accumulated history for cases of a more specific phenomenon, the love triangle:
 
-> ```
+```
 def excavate_love_triangles(town):
     """Sift for love triangles."""
     love_triangles = []
@@ -4089,7 +4089,7 @@ This was fairly interesting, and it was pretty easy to craft functions like thes
 
 Let us work through this in a detailed example. First, what are the components of Adam's example? At its foundation is a bitter rivalry between two long-established family businesses, which could be decomposed into a more specific explanation such as this: there are two businesses that have existed in the town for a long time, the businesses are family-owned, the businesses are in competition, and the family members that run the businesses do not like one another. To start, here is a function for sifting out long-running businesses:
 
-> ```
+```
 def excavate_town_institutions(town):
     """Sift for cases of long-running businesses."""
      # Operationalize ‘long-running' by number of years
@@ -4106,7 +4106,7 @@ def excavate_town_institutions(town):
 ```
  This allows the sifter to excavate long-running businesses, but it also needs to know which ones are family businesses. One way to operationalize this is to say that a family business is one whose owner was preceded by an owner of the same family. The following code captures this:
 
-> ```
+```
 def is_family_business(business):
     """Return whether the given business is
        family-owned."""
@@ -4118,7 +4118,7 @@ def is_family_business(business):
 ```
 Of course, this notion could have been operationalized differently. We could instead only accept circumstances in which every owner of the business was related to the previous one, or we could say that the business must be passed from parent to child each time, or what have you. In my view, it is probably best to equip the automatic story sifter with liberal policies, since that increases the chance of excavating usable material. As for the notion of two businesses being in competition, this could be operationalized by them being of the same type (e.g., ‘bar‘), but a richer (and also more inclusive) policy might instead look at whether the businesses have services in common:
 
-> ```
+```
 def competitors(business, other_business):
     """Return whether the given businesses are in
        competition."""
@@ -4131,7 +4131,7 @@ def competitors(business, other_business):
 ```
  Finally, the sifter requires means by which animosity between the families may be detected. While a strict notion might require something like extreme disdain between each and every member of the respective families, a liberal (but still reasonable) policy might simply require animosity between the respective business owners. Here is a function that captures the latter by operationalizing animosity using *Talk of the Town*'s existing ‘enmity‘ relation:
 
-> ```
+```
 def animosity(character, other):
     """Return whether there is mutual animosity between
        the given characters."""
@@ -4142,7 +4142,7 @@ def animosity(character, other):
 ```
 Now, to sift for bitter rivalries between family businesses, which is the foundation of Adam's example, the sifter can simply search for cases of interlocking between each of the component scenarios. Given the above code examples, it may do this automatically by using a function such as this:
 
-> ```
+```
 def excavate_family_business_rivalries(town):
     """Sift for cases of bitter rivalries between
        long-running family businesses."""
@@ -4168,7 +4168,7 @@ def excavate_family_business_rivalries(town):
 ```
 Finally, at the heart of Adam's scenario is a case of forbidden love between members of the rival families. In his specific example, one is the owner of one of the businesses and the other is the daughter of the rival owner. While we could certainly detect such specifics, it is again probably a better idea to be more indiscriminate, so as to increase the likelihood of successful sifting. Here is code that the automatic story sifter could use to excavate forbidden love of the type that is central to Adam's example:
 
-> ```
+```
 def excavate_forbidden_love(town):
     """Sift for cases of forbidden love between
        members of hostile families that operate
@@ -4525,21 +4525,21 @@ An *action definition* is a collection of authored procedural content that defin
 
 -  **Preconditions.** A set of *preconditions* that must be satisfied in order for the action to be taken at some point. Preconditions are evaluated with respect to a candidate *binding*, which specifies a set of candidate entities to be cast in an action's roles. For example, a candidate binding for ‘ridicule‘ might look like this: ‘{insulter: Meehan, insulted: Klein, observer: Schank, observer: Dehn}‘. A precondition, then, specifies constraints on who may be cast in what roles at what times. As an example of a ‘ridicule‘ precondition, ‘insulter.personality.cruel >= 25‘ requires that a character must be particularly cruel in order to ridicule someone. In this case, the *action manager*, described in Section 11.2.7, would evaluate this precondition by using the candidate binding, where the character ‘Meehan‘ is bound to the role ‘insulter‘. Another precondition might depend on the relationship between the insulter and insulted, for example, ‘insulter.charge(insulted) < 0‘, in which case the character ‘Klein‘ would be bound to the role ‘insulted‘ to evaluate the condition. More broadly, a precondition may specify anything about any modeled aspect of the storyworld. At a technical level, my authored preconditions are Python *lambda expressions* [vanrossum2010python, p. 58] that have access to both the candidate binding and the storyworld state. [Note: Lambda expressions are statements in the *lambda calculus*, a formalism that was introduced by Alonzo Church in a 1932 paper titled “A Set of Postulates on the Foundation of Logic” [church1932set,cardone2006history]. Among Church's students were Alan Turing and Stephen Cole Kleene, the latter of whom advised Robert Constable, who advised Joe Bates, who coadvised Michael Mateas, who coadvised me.] Here is an actual code snippet defining a precondition for the action ‘cringe-over-embarrassing-memory‘ (‘c‘ is bound to a data structure for the candidate binding in which individual role bindings may be accessed by dot notation):
 
-> ```
+```
 lambda c: c.cringer.associates(
     action=c.past_action, tag=‘embarrassment'
 )
 ```
 Lastly, I would like to note an authoring pattern whereby a precondition is simply a specified probability, which allows for an author to turn down the chance of an action occurring even when all its binary preconditions hold. For example, take this precondition:
 
-> ```
+```
 lambda c: random.random() < 0.5
 ```
 With this condition in place, an action that would otherwise be taken has only a 50% chance of being taken. This can be used to turn down the frequency of actions that should occur less often.
 
 -  **Effect definitions.** If an action is taken, a set of associated *effects* may be executed to update the state of the storyworld; in this way, actions change the world. In the action definition, an author specifies a series of *effect definitions* that couple *triggers* and *effects*. A trigger is a condition that specifies the contexts in which an effect may be executed, and the effect specifies how exactly the storyworld will be changed if the rule fires. As such, action effects in *Hennepin* are *conditional*, which means they are not strictly executed when an action occurs, but instead the effect trigger is evaluated, and only if those conditions hold are the actual effects executed. The trigger conditions work just like preconditions, which means they may specify anything about the storyworld and operate over an action's bindings. [Note: To be precise, action preconditions operate over candidate bindings, while effect triggers operate over instantiated bindings, since by then the action has already been taken.] Like the conditions, effects are defined as Python lambda expressions, but instead of returning ‘True‘ or ‘False‘, they call functions or methods whose execution changes the world. Specifically, an effect is defined as a dictionary that couples the trigger conditions and the actual effect. Note that such structures are similar to *production rules*, like the ones that are used in Sheldon Klein's murder-mystery generator and *Comme il Faut*, as I discussed in Section 4.1.3. Here is a code snippet that defines an effect of ‘ridicule‘ that causes the character who is ridiculed to lower her charge toward the person who has just ridiculed her:
 
-> ```
+```
 {
     "conditions": lambda c: c.me is c.insulted,
     "effect": lambda c: c.me.update_charge(
@@ -4549,7 +4549,7 @@ With this condition in place, an action that would otherwise be taken has only a
 ```
 One authoring pattern is to conditionalize an effect on a character's personality profile, which means the same action will affect characters differently, depending on variation across their personalities. This works in the style of Richard Evans's modeling of personality traits as conditionals—for example, a ‘thrill seeking‘ trait being represented by a rule of the form *If I perform a risky action $$ Excitement* [evans2011representing, p. 37]. Here is an example effect definition that follows this pattern to specify that cruel characters are impressed by cruel acts (and thus increase charge toward the culprits):
 
-> ```
+```
 {
     "conditions": lambda c: (
         c.me is not c.insulted and
@@ -4562,7 +4562,7 @@ One authoring pattern is to conditionalize an effect on a character's personalit
 ```
 -  **Salience definitions.** Each action that a character knows about will have an associated *salience* value that captures how notable the action is to that person. Salience affects the likelihood of remembering an action, propagating knowledge about an action, and taking actions that cast past actions in their roles. For example, a character is more likely to remember giving birth to a child than drawing a picture in school, and this is captured by the former having a higher salience. Likewise, characters are more likely to gossip about an attempted arson than a character admiring the sunset. Moreover, it would probably not even make sense to gossip about someone admiring the sunset, because its salience is low—to capture this, the ‘gossip‘ action definition might say that its ‘past-action‘ role can only cast past actions whose saliences exceed some threshold. [Note: This would be captured by a precondition along the lines of ‘gossiper.salience( past_action) > 50‘).] Critically, action saliences are also conditional, which captures the intuition that an action may be more notable to some characters than others. For example, the salience definitions for the action ‘give-birth‘ specify that while the action will be fairly salient to anyone who hears about it, it will be *extremely* salient to the mother who gave birth. Salience definitions resemble the production rules specified in effect definitions, except that that the right-hand side specifies a *salience increment*, rather than an effect. Here are two salience rules that capture that a ‘ridicule‘ action is more notable to the character being insulted than to the one doing the insulting:
 
-> ```
+```
 [
     {
         "conditions": lambda c: c.me is c.insulted,
@@ -4614,7 +4614,7 @@ In *Hennepin*, a role is defined compositionally according to its attributes, an
 
 -  **Symbol.** It can sometimes be useful to define roles that should be filled by arbitrary types, such as a string or a number. For example, in the action ‘come-up-with-name-for-town‘, the proposed name for a new town is simply a string, and so the corresponding role would have this *symbol* attribute. In such a case, however, the action manager will have no way of knowing how to construct a pool of candidate bindings, which means such a pool needs to be explicitly defined in the action definition. This is done by specifying a *candidate-pool directive*, which is defined as arbitrary code that returns a list of objects, which is then treated as the pool of candidates for that role. For instance, here is the candidate-pool directive for the action ‘berate-employee‘ (this lambda expression takes the initiating character as its argument ‘i‘, since it precedes there being any candidate binding):
 
-> ```
+```
 "binding pool directives": {
     "employee": lambda i: [
         p for p in i.location.people_here_now if
@@ -4648,7 +4648,7 @@ Through testing, both by myself and with others, I found that believability did 
 
 Here is a very high-level sketch of the action manager's procedure for action selection, which I will describe in more detail momentarily:
 
-> ```
+```
 randomly select character from actors pool
     if character has (semi)urgent queued action, target
         if successful, execute action and move on
@@ -4758,7 +4758,7 @@ Subsequent actions are queued as part of the execution of the effects of the pre
 
 -  **Abandonment conditions.** The *abandonment conditions*, if triggered, cause a queued action to be removed from a character's action queue. Whenever a queued action is about to be targeted, the action manager first evaluates its abandonment conditions, which if triggered will dequeue the action (causing the manager to target a different one instead). These are especially useful for urgent actions that become unavailable upon the storyworld changing in some way, since otherwise the action manager will hopelessly keep targeting the action, even though its preconditions cannot possibly hold. [Note: When this happens, the action manager instead targets a random generic action for the character and keeps her in the actor pool, but once the pool dwindles down to just her, the simulation reduces to her doing the same generic actions over and over again. I keep this is in there essentially as a visual cue for an authoring error—since the incessant repetition of an action is visually striking in my console output during world generation—but it does produce some amusing scenes. For instance, before I had authored many generic actions, one character could not take his urgent queued action and in fact could only perform ‘crack-a-joke‘, which led to him cracking literally millions of jokes before I manually interrupted the simulation execution. The image of a man nervously cracking millions of jokes is uncanny. In an ironic variant on this scene, a character named Nellie Ancell incessantly performed ‘extol-virtues-of-value‘ with regard to the importance of ‘self-control‘.] Here are example abandonment conditions for the action ‘fight-back‘ (specifying to drop the queued action if the character who instigated the fight is no longer near her opponent):
 
-> ```
+```
 abandonment_conditions=lambda c: (
     not c.instigator.is_at(c.opponent.location)
 )
@@ -4775,7 +4775,7 @@ I call such structures *emergent contingency structures*, following the *conting
 
 In *Hennepin*, action causality may work according to all four of these notions. First, an action may be deemed to emerge by *chance* when the definition of its action type includes no preconditions. [Note: This is not especially precise, since a series of earlier actions would have led to the character who takes the action coming to even exist in the first place, for instance. But is my every action caused (according to a possibility relation) by my birth? And then in turn is my every action caused by my mother's birth? And was that not due to a butterfly flapping its wings, and in turn that butterfly being born, and so on and so forth, etc., and so forth. In a sensitive dynamical system, everything causes everything else, and this produces the kind of dense lattice structure that I have argued is antithetical to narration. Nonetheless, it is fair to argue that nothing can actually occur by chance—that seems to be the case—but I think in this context it is more useful to clumsily conceive of chance actions.] Next, an action makes a later one *possible* when its effects change the storyworld such that the latter action's preconditions become satisfied. Third, because of the action manager's satisficing policy, as opposed to an optimal one that would model utility or some other notion of fittingness, the *probability* relation is not really at play in the system, but there are arguable cases. An extension of the authoring pattern of defining a precondition that is simply a probability, such as ‘random.random() < 0.5‘, is to pack in a binary condition as well, resulting in examples like this:
 
-> ```
+```
 lambda c: (
     (
         c.insulter.hates(c.insulted) and
@@ -4960,7 +4960,7 @@ A concrete example of this pertains to characters starting new towns in a county
 
 Lastly, I will conclude in this section with a few emergent images, in the style of the evocative situations that I recounted in Section 7.4 with regard to *World*. The first concerns one Edward Runyan, mayor of a town called Runyan that he founded early in a county's history. Runyan was a hard worker and a hard drinker who spent most of his days at the town hall performing ‘work-hard-at-work‘ and most of his nights at home performing ‘have-a-drink‘. Occasionally, he would get into arguments with Rose Vaillancourt, his secretery, on the merits of ‘stoicism‘, which Runyan valued highly. In one evocative nighttime visit to the Vaillancourt residence, the stoic Edward Runyan performed only these three actions: [Note: This is an excerpt from the console logging that is displayed in the terminal window during world generation.]
 
-> ```
+```
 ID: 8529
 Name: have-a-drink
 Date: Night of October 1, 1853
@@ -4993,7 +4993,7 @@ Past Action:
 ```
 Another character, the first to arrive in his county, happened to cap off the completion of a difficult project with a celebratory drink (a notion not modeled in the action precondition logic, though it works nicely by an apophenia hack): [Note: This was an earlier version of the worldgen printout.]
 
-> ```
+```
 		** Day of May 22, 1839 **
 
 17: [lay-foundation-of-house] by John Lanclos at a
@@ -5014,7 +5014,7 @@ Another character, the first to arrive in his county, happened to cap off the co
 ```
 Finally, the tragic case of one John Putterman. Putterman had high trait values for both ‘emotionally_obsessive‘ and ‘love_propensity‘, which unlocks the internal action ‘obsess-over-love-interest‘. In high school, John Putterman fell in love with a classmate named Sallie Koppinger, but nothing ever materialized between the two and Koppinger ended up leaving town when they were in their twenties. All throughout his life, Putterman constantly performed ‘obsess-over-love-interest‘ with Koppinger as its absent subject. Moreover, this recurring action was actually part of a tragic feedback loop: when a character obsesses over a love interest, the spark for that person increases, thereby reinforcing the obsession further. In this way, while his spark for her did decrease over time, the decay rate was no much for the rapid spark increases caused by his constant obsessing. Finally, on his death bed, Putterman, now almost fifty years removed from Koppinger's departure, performed one final action:
 
-> ```
+```
 >>> print john
 John Putterman, 1840-1909
 >>> print john.death
@@ -5179,7 +5179,7 @@ For this reason, *Sheldon*'s sifting patterns are each associated with ideas for
 
 Let us illustrate this with an example. In the current *Sheldon* codebase, a nugget is instantiated as an object of a class whose definition contains both the sifting pattern and a procedure for recording the extracted material in a structured way. As an example, here is a definition for a nugget class corresponding to the ‘arson-revenge‘ sifting pattern, which matches when a ‘set-fire‘ action has a causal ancestor—an earlier action on its causal chain—that is a ‘hatch-revenge-scheme‘ action with the same initiator:
 
-> ```
+```
 class ArsonRevenge(object):
     """A sifting pattern for excavating events
         pertaining to revenge via arson."""
@@ -5248,7 +5248,7 @@ class ArsonRevenge(object):
 ```
 This nugget class is associated with an ‘arson-revenge‘ sifting pattern and four narration moves: ‘recount-arson-revenge‘, ‘recount-revenge‘, and the two ‘explore- relationship‘ variants, which I will explain momentarily. [Note: In the case of ‘explore-relationship‘, the narration move accepts arguments (pertaining to the characters involved in the relationship).] The sifting pattern itself is captured by this snippet:
 
-> ```
+```
 Apply the pattern to the candidate to
 # find out whether there's a match
 self.match = (
